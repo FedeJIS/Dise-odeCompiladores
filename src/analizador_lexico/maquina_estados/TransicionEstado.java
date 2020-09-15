@@ -1,4 +1,4 @@
-package analizador_lexico;
+package analizador_lexico.maquina_estados;
 
 import java.lang.runtime.ObjectMethods;
 
