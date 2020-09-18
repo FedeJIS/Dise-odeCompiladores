@@ -3,7 +3,7 @@ package analizador_lexico.maquina_estados;
 public class MaquinaEstados {
     private final TransicionEstado[][] maquinaEstados = new TransicionEstado[Estado.TOTAL_ESTADOS][Input.TOTAL_INPUTS]; //[filas][columnas].
 
-    private int estadoActual = 0;
+    private int estadoActual = Estado.INICIAL;
 
     public MaquinaEstados(){
         inicTransicionesInicial();
