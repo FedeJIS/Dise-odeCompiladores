@@ -1,7 +1,5 @@
 package analizador_lexico.maquina_estados;
 
-import java.lang.runtime.ObjectMethods;
-
 public class TransicionEstado {
     private final int siguienteEstado;
     private final Object accionSemantica;

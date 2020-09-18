@@ -1,11 +1,25 @@
 package analizador_lexico.maquina_estados;
 
+import analizador_lexico.CodigoFuente;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class MaquinaEstados {
     private final TransicionEstado[][] maquinaEstados = new TransicionEstado[Estado.TOTAL_ESTADOS][Input.TOTAL_INPUTS]; //[filas][columnas].
 
     private int estadoActual = Estado.INICIAL;
 
-    public MaquinaEstados(){
+    private final List<Object> listaToken = new ArrayList<>();
+
+    private char ultimoCaracterLeido;
+
+    /**
+     * Constructor.
+     *
+     * @param codigoFuente ESTA VARIABLE HAY QUE PASARSELA A LAS ASs QUE DEVUELVEN EL ULTIMO CARACTER.
+     */
+    public MaquinaEstados(CodigoFuente codigoFuente){
         inicTransicionesInicial();
         inicDeteccionId();
         inicDeteccionPR();
@@ -14,6 +28,50 @@ public class MaquinaEstados {
         inicComparacion();
         inicDeteccionCtes();
         inicCadena();
+    }
+
+    /**
+     * Ejecuta la accion semantica del estado y avanza al siguiente.
+     *
+     * @param charInput caracter leido.
+     */
+    public void transicionar(char charInput){
+        ultimoCaracterLeido = charInput;
+
+        int codigoInput = Input.charToInt(charInput); //Obtiene el codigo asociado al caracter leido.
+
+        TransicionEstado transicionEstado = maquinaEstados[estadoActual][codigoInput];
+
+        transicionEstado.ejecutarAccionSemantica();
+        estadoActual = transicionEstado.siguienteEstado();
+    }
+
+    /**
+     * Agrega un token a la lista de token. Solo es usado por aquellas AS a las que le corresponda generar tokens.
+     *
+     * @param token token a agregar.
+     */
+    public void agregarToken(Object token){
+        listaToken.add(token);
+    }
+
+    /**
+     * Obtiene la lista de tokens generada al transicionar en la maquina.
+     *
+     * @return la lista de tokens generada.
+     */
+    public List<Object> getListaToken(){
+        return listaToken;
+    }
+
+    /**
+     * Obtiene el ultimo caracter que fue leido por la maquina. Solo es usado por aquellas AS que deban almacenar el
+     * ultimo char que se leyo.
+     *
+     * @return el ultimo caracter leido.
+     */
+    public char getUltimoCaracterLeido() {
+        return ultimoCaracterLeido;
     }
 
     /**
@@ -29,7 +87,7 @@ public class MaquinaEstados {
     }
 
     /**
-     * Estado 0.
+     * Inicializacion estado 0.
      */
     private void inicTransicionesInicial() {
         inicTransiciones(Estado.INICIAL,Estado.ERR_SIMBOLO_INV,"");
@@ -78,7 +136,7 @@ public class MaquinaEstados {
     }
 
     /**
-     * Estado 1.
+     * Inicializacion estado 1.
      */
     private void inicDeteccionId() {
         inicTransiciones(Estado.DETECCION_ID,Estado.FINAL,"2,3");
@@ -92,7 +150,7 @@ public class MaquinaEstados {
     }
 
     /**
-     * Estado 2.
+     * Inicializacion estado 2.
      */
     private void inicDeteccionPR(){
         inicTransiciones(Estado.DETECCION_PR,Estado.FINAL,"4");
@@ -102,7 +160,7 @@ public class MaquinaEstados {
     }
 
     /**
-     * Estado 3.
+     * Inicializacion estado 3.
      */
     private void inicInicioComent(){
         inicTransiciones(Estado.INICIO_COMENT,Estado.ERR_SIMBOLO_INV,"");
@@ -111,7 +169,7 @@ public class MaquinaEstados {
     }
 
     /**
-     * Estado 4.
+     * Inicializacion estado 4.
      */
     private void inicCuerpoComent(){
         inicTransiciones(Estado.CUERPO_COMENT,Estado.CUERPO_COMENT,"");
@@ -120,7 +178,7 @@ public class MaquinaEstados {
     }
 
     /**
-     * Estado 5, 6, 7 y 8.
+     * Inicializacion estados 5, 6, 7 y 8.
      */
     private void inicComparacion(){
         //Comparacion por menor (5).
@@ -143,16 +201,19 @@ public class MaquinaEstados {
     }
 
     /**
-     * Estados 9, 10, 11, 12, 13, 14.
+     * Inicializacion estados 9, 10, 11, 12, 13, 14.
      */
     private void inicDeteccionCtes(){
         //Parte entera (9).
         inicTransiciones(Estado.CTE_PARTE_ENTERA, Estado.ERR_SIMBOLO_INV,"6");
 
         maquinaEstados[Estado.CTE_PARTE_ENTERA][Input.DIGITO] = new TransicionEstado(Estado.CTE_PARTE_ENTERA,"1");
-        maquinaEstados[Estado.CTE_PARTE_ENTERA][Input.GUION_B] = new TransicionEstado(Estado.CTE_UI_SUF1,""); //Salto a deteccion de sufijo para UIs.
-        maquinaEstados[Estado.CTE_PARTE_ENTERA][Input.PUNTO] = new TransicionEstado(Estado.CTE_PARTE_DECIM,"1"); //Salto a parte decimal de doubles.
-        maquinaEstados[Estado.CTE_PARTE_ENTERA][Input.D_MINUSC] = new TransicionEstado(Estado.CTE_PARTE_EXP,"1"); //Salto a parte exponencial de doubles.
+        maquinaEstados[Estado.CTE_PARTE_ENTERA][Input.GUION_B] =
+                new TransicionEstado(Estado.CTE_UI_SUF1,""); //Salto a deteccion de sufijo para UIs.
+        maquinaEstados[Estado.CTE_PARTE_ENTERA][Input.PUNTO] =
+                new TransicionEstado(Estado.CTE_PARTE_DECIM,"1"); //Salto a parte decimal de doubles.
+        maquinaEstados[Estado.CTE_PARTE_ENTERA][Input.D_MINUSC] =
+                new TransicionEstado(Estado.CTE_PARTE_EXP,"1"); //Salto a parte exponencial de doubles.
 
         //Sufijo1 (10).
         inicTransiciones(Estado.CTE_UI_SUF1, Estado.ERR_SIMBOLO_INV,"6");
@@ -167,7 +228,8 @@ public class MaquinaEstados {
 
         //Parte decimal (13).
         inicTransiciones(Estado.CTE_PARTE_DECIM, Estado.FINAL,"6,11");
-        maquinaEstados[Estado.CTE_PARTE_DECIM][Input.D_MINUSC] = new TransicionEstado(Estado.CTE_PARTE_EXP,"1"); //Salto a parte exponencial de doubles.
+        maquinaEstados[Estado.CTE_PARTE_DECIM][Input.D_MINUSC] =
+                new TransicionEstado(Estado.CTE_PARTE_EXP,"1"); //Salto a parte exponencial de doubles.
         maquinaEstados[Estado.CTE_PARTE_DECIM][Input.DIGITO] = new TransicionEstado(Estado.CTE_PARTE_DECIM,"1");
 
         //Parte exponencial (14).
@@ -175,39 +237,12 @@ public class MaquinaEstados {
         maquinaEstados[Estado.CTE_PARTE_EXP][Input.DIGITO] = new TransicionEstado(Estado.CTE_PARTE_EXP,"1");
     }
 
+    /**
+     * Inicializacion estado 15.
+     */
     private void inicCadena(){
         inicTransiciones(Estado.CADENA,Estado.CADENA,"6");
         maquinaEstados[Estado.CADENA][Input.SALTO_LINEA] = new TransicionEstado(Estado.CADENA,"12");
         maquinaEstados[Estado.CADENA][Input.COMILLA] = new TransicionEstado(Estado.FINAL,"");
-
-        //TODO: Ver como tirar error en caso de que la cadena no quede cerrada (por el EOF).
-    }
-
-    /**
-     * Ejecuta la accion semantica del estado y avanza al siguiente.
-     *
-     * @param input codigo ASCII del caracter leido.
-     */
-    public void transicionar(int input){
-        TransicionEstado transicionEstado = maquinaEstados[estadoActual][input];
-
-        transicionEstado.ejecutarAccionSemantica();
-        estadoActual = transicionEstado.siguienteEstado();
-    }
-
-    /**
-     * Temporal para testeos.
-     *
-     * @return el estado actual de la maquina.
-     */
-    public int getEstadoActual(){
-        return estadoActual;
-    }
-
-    /**
-     * Temporal para testeos.
-     */
-    public void reset(){
-        this.estadoActual = 0;
     }
 }

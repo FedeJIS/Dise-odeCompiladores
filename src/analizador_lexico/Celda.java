@@ -22,5 +22,4 @@ public class Celda {
     public String getTipo() {
         return tipo;
     }
-
 }
