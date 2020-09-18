@@ -1,8 +1,6 @@
 package analizador_lexico;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
 import java.util.ArrayList;
 
 public class FileProcessor {
@@ -44,6 +42,36 @@ public class FileProcessor {
     }
 
     /**
+     * Escribe un "linea" en el fichero de la ruta "path".
+     * @param path ruta del archivo
+     * @param linea string a escribir
+     * @param existeArchivo si es false, lo crea. Si es true, agrega la linea al final.
+     */
+    public void escribirArchivo(String path, String linea, boolean existeArchivo){
+        FileWriter fichero = null;
+        PrintWriter pw;
+        try
+        {
+            //Apertura y escritura del archivo
+            fichero = new FileWriter(path,existeArchivo);
+            pw = new PrintWriter(fichero);
+            pw.println(linea);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                //Cierre del archivo
+                if (null != fichero)
+                    fichero.close();
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+        }
+    }
+
+
+    /**
      * Renombra un File bajo el nombre "nombreNuevo".
      * @param path del archivo a renombrar
      * @param nombreNuevo nombre sin la extensión
@@ -53,5 +81,15 @@ public class FileProcessor {
         File f1= new File(path);
         File f2= new File(nombreNuevo+".txt");
         return f1.renameTo(f2);
+    }
+
+    /**
+     * Demuestra la existencia o no de un archivo
+     * @param path ruta del archivo
+     * @return true si existe, false sino.
+     */
+    public boolean existeArchivo(String path){
+        File f = new File(path);
+        return (f.exists() && !f.isDirectory());
     }
 }
