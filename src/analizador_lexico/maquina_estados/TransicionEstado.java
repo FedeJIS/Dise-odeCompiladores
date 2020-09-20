@@ -1,12 +1,17 @@
 package analizador_lexico.maquina_estados;
 
+import analizador_lexico.AccionSemantica;
+
+import java.util.Arrays;
+import java.util.List;
+
 public class TransicionEstado {
     private final int siguienteEstado;
-    private final Object accionSemantica;
+    private final List<AccionSemantica> accionesSemanticas;
 
-    public TransicionEstado(int siguienteEstado, Object accionSemantica) {
+    public TransicionEstado(int siguienteEstado, AccionSemantica... accionesSemanticas) {
         this.siguienteEstado = siguienteEstado;
-        this.accionSemantica = accionSemantica;
+        this.accionesSemanticas = Arrays.asList(accionesSemanticas);
     }
 
     public int siguienteEstado() {
@@ -14,6 +19,7 @@ public class TransicionEstado {
     }
 
     public void ejecutarAccionSemantica() {
-        System.out.println("Se ejecuto la accion semantica "+accionSemantica.toString()); //TODO Reemplazar por AccionSemantica.ejecutar().
+        for (AccionSemantica accionSemantica : accionesSemanticas)
+            accionSemantica.ejecutar();
     }
 }

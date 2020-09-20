@@ -11,7 +11,7 @@ public class AnalizadorLexico {
 
         CodigoFuente cFuente = new CodigoFuente(fileProcessor.getLineas("archivos/codigo_fuente.txt"));
 
-        MaquinaEstados maquinaEstados = new MaquinaEstados(cFuente);
+        MaquinaEstados maquinaEstados = new MaquinaEstados(cFuente,fileProcessor);
 
         while (!cFuente.eof()) {
             maquinaEstados.transicionar(cFuente.simboloActual());

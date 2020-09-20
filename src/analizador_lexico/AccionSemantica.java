@@ -8,50 +8,70 @@ public class AccionSemantica {
     private final static double LIMIT_DPOS_INF=2.2250738585072014;
     private final static double LIMIT_DPOS_SUP=.7976931348623157;
     private final static int LIMIT_DEXP=308;
-    private FileProcessor fileProcessor;
+//    private static FileProcessor fileProcessor;
     private TablaDeSimbolos tablaDeSimbolos;
     private Reservado reservado;
-    private CodigoFuente codigoFuente;
-    private String sTemporal;
-    private double numeroIntD=0; // Utilizado para AS-double (parte numerica y parte exp)
+//    private CodigoFuente codigoFuente;
+    private static String sTemporal;
+    private double numeroIntD = 0; // Utilizado para AS-double (parte numerica y parte exp)
 
-    public AccionSemantica (Reservado reservado, String pathFuente){
-        fileProcessor= new FileProcessor();
+    public AccionSemantica (Reservado reservado){
+//        fileProcessor= new FileProcessor();
         tablaDeSimbolos= new TablaDeSimbolos();
         this.reservado=reservado;
-        this.codigoFuente= new CodigoFuente(fileProcessor.getLineas(pathFuente));
+//        this.codigoFuente = new CodigoFuente(fileProcessor.getLineas(pathFuente));
         this.numeroIntD=Double.NEGATIVE_INFINITY;
     }
 
+    /**
+     * Metodo hook que se sobre escribe segun la accion particular.
+     */
     public void ejecutar(){}
 
-    public class AS0{
+    /* ---Implementaciones--- */
+
+    public static class InicStringVacio extends AccionSemantica{
+        public InicStringVacio(Reservado reservado) {
+            super(reservado);
+        }
+
         /**
-         * Inicializa un string en vacio
-         * @return
+         * Inicializa un string en vacio.
          */
+        @Override
         public void ejecutar (){
             sTemporal="";
         }
     }
 
-    public class AS1{
+    public static class ConcatenaChar extends AccionSemantica{
+        private final CodigoFuente codigoFuente;
+
+        public ConcatenaChar(Reservado reservado, CodigoFuente codigoFuente) {
+            super(reservado);
+            this.codigoFuente = codigoFuente;
+        }
+
         /**
-         * Concatena un caracter al final de un string
-         * @return
+         * Concatena un caracter al final de un string.
          */
-        public void ejecutar (){
-            StringBuilder cadena= new StringBuilder(sTemporal);
-            cadena.append(codigoFuente.simboloActual());
-            sTemporal=cadena.toString();
+        @Override
+        public void ejecutar(){
+            sTemporal= sTemporal + codigoFuente.simboloActual();
         }
     }
 
-    public class AS2{
+    public static class CheckLongString extends AccionSemantica{
+        private final FileProcessor fileProcessor;
+        public CheckLongString(Reservado reservado, FileProcessor fileProcessor) {
+            super(reservado);
+            this.fileProcessor = fileProcessor;
+        }
+
         /**
-         * Si se excede el limite de un string, se trunca y genera un WARNING
-         * @return
+         * Si se excede el limite de un string, se trunca y genera un WARNING.
          */
+        @Override
         public void ejecutar (){
             if (LIMITE_STRING < sTemporal.length()){
                 sTemporal=sTemporal.substring(0,LIMITE_STRING);
@@ -60,15 +80,38 @@ public class AccionSemantica {
         }
     }
 
+    public static class DevuelveUltimoLeido extends AccionSemantica{
+        private final CodigoFuente codigoFuente;
+
+        public DevuelveUltimoLeido(Reservado reservado, CodigoFuente codigoFuente) {
+            super(reservado);
+            this.codigoFuente = codigoFuente;
+        }
+
+        /**
+         * Retrocede una vez en el codigo fuente, para que se vuelva a leer el ultimo caracter que se leyo.
+         */
+        @Override
+        public void ejecutar (){
+            codigoFuente.retroceder();
+        }
+    }
+
     /**
      * Devuelve un objeto con la celda de la tabla de simbolos segun el lexema
      */
-    public class AS3{
+    public static class GeneraTokenId extends AccionSemantica{
+        private final TablaDeSimbolos tablaDeSimbolos;
+
+        public GeneraTokenId(Reservado reservado, TablaDeSimbolos tablaDeSimbolos) {
+            super(reservado);
+            this.tablaDeSimbolos = tablaDeSimbolos;
+        }
+
         public Celda ejecutar(int token) {
-            AS6 ultimo = new AS6();
             String lexema = sTemporal.substring(0, sTemporal.length() - 1); // quita el ultimo caracter
             return tablaDeSimbolos.agregar(new Celda(token,lexema,""));
-            }
+        }
     }
 
     public class AS4{
@@ -82,21 +125,19 @@ public class AccionSemantica {
         }
     }
 
-    public class AS5{
+    public static class ConsumeChar extends AccionSemantica{
+        private final CodigoFuente codigoFuente;
+
+        public ConsumeChar(Reservado reservado, CodigoFuente codigoFuente) {
+            super(reservado);
+            this.codigoFuente = codigoFuente;
+        }
+
         /**
-         * Consumir caracter
+         * Consumir caracter.
          */
         public void ejecutar(){
             System.out.println("caracter consumido" + codigoFuente.simboloActual());
-        }
-    }
-    public class AS6{
-        /**
-         * Devuelve el último caracter de un string
-         * @return
-         */
-        public char ejecutar (){
-           return sTemporal.charAt(sTemporal.length()-1);
         }
     }
 
@@ -175,11 +216,16 @@ public class AccionSemantica {
     }
 
 
-    public class AS12{
+    public static class CuentaSaltoLinea extends AccionSemantica{
+        public CuentaSaltoLinea(Reservado reservado) {
+            super(reservado);
+        }
+
         /**
          * Incrementa en uno la cantidad de lineas de un archivo.
          */
-        private int cant_lineas=0;
+        private int cant_lineas = 0;
+
         public void ejecutar(){
                 cant_lineas++;
         }

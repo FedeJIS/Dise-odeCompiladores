@@ -1,6 +1,6 @@
 package analizador_lexico.maquina_estados;
 
-import analizador_lexico.CodigoFuente;
+import analizador_lexico.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,12 +15,39 @@ public class MaquinaEstados {
     private char ultimoCaracterLeido;
 
     /**
+     * Acciones semanticas.
+     */
+
+    private final AccionSemantica accionGeneral, inicStringVacio, concatenaChar, checkLongString, devuelveUltimoLeido,
+        generaTokenId;
+    private final AccionSemantica consumeChar;
+    private final AccionSemantica cuentaSaltoLinea;
+
+
+
+    /**
      * Constructor.
      *
      * @param codigoFuente ESTA VARIABLE HAY QUE PASARSELA A LAS ASs QUE DEVUELVEN EL ULTIMO CARACTER.
      */
-    public MaquinaEstados(CodigoFuente codigoFuente){
-        inicTransicionesInicial();
+    public MaquinaEstados(CodigoFuente codigoFuente, FileProcessor fileProcessor){
+        Reservado tablaPR = new Reservado();
+        TablaDeSimbolos tablaS = new TablaDeSimbolos();
+
+        /* Inicializacion de acciones semanticas */
+        accionGeneral = new AccionSemantica(tablaPR);
+        inicStringVacio = new AccionSemantica.InicStringVacio(tablaPR); //0
+        concatenaChar = new AccionSemantica.ConcatenaChar(tablaPR,codigoFuente); //1
+        checkLongString = new AccionSemantica.CheckLongString(tablaPR,fileProcessor); //2
+        devuelveUltimoLeido = new AccionSemantica.DevuelveUltimoLeido(tablaPR,codigoFuente); //3
+        generaTokenId = new AccionSemantica.GeneraTokenId(tablaPR,tablaS); //4
+
+        consumeChar = new AccionSemantica.ConsumeChar(tablaPR,codigoFuente);
+
+        cuentaSaltoLinea = new AccionSemantica.CuentaSaltoLinea(tablaPR); //12
+
+        /* Inicializacion estados */
+        inicTransicionesInicial(inicStringVacio,concatenaChar,cuentaSaltoLinea);
         inicDeteccionId();
         inicDeteccionPR();
         inicInicioComent();
@@ -79,74 +106,76 @@ public class MaquinaEstados {
      *
      * @param estadoOrigen estado desde donde partira la transicion.
      * @param estadoDestino estado al cual se llega luego de la transicion.
-     * @param accionSemantica accion semantica a ejecutar al transicionar.
+     * @param accionesSemanticas acciones semanticas a ejecutar al transicionar.
      */
-    private void inicTransiciones(int estadoOrigen, int estadoDestino, Object accionSemantica){
+    private void inicTransiciones(int estadoOrigen, int estadoDestino, AccionSemantica... accionesSemanticas){
         for (int input = 0; input < Input.TOTAL_INPUTS; input++)
-            maquinaEstados[estadoOrigen][input] = new TransicionEstado(estadoDestino,accionSemantica);
+            maquinaEstados[estadoOrigen][input] = new TransicionEstado(estadoDestino,accionesSemanticas);
     }
 
     /**
      * Inicializacion estado 0.
      */
-    private void inicTransicionesInicial() {
-        inicTransiciones(Estado.INICIAL,Estado.ERR_SIMBOLO_INV,"");
+    private void inicTransicionesInicial(AccionSemantica inicStringVacio, AccionSemantica concatenaChar,
+                                         AccionSemantica cuentaSaltoLinea) {
+        inicTransiciones(Estado.INICIAL,Estado.ERR_SIMBOLO_INV,null);
 
         //Descartables.
-        maquinaEstados[Estado.INICIAL][Input.DESCARTABLE] = new TransicionEstado(Estado.INICIAL,"");
-        maquinaEstados[Estado.INICIAL][Input.SALTO_LINEA] = new TransicionEstado(Estado.INICIAL,"12");
+        maquinaEstados[Estado.INICIAL][Input.DESCARTABLE] = new TransicionEstado(Estado.INICIAL,null);
+        maquinaEstados[Estado.INICIAL][Input.SALTO_LINEA] = new TransicionEstado(Estado.INICIAL,cuentaSaltoLinea);
 
         //Ids.
-        maquinaEstados[Estado.INICIAL][Input.D_MINUSC] = new TransicionEstado(Estado.DETECCION_ID,"0");
-        maquinaEstados[Estado.INICIAL][Input.U_MINUSC] = new TransicionEstado(Estado.DETECCION_ID,"0");
-        maquinaEstados[Estado.INICIAL][Input.I_MINUSC] = new TransicionEstado(Estado.DETECCION_ID,"0");
-        maquinaEstados[Estado.INICIAL][Input.LETRA_MINUSC] = new TransicionEstado(Estado.DETECCION_ID,"0");
+        maquinaEstados[Estado.INICIAL][Input.D_MINUSC] = new TransicionEstado(Estado.DETECCION_ID,inicStringVacio,concatenaChar);
+        maquinaEstados[Estado.INICIAL][Input.U_MINUSC] = new TransicionEstado(Estado.DETECCION_ID,inicStringVacio,concatenaChar);
+        maquinaEstados[Estado.INICIAL][Input.I_MINUSC] = new TransicionEstado(Estado.DETECCION_ID,inicStringVacio,concatenaChar);
+        maquinaEstados[Estado.INICIAL][Input.LETRA_MINUSC] = new TransicionEstado(Estado.DETECCION_ID,inicStringVacio,concatenaChar);
 
         //PRs.
-        maquinaEstados[Estado.INICIAL][Input.LETRA_MAYUS] = new TransicionEstado(Estado.DETECCION_PR,"");
+        maquinaEstados[Estado.INICIAL][Input.LETRA_MAYUS] = new TransicionEstado(Estado.DETECCION_PR,inicStringVacio,concatenaChar);
 
         //Ctes.
-        maquinaEstados[Estado.INICIAL][Input.DIGITO] = new TransicionEstado(Estado.CTE_PARTE_ENTERA,"0");
-        maquinaEstados[Estado.INICIAL][Input.PUNTO] = new TransicionEstado(Estado.CTE_PARTE_DECIM,"0");
+        maquinaEstados[Estado.INICIAL][Input.DIGITO] = new TransicionEstado(Estado.CTE_PARTE_ENTERA,inicStringVacio,concatenaChar);
+        maquinaEstados[Estado.INICIAL][Input.PUNTO] = new TransicionEstado(Estado.CTE_PARTE_DECIM,inicStringVacio,concatenaChar);
 
         //Comentarios.
-        maquinaEstados[Estado.INICIAL][Input.PORCENTAJE] = new TransicionEstado(Estado.INICIO_COMENT,"");
+        maquinaEstados[Estado.INICIAL][Input.PORCENTAJE] = new TransicionEstado(Estado.INICIO_COMENT,null);
 
         //Comparaciones y asignacion.
-        maquinaEstados[Estado.INICIAL][Input.MENOR] = new TransicionEstado(Estado.COMP_MENOR,"");
-        maquinaEstados[Estado.INICIAL][Input.MAYOR] = new TransicionEstado(Estado.COMP_MAYOR,"");
-        maquinaEstados[Estado.INICIAL][Input.ADMIRACION] = new TransicionEstado(Estado.COMP_DISTINTO,"");
-        maquinaEstados[Estado.INICIAL][Input.IGUAL] = new TransicionEstado(Estado.SIGNO_IGUAL,"");
+        maquinaEstados[Estado.INICIAL][Input.MENOR] = new TransicionEstado(Estado.COMP_MENOR,null);
+        maquinaEstados[Estado.INICIAL][Input.MAYOR] = new TransicionEstado(Estado.COMP_MAYOR,null);
+        maquinaEstados[Estado.INICIAL][Input.ADMIRACION] = new TransicionEstado(Estado.COMP_DISTINTO,null);
+        maquinaEstados[Estado.INICIAL][Input.IGUAL] = new TransicionEstado(Estado.SIGNO_IGUAL,null);
 
         //Tokens unitarios.
         //TODO: Las siguientes transiciones tienen que tener una AS que retornen el token especifico asociado al caracter.
-        maquinaEstados[Estado.INICIAL][Input.SUMA] = new TransicionEstado(Estado.FINAL,"");
-        maquinaEstados[Estado.INICIAL][Input.RESTA] = new TransicionEstado(Estado.FINAL,"");
-        maquinaEstados[Estado.INICIAL][Input.MULTIPL] = new TransicionEstado(Estado.FINAL,"");
-        maquinaEstados[Estado.INICIAL][Input.DIV] = new TransicionEstado(Estado.FINAL,"");
-        maquinaEstados[Estado.INICIAL][Input.CORCHETE_A] = new TransicionEstado(Estado.FINAL,"");
-        maquinaEstados[Estado.INICIAL][Input.CORCHETE_C] = new TransicionEstado(Estado.FINAL,"");
-        maquinaEstados[Estado.INICIAL][Input.PARENT_A] = new TransicionEstado(Estado.FINAL,"");
-        maquinaEstados[Estado.INICIAL][Input.PARENT_C] = new TransicionEstado(Estado.FINAL,"");
-        maquinaEstados[Estado.INICIAL][Input.COMA] = new TransicionEstado(Estado.FINAL,"");
-        maquinaEstados[Estado.INICIAL][Input.PUNTO_COMA] = new TransicionEstado(Estado.FINAL,"");
+        maquinaEstados[Estado.INICIAL][Input.SUMA] = new TransicionEstado(Estado.FINAL,null);
+        maquinaEstados[Estado.INICIAL][Input.RESTA] = new TransicionEstado(Estado.FINAL,null);
+        maquinaEstados[Estado.INICIAL][Input.MULTIPL] = new TransicionEstado(Estado.FINAL,null);
+        maquinaEstados[Estado.INICIAL][Input.DIV] = new TransicionEstado(Estado.FINAL,null);
+        maquinaEstados[Estado.INICIAL][Input.CORCHETE_A] = new TransicionEstado(Estado.FINAL,null);
+        maquinaEstados[Estado.INICIAL][Input.CORCHETE_C] = new TransicionEstado(Estado.FINAL,null);
+        maquinaEstados[Estado.INICIAL][Input.PARENT_A] = new TransicionEstado(Estado.FINAL,null);
+        maquinaEstados[Estado.INICIAL][Input.PARENT_C] = new TransicionEstado(Estado.FINAL,null);
+        maquinaEstados[Estado.INICIAL][Input.COMA] = new TransicionEstado(Estado.FINAL,null);
+        maquinaEstados[Estado.INICIAL][Input.PUNTO_COMA] = new TransicionEstado(Estado.FINAL,null);
 
         //Cadena multilinea.
-        maquinaEstados[Estado.INICIAL][Input.COMILLA] = new TransicionEstado(Estado.CADENA,"");
+        maquinaEstados[Estado.INICIAL][Input.COMILLA] = new TransicionEstado(Estado.CADENA,inicStringVacio,concatenaChar);
     }
 
     /**
      * Inicializacion estado 1.
      */
-    private void inicDeteccionId() {
-        inicTransiciones(Estado.DETECCION_ID,Estado.FINAL,"2,3");
+    private void inicDeteccionId(AccionSemantica concatenaChar, AccionSemantica checkLongString,
+                                 AccionSemantica generaTokenId, AccionSemantica devuelveUltimoLeido) {
+        inicTransiciones(Estado.DETECCION_ID,Estado.FINAL,checkLongString,generaTokenId,devuelveUltimoLeido);
 
-        maquinaEstados[Estado.DETECCION_ID][Input.D_MINUSC] = new TransicionEstado(Estado.DETECCION_ID,"1");
-        maquinaEstados[Estado.DETECCION_ID][Input.U_MINUSC] = new TransicionEstado(Estado.DETECCION_ID,"1");
-        maquinaEstados[Estado.DETECCION_ID][Input.I_MINUSC] = new TransicionEstado(Estado.DETECCION_ID,"1");
-        maquinaEstados[Estado.DETECCION_ID][Input.LETRA_MINUSC] = new TransicionEstado(Estado.DETECCION_ID,"1");
-        maquinaEstados[Estado.DETECCION_ID][Input.DIGITO] = new TransicionEstado(Estado.DETECCION_ID,"1");
-        maquinaEstados[Estado.DETECCION_ID][Input.GUION_B] = new TransicionEstado(Estado.DETECCION_ID,"1");
+        maquinaEstados[Estado.DETECCION_ID][Input.D_MINUSC] = new TransicionEstado(Estado.DETECCION_ID,concatenaChar);
+        maquinaEstados[Estado.DETECCION_ID][Input.U_MINUSC] = new TransicionEstado(Estado.DETECCION_ID,concatenaChar);
+        maquinaEstados[Estado.DETECCION_ID][Input.I_MINUSC] = new TransicionEstado(Estado.DETECCION_ID,concatenaChar);
+        maquinaEstados[Estado.DETECCION_ID][Input.LETRA_MINUSC] = new TransicionEstado(Estado.DETECCION_ID,concatenaChar);
+        maquinaEstados[Estado.DETECCION_ID][Input.DIGITO] = new TransicionEstado(Estado.DETECCION_ID,concatenaChar);
+        maquinaEstados[Estado.DETECCION_ID][Input.GUION_B] = new TransicionEstado(Estado.DETECCION_ID,concatenaChar);
     }
 
     /**
