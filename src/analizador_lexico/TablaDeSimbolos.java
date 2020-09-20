@@ -7,7 +7,7 @@ public class TablaDeSimbolos {
     private Hashtable<String, Celda> tablaSimb;
 
     public TablaDeSimbolos(){
-        tablaSimb=new Hashtable<>();
+        tablaSimb = new Hashtable<>();
     }
 
     /**
@@ -40,6 +40,10 @@ public class TablaDeSimbolos {
      * @return Celda o null en caso de no existir.
      */
     public Celda getValor(String lexema){
-        return tablaSimb.get(lexema);
+        Celda celda = tablaSimb.get(lexema);
+
+        if (celda == null) //Agrege la excepcion por si llega a fallar el get, que no ande el null dando vueltas. (Bruno)
+            throw new IllegalStateException("El lexema '"+lexema+"' no se encontro en la tabla de simbolos.");
+        return celda;
     }
 }
