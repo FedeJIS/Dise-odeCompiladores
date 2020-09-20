@@ -18,7 +18,7 @@ public class TablaDeSimbolos {
     public Celda agregar(Celda celda){
         if (!tablaSimb.containsKey(celda.getLexema()))
             tablaSimb.put(celda.getLexema(), celda);
-       return getValor(celda.getLexema());
+        return getValor(celda.getLexema());
     }
 
     /**

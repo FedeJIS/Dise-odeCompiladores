@@ -1,5 +1,7 @@
 package analizador_lexico;
 
+import analizador_lexico.maquina_estados.MaquinaEstados;
+
 public class AccionSemantica {
     private final static int LIMITE_STRING=20;
     private final static int LIMITE_INT=(int)(Math.pow(2,16)-1);
@@ -61,9 +63,9 @@ public class AccionSemantica {
         }
     }
 
-    public static class CheckLongString extends AccionSemantica{
+    public static class TruncaId extends AccionSemantica{
         private final FileProcessor fileProcessor;
-        public CheckLongString(Reservado reservado, FileProcessor fileProcessor) {
+        public TruncaId(Reservado reservado, FileProcessor fileProcessor) {
             super(reservado);
             this.fileProcessor = fileProcessor;
         }
@@ -97,31 +99,57 @@ public class AccionSemantica {
         }
     }
 
-    /**
-     * Devuelve un objeto con la celda de la tabla de simbolos segun el lexema
-     */
     public static class GeneraTokenId extends AccionSemantica{
+        private final MaquinaEstados maquinaEstados;
+
         private final TablaDeSimbolos tablaDeSimbolos;
 
-        public GeneraTokenId(Reservado reservado, TablaDeSimbolos tablaDeSimbolos) {
+        private final int token;
+
+        public GeneraTokenId(Reservado reservado, MaquinaEstados maquinaEstados, TablaDeSimbolos tablaDeSimbolos, int token) {
             super(reservado);
+            this.maquinaEstados = maquinaEstados;
             this.tablaDeSimbolos = tablaDeSimbolos;
+            this.token = token;
         }
 
-        public Celda ejecutar(int token) {
-            String lexema = sTemporal.substring(0, sTemporal.length() - 1); // quita el ultimo caracter
-            return tablaDeSimbolos.agregar(new Celda(token,lexema,""));
+        /**
+         * Busca el lexema acumulado hasta el momento en la TS. Si lo encuentra, devuelve la celda asociada. En caso de
+         * que no lo encuentre, crea una nueva celda, la agrega y la retorna.
+         * Luego de acceder a la TS, se agrega el token generado a la maquina de estados, para que luego pueda ser
+         * accedido por el analizador sintactico.
+         */
+        @Override
+        public void ejecutar() {
+            String lexema = sTemporal.substring(0, sTemporal.length() - 1); // quita el ultimo caracter TODO: Revisar si es necesario.
+            Celda celda = tablaDeSimbolos.agregar(new Celda(token,lexema,""));
+            maquinaEstados.agregarToken(celda.getToken()); //Agrega el token a una lista para que sea accedida por el sintactico mas adelante.
+            //TODO: Ver como mierda pasarle el lexema al sintactico.
         }
     }
 
-    public class AS4{
+    public static class GeneraTokenPR extends AccionSemantica{
+        private final MaquinaEstados maquinaEstados;
+
+        private final Reservado tablaPR;
+
+        private final int token;
+
+        public GeneraTokenPR(Reservado reservado, MaquinaEstados maquinaEstados, Reservado tablaPR, int token) {
+            super(reservado);
+            this.maquinaEstados = maquinaEstados;
+            this.tablaPR = tablaPR;
+            this.token = token;
+        }
+
         /**
-         * Es una palabra reservada valida
-         * @return
+         * Chequea que la palabra almacenada sea una palabra reservada valida y agrega el token a la lista de tokens.
          */
-        public boolean ejecutar(){
-            sTemporal=sTemporal.substring(0, sTemporal.length() - 1);
-            return reservado.esReservada(sTemporal);
+        @Override
+        public void ejecutar(){
+            sTemporal=sTemporal.substring(0, sTemporal.length() - 1); //TODO: Revisar si es necesario.
+            if (tablaPR.esReservada(sTemporal)) maquinaEstados.agregarToken(token);
+            else System.out.println("Notificar error"); //TODO: Hacer bien esto.
         }
     }
 

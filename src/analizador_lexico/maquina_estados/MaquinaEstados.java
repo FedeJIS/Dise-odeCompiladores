@@ -14,15 +14,12 @@ public class MaquinaEstados {
 
     private char ultimoCaracterLeido;
 
-    /**
-     * Acciones semanticas.
-     */
-
-    private final AccionSemantica accionGeneral, inicStringVacio, concatenaChar, checkLongString, devuelveUltimoLeido,
-        generaTokenId;
     private final AccionSemantica consumeChar;
-    private final AccionSemantica cuentaSaltoLinea;
 
+    /**
+     * Valores para tokens (REEMPLAZAR POR LOS VALORES QUE DA YACC).
+     */
+    private final int tokenId = 0, tokenPR = 1;
 
 
     /**
@@ -35,21 +32,21 @@ public class MaquinaEstados {
         TablaDeSimbolos tablaS = new TablaDeSimbolos();
 
         /* Inicializacion de acciones semanticas */
-        accionGeneral = new AccionSemantica(tablaPR);
-        inicStringVacio = new AccionSemantica.InicStringVacio(tablaPR); //0
-        concatenaChar = new AccionSemantica.ConcatenaChar(tablaPR,codigoFuente); //1
-        checkLongString = new AccionSemantica.CheckLongString(tablaPR,fileProcessor); //2
-        devuelveUltimoLeido = new AccionSemantica.DevuelveUltimoLeido(tablaPR,codigoFuente); //3
-        generaTokenId = new AccionSemantica.GeneraTokenId(tablaPR,tablaS); //4
+        AccionSemantica inicStringVacio = new AccionSemantica.InicStringVacio(tablaPR); //0
+        AccionSemantica concatenaChar = new AccionSemantica.ConcatenaChar(tablaPR, codigoFuente); //1
+        AccionSemantica truncaId = new AccionSemantica.TruncaId(tablaPR, fileProcessor); //2
+        AccionSemantica devuelveUltimoLeido = new AccionSemantica.DevuelveUltimoLeido(tablaPR, codigoFuente); //3
+        AccionSemantica generaTokenId = new AccionSemantica.GeneraTokenId(tablaPR, this, tablaS, tokenId); //4
+        AccionSemantica generaTokenPR = new AccionSemantica.GeneraTokenPR(tablaPR, this, tablaPR, tokenPR); //5
 
         consumeChar = new AccionSemantica.ConsumeChar(tablaPR,codigoFuente);
 
-        cuentaSaltoLinea = new AccionSemantica.CuentaSaltoLinea(tablaPR); //12
+        AccionSemantica cuentaSaltoLinea = new AccionSemantica.CuentaSaltoLinea(tablaPR); //12
 
         /* Inicializacion estados */
-        inicTransicionesInicial(inicStringVacio,concatenaChar,cuentaSaltoLinea);
-        inicDeteccionId();
-        inicDeteccionPR();
+        inicTransicionesInicial(inicStringVacio, concatenaChar, cuentaSaltoLinea);
+        inicDeteccionId(concatenaChar, truncaId, generaTokenId, devuelveUltimoLeido);
+        inicDeteccionPR(concatenaChar, devuelveUltimoLeido, generaTokenPR);
         inicInicioComent();
         inicCuerpoComent();
         inicComparacion();
@@ -166,9 +163,9 @@ public class MaquinaEstados {
     /**
      * Inicializacion estado 1.
      */
-    private void inicDeteccionId(AccionSemantica concatenaChar, AccionSemantica checkLongString,
+    private void inicDeteccionId(AccionSemantica concatenaChar, AccionSemantica truncaId,
                                  AccionSemantica generaTokenId, AccionSemantica devuelveUltimoLeido) {
-        inicTransiciones(Estado.DETECCION_ID,Estado.FINAL,checkLongString,generaTokenId,devuelveUltimoLeido);
+        inicTransiciones(Estado.DETECCION_ID,Estado.FINAL,truncaId,generaTokenId,devuelveUltimoLeido);
 
         maquinaEstados[Estado.DETECCION_ID][Input.D_MINUSC] = new TransicionEstado(Estado.DETECCION_ID,concatenaChar);
         maquinaEstados[Estado.DETECCION_ID][Input.U_MINUSC] = new TransicionEstado(Estado.DETECCION_ID,concatenaChar);
@@ -181,11 +178,12 @@ public class MaquinaEstados {
     /**
      * Inicializacion estado 2.
      */
-    private void inicDeteccionPR(){
-        inicTransiciones(Estado.DETECCION_PR,Estado.FINAL,"4");
+    private void inicDeteccionPR(AccionSemantica concatenaChar, AccionSemantica devuelveUltimoLeido,
+                                 AccionSemantica generaTokenPR){
+        inicTransiciones(Estado.DETECCION_PR,Estado.FINAL,generaTokenPR,devuelveUltimoLeido);
 
-        maquinaEstados[Estado.DETECCION_PR][Input.LETRA_MAYUS] = new TransicionEstado(Estado.DETECCION_PR,"");
-        maquinaEstados[Estado.DETECCION_PR][Input.GUION_B] = new TransicionEstado(Estado.DETECCION_PR,"");
+        maquinaEstados[Estado.DETECCION_PR][Input.LETRA_MAYUS] = new TransicionEstado(Estado.DETECCION_PR,concatenaChar);
+        maquinaEstados[Estado.DETECCION_PR][Input.GUION_B] = new TransicionEstado(Estado.DETECCION_PR,concatenaChar);
     }
 
     /**
