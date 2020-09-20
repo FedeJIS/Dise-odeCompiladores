@@ -17,7 +17,8 @@ public class MaquinaEstados {
     /**
      * Valores para tokens (REEMPLAZAR POR LOS VALORES QUE DA YACC).
      */
-    private final int tokenId = 0, tokenPR = 1;
+    private final int tokenId = 0, tokenPR = 1, tokenMenor = 2, tokenMenorIgual = 3, tokenMayor = 4, tokenMayorIgual = 5,
+        tokenDistinto = 6, tokenAsignacion = 7, tokenIgual = 8;
 
 
     /**
@@ -30,12 +31,12 @@ public class MaquinaEstados {
         TablaDeSimbolos tablaS = new TablaDeSimbolos();
 
         /* Inicializacion de acciones semanticas */
-        AccionSemantica inicStringVacio = new AccionSemantica.InicStringVacio(tablaPR); //0
-        AccionSemantica concatenaChar = new AccionSemantica.ConcatenaChar(tablaPR, codigoFuente); //1
-        AccionSemantica truncaId = new AccionSemantica.TruncaId(tablaPR, fileProcessor); //2
-        AccionSemantica devuelveUltimoLeido = new AccionSemantica.DevuelveUltimoLeido(tablaPR, codigoFuente); //3
-        AccionSemantica generaTokenId = new AccionSemantica.GeneraTokenId(tablaPR, this, tablaS, tokenId); //4
-        AccionSemantica generaTokenPR = new AccionSemantica.GeneraTokenPR(tablaPR, this, tablaPR, tokenPR); //5
+        AccionSemantica inicStringVacio = new AccionSemantica.InicStringVacio(); //0
+        AccionSemantica concatenaChar = new AccionSemantica.ConcatenaChar(codigoFuente); //1
+        AccionSemantica truncaId = new AccionSemantica.TruncaId(fileProcessor); //2
+        AccionSemantica devuelveUltimoLeido = new AccionSemantica.DevuelveUltimoLeido(codigoFuente); //3
+        AccionSemantica generaTokenId = new AccionSemantica.GeneraTokenId(this, tablaS, tokenId); //4
+        AccionSemantica generaTokenPR = new AccionSemantica.GeneraTokenPR(this, tablaPR, tokenPR); //5
 
         AccionSemantica consumeChar = new AccionSemantica.ConsumeChar(tablaPR,codigoFuente);
 
@@ -46,7 +47,7 @@ public class MaquinaEstados {
         inicDeteccionId(concatenaChar, truncaId, generaTokenId, devuelveUltimoLeido, cuentaSaltoLinea);
         inicDeteccionPR(concatenaChar, devuelveUltimoLeido, generaTokenPR, cuentaSaltoLinea);
         inicInicioComent(cuentaSaltoLinea);
-        inicCuerpoComent();
+        inicCuerpoComent(cuentaSaltoLinea);
         inicComparacion();
         inicDeteccionCtes();
         inicCadena();
@@ -116,7 +117,7 @@ public class MaquinaEstados {
         inicTransiciones(Estado.INICIAL,Estado.ERR_SIMBOLO_INV,null);
 
         //Descartables.
-        maquinaEstados[Estado.INICIAL][Input.DESCARTABLE] = new TransicionEstado(Estado.INICIAL,null);
+        maquinaEstados[Estado.INICIAL][Input.DESCARTABLE] = new TransicionEstado(Estado.INICIAL);
         maquinaEstados[Estado.INICIAL][Input.SALTO_LINEA] = new TransicionEstado(Estado.INICIAL,cuentaSaltoLinea);
 
         //Ids.
@@ -133,13 +134,13 @@ public class MaquinaEstados {
         maquinaEstados[Estado.INICIAL][Input.PUNTO] = new TransicionEstado(Estado.CTE_PARTE_DECIM,inicStringVacio,concatenaChar);
 
         //Comentarios.
-        maquinaEstados[Estado.INICIAL][Input.PORCENTAJE] = new TransicionEstado(Estado.INICIO_COMENT,null);
+        maquinaEstados[Estado.INICIAL][Input.PORCENTAJE] = new TransicionEstado(Estado.INICIO_COMENT);
 
         //Comparaciones y asignacion.
-        maquinaEstados[Estado.INICIAL][Input.MENOR] = new TransicionEstado(Estado.COMP_MENOR,null);
-        maquinaEstados[Estado.INICIAL][Input.MAYOR] = new TransicionEstado(Estado.COMP_MAYOR,null);
-        maquinaEstados[Estado.INICIAL][Input.ADMIRACION] = new TransicionEstado(Estado.COMP_DISTINTO,null);
-        maquinaEstados[Estado.INICIAL][Input.IGUAL] = new TransicionEstado(Estado.SIGNO_IGUAL,null);
+        maquinaEstados[Estado.INICIAL][Input.MENOR] = new TransicionEstado(Estado.COMP_MENOR);
+        maquinaEstados[Estado.INICIAL][Input.MAYOR] = new TransicionEstado(Estado.COMP_MAYOR);
+        maquinaEstados[Estado.INICIAL][Input.ADMIRACION] = new TransicionEstado(Estado.COMP_DISTINTO);
+        maquinaEstados[Estado.INICIAL][Input.IGUAL] = new TransicionEstado(Estado.SIGNO_IGUAL);
 
         //Tokens unitarios.
         //TODO: Las siguientes transiciones tienen que tener una AS que retornen el token especifico asociado al caracter.
@@ -213,24 +214,47 @@ public class MaquinaEstados {
     /**
      * Inicializacion estados 5, 6, 7 y 8.
      */
-    private void inicComparacion(){
-        //Comparacion por menor (5).
-        inicTransiciones(Estado.COMP_MENOR,Estado.FINAL,"6");
-        maquinaEstados[Estado.COMP_MENOR][Input.IGUAL] = new TransicionEstado(Estado.FINAL,"5");
+    private void inicComparacion(AccionSemantica devuelveUltimoLeido, AccionSemantica consumeCaracter, AccionSemantica cuentaSaltoLinea){
+        AccionSemantica generaToken;
 
-        //Comparacion por mayor (6).
-        inicTransiciones(Estado.COMP_MAYOR,Estado.FINAL,"6");
-        maquinaEstados[Estado.COMP_MAYOR][Input.IGUAL] = new TransicionEstado(Estado.FINAL,"5");
+        //Comparacion por menor estricto (5).
+        generaToken = new AccionSemantica.GeneraTokenUnitario(this,tokenMenor);
+        inicTransiciones(Estado.COMP_MENOR,Estado.FINAL,devuelveUltimoLeido,generaToken);
+        maquinaEstados[Estado.COMP_MENOR][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL,generaToken,
+                cuentaSaltoLinea); //Permite contar un salto de linea (No devuelve el ultimo leido pq se descartaria de todas formas).
+
+        //Comparacion por menor igual (5).
+        generaToken = new AccionSemantica.GeneraTokenUnitario(this,tokenMenorIgual);
+        maquinaEstados[Estado.COMP_MENOR][Input.IGUAL] = new TransicionEstado(Estado.FINAL,consumeCaracter,generaToken);
+
+        //Comparacion por mayor estricto (6).
+        generaToken = new AccionSemantica.GeneraTokenUnitario(this,tokenMayor);
+        inicTransiciones(Estado.COMP_MAYOR,Estado.FINAL,devuelveUltimoLeido,generaToken);
+        maquinaEstados[Estado.COMP_MAYOR][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL,generaToken,
+                cuentaSaltoLinea); //Permite contar un salto de linea (No devuelve el ultimo leido pq se descartaria de todas formas).
+
+        //Comparacion por mayor igual (6).
+        generaToken = new AccionSemantica.GeneraTokenUnitario(this,tokenMayorIgual);
+        maquinaEstados[Estado.COMP_MAYOR][Input.IGUAL] = new TransicionEstado(Estado.FINAL,consumeCaracter,generaToken);
+
+        //'!' solo (7).
+        inicTransiciones(Estado.COMP_DISTINTO,Estado.ERR_SIMBOLO_INV,devuelveUltimoLeido); //'!' por si solo no es valido.
+        maquinaEstados[Estado.COMP_DISTINTO][Input.SALTO_LINEA] = new TransicionEstado(Estado.ERR_SIMBOLO_INV,
+                cuentaSaltoLinea); //Permite contar un salto de linea (No devuelve el ultimo leido pq se descartaria de todas formas).
 
         //Comparacion por distincion (7).
-        inicTransiciones(Estado.COMP_DISTINTO,Estado.ERR_SIMBOLO_INV,"6"); //'!' por si solo no es valido.
-        maquinaEstados[Estado.COMP_DISTINTO][Input.IGUAL] = new TransicionEstado(Estado.FINAL,"5");
+        generaToken = new AccionSemantica.GeneraTokenUnitario(this,tokenDistinto);
+        maquinaEstados[Estado.COMP_DISTINTO][Input.IGUAL] = new TransicionEstado(Estado.FINAL,consumeCaracter,generaToken);
 
-        //Asignacion (8a).
-        inicTransiciones(Estado.SIGNO_IGUAL,Estado.FINAL,"6");
+        //Asignacion (8).
+        generaToken = new AccionSemantica.GeneraTokenUnitario(this,tokenAsignacion);
+        inicTransiciones(Estado.SIGNO_IGUAL,Estado.FINAL,devuelveUltimoLeido, generaToken);
+        maquinaEstados[Estado.SIGNO_IGUAL][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL, generaToken,
+                cuentaSaltoLinea); //Permite contar un salto de linea (No devuelve el ultimo leido pq se descartaria de todas formas).
 
-        //Comparacion por igualdad (8b).
-        maquinaEstados[Estado.SIGNO_IGUAL][Input.IGUAL] = new TransicionEstado(Estado.FINAL,"5");
+        //Comparacion por igualdad (8).
+        generaToken = new AccionSemantica.GeneraTokenUnitario(this,tokenIgual);
+        maquinaEstados[Estado.SIGNO_IGUAL][Input.IGUAL] = new TransicionEstado(Estado.FINAL,consumeCaracter, generaToken);
     }
 
     /**

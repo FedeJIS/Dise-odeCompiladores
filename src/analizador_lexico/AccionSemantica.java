@@ -12,15 +12,15 @@ public class AccionSemantica {
     private final static int LIMIT_DEXP=308;
 //    private static FileProcessor fileProcessor;
     private TablaDeSimbolos tablaDeSimbolos;
-    private Reservado reservado;
+//    private Reservado reservado;
 //    private CodigoFuente codigoFuente;
     private static String sTemporal;
     private double numeroIntD = 0; // Utilizado para AS-double (parte numerica y parte exp)
 
-    public AccionSemantica (Reservado reservado){
+    public AccionSemantica(){
 //        fileProcessor= new FileProcessor();
         tablaDeSimbolos= new TablaDeSimbolos();
-        this.reservado=reservado;
+//        this.reservado=reservado;
 //        this.codigoFuente = new CodigoFuente(fileProcessor.getLineas(pathFuente));
         this.numeroIntD=Double.NEGATIVE_INFINITY;
     }
@@ -33,8 +33,8 @@ public class AccionSemantica {
     /* ---Implementaciones--- */
 
     public static class InicStringVacio extends AccionSemantica{
-        public InicStringVacio(Reservado reservado) {
-            super(reservado);
+        public InicStringVacio() {
+            super();
         }
 
         /**
@@ -49,8 +49,8 @@ public class AccionSemantica {
     public static class ConcatenaChar extends AccionSemantica{
         private final CodigoFuente codigoFuente;
 
-        public ConcatenaChar(Reservado reservado, CodigoFuente codigoFuente) {
-            super(reservado);
+        public ConcatenaChar(CodigoFuente codigoFuente) {
+            super();
             this.codigoFuente = codigoFuente;
         }
 
@@ -65,8 +65,9 @@ public class AccionSemantica {
 
     public static class TruncaId extends AccionSemantica{
         private final FileProcessor fileProcessor;
-        public TruncaId(Reservado reservado, FileProcessor fileProcessor) {
-            super(reservado);
+
+        public TruncaId(FileProcessor fileProcessor) {
+            super();
             this.fileProcessor = fileProcessor;
         }
 
@@ -85,8 +86,8 @@ public class AccionSemantica {
     public static class DevuelveUltimoLeido extends AccionSemantica{
         private final CodigoFuente codigoFuente;
 
-        public DevuelveUltimoLeido(Reservado reservado, CodigoFuente codigoFuente) {
-            super(reservado);
+        public DevuelveUltimoLeido(CodigoFuente codigoFuente) {
+            super();
             this.codigoFuente = codigoFuente;
         }
 
@@ -106,8 +107,8 @@ public class AccionSemantica {
 
         private final int token;
 
-        public GeneraTokenId(Reservado reservado, MaquinaEstados maquinaEstados, TablaDeSimbolos tablaDeSimbolos, int token) {
-            super(reservado);
+        public GeneraTokenId(MaquinaEstados maquinaEstados, TablaDeSimbolos tablaDeSimbolos, int token) {
+            super();
             this.maquinaEstados = maquinaEstados;
             this.tablaDeSimbolos = tablaDeSimbolos;
             this.token = token;
@@ -135,8 +136,8 @@ public class AccionSemantica {
 
         private final int token;
 
-        public GeneraTokenPR(Reservado reservado, MaquinaEstados maquinaEstados, Reservado tablaPR, int token) {
-            super(reservado);
+        public GeneraTokenPR(MaquinaEstados maquinaEstados, Reservado tablaPR, int token) {
+            super();
             this.maquinaEstados = maquinaEstados;
             this.tablaPR = tablaPR;
             this.token = token;
@@ -153,11 +154,28 @@ public class AccionSemantica {
         }
     }
 
+    public static class GeneraTokenUnitario extends AccionSemantica{
+        private final MaquinaEstados maquinaEstados;
+
+        private final int token;
+
+        public GeneraTokenUnitario(MaquinaEstados maquinaEstados, int token) {
+            super();
+            this.maquinaEstados = maquinaEstados;
+            this.token = token;
+        }
+
+        @Override
+        public void ejecutar() {
+            maquinaEstados.agregarToken(token);
+        }
+    }
+
     public static class ConsumeChar extends AccionSemantica{
         private final CodigoFuente codigoFuente;
 
         public ConsumeChar(Reservado reservado, CodigoFuente codigoFuente) {
-            super(reservado);
+            super();
             this.codigoFuente = codigoFuente;
         }
 
@@ -246,7 +264,7 @@ public class AccionSemantica {
 
     public static class CuentaSaltoLinea extends AccionSemantica{
         public CuentaSaltoLinea(Reservado reservado) {
-            super(reservado);
+            super();
         }
 
         /**
