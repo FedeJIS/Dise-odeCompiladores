@@ -59,7 +59,7 @@ public class AccionSemantica {
          */
         @Override
         public void ejecutar(){
-            sTemporal= sTemporal + codigoFuente.simboloActual();
+            sTemporal = sTemporal + codigoFuente.simboloActual();
         }
     }
 
@@ -125,7 +125,7 @@ public class AccionSemantica {
             String lexema = sTemporal.substring(0, sTemporal.length() - 1); // quita el ultimo caracter TODO: Revisar si es necesario.
             Celda celda = tablaDeSimbolos.agregar(new Celda(token,lexema,""));
             maquinaEstados.agregarToken(celda.getToken()); //Agrega el token a una lista para que sea accedida por el sintactico mas adelante.
-            //TODO: Ver como mierda pasarle el lexema al sintactico.
+            //TODO: Ver como pasarle el lexema al sintactico.
         }
     }
 
@@ -174,7 +174,7 @@ public class AccionSemantica {
     public static class ConsumeChar extends AccionSemantica{
         private final CodigoFuente codigoFuente;
 
-        public ConsumeChar(Reservado reservado, CodigoFuente codigoFuente) {
+        public ConsumeChar(CodigoFuente codigoFuente) {
             super();
             this.codigoFuente = codigoFuente;
         }
@@ -188,23 +188,31 @@ public class AccionSemantica {
     }
 
 
-    public class AS10{
+    public static class GeneraTokenUINT extends AccionSemantica {
+        private final MaquinaEstados maquinaEstados;
+
+        private final int token;
+
+        public GeneraTokenUINT(MaquinaEstados maquinaEstados, int token) {
+            this.maquinaEstados = maquinaEstados;
+            this.token = token;
+        }
+
         /**
-         * Verifica los limites de un numero entero
-         * @return
+         * Verifica los limites de un numero entero.
          */
-        public boolean ejecutar(){
-            int numero;
+        @Override
+        public void ejecutar(){
             try {
-                numero = Integer.parseInt(sTemporal);
+                int numero = Integer.parseInt(sTemporal);
+                if (numero >= 0 && numero <= LIMITE_INT) { //La cte esta en el rango valido.
+                    maquinaEstados.agregarToken(token); //TODO: Ver como pasarle el lexema al sintactico.
+                    //TODO: Se agrega a la TS?
+                }
             }
-            catch (Exception e){
-                return false;
+            catch (NumberFormatException numberFormatException){
+                System.out.println(); //No tendria que llegar nunca a este punto, es imposible que el string tenga algo que no sea un entero.
             }
-            if ((numero>=0)&&(numero <= LIMITE_INT))
-                return true;
-            else
-                    return false;
         }
     }
 
@@ -212,12 +220,11 @@ public class AccionSemantica {
      * Dada la parte numerica de un double entero,decimal (numeroIntD), se verifica si el exponente es correcto
      * Luego revisa si el double numeroIntD elevado a exponente Math.Pow(numeroIntD,exponente) es válido en el rango.
      */
-    public class AS11_partExp{
+    public class GeneraTokenDouble{
         public boolean ejecutar(){
             // Si la parte numerica es un double (obtenida de AS11_partnum)
             if (numeroIntD != Double.NEGATIVE_INFINITY) {
                 try {
-
                     // Si el exponente se encuentra dentro del rango
                     double exponente = Double.parseDouble(sTemporal);
                     if ((exponente >= 0) && (exponente <= LIMIT_DEXP)) {
@@ -242,17 +249,19 @@ public class AccionSemantica {
         }
     }
 
-    public class AS11_partenum{
+    public class GeneraTokenDoubleNum extends AccionSemantica {
         /**
          * Verifica si la parte numerica es un numero double y lo asigna a numeroIntD
          * Si es invalido, numeroIntD se vuelve Double.NEGATIVEINFINITY
          */
         public void ejecutar(){
             try{
-                numeroIntD=Double.parseDouble(sTemporal);
+                numeroIntD = Double.parseDouble(sTemporal);
+
+
             }
-            catch(Exception e){
-                e.printStackTrace();
+            catch(NumberFormatException numberFormatException){ //No tendria que llegar nunca a este punto, es imposible que el string tenga algo que no sea un double.
+                numberFormatException.printStackTrace();
                 numeroIntD=Double.NEGATIVE_INFINITY;
             }
         }
