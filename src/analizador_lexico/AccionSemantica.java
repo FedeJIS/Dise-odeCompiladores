@@ -102,6 +102,15 @@ public class AccionSemantica {
         public boolean truncadoNecesario(){
             return sTemporal.length() > LIMITE_STRING;
         }
+
+        /**
+         * Usado solo para testeos.
+         *
+         * @return el string temporal almacenado.
+         */
+        public String getSTemporal(){
+            return sTemporal;
+        }
     }
 
     public static class DevuelveUltimoLeido extends AccionSemantica{
@@ -157,7 +166,6 @@ public class AccionSemantica {
         private final int token;
 
         public GeneraTokenPR(MaquinaEstados maquinaEstados, Reservado tablaPR, int token) {
-            super();
             this.maquinaEstados = maquinaEstados;
             this.tablaPR = tablaPR;
             this.token = token;
