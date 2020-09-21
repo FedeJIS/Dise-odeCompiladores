@@ -12,26 +12,19 @@ public class MaquinaEstados {
 
     private final List<Object> listaToken = new ArrayList<>();
 
-    private char ultimoCaracterLeido;
-
     /**
      * Valores para tokens (REEMPLAZAR POR LOS VALORES QUE DA YACC).
      */
     private final int tokenId = 0, tokenPR = 1, tokenMenor = 2, tokenMenorIgual = 3, tokenMayor = 4, tokenMayorIgual = 5,
         tokenDistinto = 6, tokenAsignacion = 7, tokenIgual = 8, tokenSuma = 9, tokenResta = 10, tokenMultipl = 11,
         tokenDiv = 12, tokenCorcheteA = 13, tokenCorcheteC = 14, tokenParentA = 15, tokenParentC = 16, tokenPunto = 17,
-        tokenPuntoComa = 18, tokenUINT = 19;
+        tokenPuntoComa = 18, tokenUINT = 19, tokenEOF = 20;
 
 
     /**
      * Constructor.
-     *
-     * @param codigoFuente ESTA VARIABLE HAY QUE PASARSELA A LAS ASs QUE DEVUELVEN EL ULTIMO CARACTER.
      */
-    public MaquinaEstados(CodigoFuente codigoFuente, FileProcessor fileProcessor){
-        Reservado tablaPR = new Reservado();
-        TablaDeSimbolos tablaS = new TablaDeSimbolos();
-
+    public MaquinaEstados(FileProcessor fileProcessor, CodigoFuente codigoFuente, TablaDeSimbolos tablaS, Reservado tablaPR){
         /* Inicializacion de acciones semanticas */
         AccionSemantica inicStringVacio = new AccionSemantica.InicStringVacio(); //0
         AccionSemantica concatenaChar = new AccionSemantica.ConcatenaChar(codigoFuente); //1
@@ -42,9 +35,10 @@ public class MaquinaEstados {
         AccionSemantica consumeChar = new AccionSemantica.ConsumeChar(codigoFuente); //7
 
         AccionSemantica cuentaSaltoLinea = new AccionSemantica.CuentaSaltoLinea(); //12
+        AccionSemantica generaTokenEOF = new AccionSemantica.GeneraTokenUnitario(this,tokenEOF);
 
         /* Inicializacion estados */
-        inicTransicionesInicial(inicStringVacio, concatenaChar, cuentaSaltoLinea);
+        inicTransicionesInicial(inicStringVacio, concatenaChar, cuentaSaltoLinea,generaTokenEOF);
         inicDeteccionId(concatenaChar, truncaId, generaTokenId, devuelveUltimoLeido, cuentaSaltoLinea);
         inicDeteccionPR(concatenaChar, devuelveUltimoLeido, generaTokenPR, cuentaSaltoLinea);
         inicInicioComent(cuentaSaltoLinea);
@@ -52,6 +46,19 @@ public class MaquinaEstados {
         inicComparacion(devuelveUltimoLeido, consumeChar, cuentaSaltoLinea);
 //        inicDeteccionCtes();
         inicCadena(concatenaChar, cuentaSaltoLinea);
+
+        inicTransiciones(Estado.FINAL,Estado.INICIAL);
+    }
+
+    /**
+     * @return el estado actual de la maquina.
+     */
+    public int getEstadoActual() {
+        return estadoActual;
+    }
+
+    public void reiniciar(){
+        estadoActual = 0;
     }
 
     /**
@@ -60,14 +67,19 @@ public class MaquinaEstados {
      * @param charInput caracter leido.
      */
     public void transicionar(char charInput){
-        ultimoCaracterLeido = charInput;
-
         int codigoInput = Input.charToInt(charInput); //Obtiene el codigo asociado al caracter leido.
 
         TransicionEstado transicionEstado = maquinaEstados[estadoActual][codigoInput];
 
-        transicionEstado.ejecutarAccionSemantica();
         estadoActual = transicionEstado.siguienteEstado();
+        transicionEstado.ejecutarAccionSemantica();
+    }
+
+    public void transicionarEOF(){
+        TransicionEstado transicionEstado = maquinaEstados[estadoActual][Input.EOF];
+
+        transicionEstado.ejecutarAccionSemantica();
+        estadoActual = -1; //Finalizo ejecucion
     }
 
     /**
@@ -89,16 +101,6 @@ public class MaquinaEstados {
     }
 
     /**
-     * Obtiene el ultimo caracter que fue leido por la maquina. Solo es usado por aquellas AS que deban almacenar el
-     * ultimo char que se leyo.
-     *
-     * @return el ultimo caracter leido.
-     */
-    public char getUltimoCaracterLeido() {
-        return ultimoCaracterLeido;
-    }
-
-    /**
      * Establece una transicion predeterminada para un estado en especifico.
      *
      * @param estadoOrigen estado desde donde partira la transicion.
@@ -114,8 +116,8 @@ public class MaquinaEstados {
      * Inicializacion estado 0.
      */
     private void inicTransicionesInicial(AccionSemantica inicStringVacio, AccionSemantica concatenaChar,
-                                         AccionSemantica cuentaSaltoLinea) {
-//        inicTransiciones(Estado.INICIAL,Estado.ERR_SIMBOLO_INV,null); //TODO Agregar AS para errores.
+                                         AccionSemantica cuentaSaltoLinea, AccionSemantica generaTokenEOF) {
+        inicTransiciones(Estado.INICIAL,Estado.FINAL); //Transiciones por defecto. TODO: Notificar error.
 
         //Descartables.
         maquinaEstados[Estado.INICIAL][Input.DESCARTABLE] = new TransicionEstado(Estado.INICIAL);
@@ -187,6 +189,9 @@ public class MaquinaEstados {
 
         //Cadena multilinea.
         maquinaEstados[Estado.INICIAL][Input.COMILLA] = new TransicionEstado(Estado.CADENA,inicStringVacio,concatenaChar);
+
+        //EOF.
+        maquinaEstados[Estado.INICIAL][Input.EOF] = new TransicionEstado(Estado.FINAL,generaTokenEOF);
     }
 
     /**

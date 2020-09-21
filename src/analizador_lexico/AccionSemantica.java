@@ -97,15 +97,6 @@ public class AccionSemantica {
         /**
          * Usado solo para testeos.
          *
-         * @return true si el string temporal tiene mayor tamanio que el permitido.
-         */
-        public boolean truncadoNecesario(){
-            return sTemporal.length() > LIMITE_STRING;
-        }
-
-        /**
-         * Usado solo para testeos.
-         *
          * @return el string temporal almacenado.
          */
         public String getSTemporal(){
@@ -155,6 +146,8 @@ public class AccionSemantica {
             Celda celda = tablaDeSimbolos.agregar(new Celda(token,sTemporal,""));
             maquinaEstados.agregarToken(celda.getToken()); //Agrega el token a una lista para que sea accedida por el sintactico mas adelante.
             //TODO: Ver como pasarle el lexema al sintactico.
+
+            maquinaEstados.reiniciar();
         }
     }
 
@@ -178,6 +171,8 @@ public class AccionSemantica {
         public void ejecutar(){
             if (tablaPR.esReservada(sTemporal)) maquinaEstados.agregarToken(token);
             else System.out.println("Notificar error"); //TODO: Hacer bien esto.
+
+            maquinaEstados.reiniciar();
         }
     }
 
@@ -194,6 +189,8 @@ public class AccionSemantica {
         @Override
         public void ejecutar() {
             maquinaEstados.agregarToken(token);
+
+            maquinaEstados.reiniciar();
         }
     }
 
@@ -232,6 +229,8 @@ public class AccionSemantica {
                 if (numero >= 0 && numero <= LIMITE_INT) { //La cte esta en el rango valido.
                     maquinaEstados.agregarToken(token); //TODO: Ver como pasarle el lexema al sintactico.
                     //TODO: Se agrega a la TS?
+
+                    maquinaEstados.reiniciar();
                 }
             }
             catch (NumberFormatException numberFormatException){
@@ -305,7 +304,6 @@ public class AccionSemantica {
                 cant_lineas++;
         }
     }
-
 
     public void set_sTemporal (String s){
         sTemporal=s;

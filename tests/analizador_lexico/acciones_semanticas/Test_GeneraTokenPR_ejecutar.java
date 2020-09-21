@@ -18,7 +18,7 @@ public class Test_GeneraTokenPR_ejecutar {
         tPR.agregar(pR);
 
         AccionSemantica.GeneraTokenPR generaTokenPR =
-                new AccionSemantica.GeneraTokenPR(new MaquinaEstados(codigoFuente,null),tPR,1);
+                new AccionSemantica.GeneraTokenPR(new MaquinaEstados(null,codigoFuente,null,tPR),tPR,1);
 
         generaTokenPR.ejecutar();
 

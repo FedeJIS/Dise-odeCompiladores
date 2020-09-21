@@ -16,7 +16,7 @@ public class Test_GeneraTokenId_ejecutar {
         TablaDeSimbolos tS = new TablaDeSimbolos();
 
         AccionSemantica.GeneraTokenId generaTokenId =
-                new AccionSemantica.GeneraTokenId(new MaquinaEstados(codigoFuente,null),tS,1);
+                new AccionSemantica.GeneraTokenId(new MaquinaEstados(null,codigoFuente,tS,null),tS,1);
 
         generaTokenId.ejecutar();
 
