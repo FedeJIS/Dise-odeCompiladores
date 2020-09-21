@@ -35,19 +35,16 @@ public class MaquinaEstados {
         AccionSemantica consumeChar = new AccionSemantica.ConsumeChar(codigoFuente); //7
 
         AccionSemantica cuentaSaltoLinea = new AccionSemantica.CuentaSaltoLinea(); //12
-        AccionSemantica generaTokenEOF = new AccionSemantica.GeneraTokenUnitario(this,tokenEOF);
 
         /* Inicializacion estados */
-        inicTransicionesInicial(inicStringVacio, concatenaChar, cuentaSaltoLinea,generaTokenEOF);
-        inicDeteccionId(concatenaChar, truncaId, generaTokenId, devuelveUltimoLeido, cuentaSaltoLinea, generaTokenEOF);
-        inicDeteccionPR(concatenaChar, devuelveUltimoLeido, generaTokenPR, cuentaSaltoLinea, generaTokenEOF);
-        inicInicioComent(cuentaSaltoLinea);
+        inicTransicionesInicial(inicStringVacio, concatenaChar, cuentaSaltoLinea);
+        inicDeteccionId(concatenaChar, truncaId, generaTokenId, devuelveUltimoLeido, cuentaSaltoLinea);
+        inicDeteccionPR(concatenaChar, devuelveUltimoLeido, generaTokenPR, cuentaSaltoLinea);
+        inicInicioComent(cuentaSaltoLinea, devuelveUltimoLeido);
         inicCuerpoComent(cuentaSaltoLinea);
         inicComparacion(devuelveUltimoLeido, consumeChar, cuentaSaltoLinea);
 //        inicDeteccionCtes();
         inicCadena(concatenaChar, cuentaSaltoLinea);
-
-        inicTransiciones(Estado.FINAL,Estado.INICIAL);
     }
 
     /**
@@ -79,6 +76,9 @@ public class MaquinaEstados {
         TransicionEstado transicionEstado = maquinaEstados[estadoActual][Input.EOF];
 
         transicionEstado.ejecutarAccionSemantica();
+
+        //TODO Agregar token EOF.
+
         estadoActual = -1; //Finalizo ejecucion
     }
 
@@ -116,8 +116,9 @@ public class MaquinaEstados {
      * Inicializacion estado 0.
      */
     private void inicTransicionesInicial(AccionSemantica inicStringVacio, AccionSemantica concatenaChar,
-                                         AccionSemantica cuentaSaltoLinea, AccionSemantica generaTokenEOF) {
-        inicTransiciones(Estado.INICIAL,Estado.FINAL); //Transiciones por defecto. TODO: Notificar error.
+                                         AccionSemantica cuentaSaltoLinea) {
+        //Inputs no validos. Me quedo en el inicio pero notifico el error. TODO: Notificar error.
+        inicTransiciones(Estado.INICIAL,Estado.INICIAL);
 
         //Descartables.
         maquinaEstados[Estado.INICIAL][Input.DESCARTABLE] = new TransicionEstado(Estado.INICIAL);
@@ -146,7 +147,6 @@ public class MaquinaEstados {
         maquinaEstados[Estado.INICIAL][Input.IGUAL] = new TransicionEstado(Estado.SIGNO_IGUAL);
 
         AccionSemantica generaToken;
-
         //Token suma.
         generaToken = new AccionSemantica.GeneraTokenUnitario(this,tokenSuma);
         maquinaEstados[Estado.INICIAL][Input.SUMA] = new TransicionEstado(Estado.FINAL,generaToken);
@@ -191,7 +191,7 @@ public class MaquinaEstados {
         maquinaEstados[Estado.INICIAL][Input.COMILLA] = new TransicionEstado(Estado.CADENA,inicStringVacio,concatenaChar);
 
         //EOF.
-        maquinaEstados[Estado.INICIAL][Input.EOF] = new TransicionEstado(Estado.FINAL,generaTokenEOF);
+        maquinaEstados[Estado.INICIAL][Input.EOF] = new TransicionEstado(Estado.FINAL);
     }
 
     /**
@@ -199,11 +199,13 @@ public class MaquinaEstados {
      */
     private void inicDeteccionId(AccionSemantica concatenaChar, AccionSemantica truncaId,
                                  AccionSemantica generaTokenId, AccionSemantica devuelveUltimoLeido,
-                                 AccionSemantica cuentaSaltoLinea, AccionSemantica generaTokenEOF) {
-        inicTransiciones(Estado.DETECCION_ID,Estado.FINAL,truncaId,generaTokenId,devuelveUltimoLeido);
+                                 AccionSemantica cuentaSaltoLinea) {
+        //Inputs no validos. Vuelvo al inicio y agrego token.
+        inicTransiciones(Estado.DETECCION_ID,Estado.INICIAL,truncaId,generaTokenId,devuelveUltimoLeido);
+        maquinaEstados[Estado.DETECCION_ID][Input.SALTO_LINEA] = new TransicionEstado(Estado.INICIAL,truncaId,generaTokenId,
+                cuentaSaltoLinea); //Permite contar un salto de linea (No devuelve el ultimo leido pq se descartaria de todas formas).
 
-        maquinaEstados[Estado.DETECCION_ID][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL,truncaId,generaTokenId,
-                devuelveUltimoLeido, cuentaSaltoLinea); //Permite contar un salto de linea (No devuelve el ultimo leido pq se descartaria de todas formas).
+        //Camino normal.
         maquinaEstados[Estado.DETECCION_ID][Input.D_MINUSC] = new TransicionEstado(Estado.DETECCION_ID,concatenaChar);
         maquinaEstados[Estado.DETECCION_ID][Input.U_MINUSC] = new TransicionEstado(Estado.DETECCION_ID,concatenaChar);
         maquinaEstados[Estado.DETECCION_ID][Input.I_MINUSC] = new TransicionEstado(Estado.DETECCION_ID,concatenaChar);
@@ -211,91 +213,110 @@ public class MaquinaEstados {
         maquinaEstados[Estado.DETECCION_ID][Input.DIGITO] = new TransicionEstado(Estado.DETECCION_ID,concatenaChar);
         maquinaEstados[Estado.DETECCION_ID][Input.GUION_B] = new TransicionEstado(Estado.DETECCION_ID,concatenaChar);
 
-        //EOF.
-        maquinaEstados[Estado.DETECCION_ID][Input.EOF] = new TransicionEstado(Estado.FINAL,truncaId,generaTokenId,generaTokenEOF);
+        //EOF. Vuelvo al inicio. No hace falta devolver ultimo leido.
+        maquinaEstados[Estado.DETECCION_ID][Input.EOF] = new TransicionEstado(Estado.INICIAL,truncaId,generaTokenId);
     }
 
     /**
      * Inicializacion estado 2.
      */
     private void inicDeteccionPR(AccionSemantica concatenaChar, AccionSemantica devuelveUltimoLeido,
-                                 AccionSemantica generaTokenPR, AccionSemantica cuentaSaltoLinea,
-                                 AccionSemantica generaTokenEOF){
-        inicTransiciones(Estado.DETECCION_PR,Estado.FINAL,generaTokenPR,devuelveUltimoLeido);
-
-        maquinaEstados[Estado.DETECCION_PR][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL,generaTokenPR,
+                                 AccionSemantica generaTokenPR, AccionSemantica cuentaSaltoLinea){
+        //Inputs no validos. Vuelvo al inicio y agrego token.
+        inicTransiciones(Estado.DETECCION_PR,Estado.INICIAL,generaTokenPR,devuelveUltimoLeido);
+        maquinaEstados[Estado.DETECCION_PR][Input.SALTO_LINEA] = new TransicionEstado(Estado.INICIAL,generaTokenPR,
                 cuentaSaltoLinea); //Permite contar un salto de linea (No devuelve el ultimo leido pq se descartaria de todas formas).
+
+        //Camino normal.
         maquinaEstados[Estado.DETECCION_PR][Input.LETRA_MAYUS] = new TransicionEstado(Estado.DETECCION_PR,concatenaChar);
         maquinaEstados[Estado.DETECCION_PR][Input.GUION_B] = new TransicionEstado(Estado.DETECCION_PR,concatenaChar);
 
-        //EOF.
-        maquinaEstados[Estado.DETECCION_PR][Input.EOF] = new TransicionEstado(Estado.FINAL,generaTokenPR,generaTokenEOF);
+        //EOF. Vuelvo al inicio. No hace falta devolver ultimo leido.
+        maquinaEstados[Estado.DETECCION_PR][Input.EOF] = new TransicionEstado(Estado.INICIAL,generaTokenPR);
     }
 
     /**
      * Inicializacion estado 3.
      */
-    private void inicInicioComent(AccionSemantica cuentaSaltoLinea){
-//        inicTransiciones(Estado.INICIO_COMENT,Estado.ERR_SIMBOLO_INV,null); //TODO Agregar AS para errores.
+    private void inicInicioComent(AccionSemantica cuentaSaltoLinea, AccionSemantica devuelveUltimoLeido){
+        //Inputs no validos. TODO: Notificar error.
+        inicTransiciones(Estado.INICIO_COMENT,Estado.INICIAL,devuelveUltimoLeido);
+        maquinaEstados[Estado.INICIO_COMENT][Input.SALTO_LINEA] = new TransicionEstado(Estado.INICIAL,
+                cuentaSaltoLinea); //Permite contar un salto de linea. No devuele ultimo leido porque se descartaria.
 
-        maquinaEstados[Estado.INICIO_COMENT][Input.SALTO_LINEA] = new TransicionEstado(Estado.ERR_SIMBOLO_INV,
-                cuentaSaltoLinea); //Permite contar un salto de linea.
+        //Camino normal.
         maquinaEstados[Estado.INICIO_COMENT][Input.PORCENTAJE] = new TransicionEstado(Estado.CUERPO_COMENT);
+
+        //EOF. Vuelvo al inicio. No hace falta devolver ultimo leido. TODO: Notificar error.
+        maquinaEstados[Estado.INICIO_COMENT][Input.EOF] = new TransicionEstado(Estado.INICIAL);
     }
 
     /**
      * Inicializacion estado 4.
      */
     private void inicCuerpoComent(AccionSemantica cuentaSaltoLinea){
+        //Inputs validos.
         inicTransiciones(Estado.CUERPO_COMENT,Estado.CUERPO_COMENT);
 
+        //Fin comentario (salto linea).
         maquinaEstados[Estado.CUERPO_COMENT][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL,cuentaSaltoLinea);
+
+        //EOF. Vuelvo al inicio. No hace falta devolver ultimo leido.
+        maquinaEstados[Estado.CUERPO_COMENT][Input.EOF] = new TransicionEstado(Estado.INICIAL);
     }
 
     /**
      * Inicializacion estados 5, 6, 7 y 8.
      */
-    private void inicComparacion(AccionSemantica devuelveUltimoLeido, AccionSemantica consumeChar, AccionSemantica cuentaSaltoLinea){
+    private void inicComparacion(AccionSemantica devuelveUltimoLeido, AccionSemantica consumeChar,
+                                 AccionSemantica cuentaSaltoLinea){
         AccionSemantica generaToken;
 
         //Comparacion por menor estricto (5).
         generaToken = new AccionSemantica.GeneraTokenUnitario(this,tokenMenor);
-        inicTransiciones(Estado.COMP_MENOR,Estado.FINAL,devuelveUltimoLeido,generaToken);
-        maquinaEstados[Estado.COMP_MENOR][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL,generaToken,
+
+        inicTransiciones(Estado.COMP_MENOR,Estado.INICIAL,devuelveUltimoLeido,generaToken);
+        maquinaEstados[Estado.COMP_MENOR][Input.SALTO_LINEA] = new TransicionEstado(Estado.INICIAL,generaToken,
                 cuentaSaltoLinea); //Permite contar un salto de linea (No devuelve el ultimo leido pq se descartaria de todas formas).
 
         //Comparacion por menor igual (5).
         generaToken = new AccionSemantica.GeneraTokenUnitario(this,tokenMenorIgual);
-        maquinaEstados[Estado.COMP_MENOR][Input.IGUAL] = new TransicionEstado(Estado.FINAL,consumeChar,generaToken);
+
+        maquinaEstados[Estado.COMP_MENOR][Input.IGUAL] = new TransicionEstado(Estado.INICIAL,consumeChar,generaToken);
 
         //Comparacion por mayor estricto (6).
         generaToken = new AccionSemantica.GeneraTokenUnitario(this,tokenMayor);
-        inicTransiciones(Estado.COMP_MAYOR,Estado.FINAL,devuelveUltimoLeido,generaToken);
-        maquinaEstados[Estado.COMP_MAYOR][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL,generaToken,
+
+        inicTransiciones(Estado.COMP_MAYOR,Estado.INICIAL,devuelveUltimoLeido,generaToken);
+        maquinaEstados[Estado.COMP_MAYOR][Input.SALTO_LINEA] = new TransicionEstado(Estado.INICIAL,generaToken,
                 cuentaSaltoLinea); //Permite contar un salto de linea (No devuelve el ultimo leido pq se descartaria de todas formas).
 
         //Comparacion por mayor igual (6).
         generaToken = new AccionSemantica.GeneraTokenUnitario(this,tokenMayorIgual);
-        maquinaEstados[Estado.COMP_MAYOR][Input.IGUAL] = new TransicionEstado(Estado.FINAL,consumeChar,generaToken);
 
-        //'!' solo (7).
-        inicTransiciones(Estado.COMP_DISTINTO,Estado.ERR_SIMBOLO_INV,devuelveUltimoLeido); //'!' por si solo no es valido.
+        maquinaEstados[Estado.COMP_MAYOR][Input.IGUAL] = new TransicionEstado(Estado.INICIAL,consumeChar,generaToken);
+
+        //'!' solo (7). El simbolo por si solo no es valido. TODO: Notificar error.
+        inicTransiciones(Estado.COMP_DISTINTO,Estado.INICIAL,devuelveUltimoLeido);
         maquinaEstados[Estado.COMP_DISTINTO][Input.SALTO_LINEA] = new TransicionEstado(Estado.ERR_SIMBOLO_INV,
                 cuentaSaltoLinea); //Permite contar un salto de linea (No devuelve el ultimo leido pq se descartaria de todas formas).
 
         //Comparacion por distincion (7).
         generaToken = new AccionSemantica.GeneraTokenUnitario(this,tokenDistinto);
-        maquinaEstados[Estado.COMP_DISTINTO][Input.IGUAL] = new TransicionEstado(Estado.FINAL,consumeChar,generaToken);
+
+        maquinaEstados[Estado.COMP_DISTINTO][Input.IGUAL] = new TransicionEstado(Estado.INICIAL,consumeChar,generaToken);
 
         //Asignacion (8).
         generaToken = new AccionSemantica.GeneraTokenUnitario(this,tokenAsignacion);
-        inicTransiciones(Estado.SIGNO_IGUAL,Estado.FINAL,devuelveUltimoLeido, generaToken);
-        maquinaEstados[Estado.SIGNO_IGUAL][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL, generaToken,
+
+        inicTransiciones(Estado.SIGNO_IGUAL,Estado.INICIAL,devuelveUltimoLeido, generaToken);
+        maquinaEstados[Estado.SIGNO_IGUAL][Input.SALTO_LINEA] = new TransicionEstado(Estado.INICIAL, generaToken,
                 cuentaSaltoLinea); //Permite contar un salto de linea (No devuelve el ultimo leido pq se descartaria de todas formas).
 
         //Comparacion por igualdad (8).
         generaToken = new AccionSemantica.GeneraTokenUnitario(this,tokenIgual);
-        maquinaEstados[Estado.SIGNO_IGUAL][Input.IGUAL] = new TransicionEstado(Estado.FINAL,consumeChar, generaToken);
+
+        maquinaEstados[Estado.SIGNO_IGUAL][Input.IGUAL] = new TransicionEstado(Estado.INICIAL,consumeChar, generaToken);
     }
 
     /**

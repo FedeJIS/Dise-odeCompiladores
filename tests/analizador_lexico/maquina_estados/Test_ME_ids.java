@@ -18,6 +18,20 @@ public class Test_ME_ids {
         fuente = "est/";
         System.out.println("Fuente:'"+fuente+"'");
         testGenerico(fuente,lexema);
+
+        System.out.println("###############################");
+
+        lexema = "est_";
+        fuente = "est_";
+        System.out.println("Fuente:'"+fuente+"'");
+        testGenerico(fuente,lexema);
+
+        System.out.println("###############################");
+
+        lexema = "e_st";
+        fuente = "e_st";
+        System.out.println("Fuente:'"+fuente+"'");
+        testGenerico(fuente,lexema);
     }
 
     private static void testGenerico(String fuente, String lexema){

@@ -5,36 +5,62 @@ import analizador_lexico.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Test_ME_pReservadas {
+public class Test_ME_comparaciones {
     public static void main(String[] args) {
-        String pReservada = "WHILE";
-
-        String fuente = "WHILE";
+        String fuente = "<";
         System.out.println("Fuente:'"+fuente+"'");
-        testGenerico(fuente,pReservada);
+        testGenerico(fuente);
 
         System.out.println("###############################");
 
-        fuente = "WHILE{";
+        fuente = "<=";
         System.out.println("Fuente:'"+fuente+"'");
-        testGenerico(fuente,pReservada);
+        testGenerico(fuente);
 
         System.out.println("###############################");
 
-        pReservada = "WHILE_DO";
-        fuente = "WHILE_DO";
+        fuente = ">";
         System.out.println("Fuente:'"+fuente+"'");
-        testGenerico(fuente,pReservada);
+        testGenerico(fuente);
+
+        System.out.println("###############################");
+
+        fuente = ">=";
+        System.out.println("Fuente:'"+fuente+"'");
+        testGenerico(fuente);
+
+        System.out.println("###############################");
+
+        fuente = "!";
+        System.out.println("Fuente:'"+fuente+"'");
+        testGenerico(fuente);
+
+        System.out.println("###############################");
+
+        fuente = "!=";
+        System.out.println("Fuente:'"+fuente+"'");
+        testGenerico(fuente);
+
+        System.out.println("###############################");
+
+        fuente = "=";
+        System.out.println("Fuente:'"+fuente+"'");
+        testGenerico(fuente);
+
+        System.out.println("###############################");
+
+        fuente = "==";
+        System.out.println("Fuente:'"+fuente+"'");
+        testGenerico(fuente);
     }
 
-    private static void testGenerico(String fuente, String pReservada){
+    private static void testGenerico(String fuente){
         List<String> lineas = new ArrayList<>();
         lineas.add(fuente);
         CodigoFuente cFuente = new CodigoFuente(lineas);
 
         TablaDeSimbolos tS = new TablaDeSimbolos();
         Reservado tPR = new Reservado();
-        tPR.agregar(pReservada);
 
         MaquinaEstados maquinaEstados = new MaquinaEstados(new FileProcessor(),cFuente,tS,tPR);
 
@@ -48,12 +74,6 @@ public class Test_ME_pReservadas {
         maquinaEstados.transicionarEOF();
         System.out.println("[EOF]. Estado actual:"+maquinaEstados.getEstadoActual());
         /* Fin lexico */
-
-        int estadoActual = maquinaEstados.getEstadoActual();
-
-        System.out.println("Estado esperado:"+ Estado.INICIAL +". Conseguido:"+estadoActual);
-
-        System.out.println("PR buscada:"+pReservada+". Esta en la TPR?"+tPR.esReservada(pReservada));
 
         System.out.print("Tokens generados: ");
         for (Celda celda : maquinaEstados.getListaToken())

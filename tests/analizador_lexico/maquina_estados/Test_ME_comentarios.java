@@ -5,36 +5,22 @@ import analizador_lexico.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Test_ME_pReservadas {
+public class Test_ME_comentarios {
     public static void main(String[] args) {
-        String pReservada = "WHILE";
-
-        String fuente = "WHILE";
+        String fuente = "%%ESTO ES UN COMENTARIO TODO SE IGNORA ''¿'&/())(!7823'";
         System.out.println("Fuente:'"+fuente+"'");
-        testGenerico(fuente,pReservada);
+        testGenerico(fuente);
 
-        System.out.println("###############################");
 
-        fuente = "WHILE{";
-        System.out.println("Fuente:'"+fuente+"'");
-        testGenerico(fuente,pReservada);
-
-        System.out.println("###############################");
-
-        pReservada = "WHILE_DO";
-        fuente = "WHILE_DO";
-        System.out.println("Fuente:'"+fuente+"'");
-        testGenerico(fuente,pReservada);
     }
 
-    private static void testGenerico(String fuente, String pReservada){
+    private static void testGenerico(String fuente){
         List<String> lineas = new ArrayList<>();
         lineas.add(fuente);
         CodigoFuente cFuente = new CodigoFuente(lineas);
 
         TablaDeSimbolos tS = new TablaDeSimbolos();
         Reservado tPR = new Reservado();
-        tPR.agregar(pReservada);
 
         MaquinaEstados maquinaEstados = new MaquinaEstados(new FileProcessor(),cFuente,tS,tPR);
 
@@ -51,9 +37,7 @@ public class Test_ME_pReservadas {
 
         int estadoActual = maquinaEstados.getEstadoActual();
 
-        System.out.println("Estado esperado:"+ Estado.INICIAL +". Conseguido:"+estadoActual);
-
-        System.out.println("PR buscada:"+pReservada+". Esta en la TPR?"+tPR.esReservada(pReservada));
+        System.out.println("Estado esperado:"+ Estado.FINAL +". Conseguido:"+estadoActual);
 
         System.out.print("Tokens generados: ");
         for (Celda celda : maquinaEstados.getListaToken())

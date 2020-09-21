@@ -205,7 +205,6 @@ public class AccionSemantica {
          * Consumir caracter.
          */
         public void ejecutar(){
-            System.out.println("caracter consumido" + codigoFuente.simboloActual());
         }
     }
 
