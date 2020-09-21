@@ -115,7 +115,7 @@ public class MaquinaEstados {
      */
     private void inicTransicionesInicial(AccionSemantica inicStringVacio, AccionSemantica concatenaChar,
                                          AccionSemantica cuentaSaltoLinea) {
-        inicTransiciones(Estado.INICIAL,Estado.ERR_SIMBOLO_INV,null); //TODO Agregar AS para errores.
+//        inicTransiciones(Estado.INICIAL,Estado.ERR_SIMBOLO_INV,null); //TODO Agregar AS para errores.
 
         //Descartables.
         maquinaEstados[Estado.INICIAL][Input.DESCARTABLE] = new TransicionEstado(Estado.INICIAL);
@@ -224,7 +224,7 @@ public class MaquinaEstados {
      * Inicializacion estado 3.
      */
     private void inicInicioComent(AccionSemantica cuentaSaltoLinea){
-        inicTransiciones(Estado.INICIO_COMENT,Estado.ERR_SIMBOLO_INV,null); //TODO Agregar AS para errores.
+//        inicTransiciones(Estado.INICIO_COMENT,Estado.ERR_SIMBOLO_INV,null); //TODO Agregar AS para errores.
 
         maquinaEstados[Estado.INICIO_COMENT][Input.SALTO_LINEA] = new TransicionEstado(Estado.ERR_SIMBOLO_INV,
                 cuentaSaltoLinea); //Permite contar un salto de linea.

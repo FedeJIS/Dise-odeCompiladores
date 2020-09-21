@@ -10,7 +10,7 @@ public class CodigoFuente {
     public CodigoFuente(List<String> lineas) {
         StringBuilder builder = new StringBuilder();
         for (String linea : lineas)
-            builder.append(linea).append("\n"); //Agrega el salto de linea para que pueda ser leido por la maquina.
+            builder.append(linea);
         simbolos = builder.toString();
     }
 

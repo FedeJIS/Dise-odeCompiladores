@@ -3,7 +3,7 @@ package analizador_lexico;
 import analizador_lexico.maquina_estados.MaquinaEstados;
 
 public class AccionSemantica {
-    private final static int LIMITE_STRING=20;
+    private final static int LIMITE_STRING = 20;
     private final static int LIMITE_INT=(int)(Math.pow(2,16)-1);
     private final static double LIMIT_DNEG_INF=-1.7976931348623157;
     private final static double LIMIT_DNEG_SUP=-2.2250738585072014;
@@ -33,16 +33,21 @@ public class AccionSemantica {
     /* ---Implementaciones--- */
 
     public static class InicStringVacio extends AccionSemantica{
-        public InicStringVacio() {
-            super();
-        }
-
         /**
          * Inicializa un string en vacio.
          */
         @Override
         public void ejecutar (){
-            sTemporal="";
+            sTemporal = "";
+        }
+
+        /**
+         * Usado solo para testeo.
+         *
+         * @return true si el string temporal esta vacio, false en cualquier otro caso.
+         */
+        public boolean isStringVacio(){
+            return sTemporal.equals("");
         }
     }
 
@@ -50,7 +55,6 @@ public class AccionSemantica {
         private final CodigoFuente codigoFuente;
 
         public ConcatenaChar(CodigoFuente codigoFuente) {
-            super();
             this.codigoFuente = codigoFuente;
         }
 
@@ -61,13 +65,21 @@ public class AccionSemantica {
         public void ejecutar(){
             sTemporal = sTemporal + codigoFuente.simboloActual();
         }
+
+        /**
+         * Usado solo para testeos.
+         *
+         * @return el ultimo char concatenado al string temporal.
+         */
+        public char getUltimoChar(){
+            return sTemporal.charAt(sTemporal.length()-1);
+        }
     }
 
     public static class TruncaId extends AccionSemantica{
         private final FileProcessor fileProcessor;
 
         public TruncaId(FileProcessor fileProcessor) {
-            super();
             this.fileProcessor = fileProcessor;
         }
 
@@ -81,13 +93,21 @@ public class AccionSemantica {
                 fileProcessor.escribirArchivo("./warning.txt","WARNING: String truncado a: "+sTemporal,fileProcessor.existeArchivo("./warning.txt"));
             }
         }
+
+        /**
+         * Usado solo para testeos.
+         *
+         * @return true si el string temporal tiene mayor tamanio que el permitido.
+         */
+        public boolean truncadoNecesario(){
+            return sTemporal.length() > LIMITE_STRING;
+        }
     }
 
     public static class DevuelveUltimoLeido extends AccionSemantica{
         private final CodigoFuente codigoFuente;
 
         public DevuelveUltimoLeido(CodigoFuente codigoFuente) {
-            super();
             this.codigoFuente = codigoFuente;
         }
 
@@ -108,7 +128,6 @@ public class AccionSemantica {
         private final int token;
 
         public GeneraTokenId(MaquinaEstados maquinaEstados, TablaDeSimbolos tablaDeSimbolos, int token) {
-            super();
             this.maquinaEstados = maquinaEstados;
             this.tablaDeSimbolos = tablaDeSimbolos;
             this.token = token;
@@ -119,11 +138,12 @@ public class AccionSemantica {
          * que no lo encuentre, crea una nueva celda, la agrega y la retorna.
          * Luego de acceder a la TS, se agrega el token generado a la maquina de estados, para que luego pueda ser
          * accedido por el analizador sintactico.
+         *
+         * Ya no es necesario sacar el ultimo caracter leido, de eso se encarga la maquina de estados. (Bruno)
          */
         @Override
         public void ejecutar() {
-            String lexema = sTemporal.substring(0, sTemporal.length() - 1); // quita el ultimo caracter TODO: Revisar si es necesario.
-            Celda celda = tablaDeSimbolos.agregar(new Celda(token,lexema,""));
+            Celda celda = tablaDeSimbolos.agregar(new Celda(token,sTemporal,""));
             maquinaEstados.agregarToken(celda.getToken()); //Agrega el token a una lista para que sea accedida por el sintactico mas adelante.
             //TODO: Ver como pasarle el lexema al sintactico.
         }
