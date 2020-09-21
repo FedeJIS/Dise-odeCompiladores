@@ -6,7 +6,7 @@ import java.util.Hashtable;
 public class Reservado {
     private ArrayList<String> palabrasReserv;
     public Reservado(){
-        palabrasReserv=new ArrayList<String>();
+        palabrasReserv=new ArrayList<>();
     }
 
     public boolean esReservada(String palabra){

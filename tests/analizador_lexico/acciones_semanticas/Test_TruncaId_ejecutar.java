@@ -2,6 +2,7 @@ package analizador_lexico.acciones_semanticas;
 
 import analizador_lexico.AccionSemantica;
 import analizador_lexico.CodigoFuente;
+import analizador_lexico.FileProcessor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,19 +10,19 @@ import java.util.List;
 public class Test_TruncaId_ejecutar {
     public static void main(String[] args) {
 
-        AccionSemantica.TruncaId truncaId = new AccionSemantica.TruncaId(null);
+        AccionSemantica.TruncaId truncaId = new AccionSemantica.TruncaId(new FileProcessor());
 
         //Test no truncar 1.
-        testGenerico("1234567891234567891", false, truncaId); //19 caracteres.
+        testGenerico("1234567891234567891", "1234567891234567891", truncaId); //19 caracteres.
 
         //Test no truncar 2.
-        testGenerico("12345678912345678912", false, truncaId); //20 caracteres.
+        testGenerico("12345678912345678912", "12345678912345678912", truncaId); //20 caracteres.
 
         //Test trucar.
-        testGenerico("123456789123456789123", true, truncaId); //21 caracteres.
+        testGenerico("123456789123456789123", "12345678912345678912", truncaId); //21 caracteres.
     }
 
-    private static void testGenerico(String linea, boolean resultadoEsperado, AccionSemantica.TruncaId truncaId) {
+    private static void testGenerico(String linea, String resultadoEsperado, AccionSemantica.TruncaId truncaId) {
         AccionSemantica.InicStringVacio inicStringVacio = new AccionSemantica.InicStringVacio();
         inicStringVacio.ejecutar();
 
@@ -36,6 +37,8 @@ public class Test_TruncaId_ejecutar {
             codigoFuente.avanzar();
         }
 
-        System.out.println("Esperado:"+resultadoEsperado+". Resultado:"+ truncaId.truncadoNecesario());
+        System.out.print("Original:"+linea+". Esperado:"+resultadoEsperado);
+        truncaId.ejecutar();
+        System.out.println(". Resultado:"+truncaId.getSTemporal());
     }
 }

@@ -41,7 +41,7 @@ public class MaquinaEstados {
         AccionSemantica generaTokenPR = new AccionSemantica.GeneraTokenPR(this, tablaPR, tokenPR); //5
         AccionSemantica consumeChar = new AccionSemantica.ConsumeChar(codigoFuente); //7
 
-        AccionSemantica cuentaSaltoLinea = new AccionSemantica.CuentaSaltoLinea(tablaPR); //12
+        AccionSemantica cuentaSaltoLinea = new AccionSemantica.CuentaSaltoLinea(); //12
 
         /* Inicializacion estados */
         inicTransicionesInicial(inicStringVacio, concatenaChar, cuentaSaltoLinea);

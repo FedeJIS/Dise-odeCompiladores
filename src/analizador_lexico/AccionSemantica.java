@@ -176,7 +176,6 @@ public class AccionSemantica {
          */
         @Override
         public void ejecutar(){
-            sTemporal=sTemporal.substring(0, sTemporal.length() - 1); //TODO: Revisar si es necesario.
             if (tablaPR.esReservada(sTemporal)) maquinaEstados.agregarToken(token);
             else System.out.println("Notificar error"); //TODO: Hacer bien esto.
         }
@@ -188,7 +187,6 @@ public class AccionSemantica {
         private final int token;
 
         public GeneraTokenUnitario(MaquinaEstados maquinaEstados, int token) {
-            super();
             this.maquinaEstados = maquinaEstados;
             this.token = token;
         }
@@ -203,7 +201,6 @@ public class AccionSemantica {
         private final CodigoFuente codigoFuente;
 
         public ConsumeChar(CodigoFuente codigoFuente) {
-            super();
             this.codigoFuente = codigoFuente;
         }
 
@@ -214,7 +211,6 @@ public class AccionSemantica {
             System.out.println("caracter consumido" + codigoFuente.simboloActual());
         }
     }
-
 
     public static class GeneraTokenUINT extends AccionSemantica {
         private final MaquinaEstados maquinaEstados;
@@ -300,10 +296,6 @@ public class AccionSemantica {
 
 
     public static class CuentaSaltoLinea extends AccionSemantica{
-        public CuentaSaltoLinea(Reservado reservado) {
-            super();
-        }
-
         /**
          * Incrementa en uno la cantidad de lineas de un archivo.
          */
