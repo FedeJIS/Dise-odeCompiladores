@@ -120,14 +120,14 @@ public class AccionSemantica {
         }
     }
 
-    public static class GeneraTokenId extends AccionSemantica{
+    public static class GeneraTokenTS extends AccionSemantica{
         private final MaquinaEstados maquinaEstados;
 
         private final TablaDeSimbolos tablaDeSimbolos;
 
         private final int token;
 
-        public GeneraTokenId(MaquinaEstados maquinaEstados, TablaDeSimbolos tablaDeSimbolos, int token) {
+        public GeneraTokenTS(MaquinaEstados maquinaEstados, TablaDeSimbolos tablaDeSimbolos, int token) {
             this.maquinaEstados = maquinaEstados;
             this.tablaDeSimbolos = tablaDeSimbolos;
             this.token = token;

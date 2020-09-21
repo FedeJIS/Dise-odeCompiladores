@@ -15,10 +15,10 @@ public class Test_GeneraTokenId_ejecutar {
 
         TablaDeSimbolos tS = new TablaDeSimbolos();
 
-        AccionSemantica.GeneraTokenId generaTokenId =
-                new AccionSemantica.GeneraTokenId(new MaquinaEstados(null,codigoFuente,tS,null),tS,1);
+        AccionSemantica.GeneraTokenTS generaTokenTS =
+                new AccionSemantica.GeneraTokenTS(new MaquinaEstados(null,codigoFuente,tS,null),tS,1);
 
-        generaTokenId.ejecutar();
+        generaTokenTS.ejecutar();
 
         System.out.println("Esperado:"+lexema+". Obtenido:"+tS.getValor(lexema).getLexema());
     }

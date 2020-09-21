@@ -18,7 +18,7 @@ public class MaquinaEstados {
     private final int tokenId = 0, tokenPR = 1, tokenMenor = 2, tokenMenorIgual = 3, tokenMayor = 4, tokenMayorIgual = 5,
         tokenDistinto = 6, tokenAsignacion = 7, tokenIgual = 8, tokenSuma = 9, tokenResta = 10, tokenMultipl = 11,
         tokenDiv = 12, tokenCorcheteA = 13, tokenCorcheteC = 14, tokenParentA = 15, tokenParentC = 16, tokenPunto = 17,
-        tokenPuntoComa = 18, tokenUINT = 19, tokenEOF = 20;
+        tokenPuntoComa = 18, tokenUINT = 19, tokenCadena = 20, tokenEOF = 21;
 
 
     /**
@@ -30,7 +30,8 @@ public class MaquinaEstados {
         AccionSemantica concatenaChar = new AccionSemantica.ConcatenaChar(codigoFuente); //1
         AccionSemantica truncaId = new AccionSemantica.TruncaId(fileProcessor); //2
         AccionSemantica devuelveUltimoLeido = new AccionSemantica.DevuelveUltimoLeido(codigoFuente); //3
-        AccionSemantica generaTokenId = new AccionSemantica.GeneraTokenId(this, tablaS, tokenId); //4
+        AccionSemantica generTokenId = new AccionSemantica.GeneraTokenTS(this, tablaS, tokenId); //4
+        AccionSemantica generaTokenCadena = new AccionSemantica.GeneraTokenTS(this,tablaS,tokenCadena); //4
         AccionSemantica generaTokenPR = new AccionSemantica.GeneraTokenPR(this, tablaPR, tokenPR); //5
         AccionSemantica consumeChar = new AccionSemantica.ConsumeChar(codigoFuente); //7
 
@@ -38,13 +39,13 @@ public class MaquinaEstados {
 
         /* Inicializacion estados */
         inicTransicionesInicial(inicStringVacio, concatenaChar, cuentaSaltoLinea);
-        inicDeteccionId(concatenaChar, truncaId, generaTokenId, devuelveUltimoLeido, cuentaSaltoLinea);
+        inicDeteccionId(concatenaChar, truncaId, generTokenId, devuelveUltimoLeido, cuentaSaltoLinea);
         inicDeteccionPR(concatenaChar, devuelveUltimoLeido, generaTokenPR, cuentaSaltoLinea);
         inicInicioComent(cuentaSaltoLinea, devuelveUltimoLeido);
         inicCuerpoComent(cuentaSaltoLinea);
         inicComparacion(devuelveUltimoLeido, consumeChar, cuentaSaltoLinea);
 //        inicDeteccionCtes();
-        inicCadena(concatenaChar, cuentaSaltoLinea);
+        inicCadena(concatenaChar, cuentaSaltoLinea, generaTokenCadena);
     }
 
     /**
@@ -77,7 +78,7 @@ public class MaquinaEstados {
 
         transicionEstado.ejecutarAccionSemantica();
 
-        //TODO Agregar token EOF.
+        listaToken.add(new Celda(tokenEOF,"",""));
 
         estadoActual = -1; //Finalizo ejecucion
     }
@@ -363,9 +364,17 @@ public class MaquinaEstados {
     /**
      * Inicializacion estado 15.
      */
-    private void inicCadena(AccionSemantica concatenaChar, AccionSemantica cuentaSaltoLinea){
+    private void inicCadena(AccionSemantica concatenaChar, AccionSemantica cuentaSaltoLinea,
+                            AccionSemantica generaTokenCadena){
+        //Inputs validos.
         inicTransiciones(Estado.CADENA,Estado.CADENA,concatenaChar);
-        maquinaEstados[Estado.CADENA][Input.SALTO_LINEA] = new TransicionEstado(Estado.CADENA,concatenaChar, cuentaSaltoLinea);
-        maquinaEstados[Estado.CADENA][Input.COMILLA] = new TransicionEstado(Estado.FINAL,concatenaChar);
+        maquinaEstados[Estado.CADENA][Input.SALTO_LINEA] = new TransicionEstado(Estado.CADENA,concatenaChar,
+                cuentaSaltoLinea); //Permite contar saltos de linea.
+
+        //Fin cadena.
+        maquinaEstados[Estado.CADENA][Input.COMILLA] = new TransicionEstado(Estado.FINAL,concatenaChar,generaTokenCadena);
+
+        //EOF. Quedo la cadena abierta, hay que notificar error. TODO: Notificar error.
+        maquinaEstados[Estado.CADENA][Input.EOF] = new TransicionEstado(Estado.INICIAL);
     }
 }
