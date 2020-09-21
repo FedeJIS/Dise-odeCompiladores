@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AnalizadorLexico {
-    public List<Object> generaListaToken(){
+    public List<Celda> generaListaToken(){
         FileProcessor fileProcessor = new FileProcessor();
 
         CodigoFuente cFuente = new CodigoFuente(fileProcessor.getLineas("archivos/codigo_fuente.txt"));

@@ -144,7 +144,7 @@ public class AccionSemantica {
         @Override
         public void ejecutar() {
             Celda celda = tablaDeSimbolos.agregar(new Celda(token,sTemporal,""));
-            maquinaEstados.agregarToken(celda.getToken()); //Agrega el token a una lista para que sea accedida por el sintactico mas adelante.
+            maquinaEstados.agregarToken(celda); //Agrega el token a una lista para que sea accedida por el sintactico mas adelante.
             //TODO: Ver como pasarle el lexema al sintactico.
 
             maquinaEstados.reiniciar();
@@ -169,7 +169,7 @@ public class AccionSemantica {
          */
         @Override
         public void ejecutar(){
-            if (tablaPR.esReservada(sTemporal)) maquinaEstados.agregarToken(token);
+            if (tablaPR.esReservada(sTemporal)) maquinaEstados.agregarToken(new Celda(token,"",""));
             else System.out.println("Notificar error"); //TODO: Hacer bien esto.
 
             maquinaEstados.reiniciar();
@@ -188,7 +188,7 @@ public class AccionSemantica {
 
         @Override
         public void ejecutar() {
-            maquinaEstados.agregarToken(token);
+            maquinaEstados.agregarToken(new Celda(token,"",""));
 
             maquinaEstados.reiniciar();
         }
@@ -227,7 +227,7 @@ public class AccionSemantica {
             try {
                 int numero = Integer.parseInt(sTemporal);
                 if (numero >= 0 && numero <= LIMITE_INT) { //La cte esta en el rango valido.
-                    maquinaEstados.agregarToken(token); //TODO: Ver como pasarle el lexema al sintactico.
+                    maquinaEstados.agregarToken(new Celda(token,"","UINT")); //TODO: Ver como pasarle el lexema al sintactico.
                     //TODO: Se agrega a la TS?
 
                     maquinaEstados.reiniciar();

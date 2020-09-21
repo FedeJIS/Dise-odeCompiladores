@@ -10,7 +10,7 @@ public class MaquinaEstados {
 
     private int estadoActual = Estado.INICIAL;
 
-    private final List<Object> listaToken = new ArrayList<>();
+    private final List<Celda> listaToken = new ArrayList<>();
 
     /**
      * Valores para tokens (REEMPLAZAR POR LOS VALORES QUE DA YACC).
@@ -39,8 +39,8 @@ public class MaquinaEstados {
 
         /* Inicializacion estados */
         inicTransicionesInicial(inicStringVacio, concatenaChar, cuentaSaltoLinea,generaTokenEOF);
-        inicDeteccionId(concatenaChar, truncaId, generaTokenId, devuelveUltimoLeido, cuentaSaltoLinea);
-        inicDeteccionPR(concatenaChar, devuelveUltimoLeido, generaTokenPR, cuentaSaltoLinea);
+        inicDeteccionId(concatenaChar, truncaId, generaTokenId, devuelveUltimoLeido, cuentaSaltoLinea, generaTokenEOF);
+        inicDeteccionPR(concatenaChar, devuelveUltimoLeido, generaTokenPR, cuentaSaltoLinea, generaTokenEOF);
         inicInicioComent(cuentaSaltoLinea);
         inicCuerpoComent(cuentaSaltoLinea);
         inicComparacion(devuelveUltimoLeido, consumeChar, cuentaSaltoLinea);
@@ -87,7 +87,7 @@ public class MaquinaEstados {
      *
      * @param token token a agregar.
      */
-    public void agregarToken(Object token){
+    public void agregarToken(Celda token){
         listaToken.add(token);
     }
 
@@ -96,7 +96,7 @@ public class MaquinaEstados {
      *
      * @return la lista de tokens generada.
      */
-    public List<Object> getListaToken(){
+    public List<Celda> getListaToken(){
         return listaToken;
     }
 
@@ -199,7 +199,7 @@ public class MaquinaEstados {
      */
     private void inicDeteccionId(AccionSemantica concatenaChar, AccionSemantica truncaId,
                                  AccionSemantica generaTokenId, AccionSemantica devuelveUltimoLeido,
-                                 AccionSemantica cuentaSaltoLinea) {
+                                 AccionSemantica cuentaSaltoLinea, AccionSemantica generaTokenEOF) {
         inicTransiciones(Estado.DETECCION_ID,Estado.FINAL,truncaId,generaTokenId,devuelveUltimoLeido);
 
         maquinaEstados[Estado.DETECCION_ID][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL,truncaId,generaTokenId,
@@ -210,19 +210,26 @@ public class MaquinaEstados {
         maquinaEstados[Estado.DETECCION_ID][Input.LETRA_MINUSC] = new TransicionEstado(Estado.DETECCION_ID,concatenaChar);
         maquinaEstados[Estado.DETECCION_ID][Input.DIGITO] = new TransicionEstado(Estado.DETECCION_ID,concatenaChar);
         maquinaEstados[Estado.DETECCION_ID][Input.GUION_B] = new TransicionEstado(Estado.DETECCION_ID,concatenaChar);
+
+        //EOF.
+        maquinaEstados[Estado.DETECCION_ID][Input.EOF] = new TransicionEstado(Estado.FINAL,truncaId,generaTokenId,generaTokenEOF);
     }
 
     /**
      * Inicializacion estado 2.
      */
     private void inicDeteccionPR(AccionSemantica concatenaChar, AccionSemantica devuelveUltimoLeido,
-                                 AccionSemantica generaTokenPR, AccionSemantica cuentaSaltoLinea){
+                                 AccionSemantica generaTokenPR, AccionSemantica cuentaSaltoLinea,
+                                 AccionSemantica generaTokenEOF){
         inicTransiciones(Estado.DETECCION_PR,Estado.FINAL,generaTokenPR,devuelveUltimoLeido);
 
         maquinaEstados[Estado.DETECCION_PR][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL,generaTokenPR,
                 cuentaSaltoLinea); //Permite contar un salto de linea (No devuelve el ultimo leido pq se descartaria de todas formas).
         maquinaEstados[Estado.DETECCION_PR][Input.LETRA_MAYUS] = new TransicionEstado(Estado.DETECCION_PR,concatenaChar);
         maquinaEstados[Estado.DETECCION_PR][Input.GUION_B] = new TransicionEstado(Estado.DETECCION_PR,concatenaChar);
+
+        //EOF.
+        maquinaEstados[Estado.DETECCION_PR][Input.EOF] = new TransicionEstado(Estado.FINAL,generaTokenPR,generaTokenEOF);
     }
 
     /**

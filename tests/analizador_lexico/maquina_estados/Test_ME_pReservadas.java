@@ -5,28 +5,30 @@ import analizador_lexico.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Test_ME_ids {
+public class Test_ME_pReservadas {
     public static void main(String[] args) {
-        String lexema = "est";
+        String pReservada = "WHILE";
 
-        String fuente = "est";
+        String fuente = "WHILE";
         System.out.println("Fuente:'"+fuente+"'");
-        testGenerico(fuente,lexema);
+        testGenerico(fuente,pReservada);
 
         System.out.println("###############################");
 
-        fuente = "est/";
+        fuente = "WHILE{";
         System.out.println("Fuente:'"+fuente+"'");
-        testGenerico(fuente,lexema);
+        testGenerico(fuente,pReservada);
+
     }
 
-    private static void testGenerico(String fuente, String lexema){
+    private static void testGenerico(String fuente, String pReservada){
         List<String> lineas = new ArrayList<>();
         lineas.add(fuente);
         CodigoFuente cFuente = new CodigoFuente(lineas);
 
         TablaDeSimbolos tS = new TablaDeSimbolos();
         Reservado tPR = new Reservado();
+        tPR.agregar(pReservada);
 
         MaquinaEstados maquinaEstados = new MaquinaEstados(new FileProcessor(),cFuente,tS,tPR);
 
@@ -45,7 +47,7 @@ public class Test_ME_ids {
 
         System.out.println("Estado esperado:"+ Estado.INICIAL +". Conseguido:"+estadoActual);
 
-        System.out.println("Lexema buscado:"+lexema+". Lexema encontrado:"+tS.getValor(lexema).getLexema());
+        System.out.println("PR buscada:"+pReservada+". Esta en la TPR?"+tPR.esReservada(pReservada));
 
         System.out.print("Tokens generados: ");
         for (Celda celda : maquinaEstados.getListaToken())
