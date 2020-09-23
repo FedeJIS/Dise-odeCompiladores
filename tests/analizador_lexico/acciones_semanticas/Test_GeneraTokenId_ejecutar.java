@@ -1,8 +1,9 @@
 package analizador_lexico.acciones_semanticas;
 
 import analizador_lexico.AccionSemantica;
-import analizador_lexico.CodigoFuente;
-import analizador_lexico.TablaDeSimbolos;
+import analizador_lexico.AnalizadorLexico;
+import util.CodigoFuente;
+import util.tabla_simbolos.TablaDeSimbolos;
 import analizador_lexico.maquina_estados.MaquinaEstados;
 
 import java.util.ArrayList;
@@ -15,8 +16,9 @@ public class Test_GeneraTokenId_ejecutar {
 
         TablaDeSimbolos tS = new TablaDeSimbolos();
 
+        AnalizadorLexico analizadorLexico = new AnalizadorLexico();
         AccionSemantica.GeneraTokenTS generaTokenTS =
-                new AccionSemantica.GeneraTokenTS(new MaquinaEstados(null,codigoFuente,tS,null),tS,1);
+                new AccionSemantica.GeneraTokenTS(new MaquinaEstados(analizadorLexico,null,codigoFuente,tS,null),tS,1);
 
         generaTokenTS.ejecutar();
 

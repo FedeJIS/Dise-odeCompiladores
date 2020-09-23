@@ -1,8 +1,8 @@
 package analizador_lexico.acciones_semanticas;
 
 import analizador_lexico.AccionSemantica;
-import analizador_lexico.CodigoFuente;
-import analizador_lexico.FileProcessor;
+import util.CodigoFuente;
+import util.FileProcessor;
 
 import java.util.ArrayList;
 import java.util.List;

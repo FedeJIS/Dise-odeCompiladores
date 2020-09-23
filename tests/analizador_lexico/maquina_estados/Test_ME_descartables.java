@@ -1,9 +1,10 @@
 package analizador_lexico.maquina_estados;
 
-import analizador_lexico.CodigoFuente;
-import analizador_lexico.FileProcessor;
-import analizador_lexico.Reservado;
-import analizador_lexico.TablaDeSimbolos;
+import analizador_lexico.AnalizadorLexico;
+import util.CodigoFuente;
+import util.FileProcessor;
+import util.Reservado;
+import util.tabla_simbolos.TablaDeSimbolos;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,8 @@ public class Test_ME_descartables {
         TablaDeSimbolos tS = new TablaDeSimbolos();
         Reservado tPR = new Reservado();
 
-        MaquinaEstados maquinaEstados = new MaquinaEstados(new FileProcessor(),cFuente,tS,tPR);
+        AnalizadorLexico analizadorLexico = new AnalizadorLexico();
+        MaquinaEstados maquinaEstados = new MaquinaEstados(analizadorLexico,new FileProcessor(),cFuente,tS,tPR);
 
         while (!cFuente.eof()){
             System.out.println(cFuente.simboloActual());

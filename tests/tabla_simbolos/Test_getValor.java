@@ -1,7 +1,7 @@
 package tabla_simbolos;
 
-import analizador_lexico.Celda;
-import analizador_lexico.TablaDeSimbolos;
+import util.tabla_simbolos.Celda;
+import util.tabla_simbolos.TablaDeSimbolos;
 
 public class Test_getValor {
     public static void main(String[] args) {

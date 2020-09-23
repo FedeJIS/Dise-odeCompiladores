@@ -1,6 +1,11 @@
 package analizador_lexico.maquina_estados;
 
-import analizador_lexico.*;
+import analizador_lexico.AnalizadorLexico;
+import util.CodigoFuente;
+import util.FileProcessor;
+import util.Reservado;
+import util.tabla_simbolos.Celda;
+import util.tabla_simbolos.TablaDeSimbolos;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +67,8 @@ public class Test_ME_comparaciones {
         TablaDeSimbolos tS = new TablaDeSimbolos();
         Reservado tPR = new Reservado();
 
-        MaquinaEstados maquinaEstados = new MaquinaEstados(new FileProcessor(),cFuente,tS,tPR);
+        AnalizadorLexico analizadorLexico = new AnalizadorLexico();
+        MaquinaEstados maquinaEstados = new MaquinaEstados(analizadorLexico,new FileProcessor(),cFuente,tS,tPR);
 
         /* Inic lexico */
         while (!cFuente.eof()){
@@ -76,7 +82,7 @@ public class Test_ME_comparaciones {
         /* Fin lexico */
 
         System.out.print("Tokens generados: ");
-        for (Celda celda : maquinaEstados.getListaToken())
+        for (Celda celda : analizadorLexico.getListaToken())
             System.out.print(celda.getToken()+" ");
         System.out.println();
     }

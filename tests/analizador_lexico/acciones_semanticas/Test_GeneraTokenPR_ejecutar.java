@@ -1,9 +1,9 @@
 package analizador_lexico.acciones_semanticas;
 
 import analizador_lexico.AccionSemantica;
-import analizador_lexico.CodigoFuente;
-import analizador_lexico.Reservado;
-import analizador_lexico.TablaDeSimbolos;
+import analizador_lexico.AnalizadorLexico;
+import util.CodigoFuente;
+import util.Reservado;
 import analizador_lexico.maquina_estados.MaquinaEstados;
 
 import java.util.ArrayList;
@@ -17,8 +17,9 @@ public class Test_GeneraTokenPR_ejecutar {
         Reservado tPR = new Reservado();
         tPR.agregar(pR);
 
+        AnalizadorLexico analizadorLexico = new AnalizadorLexico();
         AccionSemantica.GeneraTokenPR generaTokenPR =
-                new AccionSemantica.GeneraTokenPR(new MaquinaEstados(null,codigoFuente,null,tPR),tPR,1);
+                new AccionSemantica.GeneraTokenPR(new MaquinaEstados(analizadorLexico,null,codigoFuente,null,tPR),tPR,1);
 
         generaTokenPR.ejecutar();
 
