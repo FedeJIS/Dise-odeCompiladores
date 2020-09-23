@@ -1,7 +1,6 @@
-package analizador_lexico;
+package util.tabla_simbolos;
 
 import java.util.Hashtable;
-import java.util.Map;
 
 public class TablaDeSimbolos {
     private Hashtable<String, Celda> tablaSimb;

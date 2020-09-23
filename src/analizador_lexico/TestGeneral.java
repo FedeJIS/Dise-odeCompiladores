@@ -1,5 +1,7 @@
 package analizador_lexico;
 
+import util.FileProcessor;
+
 public class TestGeneral {
     public static void main(String[] args) {
 

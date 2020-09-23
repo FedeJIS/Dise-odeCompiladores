@@ -1,4 +1,4 @@
-package analizador_lexico;
+package util.tabla_simbolos;
 
 public class Celda {
     private int token;

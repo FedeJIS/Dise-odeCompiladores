@@ -1,4 +1,4 @@
-package analizador_lexico;
+package util;
 
 import java.util.List;
 

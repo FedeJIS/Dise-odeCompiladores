@@ -1,6 +1,11 @@
 package analizador_lexico;
 
 import analizador_lexico.maquina_estados.MaquinaEstados;
+import util.CodigoFuente;
+import util.FileProcessor;
+import util.Reservado;
+import util.tabla_simbolos.Celda;
+import util.tabla_simbolos.TablaDeSimbolos;
 
 public class AccionSemantica {
     private final static int LIMITE_STRING = 20;
@@ -10,20 +15,10 @@ public class AccionSemantica {
     private final static double LIMIT_DPOS_INF=2.2250738585072014;
     private final static double LIMIT_DPOS_SUP=.7976931348623157;
     private final static int LIMIT_DEXP=308;
-//    private static FileProcessor fileProcessor;
-    private TablaDeSimbolos tablaDeSimbolos;
-//    private Reservado reservado;
-//    private CodigoFuente codigoFuente;
     private static String sTemporal;
-    private double numeroIntD = 0; // Utilizado para AS-double (parte numerica y parte exp)
+    private double numeroIntD = Double.NEGATIVE_INFINITY; // Utilizado para AS-double (parte numerica y parte exp)
 
-    public AccionSemantica(){
-//        fileProcessor= new FileProcessor();
-        tablaDeSimbolos= new TablaDeSimbolos();
-//        this.reservado=reservado;
-//        this.codigoFuente = new CodigoFuente(fileProcessor.getLineas(pathFuente));
-        this.numeroIntD=Double.NEGATIVE_INFINITY;
-    }
+    public AccionSemantica(){}
 
     /**
      * Metodo hook que se sobre escribe segun la accion particular.

@@ -1,16 +1,18 @@
 package analizador_lexico.maquina_estados;
 
 import analizador_lexico.*;
-
-import java.util.ArrayList;
-import java.util.List;
+import util.CodigoFuente;
+import util.FileProcessor;
+import util.Reservado;
+import util.tabla_simbolos.Celda;
+import util.tabla_simbolos.TablaDeSimbolos;
 
 public class MaquinaEstados {
     private final TransicionEstado[][] maquinaEstados = new TransicionEstado[Estado.TOTAL_ESTADOS][Input.TOTAL_INPUTS]; //[filas][columnas].
 
     private int estadoActual = Estado.INICIAL;
 
-    private final List<Celda> listaToken = new ArrayList<>();
+    private final AnalizadorLexico aLexico; //Permite agregar tokens a medida que se generan.
 
     /**
      * Valores para tokens (REEMPLAZAR POR LOS VALORES QUE DA YACC).
@@ -24,7 +26,10 @@ public class MaquinaEstados {
     /**
      * Constructor.
      */
-    public MaquinaEstados(FileProcessor fileProcessor, CodigoFuente codigoFuente, TablaDeSimbolos tablaS, Reservado tablaPR){
+    public MaquinaEstados(AnalizadorLexico aLexico, FileProcessor fileProcessor, CodigoFuente codigoFuente,
+                          TablaDeSimbolos tablaS, Reservado tablaPR){
+        this.aLexico = aLexico;
+
         /* Inicializacion de acciones semanticas */
         AccionSemantica inicStringVacio = new AccionSemantica.InicStringVacio(); //0
         AccionSemantica concatenaChar = new AccionSemantica.ConcatenaChar(codigoFuente); //1
@@ -78,27 +83,19 @@ public class MaquinaEstados {
 
         transicionEstado.ejecutarAccionSemantica();
 
-        listaToken.add(new Celda(tokenEOF,"",""));
+        aLexico.agregaToken(new Celda(tokenEOF,"",""));
 
         estadoActual = -1; //Finalizo ejecucion
     }
 
     /**
-     * Agrega un token a la lista de token. Solo es usado por aquellas AS a las que le corresponda generar tokens.
+     * Agrega un token a la lista de tokens presente en el analizador lexico.
+     * Solo es usado por aquellas AS a las que le corresponda generar tokens.
      *
      * @param token token a agregar.
      */
     public void agregarToken(Celda token){
-        listaToken.add(token);
-    }
-
-    /**
-     * Obtiene la lista de tokens generada al transicionar en la maquina.
-     *
-     * @return la lista de tokens generada.
-     */
-    public List<Celda> getListaToken(){
-        return listaToken;
+        aLexico.agregaToken(token);
     }
 
     /**
