@@ -17,9 +17,8 @@ public class MaquinaEstados {
     /**
      * Valores para tokens (REEMPLAZAR POR LOS VALORES QUE DA YACC).
      */
-    private final int tokenId = 0, tokenPR = 1, tokenCompMenorIgual = 3, tokenCompMayorIgual = 5,
-        tokenCompDistinto = 6, tokenCompIgual = 8, tokenUINT = 19, tokenCadena = 20, tokenEOF = 21, tokenDouble = 22;
-
+    private final int tokenEOF = 0, tokenId = 1, tokenPR = 2, tokenCompMenorIgual = 3, tokenCompMayorIgual = 4,
+            tokenCompDistinto = 5, tokenCompIgual = 6, tokenUINT = 7, tokenCadena = 8, tokenDouble = 9;
 
     /**
      * Constructor.
@@ -53,6 +52,10 @@ public class MaquinaEstados {
         inicCadena(concatenaChar, cuentaSaltoLinea, generaTokenCadena);
     }
 
+    public int getEstadoActual() {
+        return estadoActual;
+    }
+
     /**
      * @return true si la maquina esta en el estado final, false si no lo esta.
      */
@@ -60,16 +63,12 @@ public class MaquinaEstados {
         return estadoActual == Estado.FINAL;
     }
 
-    /**
-     * @return el estado actual de la maquina.
-     * @deprecated TODO Sacar.
-     */
-    public int getEstadoActual() {
-        return estadoActual;
-    }
-
     public void reiniciar(){
         estadoActual = 0;
+    }
+
+    public void setVariablesSintactico(int token, String lexema){
+        aLexico.setVariablesSintactico(token,lexema);
     }
 
     /**
@@ -78,32 +77,29 @@ public class MaquinaEstados {
      * @param charInput caracter leido.
      */
     public void transicionar(char charInput){
+        System.out.print("Parto de: "+estadoActual);
+
         int codigoInput = Input.charToInt(charInput); //Obtiene el codigo asociado al caracter leido.
 
         TransicionEstado transicionEstado = maquinaEstados[estadoActual][codigoInput];
 
         estadoActual = transicionEstado.siguienteEstado();
+        System.out.println(". Transiciono a: "+estadoActual);
         transicionEstado.ejecutarAccionSemantica();
     }
 
     public void transicionarEOF(){
+        System.out.print("Parto de: "+estadoActual);
+
         TransicionEstado transicionEstado = maquinaEstados[estadoActual][Input.EOF];
 
         transicionEstado.ejecutarAccionSemantica();
 
-        aLexico.agregaToken(new Celda(tokenEOF,"",""));
+//        aLexico.setVariablesSintactico(tokenEOF,""); //No tiene lexema. TODO Sacar linea.
 
-        estadoActual = 0; //Finalizo ejecucion
-    }
+        estadoActual = Estado.FINAL; //Finalizo ejecucion
 
-    /**
-     * Agrega un token a la lista de tokens presente en el analizador lexico.
-     * Solo es usado por aquellas AS a las que le corresponda generar tokens.
-     *
-     * @param token token a agregar.
-     */
-    public void agregarToken(Celda token){
-        aLexico.agregaToken(token);
+        System.out.println(". Transiciono a: "+estadoActual);
     }
 
     /**
@@ -263,9 +259,10 @@ public class MaquinaEstados {
                 cuentaSaltoLinea); //Permite contar un salto de linea (No devuelve el ultimo leido pq se descartaria de todas formas).
         maquinaEstados[Estado.COMP_MENOR][Input.EOF] = new TransicionEstado(Estado.FINAL); //No devuelve ultimo leido dsp de un EOF.
 
+        AccionSemantica generaTokenParticular;
         /* Comparacion por menor igual (5). */
-        maquinaEstados[Estado.COMP_MENOR][Input.IGUAL] = new TransicionEstado(Estado.FINAL,consumeChar);
-        this.agregarToken(new Celda(tokenCompMenorIgual,"","")); //Agrego el token directamente, sin necesidad de una AS (por comodidad).
+        generaTokenParticular = new AccionSemantica.GeneraTokenParticular(this,tokenCompMenorIgual);
+        maquinaEstados[Estado.COMP_MENOR][Input.IGUAL] = new TransicionEstado(Estado.FINAL,consumeChar, generaTokenParticular);
 
         /* Comparacion por mayor estricto (6). */
         inicTransiciones(Estado.COMP_MAYOR,Estado.FINAL,devuelveUltimoLeido,generaTokenLiteral);
@@ -274,8 +271,8 @@ public class MaquinaEstados {
         maquinaEstados[Estado.COMP_MAYOR][Input.EOF] = new TransicionEstado(Estado.FINAL); //No devuelve ultimo leido dsp de un EOF.
 
         /* Comparacion por mayor igual (6). */
-        maquinaEstados[Estado.COMP_MAYOR][Input.IGUAL] = new TransicionEstado(Estado.FINAL,consumeChar);
-        this.agregarToken(new Celda(tokenCompMayorIgual,"","")); //Agrego el token directamente, sin necesidad de una AS (por comodidad).
+        generaTokenParticular = new AccionSemantica.GeneraTokenParticular(this,tokenCompMayorIgual);
+        maquinaEstados[Estado.COMP_MAYOR][Input.IGUAL] = new TransicionEstado(Estado.FINAL,consumeChar, generaTokenParticular);
 
         /* '!' solo (7). El simbolo por si solo no es valido. TODO: Notificar error. */
         inicTransiciones(Estado.COMP_DISTINTO,Estado.INICIAL,devuelveUltimoLeido);
@@ -284,8 +281,8 @@ public class MaquinaEstados {
         maquinaEstados[Estado.COMP_DISTINTO][Input.EOF] = new TransicionEstado(Estado.INICIAL); //No devuelve ultimo leido dsp de un EOF.
 
         /* Comparacion por distincion (7). */
-        maquinaEstados[Estado.COMP_DISTINTO][Input.IGUAL] = new TransicionEstado(Estado.FINAL,consumeChar);
-        this.agregarToken(new Celda(tokenCompDistinto,"","")); //Agrego el token directamente, sin necesidad de una AS (por comodidad).
+        generaTokenParticular = new AccionSemantica.GeneraTokenParticular(this,tokenCompDistinto);
+        maquinaEstados[Estado.COMP_DISTINTO][Input.IGUAL] = new TransicionEstado(Estado.FINAL,consumeChar, generaTokenParticular);
 
         /* Asignacion (8). */
         inicTransiciones(Estado.SIGNO_IGUAL,Estado.FINAL,devuelveUltimoLeido, generaTokenLiteral);
@@ -294,8 +291,8 @@ public class MaquinaEstados {
         maquinaEstados[Estado.SIGNO_IGUAL][Input.EOF] = new TransicionEstado(Estado.FINAL); //No devuelve ultimo leido dsp de un EOF.
 
         /* Comparacion por igualdad (8). */
-        maquinaEstados[Estado.SIGNO_IGUAL][Input.IGUAL] = new TransicionEstado(Estado.FINAL,consumeChar);
-        this.agregarToken(new Celda(tokenCompIgual,"","")); //Agrego el token directamente, sin necesidad de una AS (por comodidad).
+        generaTokenParticular = new AccionSemantica.GeneraTokenParticular(this,tokenCompIgual);
+        maquinaEstados[Estado.SIGNO_IGUAL][Input.IGUAL] = new TransicionEstado(Estado.FINAL,consumeChar,generaTokenParticular);
 
     }
 

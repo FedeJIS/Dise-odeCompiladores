@@ -3,7 +3,6 @@ package analizador_lexico.maquina_estados;
 import analizador_lexico.AnalizadorLexico;
 import util.CodigoFuente;
 import util.FileProcessor;
-import util.Reservado;
 import util.tabla_simbolos.TablaDeSimbolos;
 
 import java.util.ArrayList;
@@ -11,37 +10,40 @@ import java.util.List;
 
 public class Test_ME_descartables {
     public static void main(String[] args){
-        System.out.println("Espacio en blanco");
-        testGenerico(" ",Estado.INICIAL);
+        FileProcessor fileProcessor = new FileProcessor();
+        TablaDeSimbolos tablaS = new TablaDeSimbolos();
 
-        System.out.println("Tab");
-        testGenerico("  ",Estado.INICIAL);
+        /*
+         * Se deben descartar todos los espacios.
+         * No debe haber tokens generados (-1).
+         */
+        AnalizadorLexico aLexico = new AnalizadorLexico(fileProcessor,inicCodigoFuente("     "),tablaS);
+        int token = aLexico.produceToken();
+        System.out.println("Token generado:"+token);
+        System.out.println("#######################################");
 
-        System.out.println("Salto linea");
-        testGenerico("\n",Estado.INICIAL);
+        /*
+         * Se deben descartar todas las tabulaciones.
+         * No debe haber tokens generados (-1).
+         */
+        aLexico = new AnalizadorLexico(fileProcessor,inicCodigoFuente("\t\t\t\t\t\t"),tablaS);
+        token = aLexico.produceToken();
+        System.out.println("Token generado:"+token);
+        System.out.println("#######################################");
+
+        /*
+         * Se deben descartar todos los saltos de linea.
+         * No debe haber tokens generados (-1).
+         */
+        aLexico = new AnalizadorLexico(fileProcessor,inicCodigoFuente("\n\n\n\n\n\n"),tablaS);
+        token = aLexico.produceToken();
+        System.out.println("Token generado:"+token);
+        System.out.println("#######################################");
     }
 
-    public static void testGenerico(String linea, int estadoEsperado){
+    public static CodigoFuente inicCodigoFuente(String fuente) {
         List<String> lineas = new ArrayList<>();
-        lineas.add(linea);
-        CodigoFuente cFuente = new CodigoFuente(lineas);
-
-        TablaDeSimbolos tS = new TablaDeSimbolos();
-        Reservado tPR = new Reservado();
-
-        AnalizadorLexico analizadorLexico = new AnalizadorLexico();
-        MaquinaEstados maquinaEstados = new MaquinaEstados(analizadorLexico,new FileProcessor(),cFuente,tS,tPR);
-
-        while (!cFuente.eof()){
-            System.out.println(cFuente.simboloActual());
-            maquinaEstados.transicionar(cFuente.simboloActual());
-            cFuente.avanzar();
-        }
-        maquinaEstados.transicionarEOF();
-        System.out.println();
-
-        int estadoActual = maquinaEstados.getEstadoActual();
-
-        System.out.println("Estado esperado:"+estadoEsperado+". Conseguido:"+estadoActual);
+        lineas.add(fuente);
+        return new CodigoFuente(lineas);
     }
 }

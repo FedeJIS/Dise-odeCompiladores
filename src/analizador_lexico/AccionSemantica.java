@@ -107,7 +107,7 @@ public class AccionSemantica {
         }
 
         /**
-         * Retrocede una vez en el codigo fuente, para que se vuelva a leer el ultimo caracter que se leyo.
+         * Retrocede una posicion en el codigo fuente, para que se vuelva a leer el ultimo caracter leido.
          */
         @Override
         public void ejecutar (){
@@ -118,13 +118,13 @@ public class AccionSemantica {
     public static class GeneraTokenTS extends AccionSemantica{
         private final MaquinaEstados maquinaEstados;
 
-        private final TablaDeSimbolos tablaDeSimbolos;
+        private final TablaDeSimbolos tablaS;
 
         private final int token;
 
-        public GeneraTokenTS(MaquinaEstados maquinaEstados, TablaDeSimbolos tablaDeSimbolos, int token) {
+        public GeneraTokenTS(MaquinaEstados maquinaEstados, TablaDeSimbolos tablaS, int token) {
             this.maquinaEstados = maquinaEstados;
-            this.tablaDeSimbolos = tablaDeSimbolos;
+            this.tablaS = tablaS;
             this.token = token;
         }
 
@@ -138,9 +138,8 @@ public class AccionSemantica {
          */
         @Override
         public void ejecutar() {
-            Celda celda = tablaDeSimbolos.agregar(new Celda(token,sTemporal,""));
-            maquinaEstados.agregarToken(celda); //Agrega el token a una lista para que sea accedida por el sintactico mas adelante.
-            //TODO: Ver como pasarle el lexema al sintactico.
+            tablaS.agregar(new Celda(token,sTemporal,""));
+            maquinaEstados.setVariablesSintactico(token,sTemporal);
         }
     }
 
@@ -162,24 +161,45 @@ public class AccionSemantica {
          */
         @Override
         public void ejecutar(){
-            if (tablaPR.esReservada(sTemporal)) maquinaEstados.agregarToken(new Celda(token,"",""));
-            else System.out.println("Notificar error"); //TODO: Hacer bien esto.
+            if (tablaPR.esReservada(sTemporal)) {
+                maquinaEstados.setVariablesSintactico(token,""); //No tiene lexema.
+            }
+            else{
+                //TODO Notificar error.
+            }
         }
     }
 
     public static class GeneraTokenLiteral extends AccionSemantica{
         private final MaquinaEstados maquinaEstados;
 
-        private final int token;
+        private final CodigoFuente cFuente;
 
-        public GeneraTokenLiteral(MaquinaEstados maquinaEstados, CodigoFuente codigoFuente) {
+        public GeneraTokenLiteral(MaquinaEstados maquinaEstados, CodigoFuente cFuente) {
             this.maquinaEstados = maquinaEstados;
-            this.token = codigoFuente.simboloActual(); //Conversion implicita de char a ASCII.
+            this.cFuente = cFuente;
         }
 
         @Override
         public void ejecutar() {
-            maquinaEstados.agregarToken(new Celda(token,"",""));
+            int token = cFuente.simboloActual(); //Conversion implicita de char a ASCII.
+            maquinaEstados.setVariablesSintactico(token,""); //No tiene lexema.
+        }
+    }
+
+    public static class GeneraTokenParticular extends AccionSemantica{
+        private final MaquinaEstados maquinaEstados;
+
+        private final int token;
+
+        public GeneraTokenParticular(MaquinaEstados maquinaEstados, int token) {
+            this.maquinaEstados = maquinaEstados;
+            this.token = token;
+        }
+
+        @Override
+        public void ejecutar() {
+            maquinaEstados.setVariablesSintactico(token,""); //No tiene lexema.
         }
     }
 
@@ -218,9 +238,8 @@ public class AccionSemantica {
             try {
                 int numero = Integer.parseInt(sTemporal);
                 if (numero >= 0 && numero <= LIMITE_INT) { //La cte esta en el rango valido.
-                    Celda celda = new Celda(token,sTemporal,"UINT");
-                    maquinaEstados.agregarToken(celda);
-                    tablaS.agregar(celda);
+                    tablaS.agregar(new Celda(token,sTemporal,"UINT"));
+                    maquinaEstados.setVariablesSintactico(token,sTemporal);
                 }
                 else{
                     //TODO Notificar error.
@@ -268,7 +287,6 @@ public class AccionSemantica {
          * Luego revisa si el double numeroIntD elevado a exponente Math.Pow(numeroIntD,exponente) es válido en el rango.
          */
         public void ejecutar(){
-            // Si la parte numerica es un double.
             if (baseNumDouble != Double.NEGATIVE_INFINITY)
                 try {
                     if (!isBaseFueraRango(baseNumDouble)){
@@ -277,9 +295,8 @@ public class AccionSemantica {
 
                         if (expNumDouble >= -MAX_DOUBLE_EXP && expNumDouble <= MAX_DOUBLE_EXP){ //Exponente con rango valido.
                             double doubleNormalizado = Math.pow(baseNumDouble,expNumDouble);
-                            Celda celda = new Celda(token,String.valueOf(doubleNormalizado),"DOUBLE");
-                            maquinaEstados.agregarToken(celda);
-                            tablaS.agregar(celda);
+                            tablaS.agregar(new Celda(token,String.valueOf(doubleNormalizado),"DOUBLE"));
+                            maquinaEstados.setVariablesSintactico(token,String.valueOf(doubleNormalizado));
                         }
                         else {
                             maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token. //TODO Verificar.

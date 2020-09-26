@@ -11,10 +11,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AnalizadorLexico {
-    private final List<Celda> listaToken = new ArrayList<>();
+    private final FileProcessor fileProcessor;
+    private final CodigoFuente cFuente;
+    private final TablaDeSimbolos tablaS;
+    private final Reservado tablaPR;
+    private final MaquinaEstados maquinaEstados;
 
-    public void agregaToken(Celda token){
-        listaToken.add(token);
+    public int token = -1; //TODO Reemplazar por nombre requerido por el parser.
+    public String lexema; //TODO Reemplazar por nombre requerido por el parser.
+
+    public AnalizadorLexico(FileProcessor fileProcessor, CodigoFuente cFuente, TablaDeSimbolos tablaS){
+        this.fileProcessor = fileProcessor;
+        this.cFuente = cFuente;
+        this.tablaS = tablaS;
+        this.tablaPR = inicTPR();
+        this.maquinaEstados = new MaquinaEstados(this,fileProcessor,cFuente,tablaS,tablaPR);
+    }
+
+    public void setVariablesSintactico(int token, String lexema){
+        this.token = token;
+        this.lexema = lexema;
     }
 
     private Reservado inicTPR(){
@@ -33,22 +49,16 @@ public class AnalizadorLexico {
         return tPR;
     }
 
-    public void ejecutar(){
-        FileProcessor fileProcessor = new FileProcessor();
-
-        CodigoFuente cFuente = new CodigoFuente(fileProcessor.getLineas("archivos/codigo_fuente.txt"));
-
-        TablaDeSimbolos tS = new TablaDeSimbolos();
-
-        MaquinaEstados maquinaEstados = new MaquinaEstados(this, fileProcessor,cFuente,tS,inicTPR());
-
-        while (!cFuente.eof()) {
-            maquinaEstados.transicionar(cFuente.simboloActual());
-            cFuente.avanzar();
+    public int produceToken(){
+        while (!maquinaEstados.estadoFinalAlcanzado()){
+            if (cFuente.eof()) {
+                maquinaEstados.transicionarEOF();
+            }
+            else {
+                maquinaEstados.transicionar(cFuente.simboloActual());
+                cFuente.avanzar();
+            }
         }
-    }
-
-    public List<Celda> getListaToken() {
-        return listaToken;
+        return token;
     }
 }
