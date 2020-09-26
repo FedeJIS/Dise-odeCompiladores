@@ -123,8 +123,8 @@ public class MaquinaEstados {
                                          AccionSemantica cuentaSaltoLinea, AccionSemantica generaTokenLiteral) {
         /*
          Inputs no validos.
-         Si no transiciono al estado final, no genero tokens y no altero el funcionamiento del lexico. Por eso me quedo
-         en el estado inicial, pero notifico el error.
+         Si no transiciono al estado final, no detengo la ejecucion del lexico. Por eso me quedo en el estado inicial,
+         pero notifico el error.
          TODO: Notificar error.
          */
         inicTransiciones(Estado.INICIAL,Estado.INICIAL);
@@ -180,9 +180,9 @@ public class MaquinaEstados {
     private void inicDeteccionId(AccionSemantica concatenaChar, AccionSemantica truncaId,
                                  AccionSemantica generaTokenId, AccionSemantica devuelveUltimoLeido,
                                  AccionSemantica cuentaSaltoLinea) {
-        //Inputs no validos. Vuelvo al inicio y agrego token.
-        inicTransiciones(Estado.DETECCION_ID,Estado.INICIAL,truncaId,generaTokenId,devuelveUltimoLeido);
-        maquinaEstados[Estado.DETECCION_ID][Input.SALTO_LINEA] = new TransicionEstado(Estado.INICIAL,truncaId,generaTokenId,
+        //Inputs no validos.
+        inicTransiciones(Estado.DETECCION_ID,Estado.FINAL,truncaId,generaTokenId,devuelveUltimoLeido);
+        maquinaEstados[Estado.DETECCION_ID][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL,truncaId,generaTokenId,
                 cuentaSaltoLinea); //Permite contar un salto de linea (No devuelve el ultimo leido pq se descartaria de todas formas).
 
         //Camino normal.
@@ -193,8 +193,8 @@ public class MaquinaEstados {
         maquinaEstados[Estado.DETECCION_ID][Input.DIGITO] = new TransicionEstado(Estado.DETECCION_ID,concatenaChar);
         maquinaEstados[Estado.DETECCION_ID][Input.GUION_B] = new TransicionEstado(Estado.DETECCION_ID,concatenaChar);
 
-        //EOF. Vuelvo al inicio. No hace falta devolver ultimo leido.
-        maquinaEstados[Estado.DETECCION_ID][Input.EOF] = new TransicionEstado(Estado.INICIAL,truncaId,generaTokenId);
+        //EOF. Voy directo al estado final. No hace falta devolver ultimo leido.
+        maquinaEstados[Estado.DETECCION_ID][Input.EOF] = new TransicionEstado(Estado.FINAL,truncaId,generaTokenId);
     }
 
     /**
@@ -202,17 +202,17 @@ public class MaquinaEstados {
      */
     private void inicDeteccionPR(AccionSemantica concatenaChar, AccionSemantica devuelveUltimoLeido,
                                  AccionSemantica generaTokenPR, AccionSemantica cuentaSaltoLinea){
-        //Inputs no validos. Vuelvo al inicio y agrego token.
-        inicTransiciones(Estado.DETECCION_PR,Estado.INICIAL,generaTokenPR,devuelveUltimoLeido);
-        maquinaEstados[Estado.DETECCION_PR][Input.SALTO_LINEA] = new TransicionEstado(Estado.INICIAL,generaTokenPR,
+        //Inputs no validos.
+        inicTransiciones(Estado.DETECCION_PR,Estado.FINAL,generaTokenPR,devuelveUltimoLeido);
+        maquinaEstados[Estado.DETECCION_PR][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL,generaTokenPR,
                 cuentaSaltoLinea); //Permite contar un salto de linea (No devuelve el ultimo leido pq se descartaria de todas formas).
 
         //Camino normal.
         maquinaEstados[Estado.DETECCION_PR][Input.LETRA_MAYUS] = new TransicionEstado(Estado.DETECCION_PR,concatenaChar);
         maquinaEstados[Estado.DETECCION_PR][Input.GUION_B] = new TransicionEstado(Estado.DETECCION_PR,concatenaChar);
 
-        //EOF. Vuelvo al inicio. No hace falta devolver ultimo leido.
-        maquinaEstados[Estado.DETECCION_PR][Input.EOF] = new TransicionEstado(Estado.INICIAL,generaTokenPR);
+        //EOF. Voy directo al estado final. No hace falta devolver ultimo leido.
+        maquinaEstados[Estado.DETECCION_PR][Input.EOF] = new TransicionEstado(Estado.FINAL,generaTokenPR);
     }
 
     /**
@@ -220,15 +220,15 @@ public class MaquinaEstados {
      */
     private void inicInicioComent(AccionSemantica cuentaSaltoLinea, AccionSemantica devuelveUltimoLeido){
         //Inputs no validos. TODO: Notificar error.
-        inicTransiciones(Estado.INICIO_COMENT,Estado.INICIAL,devuelveUltimoLeido);
-        maquinaEstados[Estado.INICIO_COMENT][Input.SALTO_LINEA] = new TransicionEstado(Estado.INICIAL,
+        inicTransiciones(Estado.INICIO_COMENT,Estado.FINAL,devuelveUltimoLeido);
+        maquinaEstados[Estado.INICIO_COMENT][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL,
                 cuentaSaltoLinea); //Permite contar un salto de linea. No devuele ultimo leido porque se descartaria.
 
         //Camino normal.
         maquinaEstados[Estado.INICIO_COMENT][Input.PORCENTAJE] = new TransicionEstado(Estado.CUERPO_COMENT);
 
-        //EOF. Vuelvo al inicio. No hace falta devolver ultimo leido. TODO: Notificar error.
-        maquinaEstados[Estado.INICIO_COMENT][Input.EOF] = new TransicionEstado(Estado.INICIAL);
+        //EOF. Voy directo al estado final. No hace falta devolver ultimo leido. TODO: Notificar error.
+        maquinaEstados[Estado.INICIO_COMENT][Input.EOF] = new TransicionEstado(Estado.FINAL);
     }
 
     /**
@@ -238,11 +238,11 @@ public class MaquinaEstados {
         //Inputs validos.
         inicTransiciones(Estado.CUERPO_COMENT,Estado.CUERPO_COMENT);
 
-        //Fin comentario (salto linea).
-        maquinaEstados[Estado.CUERPO_COMENT][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL,cuentaSaltoLinea);
+        //Fin comentario (salto linea). Vuelvo al inicio para no detener la ejecucion del lexico.
+        maquinaEstados[Estado.CUERPO_COMENT][Input.SALTO_LINEA] = new TransicionEstado(Estado.INICIAL,cuentaSaltoLinea);
 
-        //EOF. Vuelvo al inicio. No hace falta devolver ultimo leido.
-        maquinaEstados[Estado.CUERPO_COMENT][Input.EOF] = new TransicionEstado(Estado.INICIAL);
+        //EOF. No hace falta devolver ultimo leido.
+        maquinaEstados[Estado.CUERPO_COMENT][Input.EOF] = new TransicionEstado(Estado.FINAL);
     }
 
     /**
