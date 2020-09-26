@@ -141,8 +141,6 @@ public class AccionSemantica {
             Celda celda = tablaDeSimbolos.agregar(new Celda(token,sTemporal,""));
             maquinaEstados.agregarToken(celda); //Agrega el token a una lista para que sea accedida por el sintactico mas adelante.
             //TODO: Ver como pasarle el lexema al sintactico.
-
-            maquinaEstados.reiniciar();
         }
     }
 
@@ -166,8 +164,6 @@ public class AccionSemantica {
         public void ejecutar(){
             if (tablaPR.esReservada(sTemporal)) maquinaEstados.agregarToken(new Celda(token,"",""));
             else System.out.println("Notificar error"); //TODO: Hacer bien esto.
-
-            maquinaEstados.reiniciar();
         }
     }
 
@@ -184,13 +180,11 @@ public class AccionSemantica {
         @Override
         public void ejecutar() {
             maquinaEstados.agregarToken(new Celda(token,"",""));
-
-            maquinaEstados.reiniciar();
         }
     }
 
     public static class ConsumeChar extends AccionSemantica{
-        private final CodigoFuente codigoFuente;
+        private final CodigoFuente codigoFuente; //TODO Remove?
 
         public ConsumeChar(CodigoFuente codigoFuente) {
             this.codigoFuente = codigoFuente;
@@ -206,10 +200,13 @@ public class AccionSemantica {
     public static class GeneraTokenUINT extends AccionSemantica {
         private final MaquinaEstados maquinaEstados;
 
+        private final TablaDeSimbolos tablaS;
+
         private final int token;
 
-        public GeneraTokenUINT(MaquinaEstados maquinaEstados, int token) {
+        public GeneraTokenUINT(MaquinaEstados maquinaEstados, TablaDeSimbolos tablaS, int token) {
             this.maquinaEstados = maquinaEstados;
+            this.tablaS = tablaS;
             this.token = token;
         }
 
@@ -221,10 +218,12 @@ public class AccionSemantica {
             try {
                 int numero = Integer.parseInt(sTemporal);
                 if (numero >= 0 && numero <= LIMITE_INT) { //La cte esta en el rango valido.
-                    maquinaEstados.agregarToken(new Celda(token,"","UINT")); //TODO: Ver como pasarle el lexema al sintactico.
-                    //TODO: Se agrega a la TS?
-
-                    maquinaEstados.reiniciar();
+                    Celda celda = new Celda(token,"","UINT");
+                    maquinaEstados.agregarToken(celda); //TODO: Ver como pasarle el lexema al sintactico.
+                    tablaS.agregar(celda);
+                }
+                else{
+                    //TODO Notificar error.
                 }
             }
             catch (NumberFormatException numberFormatException){

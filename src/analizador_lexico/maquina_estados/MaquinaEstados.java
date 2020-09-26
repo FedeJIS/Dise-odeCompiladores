@@ -38,6 +38,7 @@ public class MaquinaEstados {
         AccionSemantica generaTokenPR = new AccionSemantica.GeneraTokenPR(this, tablaPR, tokenPR); //5
         AccionSemantica generaTokenLiteral = new AccionSemantica.GeneraTokenLiteral(this,codigoFuente); //6
         AccionSemantica consumeChar = new AccionSemantica.ConsumeChar(codigoFuente); //7
+        AccionSemantica generaTokenUINT = new AccionSemantica.GeneraTokenUINT(this, tablaS, tokenUINT); //8
         AccionSemantica cuentaSaltoLinea = new AccionSemantica.CuentaSaltoLinea(); //12
 
         /* Inicializacion estados */
@@ -47,7 +48,7 @@ public class MaquinaEstados {
         inicInicioComent(cuentaSaltoLinea, devuelveUltimoLeido);
         inicCuerpoComent(cuentaSaltoLinea);
         inicComparacion(devuelveUltimoLeido, consumeChar, cuentaSaltoLinea,generaTokenLiteral);
-//        inicDeteccionCtes();
+        inicDeteccionCtes(concatenaChar, devuelveUltimoLeido, cuentaSaltoLinea, generaTokenUINT);
         inicCadena(concatenaChar, cuentaSaltoLinea, generaTokenCadena);
     }
 
@@ -296,39 +297,40 @@ public class MaquinaEstados {
      * Inicializacion estados 9, 10, 11, 12, 13, 14.
      */
     private void inicDeteccionCtes(AccionSemantica concatenaChar, AccionSemantica devuelveUltimoLeido,
-                                   AccionSemantica cuentaSaltoLinea){
-        //Parte entera (9).
-        inicTransiciones(Estado.CTE_PARTE_ENTERA, Estado.ERR_SIMBOLO_INV,devuelveUltimoLeido); //TODO: Notificar error.
+                                   AccionSemantica cuentaSaltoLinea, AccionSemantica generaTokenUINT){
+        /* Parte entera (9). El lexico "da por hecho" que es un UINT, asi se evita dar problemas al sintactico. */
+        inicTransiciones(Estado.CTE_PARTE_ENTERA, Estado.FINAL,generaTokenUINT, devuelveUltimoLeido, generaTokenUINT); //TODO: Mostrar warning porque falto "_ui".
+        maquinaEstados[Estado.CTE_PARTE_ENTERA][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL, generaTokenUINT,
+                cuentaSaltoLinea); //Permite contar un salto de linea (No devuelve el ultimo leido pq se descartaria de todas formas).
 
         maquinaEstados[Estado.CTE_PARTE_ENTERA][Input.DIGITO] = new TransicionEstado(Estado.CTE_PARTE_ENTERA,concatenaChar);
         maquinaEstados[Estado.CTE_PARTE_ENTERA][Input.GUION_B] = new TransicionEstado(Estado.CTE_UI_SUF1); //Salto a deteccion de sufijo para UIs.
         maquinaEstados[Estado.CTE_PARTE_ENTERA][Input.PUNTO] = new TransicionEstado(Estado.CTE_PARTE_DECIM,concatenaChar); //Salto a parte decimal de doubles.
 //        maquinaEstados[Estado.CTE_PARTE_ENTERA][Input.D_MINUSC] = new TransicionEstado(Estado.CTE_PARTE_EXP,"1"); //Salto a parte exponencial de doubles.
 
-        //Sufijo1 (10).
-        inicTransiciones(Estado.CTE_UI_SUF1, Estado.ERR_SIMBOLO_INV,devuelveUltimoLeido); //TODO: Notificar error.
-        maquinaEstados[Estado.CTE_UI_SUF1][Input.SALTO_LINEA] = new TransicionEstado(Estado.ERR_SIMBOLO_INV,
+        /* Sufijo1 (10). */
+        inicTransiciones(Estado.CTE_UI_SUF1, Estado.FINAL,devuelveUltimoLeido, generaTokenUINT); //TODO: Mostrar warning porque falto "ui".
+        maquinaEstados[Estado.CTE_UI_SUF1][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL, generaTokenUINT,
                 cuentaSaltoLinea); //Permite contar un salto de linea (No devuelve el ultimo leido pq se descartaria de todas formas).
         maquinaEstados[Estado.CTE_UI_SUF1][Input.U_MINUSC] = new TransicionEstado(Estado.CTE_UI_SUF2);
 
-        //Sufijo2 (11).
-        inicTransiciones(Estado.CTE_UI_SUF2, Estado.ERR_SIMBOLO_INV,devuelveUltimoLeido); //TODO: Notificar error.
-        maquinaEstados[Estado.CTE_UI_SUF2][Input.SALTO_LINEA] = new TransicionEstado(Estado.ERR_SIMBOLO_INV,
+        /* Sufijo2 (11). */
+        inicTransiciones(Estado.CTE_UI_SUF2, Estado.FINAL,devuelveUltimoLeido, generaTokenUINT); //TODO: Mostrar warning porque falto "i".
+        maquinaEstados[Estado.CTE_UI_SUF2][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL, generaTokenUINT,
                 cuentaSaltoLinea); //Permite contar un salto de linea (No devuelve el ultimo leido pq se descartaria de todas formas).
         maquinaEstados[Estado.CTE_UI_SUF2][Input.I_MINUSC] = new TransicionEstado(Estado.CTE_UI_SUF3);
 
-        //Sufijo3 (12).
-        AccionSemantica generaTokenUINT = new AccionSemantica.GeneraTokenUINT(this,tokenUINT);
+        /* Sufijo3 (12). */
         inicTransiciones(Estado.CTE_UI_SUF3, Estado.FINAL,devuelveUltimoLeido, generaTokenUINT);
-        maquinaEstados[Estado.CTE_UI_SUF3][Input.SALTO_LINEA] = new TransicionEstado(Estado.ERR_SIMBOLO_INV,
+        maquinaEstados[Estado.CTE_UI_SUF3][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL, generaTokenUINT,
                 cuentaSaltoLinea); //Permite contar un salto de linea (No devuelve el ultimo leido pq se descartaria de todas formas).
 
-        //Parte decimal (13).
+        /* Parte decimal (13). */
 //        inicTransiciones(Estado.CTE_PARTE_DECIM, Estado.FINAL, devuelveUltimoLeido, );
 //        maquinaEstados[Estado.CTE_PARTE_DECIM][Input.D_MINUSC] = new TransicionEstado(Estado.CTE_PARTE_EXP,"1"); //Salto a parte exponencial de doubles.
 //        maquinaEstados[Estado.CTE_PARTE_DECIM][Input.DIGITO] = new TransicionEstado(Estado.CTE_PARTE_DECIM,"1");
 
-        //Parte exponencial (14).
+        /* Parte exponencial (14). */
 //        inicTransiciones(Estado.CTE_PARTE_EXP, Estado.FINAL,"6,11");
 //        maquinaEstados[Estado.CTE_PARTE_EXP][Input.DIGITO] = new TransicionEstado(Estado.CTE_PARTE_EXP,"1");
     }
