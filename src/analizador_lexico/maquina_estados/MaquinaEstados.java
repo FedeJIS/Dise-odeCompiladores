@@ -18,9 +18,7 @@ public class MaquinaEstados {
      * Valores para tokens (REEMPLAZAR POR LOS VALORES QUE DA YACC).
      */
     private final int tokenId = 0, tokenPR = 1, tokenMenor = 2, tokenMenorIgual = 3, tokenMayor = 4, tokenMayorIgual = 5,
-        tokenDistinto = 6, tokenAsignacion = 7, tokenIgual = 8, tokenSuma = 9, tokenResta = 10, tokenMultipl = 11,
-        tokenDiv = 12, tokenCorcheteA = 13, tokenCorcheteC = 14, tokenParentA = 15, tokenParentC = 16, tokenPunto = 17,
-        tokenPuntoComa = 18, tokenUINT = 19, tokenCadena = 20, tokenEOF = 21;
+        tokenDistinto = 6, tokenAsignacion = 7, tokenIgual = 8, tokenUINT = 19, tokenCadena = 20, tokenEOF = 21;
 
 
     /**
@@ -38,12 +36,12 @@ public class MaquinaEstados {
         AccionSemantica generTokenId = new AccionSemantica.GeneraTokenTS(this, tablaS, tokenId); //4
         AccionSemantica generaTokenCadena = new AccionSemantica.GeneraTokenTS(this,tablaS,tokenCadena); //4
         AccionSemantica generaTokenPR = new AccionSemantica.GeneraTokenPR(this, tablaPR, tokenPR); //5
+        AccionSemantica generaTokenLiteral = new AccionSemantica.GeneraTokenLiteral(this,codigoFuente); //6
         AccionSemantica consumeChar = new AccionSemantica.ConsumeChar(codigoFuente); //7
-
         AccionSemantica cuentaSaltoLinea = new AccionSemantica.CuentaSaltoLinea(); //12
 
         /* Inicializacion estados */
-        inicTransicionesInicial(inicStringVacio, concatenaChar, cuentaSaltoLinea);
+        inicTransicionesInicial(inicStringVacio, concatenaChar, cuentaSaltoLinea, generaTokenLiteral);
         inicDeteccionId(concatenaChar, truncaId, generTokenId, devuelveUltimoLeido, cuentaSaltoLinea);
         inicDeteccionPR(concatenaChar, devuelveUltimoLeido, generaTokenPR, cuentaSaltoLinea);
         inicInicioComent(cuentaSaltoLinea, devuelveUltimoLeido);
@@ -54,7 +52,15 @@ public class MaquinaEstados {
     }
 
     /**
+     * @return true si la maquina esta en el estado final, false si no lo esta.
+     */
+    public boolean estadoFinalAlcanzado(){
+        return estadoActual == Estado.FINAL;
+    }
+
+    /**
      * @return el estado actual de la maquina.
+     * @deprecated TODO Sacar.
      */
     public int getEstadoActual() {
         return estadoActual;
@@ -114,8 +120,13 @@ public class MaquinaEstados {
      * Inicializacion estado 0.
      */
     private void inicTransicionesInicial(AccionSemantica inicStringVacio, AccionSemantica concatenaChar,
-                                         AccionSemantica cuentaSaltoLinea) {
-        //Inputs no validos. Me quedo en el inicio pero notifico el error. TODO: Notificar error.
+                                         AccionSemantica cuentaSaltoLinea, AccionSemantica generaTokenLiteral) {
+        /*
+         Inputs no validos.
+         Si no transiciono al estado final, no genero tokens y no altero el funcionamiento del lexico. Por eso me quedo
+         en el estado inicial, pero notifico el error.
+         TODO: Notificar error.
+         */
         inicTransiciones(Estado.INICIAL,Estado.INICIAL);
 
         //Descartables.
@@ -144,46 +155,17 @@ public class MaquinaEstados {
         maquinaEstados[Estado.INICIAL][Input.ADMIRACION] = new TransicionEstado(Estado.COMP_DISTINTO);
         maquinaEstados[Estado.INICIAL][Input.IGUAL] = new TransicionEstado(Estado.SIGNO_IGUAL);
 
-        AccionSemantica generaToken;
-        //Token suma.
-        generaToken = new AccionSemantica.GeneraTokenUnitario(this,tokenSuma);
-        maquinaEstados[Estado.INICIAL][Input.SUMA] = new TransicionEstado(Estado.FINAL,generaToken);
-
-        //Token resta.
-        generaToken = new AccionSemantica.GeneraTokenUnitario(this,tokenResta);
-        maquinaEstados[Estado.INICIAL][Input.RESTA] = new TransicionEstado(Estado.FINAL,generaToken);
-
-        //Token multiplicacion.
-        generaToken = new AccionSemantica.GeneraTokenUnitario(this,tokenMultipl);
-        maquinaEstados[Estado.INICIAL][Input.MULTIPL] = new TransicionEstado(Estado.FINAL,generaToken);
-
-        //Token division.
-        generaToken = new AccionSemantica.GeneraTokenUnitario(this,tokenDiv);
-        maquinaEstados[Estado.INICIAL][Input.DIV] = new TransicionEstado(Estado.FINAL,generaToken);
-
-        //Token corchete abierto.
-        generaToken = new AccionSemantica.GeneraTokenUnitario(this,tokenCorcheteA);
-        maquinaEstados[Estado.INICIAL][Input.CORCHETE_A] = new TransicionEstado(Estado.FINAL,generaToken);
-
-        //Token corchete cerrado.
-        generaToken = new AccionSemantica.GeneraTokenUnitario(this,tokenCorcheteC);
-        maquinaEstados[Estado.INICIAL][Input.CORCHETE_C] = new TransicionEstado(Estado.FINAL,generaToken);
-
-        //Token parentesis abierto.
-        generaToken = new AccionSemantica.GeneraTokenUnitario(this,tokenParentA);
-        maquinaEstados[Estado.INICIAL][Input.PARENT_A] = new TransicionEstado(Estado.FINAL,generaToken);
-
-        //Token parentesis cerrado.
-        generaToken = new AccionSemantica.GeneraTokenUnitario(this,tokenParentC);
-        maquinaEstados[Estado.INICIAL][Input.PARENT_C] = new TransicionEstado(Estado.FINAL,generaToken);
-
-        //Token punto.
-        generaToken = new AccionSemantica.GeneraTokenUnitario(this, tokenPunto);
-        maquinaEstados[Estado.INICIAL][Input.COMA] = new TransicionEstado(Estado.FINAL,generaToken);
-
-        //Token punto y coma.
-        generaToken = new AccionSemantica.GeneraTokenUnitario(this,tokenPuntoComa);
-        maquinaEstados[Estado.INICIAL][Input.PUNTO_COMA] = new TransicionEstado(Estado.FINAL,generaToken);
+        //Tokens literales.
+        maquinaEstados[Estado.INICIAL][Input.SUMA] = new TransicionEstado(Estado.FINAL,generaTokenLiteral);
+        maquinaEstados[Estado.INICIAL][Input.RESTA] = new TransicionEstado(Estado.FINAL,generaTokenLiteral);
+        maquinaEstados[Estado.INICIAL][Input.MULTIPL] = new TransicionEstado(Estado.FINAL,generaTokenLiteral);
+        maquinaEstados[Estado.INICIAL][Input.DIV] = new TransicionEstado(Estado.FINAL,generaTokenLiteral);
+        maquinaEstados[Estado.INICIAL][Input.CORCHETE_A] = new TransicionEstado(Estado.FINAL,generaTokenLiteral);
+        maquinaEstados[Estado.INICIAL][Input.CORCHETE_C] = new TransicionEstado(Estado.FINAL,generaTokenLiteral);
+        maquinaEstados[Estado.INICIAL][Input.PARENT_A] = new TransicionEstado(Estado.FINAL,generaTokenLiteral);
+        maquinaEstados[Estado.INICIAL][Input.PARENT_C] = new TransicionEstado(Estado.FINAL,generaTokenLiteral);
+        maquinaEstados[Estado.INICIAL][Input.COMA] = new TransicionEstado(Estado.FINAL,generaTokenLiteral);
+        maquinaEstados[Estado.INICIAL][Input.PUNTO_COMA] = new TransicionEstado(Estado.FINAL,generaTokenLiteral);
 
         //Cadena multilinea.
         maquinaEstados[Estado.INICIAL][Input.COMILLA] = new TransicionEstado(Estado.CADENA,inicStringVacio,concatenaChar);
@@ -271,26 +253,26 @@ public class MaquinaEstados {
         AccionSemantica generaToken;
 
         //Comparacion por menor estricto (5).
-        generaToken = new AccionSemantica.GeneraTokenUnitario(this,tokenMenor);
+        generaToken = new AccionSemantica.GeneraTokenLiteral(this,tokenMenor);
 
         inicTransiciones(Estado.COMP_MENOR,Estado.INICIAL,devuelveUltimoLeido,generaToken);
         maquinaEstados[Estado.COMP_MENOR][Input.SALTO_LINEA] = new TransicionEstado(Estado.INICIAL,generaToken,
                 cuentaSaltoLinea); //Permite contar un salto de linea (No devuelve el ultimo leido pq se descartaria de todas formas).
 
         //Comparacion por menor igual (5).
-        generaToken = new AccionSemantica.GeneraTokenUnitario(this,tokenMenorIgual);
+        generaToken = new AccionSemantica.GeneraTokenLiteral(this,tokenMenorIgual);
 
         maquinaEstados[Estado.COMP_MENOR][Input.IGUAL] = new TransicionEstado(Estado.INICIAL,consumeChar,generaToken);
 
         //Comparacion por mayor estricto (6).
-        generaToken = new AccionSemantica.GeneraTokenUnitario(this,tokenMayor);
+        generaToken = new AccionSemantica.GeneraTokenLiteral(this,tokenMayor);
 
         inicTransiciones(Estado.COMP_MAYOR,Estado.INICIAL,devuelveUltimoLeido,generaToken);
         maquinaEstados[Estado.COMP_MAYOR][Input.SALTO_LINEA] = new TransicionEstado(Estado.INICIAL,generaToken,
                 cuentaSaltoLinea); //Permite contar un salto de linea (No devuelve el ultimo leido pq se descartaria de todas formas).
 
         //Comparacion por mayor igual (6).
-        generaToken = new AccionSemantica.GeneraTokenUnitario(this,tokenMayorIgual);
+        generaToken = new AccionSemantica.GeneraTokenLiteral(this,tokenMayorIgual);
 
         maquinaEstados[Estado.COMP_MAYOR][Input.IGUAL] = new TransicionEstado(Estado.INICIAL,consumeChar,generaToken);
 
@@ -300,19 +282,19 @@ public class MaquinaEstados {
                 cuentaSaltoLinea); //Permite contar un salto de linea (No devuelve el ultimo leido pq se descartaria de todas formas).
 
         //Comparacion por distincion (7).
-        generaToken = new AccionSemantica.GeneraTokenUnitario(this,tokenDistinto);
+        generaToken = new AccionSemantica.GeneraTokenLiteral(this,tokenDistinto);
 
         maquinaEstados[Estado.COMP_DISTINTO][Input.IGUAL] = new TransicionEstado(Estado.INICIAL,consumeChar,generaToken);
 
         //Asignacion (8).
-        generaToken = new AccionSemantica.GeneraTokenUnitario(this,tokenAsignacion);
+        generaToken = new AccionSemantica.GeneraTokenLiteral(this,tokenAsignacion);
 
         inicTransiciones(Estado.SIGNO_IGUAL,Estado.INICIAL,devuelveUltimoLeido, generaToken);
         maquinaEstados[Estado.SIGNO_IGUAL][Input.SALTO_LINEA] = new TransicionEstado(Estado.INICIAL, generaToken,
                 cuentaSaltoLinea); //Permite contar un salto de linea (No devuelve el ultimo leido pq se descartaria de todas formas).
 
         //Comparacion por igualdad (8).
-        generaToken = new AccionSemantica.GeneraTokenUnitario(this,tokenIgual);
+        generaToken = new AccionSemantica.GeneraTokenLiteral(this,tokenIgual);
 
         maquinaEstados[Estado.SIGNO_IGUAL][Input.IGUAL] = new TransicionEstado(Estado.INICIAL,consumeChar, generaToken);
     }

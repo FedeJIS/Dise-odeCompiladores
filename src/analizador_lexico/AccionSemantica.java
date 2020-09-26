@@ -171,14 +171,14 @@ public class AccionSemantica {
         }
     }
 
-    public static class GeneraTokenUnitario extends AccionSemantica{
+    public static class GeneraTokenLiteral extends AccionSemantica{
         private final MaquinaEstados maquinaEstados;
 
         private final int token;
 
-        public GeneraTokenUnitario(MaquinaEstados maquinaEstados, int token) {
+        public GeneraTokenLiteral(MaquinaEstados maquinaEstados, CodigoFuente codigoFuente) {
             this.maquinaEstados = maquinaEstados;
-            this.token = token;
+            this.token = codigoFuente.simboloActual(); //Conversion implicita de char a ASCII.
         }
 
         @Override
