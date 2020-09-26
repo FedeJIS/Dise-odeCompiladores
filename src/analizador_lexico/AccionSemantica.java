@@ -10,13 +10,13 @@ import util.tabla_simbolos.TablaDeSimbolos;
 public class AccionSemantica {
     private final static int LIMITE_STRING = 20;
     private final static int LIMITE_INT=(int)(Math.pow(2,16)-1);
-    private final static double LIMIT_DNEG_INF=-1.7976931348623157;
-    private final static double LIMIT_DNEG_SUP=-2.2250738585072014;
-    private final static double LIMIT_DPOS_INF=2.2250738585072014;
-    private final static double LIMIT_DPOS_SUP=.7976931348623157;
-    private final static int LIMIT_DEXP=308;
+    private final static double LIM_INF_DOUBLE_NEG = -1.7976931348623157;
+    private final static double LIM_SUP_DOUBLE_NEG = -2.2250738585072014;
+    private final static double LIM_INF_DOUBLE_POS = 2.2250738585072014;
+    private final static double LIM_SUP_DOUBLE_POS = 1.7976931348623157;
+    private final static int  MIN_DOUBLE_EXP = -308, MAX_DOUBLE_EXP = 308;
     private static String sTemporal;
-    private double numeroIntD = Double.NEGATIVE_INFINITY; // Utilizado para AS-double (parte numerica y parte exp)
+    private static double baseNumDouble = Double.NEGATIVE_INFINITY; // Utilizado para AS-double (parte numerica y parte exp)
 
     public AccionSemantica(){}
 
@@ -218,12 +218,13 @@ public class AccionSemantica {
             try {
                 int numero = Integer.parseInt(sTemporal);
                 if (numero >= 0 && numero <= LIMITE_INT) { //La cte esta en el rango valido.
-                    Celda celda = new Celda(token,"","UINT");
-                    maquinaEstados.agregarToken(celda); //TODO: Ver como pasarle el lexema al sintactico.
+                    Celda celda = new Celda(token,sTemporal,"UINT");
+                    maquinaEstados.agregarToken(celda);
                     tablaS.agregar(celda);
                 }
                 else{
                     //TODO Notificar error.
+                    maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token. //TODO Verificar.
                 }
             }
             catch (NumberFormatException numberFormatException){
@@ -232,60 +233,80 @@ public class AccionSemantica {
         }
     }
 
-    /**
-     * Dada la parte numerica de un double entero,decimal (numeroIntD), se verifica si el exponente es correcto
-     * Luego revisa si el double numeroIntD elevado a exponente Math.Pow(numeroIntD,exponente) es válido en el rango.
-     */
-    public class GeneraTokenDouble{
-        public boolean ejecutar(){
-            // Si la parte numerica es un double (obtenida de AS11_partnum)
-            if (numeroIntD != Double.NEGATIVE_INFINITY) {
-                try {
-                    // Si el exponente se encuentra dentro del rango
-                    double exponente = Double.parseDouble(sTemporal);
-                    if ((exponente >= 0) && (exponente <= LIMIT_DEXP)) {
-
-                        //Si el numero es un double valido dentro del rango
-                        double numDouble=Math.pow(numeroIntD,exponente);
-                        System.out.println(numDouble);
-                        if (((numDouble >= Math.pow(LIMIT_DNEG_INF, LIMIT_DEXP)) && (numDouble <= Math.pow(LIMIT_DNEG_SUP, -LIMIT_DEXP))) ||
-                                ((numDouble >= Math.pow(LIMIT_DPOS_INF, -LIMIT_DEXP)) && (numDouble <= Math.pow(LIMIT_DPOS_SUP, LIMIT_DEXP))))
-                            return true;
-                        else
-                            return false;
-                    } else
-                        return false;
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return false;
-                }
-            }
-            return false;
-        }
-    }
-
-    public class GeneraTokenDoubleNum extends AccionSemantica {
+    public static class ParseBaseDouble extends AccionSemantica {
         /**
          * Verifica si la parte numerica es un numero double y lo asigna a numeroIntD
          * Si es invalido, numeroIntD se vuelve Double.NEGATIVEINFINITY
          */
         public void ejecutar(){
             try{
-                numeroIntD = Double.parseDouble(sTemporal);
-
-
+                baseNumDouble = Double.parseDouble(sTemporal);
+                sTemporal = ""; //Reinicia el string temporal.
             }
             catch(NumberFormatException numberFormatException){ //No tendria que llegar nunca a este punto, es imposible que el string tenga algo que no sea un double.
                 numberFormatException.printStackTrace();
-                numeroIntD=Double.NEGATIVE_INFINITY;
+                baseNumDouble = Double.NEGATIVE_INFINITY;
             }
-        }
-        public double getNumero(){
-            return numeroIntD;
         }
     }
 
+    public static class GeneraTokenDouble extends AccionSemantica{
+        private final MaquinaEstados maquinaEstados;
+
+        private final TablaDeSimbolos tablaS;
+
+        private final int token;
+
+        public GeneraTokenDouble(MaquinaEstados maquinaEstados, TablaDeSimbolos tablaS, int token) {
+            this.maquinaEstados = maquinaEstados;
+            this.tablaS = tablaS;
+            this.token = token;
+        }
+
+        /**
+         * Dada la parte numerica de un double entero,decimal (numeroIntD), se verifica si el exponente es correcto
+         * Luego revisa si el double numeroIntD elevado a exponente Math.Pow(numeroIntD,exponente) es válido en el rango.
+         */
+        public void ejecutar(){
+            // Si la parte numerica es un double.
+            if (baseNumDouble != Double.NEGATIVE_INFINITY)
+                try {
+                    if (!isBaseFueraRango(baseNumDouble)){
+                        double expNumDouble = 0; //Vale 0 por defecto.
+                        if (!sTemporal.isEmpty()) expNumDouble = Double.parseDouble(sTemporal);
+
+                        if (expNumDouble >= -MAX_DOUBLE_EXP && expNumDouble <= MAX_DOUBLE_EXP){ //Exponente con rango valido.
+                            double doubleNormalizado = Math.pow(baseNumDouble,expNumDouble);
+                            Celda celda = new Celda(token,String.valueOf(doubleNormalizado),"DOUBLE");
+                            maquinaEstados.agregarToken(celda);
+                            tablaS.agregar(celda);
+                        }
+                        else {
+                            maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token. //TODO Verificar.
+                            //TODO Notificar error.
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+        }
+
+        private boolean isBaseFueraRango(double baseNumDouble) {
+            boolean baseFueraRango = false;
+            if (baseNumDouble <= LIM_INF_DOUBLE_POS || baseNumDouble >= LIM_SUP_DOUBLE_POS){
+                maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token. //TODO Verificar.
+                baseFueraRango = true;
+                //TODO Notificar error.
+            }
+
+            if (baseNumDouble <= LIM_INF_DOUBLE_NEG || baseNumDouble >= LIM_SUP_DOUBLE_NEG){
+                maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token. //TODO Verificar.
+                baseFueraRango = true;
+                //TODO Notificar error.
+            }
+            return baseFueraRango;
+        }
+    }
 
     public static class CuentaSaltoLinea extends AccionSemantica{
         /**
