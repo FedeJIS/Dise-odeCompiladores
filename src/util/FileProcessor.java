@@ -11,9 +11,9 @@ public class FileProcessor {
      * @return ArrayList<String> lineas
      */
     public ArrayList<String> getLineas(String path){
-        File archivo = null;
+        File archivo;
         FileReader fr = null;
-        BufferedReader br = null;
+        BufferedReader br;
         ArrayList<String> lineas  = new ArrayList<>();
 
         try {

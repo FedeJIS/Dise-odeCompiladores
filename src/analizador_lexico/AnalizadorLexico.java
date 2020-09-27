@@ -7,10 +7,7 @@ import util.Reservado;
 import util.tabla_simbolos.TablaDeSimbolos;
 
 public class AnalizadorLexico {
-    private final FileProcessor fileProcessor;
     private final CodigoFuente cFuente;
-    private final TablaDeSimbolos tablaS;
-    private final Reservado tablaPR;
     private final MaquinaEstados maquinaEstados;
 
     /**
@@ -24,11 +21,8 @@ public class AnalizadorLexico {
     public String ultimoLexemaGenerado; //TODO Reemplazar por nombre requerido por el parser.
 
     public AnalizadorLexico(FileProcessor fileProcessor, CodigoFuente cFuente, TablaDeSimbolos tablaS){
-        this.fileProcessor = fileProcessor;
         this.cFuente = cFuente;
-        this.tablaS = tablaS;
-        this.tablaPR = inicTPR();
-        this.maquinaEstados = new MaquinaEstados(this,fileProcessor,cFuente,tablaS,tablaPR);
+        this.maquinaEstados = new MaquinaEstados(this,fileProcessor,cFuente,tablaS, inicTPR());
     }
 
     public void setVariablesSintactico(int token, String lexema){

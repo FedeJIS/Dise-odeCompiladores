@@ -201,18 +201,11 @@ public class AccionSemantica {
         }
     }
 
+    /**
+     * Consumir caracter. Esta AS esta solo para que quede claro que se consume un caracter.
+     * No tiene ninguna otra utilidad.
+     */
     public static class ConsumeChar extends AccionSemantica{
-        private final CodigoFuente codigoFuente; //TODO Remove?
-
-        public ConsumeChar(CodigoFuente codigoFuente) {
-            this.codigoFuente = codigoFuente;
-        }
-
-        /**
-         * Consumir caracter.
-         */
-        public void ejecutar(){
-        }
     }
 
     public static class GeneraTokenUINT extends AccionSemantica {
@@ -316,40 +309,21 @@ public class AccionSemantica {
             return doubleNormalizado > Math.pow(LIM_INF_DOUBLE_POS,-MAX_DOUBLE_EXP) &&
                     doubleNormalizado < Math.pow(LIM_SUP_DOUBLE_POS, MAX_DOUBLE_EXP);
         }
-
-        private boolean isBaseFueraRango(double baseNumDouble) {
-            boolean baseFueraRango = false;
-            if (baseNumDouble <= LIM_INF_DOUBLE_POS || baseNumDouble >= LIM_SUP_DOUBLE_POS){
-                maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token. //TODO Verificar.
-                baseFueraRango = true;
-                //TODO Notificar error.
-            }
-
-            if (baseNumDouble <= LIM_INF_DOUBLE_NEG || baseNumDouble >= LIM_SUP_DOUBLE_NEG){
-                maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token. //TODO Verificar.
-                baseFueraRango = true;
-                //TODO Notificar error.
-            }
-            return baseFueraRango;
-        }
     }
 
     public static class CuentaSaltoLinea extends AccionSemantica{
         /**
          * Incrementa en uno la cantidad de lineas de un archivo.
          */
-        private int cant_lineas = 0;
+        private int cantLineas = 0;
 
         public void ejecutar(){
-                cant_lineas++;
+                cantLineas++;
+        }
+
+        public int getCantLineas() {
+            return cantLineas;
         }
     }
 
-    public void set_sTemporal (String s){
-        sTemporal=s;
-    }
-
-    public String getString(){
-        return sTemporal;
-    }
 }

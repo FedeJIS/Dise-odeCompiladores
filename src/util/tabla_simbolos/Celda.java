@@ -1,9 +1,9 @@
 package util.tabla_simbolos;
 
 public class Celda {
-    private int token;
-    private String lexema;
-    private String tipo;
+    private final int token;
+    private final String lexema;
+    private final String tipo;
 
     public Celda(int token, String lexema, String tipo) {
         this.token = token;

@@ -14,16 +14,14 @@ public class CodigoFuente {
         simbolos = builder.toString();
     }
 
-    public boolean avanzar(){
-        if (eof()) return false; //Evita seguir avanzando cuando se esta en el eof.
+    public void avanzar(){
+        if (eof()) return; //Evita seguir avanzando cuando se esta en el eof.
         posicionActual++;
-        return true;
     }
 
-    public boolean retroceder(){
-        if (posicionActual == 0) return false; //Evita seguir retrocediendo cuando se esta en el principio del archivo.
+    public void retroceder(){
+        if (posicionActual == 0) return; //Evita seguir retrocediendo cuando se esta en el principio del archivo.
         posicionActual--;
-        return true;
     }
 
     public boolean eof(){

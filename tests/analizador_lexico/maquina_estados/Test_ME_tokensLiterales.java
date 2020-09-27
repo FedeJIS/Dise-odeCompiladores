@@ -1,9 +1,5 @@
 package analizador_lexico.maquina_estados;
 
-import analizador_lexico.AnalizadorLexico;
-import util.FileProcessor;
-import util.tabla_simbolos.TablaDeSimbolos;
-
 import static analizador_lexico.maquina_estados.Test_ME_descartables.testGenerico;
 
 public class Test_ME_tokensLiterales {
