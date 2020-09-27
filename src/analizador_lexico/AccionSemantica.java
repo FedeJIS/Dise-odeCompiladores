@@ -226,19 +226,14 @@ public class AccionSemantica {
          */
         @Override
         public void ejecutar(){
-            try {
-                int numero = Integer.parseInt(sTemporal);
-                if (numero >= 0 && numero <= LIMITE_INT) { //La cte esta en el rango valido.
-                    tablaS.agregar(new Celda(token,sTemporal,"UINT"));
-                    maquinaEstados.setVariablesSintactico(token,sTemporal);
-                }
-                else{
-                    //TODO Notificar error.
-                    maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token. //TODO Verificar.
-                }
+            int numero = Integer.parseInt(sTemporal); //No genera NumberFormatEx porque solo se cargan digitos al string.
+            if (numero >= 0 && numero <= LIMITE_INT) { //La cte esta en el rango valido.
+                tablaS.agregar(new Celda(token,sTemporal,"UINT"));
+                maquinaEstados.setVariablesSintactico(token,sTemporal);
             }
-            catch (NumberFormatException numberFormatException){
-                System.out.println(); //No tendria que llegar nunca a este punto, es imposible que el string tenga algo que no sea un entero.
+            else{
+                //TODO Notificar error.
+                maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token. //TODO Verificar.
             }
         }
     }
@@ -249,14 +244,8 @@ public class AccionSemantica {
          * Si es invalido, numeroIntD se vuelve Double.NEGATIVEINFINITY
          */
         public void ejecutar(){
-            try{
-                baseNumDouble = Double.parseDouble(sTemporal);
-                sTemporal = ""; //Reinicia el string temporal.
-            }
-            catch(NumberFormatException numberFormatException){ //No tendria que llegar nunca a este punto, es imposible que el string tenga algo que no sea un double.
-                numberFormatException.printStackTrace();
-                baseNumDouble = Double.NEGATIVE_INFINITY;
-            }
+            baseNumDouble = Double.parseDouble(sTemporal); //No genera NumberFormatEx porque solo se cargan digitos al string.
+            sTemporal = ""; //Reinicia el string temporal.
         }
     }
 
@@ -277,37 +266,44 @@ public class AccionSemantica {
          * Dada la parte numerica de un double entero,decimal (numeroIntD), se verifica si el exponente es correcto
          * Luego revisa si el double numeroIntD elevado a exponente Math.Pow(numeroIntD,exponente) es válido en el rango.
          */
-        public void ejecutar(){
-            if (baseNumDouble != Double.NEGATIVE_INFINITY)
-                try {
-                    double expNumDouble = 0; //Vale 0 por defecto.
-                    if (!sTemporal.isEmpty()) expNumDouble = Double.parseDouble(sTemporal);
-
-                    if (expNumDouble < -MAX_DOUBLE_EXP || expNumDouble > MAX_DOUBLE_EXP) { //Exponente fuera de rango.
-                        maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token. //TODO Verificar.
-                        //TODO Notificar error.
-                    }
-                    else {
-                        double doubleNormalizado = Math.pow(baseNumDouble,expNumDouble);
-                        if (!rangoValido(baseNumDouble,expNumDouble)) { //Double fuera de rango.
-                            maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token. //TODO Verificar.
-                            //TODO Notificar error.
-                        }
-                        else {
-                            tablaS.agregar(new Celda(token, String.valueOf(doubleNormalizado), "DOUBLE"));
-                            maquinaEstados.setVariablesSintactico(token, String.valueOf(doubleNormalizado));
-                        }
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
+        public void ejecutar() {
+            if (baseNumDouble != Double.NEGATIVE_INFINITY) {
+                int expNumDouble = 0; //Vale 0 por defecto.
+                if (!sTemporal.isEmpty()) expNumDouble = Integer.parseInt(sTemporal);
+                
+                if (doubleValido(baseNumDouble,expNumDouble)) {
+                    double doubleNormalizado = Math.pow(baseNumDouble, expNumDouble);
+                    tablaS.agregar(new Celda(token, String.valueOf(doubleNormalizado), "DOUBLE"));
+                    maquinaEstados.setVariablesSintactico(token, String.valueOf(doubleNormalizado));
                 }
+            }
         }
 
-        private boolean rangoValido(double baseNumDouble, double expNumDouble) {
+        private boolean doubleValido(double baseNumDouble, double expNumDouble){
+            boolean doubleValido = true;
+            if (expFueraRango(expNumDouble)) {
+                maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token. //TODO Verificar.
+                doubleValido = false;
+                //TODO Notificar error.
+            }
+
+            if (doubleFueraRango(baseNumDouble,expNumDouble)) {
+                maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token. //TODO Verificar.
+                doubleValido = false;
+                //TODO Notificar error.
+            }
+
+            return doubleValido;
+        }
+
+        private boolean expFueraRango(double expNumDouble) {
+            return expNumDouble < -MAX_DOUBLE_EXP || expNumDouble > MAX_DOUBLE_EXP;
+        }
+
+        private boolean doubleFueraRango(double baseNumDouble, double expNumDouble) {
             double doubleNormalizado = Math.pow(baseNumDouble,expNumDouble);
-            return doubleNormalizado > Math.pow(LIM_INF_DOUBLE_POS,-MAX_DOUBLE_EXP) &&
-                    doubleNormalizado < Math.pow(LIM_SUP_DOUBLE_POS, MAX_DOUBLE_EXP);
+            return doubleNormalizado <= Math.pow(LIM_INF_DOUBLE_POS,-MAX_DOUBLE_EXP) &&
+                    doubleNormalizado >= Math.pow(LIM_SUP_DOUBLE_POS, MAX_DOUBLE_EXP);
         }
     }
 
