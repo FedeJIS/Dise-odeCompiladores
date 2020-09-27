@@ -4,7 +4,6 @@ import analizador_lexico.*;
 import util.CodigoFuente;
 import util.FileProcessor;
 import util.Reservado;
-import util.tabla_simbolos.Celda;
 import util.tabla_simbolos.TablaDeSimbolos;
 
 public class MaquinaEstados {
@@ -13,12 +12,6 @@ public class MaquinaEstados {
     private int estadoActual = Estado.INICIAL;
 
     private final AnalizadorLexico aLexico; //Permite agregar tokens a medida que se generan.
-
-    /**
-     * Valores para tokens (REEMPLAZAR POR LOS VALORES QUE DA YACC).
-     */
-    private final int tokenEOF = 0, tokenId = 1, tokenPR = 2, tokenCompMenorIgual = 3, tokenCompMayorIgual = 4,
-            tokenCompDistinto = 5, tokenCompIgual = 6, tokenUINT = 7, tokenCadena = 8, tokenDouble = 9;
 
     /**
      * Constructor.
@@ -32,13 +25,13 @@ public class MaquinaEstados {
         AccionSemantica concatenaChar = new AccionSemantica.ConcatenaChar(codigoFuente); //1
         AccionSemantica truncaId = new AccionSemantica.TruncaId(fileProcessor); //2
         AccionSemantica devuelveUltimoLeido = new AccionSemantica.DevuelveUltimoLeido(codigoFuente); //3
-        AccionSemantica generTokenId = new AccionSemantica.GeneraTokenTS(this, tablaS, tokenId); //4
-        AccionSemantica generaTokenCadena = new AccionSemantica.GeneraTokenTS(this,tablaS,tokenCadena); //4
-        AccionSemantica generaTokenPR = new AccionSemantica.GeneraTokenPR(this, tablaPR, tokenPR); //5
+        AccionSemantica generTokenId = new AccionSemantica.GeneraTokenTS(this, tablaS, aLexico.T_ID); //4
+        AccionSemantica generaTokenCadena = new AccionSemantica.GeneraTokenTS(this,tablaS,aLexico.T_CADENA); //4
+        AccionSemantica generaTokenPR = new AccionSemantica.GeneraTokenPR(this, tablaPR); //5
         AccionSemantica generaTokenLiteral = new AccionSemantica.GeneraTokenLiteral(this,codigoFuente); //6
         AccionSemantica consumeChar = new AccionSemantica.ConsumeChar(codigoFuente); //7
-        AccionSemantica generaTokenUINT = new AccionSemantica.GeneraTokenUINT(this, tablaS, tokenUINT); //8
-        AccionSemantica generaTokenDouble = new AccionSemantica.GeneraTokenDouble(this,tablaS,tokenDouble); //10
+        AccionSemantica generaTokenUINT = new AccionSemantica.GeneraTokenUINT(this, tablaS, aLexico.T_CTE_UINT); //8
+        AccionSemantica generaTokenDouble = new AccionSemantica.GeneraTokenDouble(this,tablaS,aLexico.T_CTE_DOUBLE); //10
         AccionSemantica cuentaSaltoLinea = new AccionSemantica.CuentaSaltoLinea(); //12
 
         /* Inicializacion estados */
@@ -50,10 +43,6 @@ public class MaquinaEstados {
         inicComparacion(devuelveUltimoLeido, consumeChar, cuentaSaltoLinea,generaTokenLiteral);
         inicDeteccionCtes(concatenaChar, devuelveUltimoLeido, cuentaSaltoLinea, generaTokenUINT, generaTokenDouble, consumeChar);
         inicCadena(concatenaChar, cuentaSaltoLinea, generaTokenCadena);
-    }
-
-    public int getEstadoActual() {
-        return estadoActual;
     }
 
     /**
@@ -77,29 +66,21 @@ public class MaquinaEstados {
      * @param charInput caracter leido.
      */
     public void transicionar(char charInput){
-        System.out.print("Parto de: "+estadoActual);
-
         int codigoInput = Input.charToInt(charInput); //Obtiene el codigo asociado al caracter leido.
 
         TransicionEstado transicionEstado = maquinaEstados[estadoActual][codigoInput];
 
         estadoActual = transicionEstado.siguienteEstado();
-        System.out.println(". Transiciono a: "+estadoActual);
+
         transicionEstado.ejecutarAccionSemantica();
     }
 
     public void transicionarEOF(){
-        System.out.print("Parto de: "+estadoActual);
-
         TransicionEstado transicionEstado = maquinaEstados[estadoActual][Input.EOF];
 
         transicionEstado.ejecutarAccionSemantica();
 
-//        aLexico.setVariablesSintactico(tokenEOF,""); //No tiene lexema. TODO Sacar linea.
-
         estadoActual = Estado.FINAL; //Finalizo ejecucion
-
-        System.out.println(". Transiciono a: "+estadoActual);
     }
 
     /**
@@ -169,7 +150,8 @@ public class MaquinaEstados {
         maquinaEstados[Estado.INICIAL][Input.COMILLA] = new TransicionEstado(Estado.CADENA,inicStringVacio,concatenaChar);
 
         /* EOF. */
-        maquinaEstados[Estado.INICIAL][Input.EOF] = new TransicionEstado(Estado.FINAL);
+        AccionSemantica generaTokenEOF = new AccionSemantica.GeneraTokenParticular(this,aLexico.T_EOF);
+        maquinaEstados[Estado.INICIAL][Input.EOF] = new TransicionEstado(Estado.FINAL,generaTokenEOF);
     }
 
     /**
@@ -264,7 +246,7 @@ public class MaquinaEstados {
         maquinaEstados[Estado.COMP_MENOR][Input.EOF] = new TransicionEstado(Estado.FINAL, generaTokenParticular); //No devuelve ultimo leido dsp de un EOF.
 
         /* Comparacion por menor igual (5). */
-        generaTokenParticular = new AccionSemantica.GeneraTokenParticular(this,tokenCompMenorIgual);
+        generaTokenParticular = new AccionSemantica.GeneraTokenParticular(this,aLexico.T_COMP_MENOR_IGUAL);
 
         maquinaEstados[Estado.COMP_MENOR][Input.IGUAL] = new TransicionEstado(Estado.FINAL,consumeChar, generaTokenParticular);
 
@@ -277,7 +259,7 @@ public class MaquinaEstados {
         maquinaEstados[Estado.COMP_MAYOR][Input.EOF] = new TransicionEstado(Estado.FINAL, generaTokenParticular); //No devuelve ultimo leido dsp de un EOF.
 
         /* Comparacion por mayor igual (6). */
-        generaTokenParticular = new AccionSemantica.GeneraTokenParticular(this,tokenCompMayorIgual);
+        generaTokenParticular = new AccionSemantica.GeneraTokenParticular(this,aLexico.T_COMP_MAYOR_IGUAL);
 
         maquinaEstados[Estado.COMP_MAYOR][Input.IGUAL] = new TransicionEstado(Estado.FINAL,consumeChar, generaTokenParticular);
 
@@ -288,7 +270,7 @@ public class MaquinaEstados {
         maquinaEstados[Estado.COMP_DISTINTO][Input.EOF] = new TransicionEstado(Estado.INICIAL); //No devuelve ultimo leido dsp de un EOF.
 
         /* Comparacion por distincion (7). */
-        generaTokenParticular = new AccionSemantica.GeneraTokenParticular(this,tokenCompDistinto);
+        generaTokenParticular = new AccionSemantica.GeneraTokenParticular(this,aLexico.T_COM_DISTINTO);
 
         maquinaEstados[Estado.COMP_DISTINTO][Input.IGUAL] = new TransicionEstado(Estado.FINAL,consumeChar, generaTokenParticular);
 
@@ -301,7 +283,7 @@ public class MaquinaEstados {
         maquinaEstados[Estado.SIGNO_IGUAL][Input.EOF] = new TransicionEstado(Estado.FINAL, generaTokenParticular); //No devuelve ultimo leido dsp de un EOF.
 
         /* Comparacion por igualdad (8). */
-        generaTokenParticular = new AccionSemantica.GeneraTokenParticular(this,tokenCompIgual);
+        generaTokenParticular = new AccionSemantica.GeneraTokenParticular(this,aLexico.T_COMP_IGUAL);
         maquinaEstados[Estado.SIGNO_IGUAL][Input.IGUAL] = new TransicionEstado(Estado.FINAL,consumeChar,generaTokenParticular);
 
     }

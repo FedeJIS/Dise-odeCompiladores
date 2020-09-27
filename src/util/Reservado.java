@@ -1,28 +1,41 @@
 package util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 
 public class Reservado {
-    private ArrayList<String> palabrasReserv;
-    public Reservado(){
-        palabrasReserv=new ArrayList<>();
-    }
+    private final Map<String, PalabraReservada> palabrasReserv = new HashMap<>();
 
     public boolean esReservada(String palabra){
-        for (String palabraAux : palabrasReserv){
-            if (palabra.equals(palabraAux))
-                return true;
-        }
-        return false;
+        return palabrasReserv.containsKey(palabra);
     }
 
-    public boolean agregar(String palabra){
+    public int getToken(String palabra){
+        return palabrasReserv.get(palabra).getToken();
+    }
+
+    public boolean agregar(String palabra, int token){
         if (!esReservada(palabra)) {
-            palabrasReserv.add(palabra);
+            palabrasReserv.put(palabra,new PalabraReservada(palabra,token));
             return true;
         }
         return false;
+    }
+
+    private class PalabraReservada{
+        private final String palabra;
+        private final int token;
+
+        public PalabraReservada(String palabra, int token) {
+            this.palabra = palabra;
+            this.token = token;
+        }
+
+        public int getToken() {
+            return token;
+        }
     }
 
 }

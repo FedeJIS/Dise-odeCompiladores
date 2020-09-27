@@ -1,5 +1,7 @@
 package analizador_lexico.maquina_estados;
 
+import analizador_lexico.AnalizadorLexico;
+
 import static analizador_lexico.maquina_estados.Test_ME_descartables.testGenerico;
 
 public class Test_ME_uint {
@@ -7,31 +9,31 @@ public class Test_ME_uint {
         /*
          * Se genera el uint normal.
          */
-        testGenerico("55_ui",7);
+        testGenerico("55_ui", AnalizadorLexico.T_CTE_UINT);
         System.out.println();
 
         /*
          * Se genera el uint normal y se notifica un warning porque el sufijo no esta.
          */
-        testGenerico("55",7);
+        testGenerico("55",AnalizadorLexico.T_CTE_UINT);
         System.out.println();
 
         /*
          * Se genera el uint normal y se notifica un warning porque el sufijo esta incompleto.
          */
-        testGenerico("55_",7);
+        testGenerico("55_",AnalizadorLexico.T_CTE_UINT);
         System.out.println();
 
-        testGenerico("55_u",7);
+        testGenerico("55_u",AnalizadorLexico.T_CTE_UINT);
         System.out.println();
 
         /*
          * UINT mas grande aceptado.
          */
-        testGenerico(String.valueOf((int)(Math.pow(2,16)-1)),7);
+        testGenerico(String.valueOf((int)(Math.pow(2,16)-1)),AnalizadorLexico.T_CTE_UINT);
         System.out.println();
 
-        testGenerico(String.valueOf(65535),7);
+        testGenerico(String.valueOf(65535),AnalizadorLexico.T_CTE_UINT);
         System.out.println();
 
         /*
@@ -42,7 +44,5 @@ public class Test_ME_uint {
 
         testGenerico(String.valueOf(65536),-1);
         System.out.println();
-
-
     }
 }

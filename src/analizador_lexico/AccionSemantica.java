@@ -148,12 +148,9 @@ public class AccionSemantica {
 
         private final Reservado tablaPR;
 
-        private final int token;
-
-        public GeneraTokenPR(MaquinaEstados maquinaEstados, Reservado tablaPR, int token) {
+        public GeneraTokenPR(MaquinaEstados maquinaEstados, Reservado tablaPR) {
             this.maquinaEstados = maquinaEstados;
             this.tablaPR = tablaPR;
-            this.token = token;
         }
 
         /**
@@ -162,9 +159,10 @@ public class AccionSemantica {
         @Override
         public void ejecutar(){
             if (tablaPR.esReservada(sTemporal)) {
-                maquinaEstados.setVariablesSintactico(token,""); //No tiene lexema.
+                maquinaEstados.setVariablesSintactico(tablaPR.getToken(sTemporal),""); //No tiene lexema.
             }
             else{
+                maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token.
                 //TODO Notificar error.
             }
         }
@@ -289,23 +287,34 @@ public class AccionSemantica {
         public void ejecutar(){
             if (baseNumDouble != Double.NEGATIVE_INFINITY)
                 try {
-                    if (!isBaseFueraRango(baseNumDouble)){
-                        double expNumDouble = 0; //Vale 0 por defecto.
-                        if (!sTemporal.isEmpty()) expNumDouble = Double.parseDouble(sTemporal);
+                    double expNumDouble = 0; //Vale 0 por defecto.
+                    if (!sTemporal.isEmpty()) expNumDouble = Double.parseDouble(sTemporal);
 
-                        if (expNumDouble >= -MAX_DOUBLE_EXP && expNumDouble <= MAX_DOUBLE_EXP){ //Exponente con rango valido.
-                            double doubleNormalizado = Math.pow(baseNumDouble,expNumDouble);
-                            tablaS.agregar(new Celda(token,String.valueOf(doubleNormalizado),"DOUBLE"));
-                            maquinaEstados.setVariablesSintactico(token,String.valueOf(doubleNormalizado));
-                        }
-                        else {
+                    if (expNumDouble < -MAX_DOUBLE_EXP || expNumDouble > MAX_DOUBLE_EXP) { //Exponente fuera de rango.
+                        maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token. //TODO Verificar.
+                        //TODO Notificar error.
+                    }
+                    else {
+                        double doubleNormalizado = Math.pow(baseNumDouble,expNumDouble);
+                        if (!rangoValido(baseNumDouble,expNumDouble)) { //Double fuera de rango.
                             maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token. //TODO Verificar.
                             //TODO Notificar error.
                         }
+                        else {
+                            tablaS.agregar(new Celda(token, String.valueOf(doubleNormalizado), "DOUBLE"));
+                            maquinaEstados.setVariablesSintactico(token, String.valueOf(doubleNormalizado));
+                        }
                     }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+        }
+
+        private boolean rangoValido(double baseNumDouble, double expNumDouble) {
+            double doubleNormalizado = Math.pow(baseNumDouble,expNumDouble);
+            return doubleNormalizado > Math.pow(LIM_INF_DOUBLE_POS,-MAX_DOUBLE_EXP) &&
+                    doubleNormalizado < Math.pow(LIM_SUP_DOUBLE_POS, MAX_DOUBLE_EXP);
         }
 
         private boolean isBaseFueraRango(double baseNumDouble) {
