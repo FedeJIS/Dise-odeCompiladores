@@ -253,25 +253,32 @@ public class MaquinaEstados {
      */
     private void inicComparacion(AccionSemantica devuelveUltimoLeido, AccionSemantica consumeChar,
                                  AccionSemantica cuentaSaltoLinea, AccionSemantica generaTokenLiteral){
-        /* Comparacion por menor estricto (5). */
-        inicTransiciones(Estado.COMP_MENOR,Estado.FINAL,devuelveUltimoLeido,generaTokenLiteral);
-        maquinaEstados[Estado.COMP_MENOR][Input.SALTO_LINEA] = new TransicionEstado(Estado.INICIAL,generaTokenLiteral,
-                cuentaSaltoLinea); //Permite contar un salto de linea (No devuelve el ultimo leido pq se descartaria de todas formas).
-        maquinaEstados[Estado.COMP_MENOR][Input.EOF] = new TransicionEstado(Estado.FINAL); //No devuelve ultimo leido dsp de un EOF.
-
         AccionSemantica generaTokenParticular;
+
+        /* Comparacion por menor estricto (5). */
+        generaTokenParticular = new AccionSemantica.GeneraTokenParticular(this,'<');
+
+        inicTransiciones(Estado.COMP_MENOR,Estado.FINAL,devuelveUltimoLeido,generaTokenParticular);
+        maquinaEstados[Estado.COMP_MENOR][Input.SALTO_LINEA] = new TransicionEstado(Estado.INICIAL,generaTokenParticular,
+                cuentaSaltoLinea); //Permite contar un salto de linea (No devuelve el ultimo leido pq se descartaria de todas formas).
+        maquinaEstados[Estado.COMP_MENOR][Input.EOF] = new TransicionEstado(Estado.FINAL, generaTokenParticular); //No devuelve ultimo leido dsp de un EOF.
+
         /* Comparacion por menor igual (5). */
         generaTokenParticular = new AccionSemantica.GeneraTokenParticular(this,tokenCompMenorIgual);
+
         maquinaEstados[Estado.COMP_MENOR][Input.IGUAL] = new TransicionEstado(Estado.FINAL,consumeChar, generaTokenParticular);
 
         /* Comparacion por mayor estricto (6). */
-        inicTransiciones(Estado.COMP_MAYOR,Estado.FINAL,devuelveUltimoLeido,generaTokenLiteral);
-        maquinaEstados[Estado.COMP_MAYOR][Input.SALTO_LINEA] = new TransicionEstado(Estado.INICIAL,generaTokenLiteral,
+        generaTokenParticular = new AccionSemantica.GeneraTokenParticular(this,'>');
+
+        inicTransiciones(Estado.COMP_MAYOR,Estado.FINAL,devuelveUltimoLeido,generaTokenParticular);
+        maquinaEstados[Estado.COMP_MAYOR][Input.SALTO_LINEA] = new TransicionEstado(Estado.INICIAL,generaTokenParticular,
             cuentaSaltoLinea); //Permite contar un salto de linea (No devuelve el ultimo leido pq se descartaria de todas formas).
-        maquinaEstados[Estado.COMP_MAYOR][Input.EOF] = new TransicionEstado(Estado.FINAL); //No devuelve ultimo leido dsp de un EOF.
+        maquinaEstados[Estado.COMP_MAYOR][Input.EOF] = new TransicionEstado(Estado.FINAL, generaTokenParticular); //No devuelve ultimo leido dsp de un EOF.
 
         /* Comparacion por mayor igual (6). */
         generaTokenParticular = new AccionSemantica.GeneraTokenParticular(this,tokenCompMayorIgual);
+
         maquinaEstados[Estado.COMP_MAYOR][Input.IGUAL] = new TransicionEstado(Estado.FINAL,consumeChar, generaTokenParticular);
 
         /* '!' solo (7). El simbolo por si solo no es valido. TODO: Notificar error. */
@@ -282,13 +289,16 @@ public class MaquinaEstados {
 
         /* Comparacion por distincion (7). */
         generaTokenParticular = new AccionSemantica.GeneraTokenParticular(this,tokenCompDistinto);
+
         maquinaEstados[Estado.COMP_DISTINTO][Input.IGUAL] = new TransicionEstado(Estado.FINAL,consumeChar, generaTokenParticular);
 
         /* Asignacion (8). */
-        inicTransiciones(Estado.SIGNO_IGUAL,Estado.FINAL,devuelveUltimoLeido, generaTokenLiteral);
-        maquinaEstados[Estado.SIGNO_IGUAL][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL, generaTokenLiteral,
+        generaTokenParticular = new AccionSemantica.GeneraTokenParticular(this,'=');
+
+        inicTransiciones(Estado.SIGNO_IGUAL,Estado.FINAL,devuelveUltimoLeido, generaTokenParticular);
+        maquinaEstados[Estado.SIGNO_IGUAL][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL, generaTokenParticular,
                 cuentaSaltoLinea); //Permite contar un salto de linea (No devuelve el ultimo leido pq se descartaria de todas formas).
-        maquinaEstados[Estado.SIGNO_IGUAL][Input.EOF] = new TransicionEstado(Estado.FINAL); //No devuelve ultimo leido dsp de un EOF.
+        maquinaEstados[Estado.SIGNO_IGUAL][Input.EOF] = new TransicionEstado(Estado.FINAL, generaTokenParticular); //No devuelve ultimo leido dsp de un EOF.
 
         /* Comparacion por igualdad (8). */
         generaTokenParticular = new AccionSemantica.GeneraTokenParticular(this,tokenCompIgual);

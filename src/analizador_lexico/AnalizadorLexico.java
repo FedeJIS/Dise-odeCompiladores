@@ -35,6 +35,7 @@ public class AnalizadorLexico {
 
     private Reservado inicTPR(){
         Reservado tPR = new Reservado();
+        tPR.agregar("IF");
         tPR.agregar("THEN");
         tPR.agregar("ELSE");
         tPR.agregar("END_IF");
