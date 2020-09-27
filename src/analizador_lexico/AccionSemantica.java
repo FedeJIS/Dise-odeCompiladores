@@ -8,14 +8,8 @@ import util.tabla_simbolos.Celda;
 import util.tabla_simbolos.TablaDeSimbolos;
 
 public class AccionSemantica {
-    private final static int LIMITE_STRING = 20;
-    private final static int LIMITE_INT=(int)(Math.pow(2,16)-1);
-    private final static double LIM_INF_DOUBLE_NEG = -1.7976931348623157;
-    private final static double LIM_SUP_DOUBLE_NEG = -2.2250738585072014;
-    private final static double LIM_INF_DOUBLE_POS = 2.2250738585072014;
-    private final static double LIM_SUP_DOUBLE_POS = 1.7976931348623157;
-    private final static int MAX_DOUBLE_EXP = 308;
     private static String sTemporal;
+
     private static double baseNumDouble = Double.NEGATIVE_INFINITY; // Utilizado para AS-double (parte numerica y parte exp)
 
     public AccionSemantica(){}
@@ -72,6 +66,8 @@ public class AccionSemantica {
     }
 
     public static class TruncaId extends AccionSemantica{
+        private final static int LIMITE_STRING = 20;
+
         private final FileProcessor fileProcessor;
 
         public TruncaId(FileProcessor fileProcessor) {
@@ -209,6 +205,8 @@ public class AccionSemantica {
     }
 
     public static class GeneraTokenUINT extends AccionSemantica {
+        private final static int LIMITE_INT=(int)(Math.pow(2,16)-1);
+
         private final MaquinaEstados maquinaEstados;
 
         private final TablaDeSimbolos tablaS;
@@ -227,14 +225,18 @@ public class AccionSemantica {
         @Override
         public void ejecutar(){
             int numero = Integer.parseInt(sTemporal); //No genera NumberFormatEx porque solo se cargan digitos al string.
-            if (numero >= 0 && numero <= LIMITE_INT) { //La cte esta en el rango valido.
+            if (numeroEnRango(numero)) {
                 tablaS.agregar(new Celda(token,sTemporal,"UINT"));
                 maquinaEstados.setVariablesSintactico(token,sTemporal);
             }
             else{
                 //TODO Notificar error.
-                maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token. //TODO Verificar.
+                maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token.
             }
+        }
+
+        public boolean numeroEnRango(int numero) {
+            return numero >= 0 && numero <= LIMITE_INT;
         }
     }
 
@@ -250,6 +252,12 @@ public class AccionSemantica {
     }
 
     public static class GeneraTokenDouble extends AccionSemantica{
+        private final static double LIM_INF_DOUBLE_NEG = -1.7976931348623157;
+        private final static double LIM_SUP_DOUBLE_NEG = -2.2250738585072014;
+        private final static double LIM_INF_DOUBLE_POS = 2.2250738585072014;
+        private final static double LIM_SUP_DOUBLE_POS = 1.7976931348623157;
+        private final static int MAX_DOUBLE_EXP = 308;
+
         private final MaquinaEstados maquinaEstados;
 
         private final TablaDeSimbolos tablaS;
@@ -263,16 +271,18 @@ public class AccionSemantica {
         }
 
         /**
-         * Dada la parte numerica de un double entero,decimal (numeroIntD), se verifica si el exponente es correcto
-         * Luego revisa si el double numeroIntD elevado a exponente Math.Pow(numeroIntD,exponente) es válido en el rango.
+         * Dada la parte numerica de un double (entera y decimal), se verifica si el exponente es correcto.
+         * Luego revisa si el double baseNumDouble elevado al exponente se encuentra en el rango dado.
          */
         public void ejecutar() {
             if (baseNumDouble != Double.NEGATIVE_INFINITY) {
-                int expNumDouble = 0; //Vale 0 por defecto.
+                int expNumDouble = 0; //Vale 0 por defecto (Util para los casos donde no se tiene exponente).
                 if (!sTemporal.isEmpty()) expNumDouble = Integer.parseInt(sTemporal);
-                
+
+                System.out.println(baseNumDouble);
+
                 if (doubleValido(baseNumDouble,expNumDouble)) {
-                    double doubleNormalizado = Math.pow(baseNumDouble, expNumDouble);
+                    double doubleNormalizado = baseNumDouble * Math.pow(10, expNumDouble);
                     tablaS.agregar(new Celda(token, String.valueOf(doubleNormalizado), "DOUBLE"));
                     maquinaEstados.setVariablesSintactico(token, String.valueOf(doubleNormalizado));
                 }
@@ -282,13 +292,13 @@ public class AccionSemantica {
         private boolean doubleValido(double baseNumDouble, double expNumDouble){
             boolean doubleValido = true;
             if (expFueraRango(expNumDouble)) {
-                maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token. //TODO Verificar.
+                maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token.
                 doubleValido = false;
                 //TODO Notificar error.
             }
 
             if (doubleFueraRango(baseNumDouble,expNumDouble)) {
-                maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token. //TODO Verificar.
+                maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token.
                 doubleValido = false;
                 //TODO Notificar error.
             }
@@ -296,14 +306,17 @@ public class AccionSemantica {
             return doubleValido;
         }
 
-        private boolean expFueraRango(double expNumDouble) {
+        public boolean expFueraRango(double expNumDouble) {
             return expNumDouble < -MAX_DOUBLE_EXP || expNumDouble > MAX_DOUBLE_EXP;
         }
 
-        private boolean doubleFueraRango(double baseNumDouble, double expNumDouble) {
-            double doubleNormalizado = Math.pow(baseNumDouble,expNumDouble);
-            return doubleNormalizado <= Math.pow(LIM_INF_DOUBLE_POS,-MAX_DOUBLE_EXP) &&
-                    doubleNormalizado >= Math.pow(LIM_SUP_DOUBLE_POS, MAX_DOUBLE_EXP);
+        public boolean doubleFueraRango(double baseNumDouble, double expNumDouble) {
+            double min = LIM_INF_DOUBLE_POS * Math.pow(10,-MAX_DOUBLE_EXP);
+            double max = LIM_SUP_DOUBLE_POS * Math.pow(10, MAX_DOUBLE_EXP);
+
+            double doubleNormalizado = baseNumDouble * Math.pow(10,expNumDouble);
+
+            return doubleNormalizado != 0.0 && (doubleNormalizado < min || doubleNormalizado > max);
         }
     }
 

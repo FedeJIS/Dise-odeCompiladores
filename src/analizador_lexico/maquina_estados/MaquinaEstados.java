@@ -270,7 +270,7 @@ public class MaquinaEstados {
         maquinaEstados[Estado.COMP_DISTINTO][Input.EOF] = new TransicionEstado(Estado.INICIAL); //No devuelve ultimo leido dsp de un EOF.
 
         /* Comparacion por distincion (7). */
-        generaTokenParticular = new AccionSemantica.GeneraTokenParticular(this, AnalizadorLexico.T_COM_DISTINTO);
+        generaTokenParticular = new AccionSemantica.GeneraTokenParticular(this, AnalizadorLexico.T_COMP_DISTINTO);
 
         maquinaEstados[Estado.COMP_DISTINTO][Input.IGUAL] = new TransicionEstado(Estado.FINAL,consumeChar, generaTokenParticular);
 
@@ -321,10 +321,10 @@ public class MaquinaEstados {
         maquinaEstados[Estado.CTE_PARTE_DECIM][Input.D_MINUSC] = new TransicionEstado(Estado.CTE_PARTE_EXP,parseBaseDouble,consumeChar); //Salto a parte exponencial de doubles.
 
         /* Parte exponencial (14). */
-        inicTransiciones(Estado.CTE_PARTE_EXP, Estado.FINAL, devuelveUltimoLeido, parseBaseDouble, generaTokenDouble);
-        maquinaEstados[Estado.CTE_PARTE_EXP][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL, parseBaseDouble, generaTokenDouble,
+        inicTransiciones(Estado.CTE_PARTE_EXP, Estado.FINAL, devuelveUltimoLeido, generaTokenDouble);
+        maquinaEstados[Estado.CTE_PARTE_EXP][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL, generaTokenDouble,
                 cuentaSaltoLinea); //Permite contar un salto de linea (No devuelve el ultimo leido pq se descartaria de todas formas).
-        maquinaEstados[Estado.CTE_PARTE_EXP][Input.EOF] = new TransicionEstado(Estado.FINAL, parseBaseDouble, generaTokenDouble); //No devuelve ultimo leido dsp de un EOF.
+        maquinaEstados[Estado.CTE_PARTE_EXP][Input.EOF] = new TransicionEstado(Estado.FINAL, generaTokenDouble); //No devuelve ultimo leido dsp de un EOF.
 
         maquinaEstados[Estado.CTE_PARTE_EXP][Input.DIGITO] = new TransicionEstado(Estado.CTE_PARTE_EXP,concatenaChar);
     }

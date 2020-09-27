@@ -1,5 +1,6 @@
 package analizador_lexico.maquina_estados;
 
+import analizador_lexico.AnalizadorLexico;
 import util.tabla_simbolos.TablaDeSimbolos;
 
 import static analizador_lexico.maquina_estados.Test_ME_descartables.testGenerico;
@@ -7,7 +8,7 @@ import static analizador_lexico.maquina_estados.Test_ME_descartables.testGeneric
 public class Test_ME_ids {
     public static void main(String[] args) {
         /*
-         * Se debe generar el token 1.
+         * Identificadores: se debe generar el token 1.
          */
         String lexema = "a";
         test(lexema,lexema);
@@ -41,7 +42,7 @@ public class Test_ME_ids {
 
     private static void test(String lexema, String linea) {
         TablaDeSimbolos tablaS;
-        tablaS = testGenerico(linea,1);
+        tablaS = testGenerico(linea, AnalizadorLexico.T_ID);
         try{
             tablaS.getValor(lexema);
             System.out.println("Lexema '"+ lexema +"' encontrado en la TS.");

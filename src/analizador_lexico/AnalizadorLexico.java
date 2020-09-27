@@ -13,7 +13,7 @@ public class AnalizadorLexico {
     /**
      * Valores para tokens (TODO REEMPLAZAR POR LOS VALORES QUE DA YACC).
      */
-    public static final int T_EOF = 0, T_ID = 1, T_COMP_MENOR_IGUAL = 2, T_COMP_MAYOR_IGUAL = 3, T_COM_DISTINTO = 4,
+    public static final int T_EOF = 0, T_ID = 1, T_COMP_MENOR_IGUAL = 2, T_COMP_MAYOR_IGUAL = 3, T_COMP_DISTINTO = 4,
             T_COMP_IGUAL = 5, T_UINT = 6, T_DOUBLE = 7, T_CADENA = 8, T_IF = 9, T_THEN = 10, T_ELSE = 11, T_END_IF = 12,
             T_LOOP = 13, T_UNTIL = 14, T_OUT = 15, T_PROC = 16, T_VAR = 17, T_NI = 18, T_CTE_UINT = 19, T_CTE_DOUBLE = 20;
 

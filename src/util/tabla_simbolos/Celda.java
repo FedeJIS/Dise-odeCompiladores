@@ -22,4 +22,13 @@ public class Celda {
     public String getTipo() {
         return tipo;
     }
+
+    @Override
+    public String toString() {
+        return "Celda{" +
+                "token=" + token +
+                ", lexema='" + lexema + '\'' +
+                ", tipo='" + tipo + '\'' +
+                '}';
+    }
 }

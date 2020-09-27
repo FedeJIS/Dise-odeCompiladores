@@ -7,31 +7,31 @@ public class Test_ME_tokensLiterales {
         /*
          * El token del "{" es el 123.
          */
-        testGenerico("{",123);
+        testGenerico("{",'{');
         System.out.println();
 
         /*
          * El token del ";" es el 59.
          */
-        testGenerico(";",59);
+        testGenerico(";",';');
         System.out.println();
 
         /*
          * El token del "<" es el 60.
          */
-        testGenerico("<",60);
+        testGenerico("<",'<');
         System.out.println();
 
         /*
          * El token del "=" es el 61.
          */
-        testGenerico("=",61);
+        testGenerico("=",'=');
         System.out.println();
 
         /*
          * El token del ">" es el 62.
          */
-        testGenerico(">",62);
+        testGenerico(">",'>');
         System.out.println();
     }
 }
