@@ -10,38 +10,40 @@ import java.util.List;
 
 public class Test_ME_descartables {
     public static void main(String[] args){
-        FileProcessor fileProcessor = new FileProcessor();
-        TablaDeSimbolos tablaS = new TablaDeSimbolos();
 
         /*
          * Se deben descartar todos los espacios.
          * No debe haber tokens generados (-1).
          */
-        AnalizadorLexico aLexico = new AnalizadorLexico(fileProcessor,inicCodigoFuente("     "),tablaS);
-        int token = aLexico.produceToken();
-        System.out.println("Token generado:"+token);
-        System.out.println("#######################################");
+        testGenerico("     ",-1);
 
         /*
          * Se deben descartar todas las tabulaciones.
          * No debe haber tokens generados (-1).
          */
-        aLexico = new AnalizadorLexico(fileProcessor,inicCodigoFuente("\t\t\t\t\t\t"),tablaS);
-        token = aLexico.produceToken();
-        System.out.println("Token generado:"+token);
-        System.out.println("#######################################");
+        testGenerico("\t\t\t\t\t\t",-1);
 
         /*
          * Se deben descartar todos los saltos de linea.
          * No debe haber tokens generados (-1).
          */
-        aLexico = new AnalizadorLexico(fileProcessor,inicCodigoFuente("\n\n\n\n\n\n"),tablaS);
-        token = aLexico.produceToken();
-        System.out.println("Token generado:"+token);
-        System.out.println("#######################################");
+        testGenerico("\n\n\n\n\n\n",-1);
     }
 
-    public static CodigoFuente inicCodigoFuente(String fuente) {
+    public static TablaDeSimbolos testGenerico(String lineaFuente, int tokenEsperado) {
+        FileProcessor fileProcessor = new FileProcessor();
+        TablaDeSimbolos tablaS = new TablaDeSimbolos();
+
+        AnalizadorLexico aLexico;
+        aLexico = new AnalizadorLexico(fileProcessor, inicCodigoFuente(lineaFuente), tablaS);
+        int tokenOriginal = aLexico.produceToken();
+
+        System.out.println("Token generado:" + tokenOriginal + ". Esperado:" + tokenEsperado + ". Exito:" + (tokenOriginal == tokenEsperado));
+
+        return tablaS;
+    }
+
+    private static CodigoFuente inicCodigoFuente(String fuente) {
         List<String> lineas = new ArrayList<>();
         lineas.add(fuente);
         return new CodigoFuente(lineas);
