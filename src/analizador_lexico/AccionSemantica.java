@@ -14,7 +14,7 @@ public class AccionSemantica {
     private final static double LIM_SUP_DOUBLE_NEG = -2.2250738585072014;
     private final static double LIM_INF_DOUBLE_POS = 2.2250738585072014;
     private final static double LIM_SUP_DOUBLE_POS = 1.7976931348623157;
-    private final static int  MIN_DOUBLE_EXP = -308, MAX_DOUBLE_EXP = 308;
+    private final static int MAX_DOUBLE_EXP = 308;
     private static String sTemporal;
     private static double baseNumDouble = Double.NEGATIVE_INFINITY; // Utilizado para AS-double (parte numerica y parte exp)
 

@@ -16,6 +16,7 @@ public class Test_ME_descartables {
          * No debe haber tokens generados (-1).
          */
         testGenerico("     ",-1);
+        System.out.println();
 
         /*
          * Se deben descartar todas las tabulaciones.
