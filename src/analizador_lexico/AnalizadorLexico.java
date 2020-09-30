@@ -48,7 +48,7 @@ public class AnalizadorLexico {
         return tPR;
     }
 
-    public int produceToken(){
+    public int yylex(){
         while (!maquinaEstados.estadoFinalAlcanzado()){
             if (cFuente.eof()) {
                 maquinaEstados.transicionarEOF();
