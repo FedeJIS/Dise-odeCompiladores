@@ -1,6 +1,7 @@
 package analizador_lexico;
 
 import analizador_lexico.maquina_estados.MaquinaEstados;
+import analizador_sintactico.Parser;
 import util.CodigoFuente;
 import util.FileProcessor;
 import util.Reservado;
@@ -13,9 +14,27 @@ public class AnalizadorLexico {
     /**
      * Valores para tokens (TODO REEMPLAZAR POR LOS VALORES QUE DA YACC).
      */
-    public static final int T_EOF = 0, T_ID = 1, T_COMP_MENOR_IGUAL = 2, T_COMP_MAYOR_IGUAL = 3, T_COMP_DISTINTO = 4,
-            T_COMP_IGUAL = 5, T_UINT = 6, T_DOUBLE = 7, T_CADENA = 8, T_IF = 9, T_THEN = 10, T_ELSE = 11, T_END_IF = 12,
-            T_LOOP = 13, T_UNTIL = 14, T_OUT = 15, T_PROC = 16, T_VAR = 17, T_NI = 18, T_CTE_UINT = 19, T_CTE_DOUBLE = 20;
+    public static final int T_EOF = 0;
+    public static final int T_ID = Parser.ID;
+    public static final int T_COMP_MENOR_IGUAL = Parser.COMP_MENOR_IGUAL;
+    public static final int T_COMP_MAYOR_IGUAL = Parser.COMP_MAYOR_IGUAL;
+    public static final int T_COMP_DISTINTO = Parser.COMP_DISTINTO;
+    public static final int T_COMP_IGUAL = Parser.COMP_IGUAL;
+    public static final int T_UINT = Parser.UINT;
+    public static final int T_DOUBLE = Parser.DOUBLE;
+    public static final int T_CADENA = Parser.CADENA;
+    public static final int T_IF = Parser.IF;
+    public static final int T_THEN = Parser.THEN;
+    public static final int T_ELSE = Parser.ELSE;
+    public static final int T_END_IF = Parser.END_IF;
+    public static final int T_LOOP = Parser.LOOP;
+    public static final int T_UNTIL = Parser.UNTIL;
+    public static final int T_OUT = Parser.OUT;
+    public static final int T_PROC = Parser.PROC;
+    public static final int T_VAR = Parser.VAR;
+    public static final int T_NI = Parser.NI;
+    public static final int T_CTE_UINT = Parser.CTE_UINT;
+    public static final int T_CTE_DOUBLE = Parser.CTE_DOUBLE;
 
     public int ultimoTokenGenerado = -1; //TODO Reemplazar por nombre requerido por el parser.
     public String ultimoLexemaGenerado; //TODO Reemplazar por nombre requerido por el parser.

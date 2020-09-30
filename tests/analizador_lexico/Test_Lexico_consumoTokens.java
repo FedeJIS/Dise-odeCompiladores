@@ -31,7 +31,7 @@ public class Test_Lexico_consumoTokens {
 
         int tokenOriginal = -1;
         while (tokenOriginal != 0){
-            tokenOriginal = aLexico.produceToken();
+            tokenOriginal = aLexico.yylex();
             System.out.print(tokenOriginal + " ");
         }
 

@@ -37,7 +37,7 @@ public class Test_ME_descartables {
 
         AnalizadorLexico aLexico;
         aLexico = new AnalizadorLexico(fileProcessor, inicCodigoFuente(lineaFuente), tablaS);
-        int tokenOriginal = aLexico.produceToken();
+        int tokenOriginal = aLexico.yylex();
 
         System.out.println("Token generado:" + tokenOriginal + ". Esperado:" + tokenEsperado + ". Exito:" + (tokenOriginal == tokenEsperado));
 
