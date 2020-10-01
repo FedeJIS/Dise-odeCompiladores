@@ -1,4 +1,4 @@
-package analizador_sintactico;//### This file created by BYACC 1.8(/Java extension  1.15)
+//### This file created by BYACC 1.8(/Java extension  1.15)
 //### Java capabilities added 7 Jan 97, Bob Jamison
 //### Updated : 27 Nov 97  -- Bob Jamison, Joe Nieten
 //###           01 Jan 98  -- Bob Jamison -- fixed generic semantic constructor
@@ -11,6 +11,8 @@ package analizador_sintactico;//### This file created by BYACC 1.8(/Java extensi
 //### Please send bug reports to tom@hukatronic.cz
 //### static char yysccsid[] = "@(#)yaccpar	1.8 (Berkeley) 01/20/90";
 
+
+package analizador_sintactico;
 
 import analizador_lexico.AnalizadorLexico;
 
@@ -45,62 +47,62 @@ public class Parser {
     //########## STATE STACK ##########
     final static int YYSTACKSIZE = 500;  //maximum stack size
     final static short[] yylhs = {-1,
-            0, 1, 1, 2, 2, 3, 3, 5, 5, 8,
-            8, 7, 7, 6, 6, 4, 4, 4, 4, 4,
-            14, 14, 14, 15, 15, 15, 16, 16, 16, 9,
-            10, 17, 18, 18, 18, 18, 18, 18, 11, 11,
-            19, 19, 12, 13,
+            0, 1, 1, 2, 2, 3, 3, 5, 5, 5,
+            8, 8, 7, 7, 6, 6, 4, 4, 4, 4,
+            4, 14, 14, 14, 15, 15, 15, 16, 16, 16,
+            9, 10, 17, 18, 18, 18, 18, 18, 18, 11,
+            11, 19, 19, 12, 13,
     };
     final static short[] yylen = {2,
-            1, 1, 2, 1, 1, 11, 3, 1, 3, 3,
-            2, 3, 1, 1, 1, 2, 1, 1, 2, 2,
-            3, 3, 1, 3, 3, 1, 1, 1, 1, 3,
-            8, 3, 1, 1, 1, 1, 1, 1, 7, 9,
-            1, 3, 4, 4,
+            1, 1, 2, 1, 1, 11, 3, 1, 3, 5,
+            3, 2, 3, 1, 1, 1, 2, 1, 1, 2,
+            2, 3, 3, 1, 3, 3, 1, 1, 1, 1,
+            3, 6, 5, 1, 1, 1, 1, 1, 1, 5,
+            7, 1, 3, 4, 4,
     };
     final static short[] yydefred = {0,
-            0, 14, 15, 0, 0, 0, 0, 0, 1, 0,
-            4, 5, 0, 0, 17, 18, 0, 0, 0, 0,
-            0, 0, 0, 0, 3, 0, 0, 16, 19, 20,
-            0, 27, 28, 29, 0, 0, 26, 0, 0, 0,
-            0, 0, 0, 7, 43, 0, 0, 0, 0, 34,
-            33, 38, 37, 35, 36, 0, 0, 0, 44, 0,
-            0, 0, 0, 12, 0, 0, 24, 25, 0, 0,
-            0, 0, 0, 11, 0, 0, 41, 0, 0, 10,
-            0, 9, 0, 0, 39, 0, 0, 42, 0, 31,
-            0, 40, 0, 0, 6,
+            0, 15, 16, 0, 0, 0, 0, 0, 1, 0,
+            4, 5, 0, 0, 18, 19, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 3, 0, 0, 17, 20,
+            21, 0, 28, 29, 30, 0, 0, 27, 0, 0,
+            0, 0, 0, 0, 7, 44, 0, 0, 0, 0,
+            35, 34, 39, 38, 36, 37, 0, 0, 42, 0,
+            0, 45, 0, 0, 0, 0, 13, 0, 0, 25,
+            26, 0, 0, 0, 40, 0, 0, 0, 12, 0,
+            33, 43, 0, 32, 11, 0, 0, 41, 0, 0,
+            0, 10, 0, 0, 6,
     };
     final static short[] yydgoto = {8,
-            9, 10, 11, 12, 61, 13, 27, 63, 14, 15,
-            16, 17, 18, 38, 36, 37, 39, 56, 78,
+            9, 10, 11, 12, 64, 13, 28, 66, 14, 15,
+            16, 17, 18, 36, 37, 38, 22, 57, 60,
     };
-    final static short[] yysindex = {-210,
-            -15, 0, 0, 8, -78, 10, -203, 0, 0, -210,
-            0, 0, -199, 1, 0, 0, 11, 12, -199, -240,
-            -240, -210, -192, 33, 0, 30, 16, 0, 0, 0,
-            35, 0, 0, 0, -32, -4, 0, -23, 36, -47,
-            38, -206, -199, 0, 0, -240, -240, -240, -240, 0,
-            0, 0, 0, 0, 0, -240, -186, -188, 0, -222,
-            42, -173, 41, 0, -4, -4, 0, 0, -32, -122,
-            46, -170, -185, 0, -206, -210, 0, -204, -240, 0,
-            27, 0, -35, -122, 0, 50, -183, 0, -175, 0,
-            -29, 0, -210, -30, 0,
+    final static short[] yysindex = {-216,
+            -13, 0, 0, -32, -91, 4, -200, 0, 0, -216,
+            0, 0, -198, 2, 0, 0, 8, 10, -198, -241,
+            -241, -186, -216, -187, 41, 0, 38, 24, 0, 0,
+            0, 43, 0, 0, 0, -7, 16, 0, -23, -122,
+            -40, 45, -211, -198, 0, 0, -241, -241, -241, -241,
+            0, 0, 0, 0, 0, 0, -241, -216, 0, -196,
+            -183, 0, -189, 47, -168, 46, 0, 16, 16, 0,
+            0, 25, -34, -122, 0, -32, -165, -181, 0, -211,
+            0, 0, -174, 0, 0, 34, 52, 0, -178, -211,
+            -25, 0, -216, -24, 0,
     };
     final static short[] yyrindex = {0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 3,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, -8, 0, 0, 0, 0,
-            0, 0, 0, 0, 12, -41, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, -16, 0, 0, 0,
+            0, 0, 0, 0, 0, 10, -41, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 55, 0, -36, -31, 0, 0, 56, 0,
+            0, 0, 0, 0, 0, 58, 0, -36, -31, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 61, 0, 0, 0,
             0, 0, 0, 0, 0,
     };
     final static short[] yygindex = {0,
-            5, -40, 0, 0, 24, -26, -11, 0, 0, 0,
-            0, 0, 0, -14, 19, 20, 21, 0, 17,
+            7, -29, 0, 0, 0, -30, -4, -26, 0, 0,
+            0, 0, 0, -15, 28, 29, 27, 0, 30,
     };
     final static int YYTABLESIZE = 238;
     final static short YYFINAL = 8;
@@ -136,7 +138,8 @@ public class Parser {
             "sentencia_declarativa : PROC ID '(' lista_parametros ')' NI '=' CTE_UINT '{' bloque_sentencias '}'",
             "sentencia_declarativa : tipo lista_variables ';'",
             "lista_parametros : parametro",
-            "lista_parametros : parametro ',' lista_parametros",
+            "lista_parametros : parametro ',' parametro",
+            "lista_parametros : parametro ',' parametro ',' parametro",
             "parametro : VAR tipo ID",
             "parametro : tipo ID",
             "lista_variables : ID ',' lista_variables",
@@ -158,16 +161,16 @@ public class Parser {
             "factor : CTE_UINT",
             "factor : CTE_DOUBLE",
             "asignacion : ID '=' expresion",
-            "sentencia_loop : LOOP '{' bloque_sentencias '}' UNTIL '(' condicion ')'",
-            "condicion : expresion comparador expresion",
+            "sentencia_loop : LOOP '{' bloque_sentencias '}' UNTIL condicion",
+            "condicion : '(' expresion comparador expresion ')'",
             "comparador : COMP_MAYOR_IGUAL",
             "comparador : COMP_MENOR_IGUAL",
             "comparador : '<'",
             "comparador : '>'",
             "comparador : COMP_IGUAL",
             "comparador : COMP_DISTINTO",
-            "sentencia_if : IF '(' condicion ')' THEN bloque_condicional END_IF",
-            "sentencia_if : IF '(' condicion ')' THEN bloque_condicional ELSE bloque_condicional END_IF",
+            "sentencia_if : IF condicion THEN bloque_condicional END_IF",
+            "sentencia_if : IF condicion THEN bloque_condicional ELSE bloque_condicional END_IF",
             "bloque_condicional : sentencia",
             "bloque_condicional : '{' bloque_sentencias '}'",
             "invocacion : ID '(' lista_variables ')'",
@@ -202,6 +205,7 @@ public class Parser {
     int yym;       //
     int yystate;   //current parsing state from state table
     String yys;    //current token string
+
     private AnalizadorLexico aLexico;
 
     /**
@@ -222,18 +226,18 @@ public class Parser {
     }
 
     static void yytable() {
-        yytable = new short[]{23,
-                76, 23, 2, 23, 21, 35, 21, 31, 21, 22,
-                46, 22, 47, 22, 25, 62, 32, 23, 23, 46,
-                23, 47, 21, 21, 19, 21, 40, 22, 22, 77,
-                22, 64, 13, 72, 33, 34, 54, 48, 55, 2,
-                3, 69, 49, 77, 22, 20, 1, 21, 62, 23,
-                13, 2, 3, 24, 4, 2, 3, 26, 5, 28,
-                6, 7, 84, 85, 65, 66, 60, 67, 68, 29,
-                30, 41, 42, 43, 44, 45, 57, 58, 59, 70,
-                83, 71, 73, 74, 75, 79, 80, 87, 81, 88,
-                90, 91, 92, 93, 95, 8, 32, 94, 82, 86,
-                89, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        yytable = new short[]{24,
+                58, 24, 2, 24, 22, 39, 22, 21, 22, 23,
+                59, 23, 65, 23, 32, 33, 26, 24, 24, 47,
+                24, 48, 22, 22, 14, 22, 19, 23, 23, 41,
+                23, 23, 77, 34, 35, 47, 55, 48, 56, 67,
+                1, 72, 14, 24, 59, 2, 3, 20, 4, 65,
+                2, 3, 5, 87, 6, 7, 25, 49, 27, 65,
+                29, 63, 50, 92, 73, 81, 30, 47, 31, 48,
+                74, 75, 2, 3, 68, 69, 42, 70, 71, 40,
+                43, 44, 45, 46, 61, 62, 76, 78, 79, 80,
+                82, 85, 86, 88, 89, 90, 91, 93, 8, 94,
+                95, 9, 84, 83, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 2, 0, 0,
                 0, 0, 0, 0, 1, 0, 0, 0, 0, 2,
@@ -244,25 +248,25 @@ public class Parser {
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 23, 23, 23, 23,
-                0, 21, 21, 21, 21, 0, 22, 22, 22, 22,
-                0, 0, 0, 0, 50, 51, 52, 53,
+                0, 0, 0, 0, 0, 0, 24, 24, 24, 24,
+                0, 22, 22, 22, 22, 0, 23, 23, 23, 23,
+                0, 0, 0, 0, 51, 52, 53, 54,
         };
     }
 
     static void yycheck() {
         yycheck = new short[]{41,
-                123, 43, 0, 45, 41, 20, 43, 19, 45, 41,
-                43, 43, 45, 45, 10, 42, 257, 59, 60, 43,
-                62, 45, 59, 60, 40, 62, 22, 59, 60, 70,
-                62, 43, 41, 60, 275, 276, 60, 42, 62, 262,
-                263, 56, 47, 84, 123, 61, 257, 40, 75, 40,
-                59, 262, 263, 257, 265, 262, 263, 257, 269, 59,
-                271, 272, 267, 268, 46, 47, 273, 48, 49, 59,
-                59, 264, 40, 44, 59, 41, 41, 125, 41, 266,
-                76, 270, 41, 257, 44, 40, 257, 61, 274, 125,
-                41, 275, 268, 123, 125, 41, 41, 93, 75, 79,
-                84, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                123, 43, 0, 45, 41, 21, 43, 40, 45, 41,
+                40, 43, 43, 45, 19, 257, 10, 59, 60, 43,
+                62, 45, 59, 60, 41, 62, 40, 59, 60, 23,
+                62, 123, 63, 275, 276, 43, 60, 45, 62, 44,
+                257, 57, 59, 40, 74, 262, 263, 61, 265, 80,
+                262, 263, 269, 80, 271, 272, 257, 42, 257, 90,
+                59, 273, 47, 90, 58, 41, 59, 43, 59, 45,
+                267, 268, 262, 263, 47, 48, 264, 49, 50, 266,
+                40, 44, 59, 41, 125, 41, 270, 41, 257, 44,
+                125, 257, 274, 268, 61, 44, 275, 123, 41, 93,
+                125, 41, 76, 74, -1, -1, -1, -1, -1, -1,
                 -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
                 -1, -1, -1, -1, -1, -1, -1, 125, -1, -1,
                 -1, -1, -1, -1, 257, -1, -1, -1, -1, 262,
@@ -277,14 +281,6 @@ public class Parser {
                 -1, 258, 259, 260, 261, -1, 258, 259, 260, 261,
                 -1, -1, -1, -1, 258, 259, 260, 261,
         };
-    }
-
-    private void yyout(String mensaje) {
-        System.out.println(mensaje);
-    }
-
-    private void yyerror(String syntax_error) {
-        System.err.println(syntax_error);
     }
 
     //########## MESSAGES ##########
@@ -530,252 +526,246 @@ public class Parser {
             switch (yyn) {
 //########## USER-SUPPLIED ACTIONS ##########
                 case 1:
-//#line 7 "E:\Descargas\gramatica.y"
+//#line 7 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
-                    yyout("Reconocio programa");
                 }
                 break;
                 case 2:
-//#line 10 "E:\Descargas\gramatica.y"
+//#line 10 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
-                    yyout("Reconocio sentencia");
                 }
                 break;
                 case 3:
-//#line 11 "E:\Descargas\gramatica.y"
+//#line 11 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
-                    yyout("Reconocio bloque_sentencias");
                 }
                 break;
                 case 4:
-//#line 14 "E:\Descargas\gramatica.y"
+//#line 14 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
-                    yyout("Reconocio sentencia_declarativa");
                 }
                 break;
                 case 5:
-//#line 15 "E:\Descargas\gramatica.y"
+//#line 15 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
-                    yyout("Reconocio sentencia_ejecutable");
                 }
                 break;
                 case 6:
-//#line 18 "E:\Descargas\gramatica.y"
+//#line 18 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
-                    yyout("Reconocio PROC");
+                    yyout("Declaracion procedimiento.");
                 }
                 break;
                 case 7:
-//#line 19 "E:\Descargas\gramatica.y"
+//#line 19 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
-                    yyout("Reconocio tipo+lista_v");
+                }
+                break;
+                case 8:
+//#line 22 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
+                {
                 }
                 break;
                 case 9:
-//#line 23 "E:\Descargas\gramatica.y"
+//#line 23 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
-                    yyout("Reconocio lista_param");
                 }
                 break;
                 case 10:
-//#line 26 "E:\Descargas\gramatica.y"
+//#line 24 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
-                    yyout("Reconocio parametro VAR");
                 }
                 break;
                 case 11:
-//#line 27 "E:\Descargas\gramatica.y"
+//#line 27 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
-                    yyout("Reconocio parametro");
+                    yyout("Parametro VAR, ");
                 }
                 break;
                 case 12:
-//#line 30 "E:\Descargas\gramatica.y"
+//#line 28 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
-                    yyout("Reconocio lista_v");
+                    yyout("Parametro, ");
                 }
                 break;
                 case 13:
-//#line 31 "E:\Descargas\gramatica.y"
+//#line 31 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
-                    yyout("Reconocio variable");
                 }
                 break;
                 case 14:
-//#line 34 "E:\Descargas\gramatica.y"
+//#line 32 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
-                    yyout("Reconocio tipo UINT");
+                    yyout("Variable");
                 }
                 break;
                 case 15:
-//#line 35 "E:\Descargas\gramatica.y"
+//#line 35 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
-                    yyout("Reconocio tipo DOUBLE");
+                    yyout("UINT ");
                 }
                 break;
                 case 16:
-//#line 38 "E:\Descargas\gramatica.y"
+//#line 36 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
+                    yyout("DOUBLE ");
                 }
                 break;
                 case 17:
-//#line 39 "E:\Descargas\gramatica.y"
+//#line 39 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
                 }
                 break;
                 case 18:
-//#line 40 "E:\Descargas\gramatica.y"
+//#line 40 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
                 }
                 break;
                 case 19:
-//#line 41 "E:\Descargas\gramatica.y"
+//#line 41 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
                 }
                 break;
                 case 20:
-//#line 42 "E:\Descargas\gramatica.y"
+//#line 42 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
                 }
                 break;
                 case 21:
-//#line 45 "E:\Descargas\gramatica.y"
+//#line 43 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
-                    yyout("Reconocio Expr+Term");
                 }
                 break;
                 case 22:
-//#line 46 "E:\Descargas\gramatica.y"
+//#line 46 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
-                    yyout("Reconocio Expr-Term");
                 }
                 break;
                 case 23:
-//#line 47 "E:\Descargas\gramatica.y"
+//#line 47 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
-                    yyout("Reconocio Term");
                 }
                 break;
                 case 24:
-//#line 50 "E:\Descargas\gramatica.y"
+//#line 48 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
-                    yyout("Reconocio Term*Fact");
                 }
                 break;
                 case 25:
-//#line 51 "E:\Descargas\gramatica.y"
+//#line 51 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
-                    yyout("Reconocio Term/Fact");
                 }
                 break;
                 case 26:
-//#line 52 "E:\Descargas\gramatica.y"
+//#line 52 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
-                    yyout("Reconocio Fact");
                 }
                 break;
                 case 27:
-//#line 55 "E:\Descargas\gramatica.y"
+//#line 53 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
-                    yyout("Reconocio ID");
                 }
                 break;
                 case 28:
-//#line 56 "E:\Descargas\gramatica.y"
+//#line 56 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
-                    yyout("Reconocio CTE_UINT");
+                    yyout("ID");
                 }
                 break;
                 case 29:
-//#line 57 "E:\Descargas\gramatica.y"
+//#line 57 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
-                    yyout("Reconocio CTE_DOUBLE");
+                    yyout("CTE_UINT");
                 }
                 break;
                 case 30:
-//#line 60 "E:\Descargas\gramatica.y"
+//#line 58 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
-                    yyout("Reconocio asignacion");
+                    yyout("CTE_DOUBLE");
                 }
                 break;
                 case 31:
-//#line 63 "E:\Descargas\gramatica.y"
+//#line 61 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
-                    yyout("Reconocio loop");
+                    yyout("Asignacion");
                 }
                 break;
                 case 32:
-//#line 66 "E:\Descargas\gramatica.y"
+//#line 64 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
-                    yyout("Reconocio condicion");
+                    yyout("Loop");
                 }
                 break;
                 case 33:
-//#line 69 "E:\Descargas\gramatica.y"
+//#line 67 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
                 }
                 break;
                 case 34:
-//#line 70 "E:\Descargas\gramatica.y"
+//#line 70 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
                 }
                 break;
                 case 35:
-//#line 71 "E:\Descargas\gramatica.y"
+//#line 71 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
                 }
                 break;
                 case 36:
-//#line 72 "E:\Descargas\gramatica.y"
+//#line 72 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
                 }
                 break;
                 case 37:
-//#line 73 "E:\Descargas\gramatica.y"
+//#line 73 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
                 }
                 break;
                 case 38:
-//#line 74 "E:\Descargas\gramatica.y"
+//#line 74 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
                 }
                 break;
                 case 39:
-//#line 77 "E:\Descargas\gramatica.y"
+//#line 75 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
-                    yyout("Reconocio IF THEN");
                 }
                 break;
                 case 40:
-//#line 78 "E:\Descargas\gramatica.y"
+//#line 78 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
-                    yyout("Reconocio IF THEN ELSE");
+                    yyout("IF-THEN");
                 }
                 break;
                 case 41:
-//#line 81 "E:\Descargas\gramatica.y"
+//#line 79 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
-                    yyout("Reconocio bloque_condicional");
+                    yyout("IF-THEN-ELSE");
                 }
                 break;
                 case 42:
-//#line 82 "E:\Descargas\gramatica.y"
+//#line 82 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
                 }
                 break;
                 case 43:
-//#line 85 "E:\Descargas\gramatica.y"
+//#line 83 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
-                    yyout("Reconocio invocacion");
                 }
                 break;
                 case 44:
-//#line 88 "E:\Descargas\gramatica.y"
+//#line 86 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
                 {
-                    yyout("Reconocio print");
+                    yyout("Invocacion");
                 }
                 break;
-//#line 616 "Parser.java"
+                case 45:
+//#line 89 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
+                {
+                    yyout("Print");
+                }
+                break;
+//#line 625 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
             }//switch
             //#### Now let's reduce... ####
@@ -815,6 +805,14 @@ public class Parser {
             }
         }//main loop
         return 0;//yyaccept!!
+    }
+
+    private void yyout(String msg) {
+        System.out.println(msg);
+    }
+
+    private void yyerror(String syntaxError) {
+        System.err.println(syntaxError);
     }
 
     /**

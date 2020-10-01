@@ -4,35 +4,36 @@
 
 %%
 
-programa	: bloque_sentencias {yyout("Reconocio programa");}
+programa	: bloque_sentencias {}
 			;
 			
-bloque_sentencias	: sentencia {yyout("Reconocio sentencia");}
-					| sentencia bloque_sentencias  {yyout("Reconocio bloque_sentencias");}
+bloque_sentencias	: sentencia {}
+					| sentencia bloque_sentencias  {}
 					;
 
-sentencia 	: sentencia_declarativa {yyout("Reconocio sentencia_declarativa");}
-            | sentencia_ejecutable {yyout("Reconocio sentencia_ejecutable");}
+sentencia 	: sentencia_declarativa {}
+            | sentencia_ejecutable {}
 			;
 			
-sentencia_declarativa	: PROC ID '(' lista_parametros ')' NI '=' CTE_UINT '{' bloque_sentencias '}'  {yyout("Reconocio PROC");}
-						| tipo lista_variables ';'{yyout("Reconocio tipo+lista_v");}
+sentencia_declarativa	: PROC ID '(' lista_parametros ')' NI '=' CTE_UINT '{' bloque_sentencias '}' {yyout("Declaracion procedimiento.");}
+						| tipo lista_variables ';' {}
 						;
 
-lista_parametros	: parametro
-					| parametro ',' lista_parametros {yyout("Reconocio lista_param");}
+lista_parametros	: parametro {}
+					| parametro ',' parametro {}
+					| parametro ',' parametro ',' parametro {}
 					;
 					
-parametro	: VAR tipo ID {yyout("Reconocio parametro VAR");}
-			| tipo ID {yyout("Reconocio parametro");}
+parametro	: VAR tipo ID {yyout("Parametro VAR");}
+			| tipo ID {yyout("Parametro");}
 			;
 
-lista_variables : ID ',' lista_variables {yyout("Reconocio lista_v");}
-				| ID {yyout("Reconocio variable");}
+lista_variables : ID ',' lista_variables {}
+				| ID {yyout("Variable");}
 				;
 
-tipo	: UINT {yyout("Reconocio tipo UINT");}
-		| DOUBLE {yyout("Reconocio tipo DOUBLE");}
+tipo	: UINT {yyout("Tipo UINT");}
+		| DOUBLE {yyout("Tipo DOUBLE");}
 		;
 
 sentencia_ejecutable	: asignacion ';'{}
@@ -42,28 +43,28 @@ sentencia_ejecutable	: asignacion ';'{}
 						| print ';'{}
 						;
 			
-expresion	: expresion '+' termino {yyout("Reconocio Expr+Term");}
-			| expresion '-' termino {yyout("Reconocio Expr-Term");}
-	        | termino {yyout("Reconocio Term");}
+expresion	: expresion '+' termino {}
+			| expresion '-' termino {}
+	        | termino {}
 			;
     		
-termino	: termino '*' factor {yyout("Reconocio Term*Fact");}
-		| termino '/' factor {yyout("Reconocio Term/Fact");}
-		| factor {yyout("Reconocio Fact");}
+termino	: termino '*' factor {}
+		| termino '/' factor {}
+		| factor {}
      	;	
 		
-factor 	: ID  {yyout("Reconocio ID");}
-		| CTE_UINT  {yyout("Reconocio CTE_UINT");}
-		| CTE_DOUBLE  {yyout("Reconocio CTE_DOUBLE");}
+factor 	: ID  {yyout("ID");}
+		| CTE_UINT  {yyout("CTE_UINT");}
+		| CTE_DOUBLE  {yyout("CTE_DOUBLE");}
 		;
 
-asignacion	: ID '=' expresion {yyout("Reconocio asignacion");}
+asignacion	: ID '=' expresion {yyout("Asignacion");}
 			;
 
-sentencia_loop	: LOOP '{' bloque_sentencias '}' UNTIL '(' condicion ')' {yyout("Reconocio loop");}
+sentencia_loop	: LOOP '{' bloque_sentencias '}' UNTIL condicion {yyout("Loop");}
 				;
 
-condicion 	: expresion comparador expresion {yyout("Reconocio condicion");}
+condicion 	: '(' expresion comparador expresion ')' {}
 			;
 			
 comparador 	: COMP_MAYOR_IGUAL {}
@@ -74,18 +75,18 @@ comparador 	: COMP_MAYOR_IGUAL {}
 			| COMP_DISTINTO {}
 			;
 
-sentencia_if 	: IF '(' condicion ')' THEN bloque_condicional END_IF {yyout("Reconocio IF THEN");}
-				| IF '(' condicion ')' THEN bloque_condicional ELSE bloque_condicional END_IF {yyout("Reconocio IF THEN ELSE");}
+sentencia_if 	: IF condicion THEN bloque_condicional END_IF {yyout("IF-THEN");}
+				| IF condicion THEN bloque_condicional ELSE bloque_condicional END_IF {yyout("IF-THEN-ELSE");}
 				;
 
-bloque_condicional	: sentencia {yyout("Reconocio bloque_condicional");}
+bloque_condicional	: sentencia {}
 					| '{' bloque_sentencias '}' {}
 					;
 
-invocacion	: ID '(' lista_variables ')'{yyout("Reconocio invocacion");}
+invocacion	: ID '(' lista_variables ')'{yyout("Invocacion");}
 			;
 
-print	: OUT '(' CADENA ')' {yyout("Reconocio print");}
+print	: OUT '(' CADENA ')' {yyout("Print");}
 		;
 	
 	
