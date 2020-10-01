@@ -277,9 +277,7 @@ public class AccionSemantica {
         public void ejecutar() {
             if (baseNumDouble != Double.NEGATIVE_INFINITY) {
                 int expNumDouble = 0; //Vale 0 por defecto (Util para los casos donde no se tiene exponente).
-                if (!sTemporal.isEmpty()) expNumDouble = Integer.parseInt(sTemporal);
-
-                System.out.println(baseNumDouble);
+                if (!sTemporal.isEmpty() && !sTemporal.equals("-") && !sTemporal.equals("+")) expNumDouble = Integer.parseInt(sTemporal);
 
                 if (doubleValido(baseNumDouble,expNumDouble)) {
                     double doubleNormalizado = baseNumDouble * Math.pow(10, expNumDouble);

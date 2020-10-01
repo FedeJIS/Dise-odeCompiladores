@@ -15,10 +15,11 @@ public class Estado {
     public static final int CTE_UI_SUF2 = 11;
     public static final int CTE_UI_SUF3 = 12;
     public static final int CTE_PARTE_DECIM = 13;
-    public static final int CTE_PARTE_EXP = 14;
-    public static final int CADENA = 15;
-    public static final int CADENA_NUEVA_LINEA = 16;
-    public static final int FINAL = 17;
+    public static final int CTE_PARTE_EXP_SIGNO = 14;
+    public static final int CTE_PARTE_EXP_VALOR = 15;
+    public static final int CADENA = 16;
+    public static final int CADENA_NUEVA_LINEA = 17;
+    public static final int FINAL = 18;
 
-    public static final int TOTAL_ESTADOS = 18;
+    public static final int TOTAL_ESTADOS = 19;
 }

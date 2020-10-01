@@ -306,7 +306,7 @@ public class MaquinaEstados {
         maquinaEstados[Estado.CTE_PARTE_ENTERA][Input.DIGITO] = new TransicionEstado(Estado.CTE_PARTE_ENTERA,concatenaChar);
         maquinaEstados[Estado.CTE_PARTE_ENTERA][Input.GUION_B] = new TransicionEstado(Estado.CTE_UI_SUF1); //Salto a deteccion de sufijo para UIs.
         maquinaEstados[Estado.CTE_PARTE_ENTERA][Input.PUNTO] = new TransicionEstado(Estado.CTE_PARTE_DECIM,concatenaChar); //Salto a parte decimal de doubles.
-        maquinaEstados[Estado.CTE_PARTE_ENTERA][Input.D_MINUSC] = new TransicionEstado(Estado.CTE_PARTE_EXP,parseBaseDouble,consumeChar); //Salto a parte exponencial de doubles.
+        maquinaEstados[Estado.CTE_PARTE_ENTERA][Input.D_MINUSC] = new TransicionEstado(Estado.CTE_PARTE_EXP_VALOR,parseBaseDouble,consumeChar); //Salto a parte exponencial de doubles.
 
         /* Deteccion sufijo (10,11,12). */
         inicDeteccionSufijo(devuelveUltimoLeido, cuentaSaltoLinea, generaTokenUINT);
@@ -318,15 +318,20 @@ public class MaquinaEstados {
         maquinaEstados[Estado.CTE_PARTE_DECIM][Input.EOF] = new TransicionEstado(Estado.FINAL, parseBaseDouble, generaTokenDouble); //No devuelve ultimo leido dsp de un EOF.
 
         maquinaEstados[Estado.CTE_PARTE_DECIM][Input.DIGITO] = new TransicionEstado(Estado.CTE_PARTE_DECIM, concatenaChar);
-        maquinaEstados[Estado.CTE_PARTE_DECIM][Input.D_MINUSC] = new TransicionEstado(Estado.CTE_PARTE_EXP,parseBaseDouble,consumeChar); //Salto a parte exponencial de doubles.
+        maquinaEstados[Estado.CTE_PARTE_DECIM][Input.D_MINUSC] = new TransicionEstado(Estado.CTE_PARTE_EXP_SIGNO,parseBaseDouble,consumeChar); //Salto a parte exponencial de doubles.
 
-        /* Parte exponencial (14). */
-        inicTransiciones(Estado.CTE_PARTE_EXP, Estado.FINAL, devuelveUltimoLeido, generaTokenDouble);
-        maquinaEstados[Estado.CTE_PARTE_EXP][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL, generaTokenDouble,
+        /* Parte exponencial_signo (14) */
+        inicTransiciones(Estado.CTE_PARTE_EXP_SIGNO, Estado.FINAL, devuelveUltimoLeido, generaTokenDouble); //Por defecto pone exp=0. TODO Notificar warning.
+        maquinaEstados[Estado.CTE_PARTE_EXP_SIGNO][Input.SUMA] = new TransicionEstado(Estado.CTE_PARTE_EXP_VALOR, concatenaChar);
+        maquinaEstados[Estado.CTE_PARTE_EXP_SIGNO][Input.GUION] = new TransicionEstado(Estado.CTE_PARTE_EXP_VALOR, concatenaChar);
+
+        /* Parte exponencial_valor (15). */
+        inicTransiciones(Estado.CTE_PARTE_EXP_VALOR, Estado.FINAL, devuelveUltimoLeido, generaTokenDouble); //Por defecto pone exp=0. TODO Notificar warning.
+        maquinaEstados[Estado.CTE_PARTE_EXP_VALOR][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL, generaTokenDouble,
                 cuentaSaltoLinea); //Permite contar un salto de linea (No devuelve el ultimo leido pq se descartaria de todas formas).
-        maquinaEstados[Estado.CTE_PARTE_EXP][Input.EOF] = new TransicionEstado(Estado.FINAL, generaTokenDouble); //No devuelve ultimo leido dsp de un EOF.
+        maquinaEstados[Estado.CTE_PARTE_EXP_VALOR][Input.EOF] = new TransicionEstado(Estado.FINAL, generaTokenDouble); //No devuelve ultimo leido dsp de un EOF.
 
-        maquinaEstados[Estado.CTE_PARTE_EXP][Input.DIGITO] = new TransicionEstado(Estado.CTE_PARTE_EXP,concatenaChar);
+        maquinaEstados[Estado.CTE_PARTE_EXP_VALOR][Input.DIGITO] = new TransicionEstado(Estado.CTE_PARTE_EXP_VALOR,concatenaChar);
     }
 
     private void inicDeteccionSufijo(AccionSemantica devuelveUltimoLeido, AccionSemantica cuentaSaltoLinea,
@@ -355,11 +360,11 @@ public class MaquinaEstados {
     }
 
     /**
-     * Inicializacion estado 15 y 16.
+     * Inicializacion estado 16 y 17.
      */
     private void inicCadena(AccionSemantica concatenaChar, AccionSemantica cuentaSaltoLinea,
                             AccionSemantica generaTokenCadena){
-        /* 15 */
+        /* 16 */
         /* Inputs validos. */
         inicTransiciones(Estado.CADENA,Estado.CADENA,concatenaChar);
         maquinaEstados[Estado.CADENA][Input.GUION] = new TransicionEstado(Estado.CADENA_NUEVA_LINEA);
@@ -372,7 +377,7 @@ public class MaquinaEstados {
         maquinaEstados[Estado.CADENA][Input.SALTO_LINEA] = new TransicionEstado(Estado.INICIAL,concatenaChar, //Hay un salto de linea sin el '-'.
                 cuentaSaltoLinea); //Permite contar saltos de linea. TODO: Notificar error.
 
-        /* 16 */
+        /* 17 */
         /* Inputs invalidos. */
         inicTransiciones(Estado.CADENA_NUEVA_LINEA,Estado.INICIAL); //TODO: Notificar error.
 

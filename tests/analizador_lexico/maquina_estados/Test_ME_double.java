@@ -21,24 +21,32 @@ public class Test_ME_double {
         tablaS.printAll();
         System.out.println();
 
-        tablaS = testGenerico("3.d5",AnalizadorLexico.T_CTE_DOUBLE);
+        tablaS = testGenerico("3.d+5",AnalizadorLexico.T_CTE_DOUBLE);
         tablaS.printAll();
         System.out.println();
-//        System.out.println("Lexema encontrado:"+tablaS.getValor(String.valueOf(3.0*Math.pow(10,5))).getLexema());
 
-        tablaS = testGenerico("2.5d2",AnalizadorLexico.T_CTE_DOUBLE);
+        tablaS = testGenerico("2.5d2",AnalizadorLexico.T_CTE_DOUBLE); //Le falta el '+'. Genera un double sin exponente.
         tablaS.printAll();
         System.out.println();
-//        System.out.println("Lexema encontrado:"+tablaS.getValor("55").getLexema());
 
         tablaS = testGenerico("0.",AnalizadorLexico.T_CTE_DOUBLE);
         tablaS.printAll();
         System.out.println();
-//        System.out.println("Lexema encontrado:"+tablaS.getValor("55").getLexema());
 
         tablaS = testGenerico(".0",AnalizadorLexico.T_CTE_DOUBLE);
         tablaS.printAll();
         System.out.println();
-//        System.out.println("Lexema encontrado:"+tablaS.getValor("55").getLexema());
+
+        tablaS = testGenerico("5.0d-1",AnalizadorLexico.T_CTE_DOUBLE);
+        tablaS.printAll();
+        System.out.println();
+
+        tablaS = testGenerico("5.0d-",AnalizadorLexico.T_CTE_DOUBLE);
+        tablaS.printAll();
+        System.out.println();
+
+        tablaS = testGenerico("5.0d+",AnalizadorLexico.T_CTE_DOUBLE);
+        tablaS.printAll();
+        System.out.println();
     }
 }
