@@ -6,7 +6,13 @@ import static analizador_lexico.maquina_estados.Test_ME_descartables.testGeneric
 
 public class Test_ME_cadenasMultiL {
     public static void main(String[] args) {
-        testGenerico("\"CADENA\nMULTI\nLINEA\"", AnalizadorLexico.T_CADENA);
+        testGenerico("\"CADENA-\nMULTI-\nLINEA\"", AnalizadorLexico.T_CADENA);
+        System.out.println();
+
+        testGenerico("\"CADENA\nMULTI\"", AnalizadorLexico.T_CADENA);
+        System.out.println();
+
+        testGenerico("\"CADENA-MULTI\"", AnalizadorLexico.T_CADENA);
         System.out.println();
     }
 }

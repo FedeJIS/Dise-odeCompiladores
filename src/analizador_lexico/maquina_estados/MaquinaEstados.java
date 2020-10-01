@@ -32,7 +32,7 @@ public class MaquinaEstados {
         AccionSemantica consumeChar = new AccionSemantica.ConsumeChar(); //7
         AccionSemantica generaTokenUINT = new AccionSemantica.GeneraTokenUINT(this, tablaS, AnalizadorLexico.T_CTE_UINT); //8
         AccionSemantica generaTokenDouble = new AccionSemantica.GeneraTokenDouble(this,tablaS, AnalizadorLexico.T_CTE_DOUBLE); //10
-        AccionSemantica cuentaSaltoLinea = new AccionSemantica.CuentaSaltoLinea(); //12
+        AccionSemantica cuentaSaltoLinea = new AccionSemantica.CuentaSaltoLinea(); //11
 
         /* Inicializacion estados */
         inicTransicionesInicial(inicStringVacio, concatenaChar, cuentaSaltoLinea, generaTokenLiteral);
@@ -136,7 +136,7 @@ public class MaquinaEstados {
 
         /* Tokens literales. */
         maquinaEstados[Estado.INICIAL][Input.SUMA] = new TransicionEstado(Estado.FINAL,generaTokenLiteral);
-        maquinaEstados[Estado.INICIAL][Input.RESTA] = new TransicionEstado(Estado.FINAL,generaTokenLiteral);
+        maquinaEstados[Estado.INICIAL][Input.GUION] = new TransicionEstado(Estado.FINAL,generaTokenLiteral);
         maquinaEstados[Estado.INICIAL][Input.MULTIPL] = new TransicionEstado(Estado.FINAL,generaTokenLiteral);
         maquinaEstados[Estado.INICIAL][Input.DIV] = new TransicionEstado(Estado.FINAL,generaTokenLiteral);
         maquinaEstados[Estado.INICIAL][Input.CORCHETE_A] = new TransicionEstado(Estado.FINAL,generaTokenLiteral);
@@ -355,19 +355,34 @@ public class MaquinaEstados {
     }
 
     /**
-     * Inicializacion estado 15.
+     * Inicializacion estado 15 y 16.
      */
     private void inicCadena(AccionSemantica concatenaChar, AccionSemantica cuentaSaltoLinea,
                             AccionSemantica generaTokenCadena){
+        /* 15 */
         /* Inputs validos. */
         inicTransiciones(Estado.CADENA,Estado.CADENA,concatenaChar);
-        maquinaEstados[Estado.CADENA][Input.SALTO_LINEA] = new TransicionEstado(Estado.CADENA,concatenaChar,
-                cuentaSaltoLinea); //Permite contar saltos de linea.
+        maquinaEstados[Estado.CADENA][Input.GUION] = new TransicionEstado(Estado.CADENA_NUEVA_LINEA);
 
         /* Fin cadena. */
         maquinaEstados[Estado.CADENA][Input.COMILLA] = new TransicionEstado(Estado.FINAL,concatenaChar,generaTokenCadena);
 
-        /* EOF. Quedo la cadena abierta, hay que notificar error. TODO: Notificar error. */
-        maquinaEstados[Estado.CADENA][Input.EOF] = new TransicionEstado(Estado.INICIAL);
+        /* Inputs invalidos. */
+        maquinaEstados[Estado.CADENA][Input.EOF] = new TransicionEstado(Estado.INICIAL); //EOF. Quedo la cadena abierta, hay que notificar error. TODO: Notificar error.
+        maquinaEstados[Estado.CADENA][Input.SALTO_LINEA] = new TransicionEstado(Estado.INICIAL,concatenaChar, //Hay un salto de linea sin el '-'.
+                cuentaSaltoLinea); //Permite contar saltos de linea. TODO: Notificar error.
+
+        /* 16 */
+        /* Inputs invalidos. */
+        inicTransiciones(Estado.CADENA_NUEVA_LINEA,Estado.INICIAL); //TODO: Notificar error.
+
+        /* Inputs validos. */
+        maquinaEstados[Estado.CADENA_NUEVA_LINEA][Input.SALTO_LINEA] = new TransicionEstado(Estado.CADENA,cuentaSaltoLinea);
+
+
+
+
+
+
     }
 }

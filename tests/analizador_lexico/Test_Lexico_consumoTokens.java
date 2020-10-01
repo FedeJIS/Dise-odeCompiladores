@@ -20,6 +20,10 @@ public class Test_Lexico_consumoTokens {
         System.out.print("[IF (x != y) THEN]:");
         testGenerico("IF (x != y) THEN");
         System.out.println();
+
+        System.out.print("[\"CADENA-MULTI\"]:");
+        testGenerico("\"CADENA-multi\"");
+        System.out.println();
     }
 
     private static void testGenerico(String lineaFuente) {
@@ -34,6 +38,7 @@ public class Test_Lexico_consumoTokens {
             tokenOriginal = aLexico.yylex();
             System.out.print(tokenOriginal + " ");
         }
+        tablaS.printAll();
 
     }
 
