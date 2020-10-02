@@ -4,90 +4,99 @@
 
 %%
 
-programa	: bloque_sentencias {}
+programa	: bloque_sentencias
 			;
 			
-bloque_sentencias	: sentencia {}
-					| sentencia bloque_sentencias  {}
+bloque_sentencias	: sentencia ';'
+					| sentencia ';' bloque_sentencias
 					;
 
-sentencia 	: sentencia_declarativa {}
-            | sentencia_ejecutable {}
+sentencia 	: sentencia_declarativa
+            | sentencia_ejecutable
 			;
 			
-sentencia_declarativa	: PROC ID '(' lista_parametros ')' NI '=' CTE_UINT '{' bloque_sentencias '}' {yyout("Declaracion procedimiento.");}
-						| tipo lista_variables ';' {}
+sentencia_declarativa	: PROC ID '(' lista_params ')' NI '=' CTE_UINT '{' bloque_sentencias '}'    {yyout("Declaracion procedimiento.");}
+						| tipo lista_variables
 						;
 
-lista_parametros	: parametro {}
-					| parametro ',' parametro {}
-					| parametro ',' parametro ',' parametro {}
-					;
-					
-parametro	: VAR tipo ID {yyout("Parametro VAR");}
-			| tipo ID {yyout("Parametro");}
+lista_params    :
+                | parametro
+                | parametro ',' parametro
+                | parametro ',' parametro ',' parametro
+                ;
+
+parametro	: VAR tipo ID   {yyout("Parametro_VAR");}
+			| tipo ID       {yyout("Parametro");}
 			;
 
-lista_variables : ID ',' lista_variables {}
-				| ID {yyout("Variable");}
-				;
-
-tipo	: UINT {yyout("Tipo UINT");}
-		| DOUBLE {yyout("Tipo DOUBLE");}
+tipo	: UINT      {yyout("UINT");}
+		| DOUBLE    {yyout("DOUBLE");}
 		;
 
-sentencia_ejecutable	: asignacion ';'{}
-						| sentencia_loop {}
-						| sentencia_if {}
-						| invocacion ';'{}
-						| print ';'{}
+lista_variables : ID                        {yyout("Variable");}
+				| ID ',' lista_variables
+				;
+
+sentencia_ejecutable	: invocacion
+                        | asignacion
+						| sentencia_loop
+						| sentencia_if
+						| print
 						;
-			
-expresion	: expresion '+' termino {}
-			| expresion '-' termino {}
-	        | termino {}
+
+invocacion	: ID '(' ')'                    {yyout("Invocacion_Vacia");}
+            | ID '(' lista_variables ')'    {yyout("Invocacion");}
+			;
+
+asignacion	: ID '=' expresion      {yyout("Asignacion");}
+			;
+
+expresion	: expresion '+' termino
+			| expresion '-' termino
+	        | termino
 			;
     		
-termino	: termino '*' factor {}
-		| termino '/' factor {}
-		| factor {}
+termino	: termino '*' factor
+		| termino '/' factor
+		| factor
      	;	
 		
-factor 	: ID  {yyout("ID");}
-		| CTE_UINT  {yyout("CTE_UINT");}
-		| CTE_DOUBLE  {yyout("CTE_DOUBLE");}
+factor 	: ID            {yyout("ID");}
+		| CTE_UINT      {yyout("CTE_UINT");}
+		| CTE_DOUBLE    {yyout("CTE_DOUBLE");}
+		| '-' factor
 		;
 
-asignacion	: ID '=' expresion {yyout("Asignacion");}
-			;
-
-sentencia_loop	: LOOP '{' bloque_sentencias '}' UNTIL condicion {yyout("Loop");}
+sentencia_loop	: LOOP bloque_estruct_ctrl UNTIL condicion    {yyout("LOOP");}
 				;
 
-condicion 	: '(' expresion comparador expresion ')' {}
+sentencia_if 	: IF condicion THEN bloque_estruct_ctrl END_IF                              {yyout("IF-THEN");}
+				| IF condicion THEN bloque_estruct_ctrl ELSE bloque_estruct_ctrl END_IF     {yyout("IF-THEN-ELSE");}
+				;
+
+bloque_estruct_ctrl	: sentencia ';'
+                    | '{' bloque_sentencias '}'
+                    ;
+
+condicion 	: '(' expresion comparador expresion ')'
 			;
 			
-comparador 	: COMP_MAYOR_IGUAL {}
-			| COMP_MENOR_IGUAL {}
-			| '<' {}
-			| '>' {}
-			| COMP_IGUAL {}
-			| COMP_DISTINTO {}
+comparador 	: COMP_MAYOR_IGUAL
+			| COMP_MENOR_IGUAL
+			| '<'
+			| '>'
+			| COMP_IGUAL
+			| COMP_DISTINTO
 			;
 
-sentencia_if 	: IF condicion THEN bloque_condicional END_IF {yyout("IF-THEN");}
-				| IF condicion THEN bloque_condicional ELSE bloque_condicional END_IF {yyout("IF-THEN-ELSE");}
-				;
-
-bloque_condicional	: sentencia {}
-					| '{' bloque_sentencias '}' {}
-					;
-
-invocacion	: ID '(' lista_variables ')'{yyout("Invocacion");}
-			;
-
-print	: OUT '(' CADENA ')' {yyout("Print");}
+print	: OUT '(' imprimible ')'
 		;
+
+imprimible  : CADENA        {yyout("Print_CADENA");}
+            | CTE_UINT      {yyout("Print_UINT");}
+            | CTE_DOUBLE    {yyout("Print_DOUBLE");}
+            | ID            {yyout("Print_ID");}
+            ;
 	
 	
 	

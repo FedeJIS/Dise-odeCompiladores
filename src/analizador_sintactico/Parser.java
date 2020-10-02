@@ -11,7 +11,6 @@
 //### Please send bug reports to tom@hukatronic.cz
 //### static char yysccsid[] = "@(#)yaccpar	1.8 (Berkeley) 01/20/90";
 
-
 package analizador_sintactico;
 
 import analizador_lexico.AnalizadorLexico;
@@ -37,7 +36,7 @@ public class Parser {
     public final static short PROC = 272;
 
 
-    //########## SEMANTIC VALUES ##########
+//########## SEMANTIC VALUES ##########
 //public class ParserVal is defined in ParserVal.java
     public final static short VAR = 273;
     public final static short NI = 274;
@@ -48,63 +47,65 @@ public class Parser {
     final static int YYSTACKSIZE = 500;  //maximum stack size
     final static short[] yylhs = {-1,
             0, 1, 1, 2, 2, 3, 3, 5, 5, 5,
-            8, 8, 7, 7, 6, 6, 4, 4, 4, 4,
-            4, 14, 14, 14, 15, 15, 15, 16, 16, 16,
-            9, 10, 17, 18, 18, 18, 18, 18, 18, 11,
-            11, 19, 19, 12, 13,
+            5, 8, 8, 6, 6, 7, 7, 4, 4, 4,
+            4, 4, 9, 9, 10, 14, 14, 14, 15, 15,
+            15, 16, 16, 16, 16, 11, 12, 12, 17, 17,
+            18, 19, 19, 19, 19, 19, 19, 13, 20, 20,
+            20, 20,
     };
     final static short[] yylen = {2,
-            1, 1, 2, 1, 1, 11, 3, 1, 3, 5,
-            3, 2, 3, 1, 1, 1, 2, 1, 1, 2,
-            2, 3, 3, 1, 3, 3, 1, 1, 1, 1,
-            3, 6, 5, 1, 1, 1, 1, 1, 1, 5,
-            7, 1, 3, 4, 4,
+            1, 2, 3, 1, 1, 11, 2, 0, 1, 3,
+            5, 3, 2, 1, 1, 1, 3, 1, 1, 1,
+            1, 1, 3, 4, 3, 3, 3, 1, 3, 3,
+            1, 1, 1, 1, 2, 4, 5, 7, 2, 3,
+            5, 1, 1, 1, 1, 1, 1, 4, 1, 1,
+            1, 1,
     };
     final static short[] yydefred = {0,
-            0, 15, 16, 0, 0, 0, 0, 0, 1, 0,
-            4, 5, 0, 0, 18, 19, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 3, 0, 0, 17, 20,
-            21, 0, 28, 29, 30, 0, 0, 27, 0, 0,
-            0, 0, 0, 0, 7, 44, 0, 0, 0, 0,
-            35, 34, 39, 38, 36, 37, 0, 0, 42, 0,
-            0, 45, 0, 0, 0, 0, 13, 0, 0, 25,
-            26, 0, 0, 0, 40, 0, 0, 0, 12, 0,
-            33, 43, 0, 32, 11, 0, 0, 41, 0, 0,
-            0, 10, 0, 0, 6,
+            0, 14, 15, 0, 0, 0, 0, 0, 1, 0,
+            4, 5, 0, 18, 19, 20, 21, 22, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 7,
+            23, 0, 32, 33, 34, 0, 0, 0, 31, 0,
+            0, 0, 39, 0, 52, 49, 50, 51, 0, 0,
+            3, 0, 24, 35, 0, 0, 0, 0, 43, 42,
+            47, 46, 44, 45, 0, 0, 40, 36, 48, 0,
+            0, 0, 0, 17, 0, 0, 29, 30, 0, 0,
+            37, 0, 0, 13, 0, 41, 0, 12, 0, 0,
+            38, 0, 0, 0, 11, 0, 0, 6,
     };
     final static short[] yydgoto = {8,
-            9, 10, 11, 12, 64, 13, 28, 66, 14, 15,
-            16, 17, 18, 36, 37, 38, 22, 57, 60,
+            9, 10, 11, 12, 71, 13, 30, 73, 14, 15,
+            16, 17, 18, 37, 38, 39, 25, 22, 65, 49,
     };
-    final static short[] yysindex = {-216,
-            -13, 0, 0, -32, -91, 4, -200, 0, 0, -216,
-            0, 0, -198, 2, 0, 0, 8, 10, -198, -241,
-            -241, -186, -216, -187, 41, 0, 38, 24, 0, 0,
-            0, 43, 0, 0, 0, -7, 16, 0, -23, -122,
-            -40, 45, -211, -198, 0, 0, -241, -241, -241, -241,
-            0, 0, 0, 0, 0, 0, -241, -216, 0, -196,
-            -183, 0, -189, 47, -168, 46, 0, 16, 16, 0,
-            0, 25, -34, -122, 0, -32, -165, -181, 0, -211,
-            0, 0, -174, 0, 0, 34, 52, 0, -178, -211,
-            -25, 0, -216, -24, 0,
+    final static short[] yysindex = {-202,
+            -9, 0, 0, 19, -121, 22, -239, 0, 0, 7,
+            0, 0, -189, 0, 0, 0, 0, 0, -30, -45,
+            -45, -195, -202, 14, -184, -218, 41, -202, 43, 0,
+            0, 47, 0, 0, 0, -45, -8, -6, 0, -22,
+            -121, -36, 0, 19, 0, 0, 0, 0, 49, -198,
+            0, -189, 0, 0, -45, -45, -45, -45, 0, 0,
+            0, 0, 0, 0, -45, -190, 0, 0, 0, -183,
+            50, -165, 51, 0, -6, -6, 0, 0, 31, -121,
+            0, -164, -180, 0, -198, 0, -172, 0, 36, 54,
+            0, -176, -198, -23, 0, -202, -24, 0,
     };
     final static short[] yyrindex = {0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 3,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, -16, 0, 0, 0,
-            0, 0, 0, 0, 0, 10, -41, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 58, 0, -36, -31, 0,
+            0, 0, 0, 0, 0, 0, 0, 4, -27, 0,
+            0, 0, 0, 0, 0, 0, 44, -40, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 61,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 61, 0, 0, 0,
-            0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 63, 0, -35, -15, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 64,
+            0, 0, 0, 0, 0, 0, 0, 0,
     };
     final static short[] yygindex = {0,
-            7, -29, 0, 0, 0, -30, -4, -26, 0, 0,
-            0, 0, 0, -15, 28, 29, 27, 0, 30,
+            -11, 2, 0, 0, 0, -37, -3, -51, 0, 0,
+            0, 0, 0, -12, 28, -7, -26, 62, 0, 0,
     };
-    final static int YYTABLESIZE = 238;
+    final static int YYTABLESIZE = 246;
     final static short YYFINAL = 8;
     final static short YYMAXTOKEN = 276;
     final static String[] yyname = {
@@ -131,26 +132,30 @@ public class Parser {
     final static String[] yyrule = {
             "$accept : programa",
             "programa : bloque_sentencias",
-            "bloque_sentencias : sentencia",
-            "bloque_sentencias : sentencia bloque_sentencias",
+            "bloque_sentencias : sentencia ';'",
+            "bloque_sentencias : sentencia ';' bloque_sentencias",
             "sentencia : sentencia_declarativa",
             "sentencia : sentencia_ejecutable",
-            "sentencia_declarativa : PROC ID '(' lista_parametros ')' NI '=' CTE_UINT '{' bloque_sentencias '}'",
-            "sentencia_declarativa : tipo lista_variables ';'",
-            "lista_parametros : parametro",
-            "lista_parametros : parametro ',' parametro",
-            "lista_parametros : parametro ',' parametro ',' parametro",
+            "sentencia_declarativa : PROC ID '(' lista_params ')' NI '=' CTE_UINT '{' bloque_sentencias '}'",
+            "sentencia_declarativa : tipo lista_variables",
+            "lista_params :",
+            "lista_params : parametro",
+            "lista_params : parametro ',' parametro",
+            "lista_params : parametro ',' parametro ',' parametro",
             "parametro : VAR tipo ID",
             "parametro : tipo ID",
-            "lista_variables : ID ',' lista_variables",
-            "lista_variables : ID",
             "tipo : UINT",
             "tipo : DOUBLE",
-            "sentencia_ejecutable : asignacion ';'",
+            "lista_variables : ID",
+            "lista_variables : ID ',' lista_variables",
+            "sentencia_ejecutable : invocacion",
+            "sentencia_ejecutable : asignacion",
             "sentencia_ejecutable : sentencia_loop",
             "sentencia_ejecutable : sentencia_if",
-            "sentencia_ejecutable : invocacion ';'",
-            "sentencia_ejecutable : print ';'",
+            "sentencia_ejecutable : print",
+            "invocacion : ID '(' ')'",
+            "invocacion : ID '(' lista_variables ')'",
+            "asignacion : ID '=' expresion",
             "expresion : expresion '+' termino",
             "expresion : expresion '-' termino",
             "expresion : termino",
@@ -160,8 +165,12 @@ public class Parser {
             "factor : ID",
             "factor : CTE_UINT",
             "factor : CTE_DOUBLE",
-            "asignacion : ID '=' expresion",
-            "sentencia_loop : LOOP '{' bloque_sentencias '}' UNTIL condicion",
+            "factor : '-' factor",
+            "sentencia_loop : LOOP bloque_estruct_ctrl UNTIL condicion",
+            "sentencia_if : IF condicion THEN bloque_estruct_ctrl END_IF",
+            "sentencia_if : IF condicion THEN bloque_estruct_ctrl ELSE bloque_estruct_ctrl END_IF",
+            "bloque_estruct_ctrl : sentencia ';'",
+            "bloque_estruct_ctrl : '{' bloque_sentencias '}'",
             "condicion : '(' expresion comparador expresion ')'",
             "comparador : COMP_MAYOR_IGUAL",
             "comparador : COMP_MENOR_IGUAL",
@@ -169,12 +178,11 @@ public class Parser {
             "comparador : '>'",
             "comparador : COMP_IGUAL",
             "comparador : COMP_DISTINTO",
-            "sentencia_if : IF condicion THEN bloque_condicional END_IF",
-            "sentencia_if : IF condicion THEN bloque_condicional ELSE bloque_condicional END_IF",
-            "bloque_condicional : sentencia",
-            "bloque_condicional : '{' bloque_sentencias '}'",
-            "invocacion : ID '(' lista_variables ')'",
-            "print : OUT '(' CADENA ')'",
+            "print : OUT '(' imprimible ')'",
+            "imprimible : CADENA",
+            "imprimible : CTE_UINT",
+            "imprimible : CTE_DOUBLE",
+            "imprimible : ID",
     };
     static short[] yytable;
     static short[] yycheck;
@@ -205,81 +213,92 @@ public class Parser {
     int yym;       //
     int yystate;   //current parsing state from state table
     String yys;    //current token string
-
-    private AnalizadorLexico aLexico;
-
     /**
      * Default constructor.  Turn off with -Jnoconstruct .
      */
-    public Parser() {
-        //nothing to do
-    }
+    private AnalizadorLexico aLexico;
 
-    /**
-     * Create a parser, setting the debug to true or false.
-     *
-     * @param debugMe true for debugging, false for no debug.
-     */
-    public Parser(boolean debugMe, AnalizadorLexico aLexico) {
-        yydebug = debugMe;
-        this.aLexico = aLexico;
-    }
+  /**
+   * Default constructor.  Turn off with -Jnoconstruct .
+   */
+  public Parser() {
+    //nothing to do
+  }
+  /**
+   * Create a parser, setting the debug to true or false.
+   *
+   * @param debugMe true for debugging, false for no debug.
+   */
+  public Parser(boolean debugMe, AnalizadorLexico aLexico) {
+    yydebug = debugMe;
+    this.aLexico = aLexico;
+  }
+
+  private void yyout(String mensaje) {
+    System.out.println(mensaje);
+  }
+
+  private void yyerror(String syntaxError) {
+    System.err.println(syntaxError);
+  }
 
     static void yytable() {
-        yytable = new short[]{24,
-                58, 24, 2, 24, 22, 39, 22, 21, 22, 23,
-                59, 23, 65, 23, 32, 33, 26, 24, 24, 47,
-                24, 48, 22, 22, 14, 22, 19, 23, 23, 41,
-                23, 23, 77, 34, 35, 47, 55, 48, 56, 67,
-                1, 72, 14, 24, 59, 2, 3, 20, 4, 65,
-                2, 3, 5, 87, 6, 7, 25, 49, 27, 65,
-                29, 63, 50, 92, 73, 81, 30, 47, 31, 48,
-                74, 75, 2, 3, 68, 69, 42, 70, 71, 40,
-                43, 44, 45, 46, 61, 62, 76, 78, 79, 80,
-                82, 85, 86, 88, 89, 90, 91, 93, 8, 94,
-                95, 9, 84, 83, 0, 0, 0, 0, 0, 0,
+        yytable = new short[]{36,
+                28, 23, 28, 2, 28, 26, 24, 26, 40, 26,
+                31, 42, 72, 16, 66, 32, 51, 27, 28, 28,
+                55, 28, 56, 26, 26, 27, 26, 27, 54, 27,
+                19, 16, 82, 90, 55, 57, 56, 63, 45, 64,
+                58, 95, 24, 27, 27, 46, 27, 72, 74, 77,
+                78, 20, 79, 87, 1, 72, 47, 48, 21, 2,
+                3, 26, 4, 2, 3, 28, 5, 29, 6, 7,
+                41, 86, 43, 55, 70, 56, 80, 81, 2, 3,
+                50, 24, 75, 76, 97, 44, 52, 53, 67, 69,
+                83, 84, 88, 89, 85, 91, 92, 93, 94, 96,
+                98, 8, 25, 9, 10, 68, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 2, 0, 0,
-                0, 0, 0, 0, 1, 0, 0, 0, 0, 2,
-                3, 0, 4, 0, 0, 0, 5, 0, 6, 7,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 2, 0,
+                0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
+                2, 3, 0, 4, 0, 0, 0, 5, 0, 6,
+                7, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 24, 24, 24, 24,
-                0, 22, 22, 22, 22, 0, 23, 23, 23, 23,
-                0, 0, 0, 0, 51, 52, 53, 54,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 33, 0, 0, 0, 0, 0, 28, 28, 28,
+                28, 0, 26, 26, 26, 26, 29, 0, 0, 34,
+                35, 0, 0, 0, 0, 59, 60, 61, 62, 0,
+                0, 0, 27, 27, 27, 27,
         };
     }
 
     static void yycheck() {
-        yycheck = new short[]{41,
-                123, 43, 0, 45, 41, 21, 43, 40, 45, 41,
-                40, 43, 43, 45, 19, 257, 10, 59, 60, 43,
-                62, 45, 59, 60, 41, 62, 40, 59, 60, 23,
-                62, 123, 63, 275, 276, 43, 60, 45, 62, 44,
-                257, 57, 59, 40, 74, 262, 263, 61, 265, 80,
-                262, 263, 269, 80, 271, 272, 257, 42, 257, 90,
-                59, 273, 47, 90, 58, 41, 59, 43, 59, 45,
-                267, 268, 262, 263, 47, 48, 264, 49, 50, 266,
-                40, 44, 59, 41, 125, 41, 270, 41, 257, 44,
-                125, 257, 274, 268, 61, 44, 275, 123, 41, 93,
-                125, 41, 76, 74, -1, -1, -1, -1, -1, -1,
+        yycheck = new short[]{45,
+                41, 123, 43, 0, 45, 41, 5, 43, 21, 45,
+                41, 23, 50, 41, 41, 19, 28, 257, 59, 60,
+                43, 62, 45, 59, 60, 41, 62, 43, 36, 45,
+                40, 59, 70, 85, 43, 42, 45, 60, 257, 62,
+                47, 93, 41, 59, 60, 264, 62, 85, 52, 57,
+                58, 61, 65, 80, 257, 93, 275, 276, 40, 262,
+                263, 40, 265, 262, 263, 59, 269, 257, 271, 272,
+                266, 41, 59, 43, 273, 45, 267, 268, 262, 263,
+                40, 80, 55, 56, 96, 270, 44, 41, 125, 41,
+                41, 257, 257, 274, 44, 268, 61, 44, 275, 123,
+                125, 41, 59, 41, 41, 44, -1, -1, -1, -1,
                 -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                -1, -1, -1, -1, -1, -1, -1, 125, -1, -1,
-                -1, -1, -1, -1, 257, -1, -1, -1, -1, 262,
-                263, -1, 265, -1, -1, -1, 269, -1, 271, 272,
-                -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                -1, -1, -1, -1, -1, -1, -1, -1, 125, -1,
+                -1, -1, -1, -1, -1, 257, -1, -1, -1, -1,
+                262, 263, -1, 265, -1, -1, -1, 269, -1, 271,
+                272, -1, -1, -1, -1, -1, -1, -1, -1, -1,
                 -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
                 -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
                 -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                -1, -1, -1, -1, -1, -1, 258, 259, 260, 261,
-                -1, 258, 259, 260, 261, -1, 258, 259, 260, 261,
-                -1, -1, -1, -1, 258, 259, 260, 261,
+                -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                -1, 257, -1, -1, -1, -1, -1, 258, 259, 260,
+                261, -1, 258, 259, 260, 261, 257, -1, -1, 275,
+                276, -1, -1, -1, -1, 258, 259, 260, 261, -1,
+                -1, -1, 258, 259, 260, 261,
         };
     }
 
@@ -525,247 +544,121 @@ public class Parser {
             yyval = dup_yyval(yyval); //duplicate yyval if ParserVal is used as semantic value
             switch (yyn) {
 //########## USER-SUPPLIED ACTIONS ##########
-                case 1:
-//#line 7 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
-                {
-                }
-                break;
-                case 2:
-//#line 10 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
-                {
-                }
-                break;
-                case 3:
-//#line 11 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
-                {
-                }
-                break;
-                case 4:
-//#line 14 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
-                {
-                }
-                break;
-                case 5:
-//#line 15 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
-                {
-                }
-                break;
                 case 6:
-//#line 18 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
+//#line 18 "gramatica.y"
                 {
                     yyout("Declaracion procedimiento.");
                 }
                 break;
-                case 7:
-//#line 19 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
-                {
-                }
-                break;
-                case 8:
-//#line 22 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
-                {
-                }
-                break;
-                case 9:
-//#line 23 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
-                {
-                }
-                break;
-                case 10:
-//#line 24 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
-                {
-                }
-                break;
-                case 11:
-//#line 27 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
-                {
-                    yyout("Parametro VAR, ");
-                }
-                break;
                 case 12:
-//#line 28 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
+//#line 28 "gramatica.y"
                 {
-                    yyout("Parametro, ");
+                    yyout("Parametro_VAR");
                 }
                 break;
                 case 13:
-//#line 31 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
+//#line 29 "gramatica.y"
                 {
+                    yyout("Parametro");
                 }
                 break;
                 case 14:
-//#line 32 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
+//#line 32 "gramatica.y"
+                {
+                    yyout("UINT");
+                }
+                break;
+                case 15:
+//#line 33 "gramatica.y"
+                {
+                    yyout("DOUBLE");
+                }
+                break;
+                case 16:
+//#line 36 "gramatica.y"
                 {
                     yyout("Variable");
                 }
                 break;
-                case 15:
-//#line 35 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
-                {
-                    yyout("UINT ");
-                }
-                break;
-                case 16:
-//#line 36 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
-                {
-                    yyout("DOUBLE ");
-                }
-                break;
-                case 17:
-//#line 39 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
-                {
-                }
-                break;
-                case 18:
-//#line 40 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
-                {
-                }
-                break;
-                case 19:
-//#line 41 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
-                {
-                }
-                break;
-                case 20:
-//#line 42 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
-                {
-                }
-                break;
-                case 21:
-//#line 43 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
-                {
-                }
-                break;
-                case 22:
-//#line 46 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
-                {
-                }
-                break;
                 case 23:
-//#line 47 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
+//#line 47 "gramatica.y"
                 {
+                    yyout("Invocacion_Vacia");
                 }
                 break;
                 case 24:
-//#line 48 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
+//#line 48 "gramatica.y"
                 {
+                    yyout("Invocacion");
                 }
                 break;
                 case 25:
-//#line 51 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
-                {
-                }
-                break;
-                case 26:
-//#line 52 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
-                {
-                }
-                break;
-                case 27:
-//#line 53 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
-                {
-                }
-                break;
-                case 28:
-//#line 56 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
-                {
-                    yyout("ID");
-                }
-                break;
-                case 29:
-//#line 57 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
-                {
-                    yyout("CTE_UINT");
-                }
-                break;
-                case 30:
-//#line 58 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
-                {
-                    yyout("CTE_DOUBLE");
-                }
-                break;
-                case 31:
-//#line 61 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
+//#line 51 "gramatica.y"
                 {
                     yyout("Asignacion");
                 }
                 break;
                 case 32:
-//#line 64 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
+//#line 64 "gramatica.y"
                 {
-                    yyout("Loop");
+                    yyout("ID");
                 }
                 break;
                 case 33:
-//#line 67 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
+//#line 65 "gramatica.y"
                 {
+                    yyout("CTE_UINT");
                 }
                 break;
                 case 34:
-//#line 70 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
+//#line 66 "gramatica.y"
                 {
-                }
-                break;
-                case 35:
-//#line 71 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
-                {
+                    yyout("CTE_DOUBLE");
                 }
                 break;
                 case 36:
-//#line 72 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
+//#line 70 "gramatica.y"
                 {
+                    yyout("LOOP");
                 }
                 break;
                 case 37:
-//#line 73 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
-                {
-                }
-                break;
-                case 38:
-//#line 74 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
-                {
-                }
-                break;
-                case 39:
-//#line 75 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
-                {
-                }
-                break;
-                case 40:
-//#line 78 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
+//#line 73 "gramatica.y"
                 {
                     yyout("IF-THEN");
                 }
                 break;
-                case 41:
-//#line 79 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
+                case 38:
+//#line 74 "gramatica.y"
                 {
                     yyout("IF-THEN-ELSE");
                 }
                 break;
-                case 42:
-//#line 82 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
+                case 49:
+//#line 95 "gramatica.y"
                 {
+                    yyout("Print_CADENA");
                 }
                 break;
-                case 43:
-//#line 83 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
+                case 50:
+//#line 96 "gramatica.y"
                 {
+                    yyout("Print_UINT");
                 }
                 break;
-                case 44:
-//#line 86 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
+                case 51:
+//#line 97 "gramatica.y"
                 {
-                    yyout("Invocacion");
+                    yyout("Print_DOUBLE");
                 }
                 break;
-                case 45:
-//#line 89 "E:\Bruno\facultad\disenio_compiladores\compilador_g15\src\analizador_sintactico\gramatica.y"
+                case 52:
+//#line 98 "gramatica.y"
                 {
-                    yyout("Print");
+                    yyout("Print_ID");
                 }
                 break;
-//#line 625 "Parser.java"
+//#line 532 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
             }//switch
             //#### Now let's reduce... ####
@@ -805,14 +698,6 @@ public class Parser {
             }
         }//main loop
         return 0;//yyaccept!!
-    }
-
-    private void yyout(String msg) {
-        System.out.println(msg);
-    }
-
-    private void yyerror(String syntaxError) {
-        System.err.println(syntaxError);
     }
 
     /**
