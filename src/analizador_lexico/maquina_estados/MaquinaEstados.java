@@ -13,6 +13,8 @@ public class MaquinaEstados {
 
     private final AnalizadorLexico aLexico; //Permite agregar tokens a medida que se generan.
 
+    private final AccionSemantica.CuentaSaltoLinea cuentaSaltoLinea = new AccionSemantica.CuentaSaltoLinea(); //Permite saber linea actual
+
     /**
      * Constructor.
      */
@@ -32,7 +34,6 @@ public class MaquinaEstados {
         AccionSemantica consumeChar = new AccionSemantica.ConsumeChar(); //7
         AccionSemantica generaTokenUINT = new AccionSemantica.GeneraTokenUINT(this, tablaS, AnalizadorLexico.T_CTE_UINT); //8
         AccionSemantica generaTokenDouble = new AccionSemantica.GeneraTokenDouble(this,tablaS, AnalizadorLexico.T_CTE_DOUBLE); //10
-        AccionSemantica cuentaSaltoLinea = new AccionSemantica.CuentaSaltoLinea(); //11
 
         /* Inicializacion estados */
         inicTransicionesInicial(inicStringVacio, concatenaChar, cuentaSaltoLinea, generaTokenLiteral);
@@ -58,6 +59,10 @@ public class MaquinaEstados {
 
     public void setVariablesSintactico(int token, String lexema){
         aLexico.setVariablesSintactico(token,lexema);
+    }
+
+    public int getLineaActual() {
+        return cuentaSaltoLinea.getCantLineas();
     }
 
     /**

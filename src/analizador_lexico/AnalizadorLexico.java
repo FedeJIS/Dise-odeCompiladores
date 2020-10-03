@@ -49,6 +49,10 @@ public class AnalizadorLexico {
         this.ultimoLexemaGenerado = lexema;
     }
 
+    public int getLineaActual(){
+        return maquinaEstados.getLineaActual();
+    }
+
     private Reservado inicTPR(){
         Reservado tPR = new Reservado();
         tPR.agregar("UINT", T_UINT);
