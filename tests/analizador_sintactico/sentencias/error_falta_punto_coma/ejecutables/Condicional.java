@@ -1,8 +1,8 @@
-package analizador_sintactico.sentencia;
+package analizador_sintactico.sentencias.error_falta_punto_coma.ejecutables;
 
 import util.RunSintactico;
 
-public class ErrorFaltaPC_If {
+public class Condicional {
     public static void main(String[] args) {
         String linea =
                 "IF (x==y) THEN\n" +
