@@ -7,7 +7,7 @@
 programa	: bloque_sentencias
 			;
 			
-bloque_sentencias	: sentencia                         {yyout("Error: Falta ';' al final de la sentencia");}
+bloque_sentencias	: sentencia                         {yyerr("Falta ';' al final de la sentencia");}
                     | sentencia ';'
 					| sentencia ';' bloque_sentencias
 					;
@@ -73,28 +73,28 @@ sentencia_loop	: LOOP bloque_estruct_ctrl UNTIL condicion    {yyout("LOOP");}
 
 sentencia_if    : encabezado_if rama_then rama_else END_IF  {yyout("IF-THEN-ELSE");}
                 | encabezado_if rama_then END_IF            {yyout("IF-THEN");}
-                | encabezado_if rama_then rama_else         {yyout("Error: Falta palabra clave END_IF");}
-                | encabezado_if rama_then                   {yyout("Error: Falta palabra clave END_IF");}
+                | encabezado_if rama_then rama_else         {yyerror("Falta palabra clave END_IF");}
+                | encabezado_if rama_then                   {yyerror("Falta palabra clave END_IF");}
                 ;
 
-encabezado_if   : IF condicion  {yyout("IF(condicion)");}
-                | condicion     {yyout("Error: Falta palabra clave IF");}
+encabezado_if   : IF condicion
+                | condicion     {yyerror("Error: Falta palabra clave IF");}
                 ;
 
 rama_then   : THEN bloque_estruct_ctrl  {yyout("THEN bloque_estruct_ctrl");}
-            | THEN                      {yyout("Error: Cuerpo THEN vacio");}
-            | bloque_estruct_ctrl       {yyout("Error: Falta palabra clave THEN");}
+            | THEN                      {yyerror("Cuerpo THEN vacio");}
+            | bloque_estruct_ctrl       {yyerror("Falta palabra clave THEN");}
             ;
 
 rama_else   : ELSE bloque_estruct_ctrl  {yyout("ELSE bloque_estruct_ctrl");}
-            | ELSE                      {yyout("Error: Cuerpo ELSE vacio");}
+            | ELSE                      {yyerror("Cuerpo ELSE vacio");}
             ;
 
 bloque_estruct_ctrl	: sentencia ';'
                     | '{' bloque_sentencias '}'
                     ;
 
-condicion 	: '(' ')'                                   {yyout("Falta condicion");}
+condicion 	: '(' ')'                                   {yyerror("Falta condicion");}
             | '(' expresion comparador expresion ')'
 			;
 			
