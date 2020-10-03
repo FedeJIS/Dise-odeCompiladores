@@ -322,7 +322,7 @@ public class AccionSemantica {
         /**
          * Incrementa en uno la cantidad de lineas de un archivo.
          */
-        private int cantLineas = 0;
+        private int cantLineas = 1;
 
         public void ejecutar(){
                 cantLineas++;

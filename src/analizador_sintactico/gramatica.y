@@ -16,19 +16,47 @@ sentencia 	: sentencia_declarativa
             | sentencia_ejecutable
 			;
 			
-sentencia_declarativa	: PROC ID '(' lista_params ')' NI '=' CTE_UINT '{' bloque_sentencias '}'    {yyout("Declaracion procedimiento.");}
+sentencia_declarativa	: nombre_proc params_proc ni_proc cuerpo_proc
 						| tipo lista_variables
 						;
 
+nombre_proc : PROC ID   {yyout("Declaracion_nombre_proc");}
+            | PROC      {yyerror("Procedimiento sin nombre");}
+            ;
+
+params_proc : '(' lista_params ')'  {yyout("Declaracion_params_proc");}
+            | '(' lista_params      {yyerror("Falta parentesis de cierre de parametros");}
+            ;
+
+ni_proc : NI '=' CTE_UINT   {yyout("Declaracion_ni_proc");}
+        | NI '='            {yyerror("Formato incorrecto de NI. El formato correcto es: 'NI = CTE_UINT'");}
+        |                   {yyerror("Formato incorrecto de NI. El formato correcto es: 'NI = CTE_UINT'");}
+        ;
+
+cuerpo_proc : '{' bloque_estruct_ctrl '}'   {yyout("Declaracion_cuerpo_proc");}
+            ;
+
 lista_params    :
-                | parametro
-                | parametro ',' parametro
-                | parametro ',' parametro ',' parametro
+                | param
+                | param ',' param
+                | param ',' param ',' param
+                | param ',' param ',' param ',' param   {yyerror("El procedimiento no puede tener mas de 3 parametros");}
+                | param ',' param ',' param ',' param ',' lista_params {yyerror("El procedimiento no puede tener mas de 3 parametros");}
                 ;
 
-parametro	: VAR tipo ID   {yyout("Parametro_VAR");}
-			| tipo ID       {yyout("Parametro");}
-			;
+param	: param_var
+        | param_comun
+        ;
+
+param_var   : VAR tipo ID   {yyout("Parametro_VAR");}
+            | VAR ID        {yyerror("Falta el tipo de un parametro");}
+            | VAR tipo      {yyerror("Falta el nombre de un parametro");}
+            ;
+
+param_comun : tipo ID   {yyout("Parametro_comun");}
+            | ID        {yyerror("Falta el tipo de un parametro");}
+            | tipo      {yyerror("Falta el nombre de un parametro");}
+            ;
 
 tipo	: UINT      {yyout("UINT");}
 		| DOUBLE    {yyout("DOUBLE");}
@@ -103,7 +131,7 @@ rama_else   : ELSE bloque_estruct_ctrl  {yyout("ELSE bloque_estruct_ctrl");}
             | ELSE                      {yyerror("Cuerpo ELSE vacio");}
             ;
 
-bloque_estruct_ctrl	: sentencia ';'
+bloque_estruct_ctrl : sentencia ';'
                     | '{' bloque_sentencias '}'
                     ;
 
