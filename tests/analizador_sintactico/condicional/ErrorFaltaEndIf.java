@@ -4,10 +4,36 @@ import util.RunSintactico;
 
 public class ErrorFaltaEndIf {
     public static void main(String[] args) {
-        RunSintactico.run(false,"IF (x==y) THEN OUT(x);");
+        String linea =
+                "IF (x==y) THEN\n" +
+                    "OUT(x);\n" +
+                "";
+        RunSintactico.run(false,linea);
         System.out.println("$$$$$$$$");
 
-        RunSintactico.run(false,"IF (x==y) THEN OUT(x); ELSE OUT(y);");
+        linea =
+                "IF (x==y) THEN\n" +
+                    "OUT(x);\n" +
+                ";";
+        RunSintactico.run(false,linea);
+        System.out.println("$$$$$$$$");
+
+        linea =
+                "IF (x==y) THEN\n" +
+                    "OUT(x);\n" +
+                "ELSE\n" +
+                    "OUT(y);\n" +
+                "";
+        RunSintactico.run(false,linea);
+        System.out.println("$$$$$$$$");
+
+        linea =
+                "IF (x==y) THEN\n" +
+                    "OUT(x);\n" +
+                "ELSE\n" +
+                    "OUT(y);\n" +
+                ";";
+        RunSintactico.run(false,linea);
         System.out.println("$$$$$$$$");
     }
 }
