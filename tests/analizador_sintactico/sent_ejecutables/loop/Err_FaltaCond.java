@@ -4,8 +4,11 @@ import util.RunSintactico;
 
 public class Err_FaltaCond {
     public static void main(String[] args) {
-        RunSintactico.run(false,"LOOP UINT x; UNTIL");
+        String linea =
+                "LOOP\n" +
+                    "x = 1;\n" +
+                "UNTIL ();";
+        RunSintactico.run(false,linea);
         System.out.println("$$$$$$$$");
-
     }
 }

@@ -4,7 +4,13 @@ import util.RunSintactico;
 
 public class Err_CuerpoVacio {
     public static void main(String[] args) {
-        RunSintactico.run(false,"LOOP UNTIL (5 < 10);");
+        String linea =
+                "LOOP\n" +
+                    "" +
+                "UNTIL\n" +
+                    "(x==y)" +
+                ";";
+        RunSintactico.run(false,linea);
         System.out.println("$$$$$$$$");
     }
 }

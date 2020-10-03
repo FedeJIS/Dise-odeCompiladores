@@ -7,7 +7,7 @@
 programa	: bloque_sentencias
 			;
 			
-bloque_sentencias	: sentencia                         {yyerr("Falta ';' al final de la sentencia");}
+bloque_sentencias	: sentencia                         {yyerror("Falta ';' al final de la sentencia");}
                     | sentencia ';'
 					| sentencia ';' bloque_sentencias
 					;
@@ -45,11 +45,17 @@ sentencia_ejecutable	: invocacion
 						| print
 						;
 
-invocacion	: ID '(' ')'                    {yyout("Invocacion_Vacia");}
-            | ID '(' lista_variables ')'    {yyout("Invocacion");}
+invocacion	: ID params_invocacion
 			;
 
+params_invocacion   : '(' ')'                   {yyout("Invocacion_Vacia");}
+                    | '(' lista_variables ')'   {yyout("Invocacion");}
+                    | '('                       {yyerror("Falta parentesis de cierre");}
+                    | '(' lista_variables       {yyerror("Falta parentesis de cierre");}
+                    ;
+
 asignacion	: ID '=' expresion      {yyout("Asignacion");}
+            | ID '='                {yyerror("Falta expresion para la asignacion");}
 			;
 
 expresion	: expresion '+' termino
@@ -68,8 +74,15 @@ factor 	: ID            {yyout("ID");}
 		| '-' factor
 		;
 
-sentencia_loop	: LOOP bloque_estruct_ctrl UNTIL condicion    {yyout("LOOP");}
+sentencia_loop	: cuerpo_loop cuerpo_until
 				;
+
+cuerpo_loop : LOOP bloque_estruct_ctrl  {yyout("LOOP");}
+            | LOOP                      {yyerror("Cuerpo LOOP vacio");}
+            ;
+
+cuerpo_until    : UNTIL condicion   {yyout("UNTIL");}
+                ;
 
 sentencia_if    : encabezado_if rama_then rama_else END_IF  {yyout("IF-THEN-ELSE");}
                 | encabezado_if rama_then END_IF            {yyout("IF-THEN");}
@@ -78,7 +91,7 @@ sentencia_if    : encabezado_if rama_then rama_else END_IF  {yyout("IF-THEN-ELSE
                 ;
 
 encabezado_if   : IF condicion
-                | condicion     {yyerror("Error: Falta palabra clave IF");}
+                | condicion     {yyerror("Falta palabra clave IF");}
                 ;
 
 rama_then   : THEN bloque_estruct_ctrl  {yyout("THEN bloque_estruct_ctrl");}
@@ -94,7 +107,7 @@ bloque_estruct_ctrl	: sentencia ';'
                     | '{' bloque_sentencias '}'
                     ;
 
-condicion 	: '(' ')'                                   {yyerror("Falta condicion");}
+condicion 	: '(' ')'                                   {yyerror("Condicion vacia");}
             | '(' expresion comparador expresion ')'
 			;
 			
