@@ -1,6 +1,6 @@
 package analizador_sintactico.sent_declarativas.procedimientos;
 
-import util.RunSintactico;
+import util.testing.RunSintactico;
 
 public class Err_4Params {
     public static void main(String[] args) {

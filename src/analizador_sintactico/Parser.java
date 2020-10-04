@@ -13,6 +13,7 @@ package analizador_sintactico;//### This file created by BYACC 1.8(/Java extensi
 
 
 import analizador_lexico.AnalizadorLexico;
+import analizador_sintactico.ParserVal;
 import util.tabla_simbolos.Celda;
 import util.tabla_simbolos.TablaDeSimbolos;
 
@@ -440,8 +441,8 @@ final static String yyrule[] = {
 
 //#line 160 "gramatica.y"
 
-    private final AnalizadorLexico aLexico;
-    private final TablaDeSimbolos tablaS;
+    private AnalizadorLexico aLexico;
+    private TablaDeSimbolos tablaS;
 
     /**
      * Create a parser, setting the debug to true or false.
@@ -456,7 +457,7 @@ final static String yyrule[] = {
 
     private int yylex() {
         int token = aLexico.produceToken();
-        yylval = aLexico.ultimoLexemaGenerado;
+        yylval = new ParserVal(aLexico.ultimoLexemaGenerado);
         return token;
     }
 
@@ -469,22 +470,17 @@ final static String yyrule[] = {
     }
 
     private void checkCambioSigno() {
-        String lexemaOriginal = yylval.sval; //Obtengo el lexema del factor.
-        Celda celdaFactor = tablaS.getValor(lexemaOriginal); //Busco la entrada correspondiente en la TS.
+        String lexemaSignoNoC = yylval.sval; //Obtengo el lexema del factor.
+        Celda celdaOriginal = tablaS.getValor(lexemaSignoNoC); //La sentencia va aca si o si, porque mas adelante ya no existe la entrada en la TS.
 
-        try {
-            double factor = Double.parseDouble(lexemaOriginal); //Parseo a double el valor (No puede fallar).
-            factor = factor * -1; //Cambio el signo del factor.
-            String lexemaSignoCambiado = String.valueOf(factor); //Parseo a string el nuevo valor del factor.
+        if (celdaOriginal.getTipo().equals("DOUBLE")) {
+            tablaS.quitarReferencia(lexemaSignoNoC); //El lexema esta en la TS si o si. refs--.
+            if (tablaS.entradaSinReferencias(lexemaSignoNoC)) tablaS.eliminarEntrada(lexemaSignoNoC);
 
-            tablaS.agregarEntrada(celdaFactor.getToken(),lexemaSignoCambiado,celdaFactor.getTipo()); //Agrego a la TS el factor negativo.
-
-            System.out.println("Original:"+lexemaOriginal+", Signo cambiado:"+lexemaSignoCambiado);
-
-            if (celdaFactor.sinReferencias())
-                tablaS.eliminarEntrada(lexemaOriginal); //Si el lexema original quedo sin referencias, lo elimino.
-        } catch (NumberFormatException nfEx){ //Se invoco al metodo cuando el lexema no es un numero.
-            System.err.println("Invocacion del metodo 'checkCambioSigno()' con un lexema no numerico.");
+            String lexemaSignoC = String.valueOf(Double.parseDouble(lexemaSignoNoC) * -1); //Cambio el signo del factor.
+            if (!tablaS.contieneLexema(lexemaSignoC)) {
+                tablaS.agregarEntrada(celdaOriginal.getToken(), lexemaSignoC, celdaOriginal.getTipo());
+            }
         }
     }
 	
@@ -493,7 +489,7 @@ final static String yyrule[] = {
 	
 	
 	
-//#line 429 "Parser.java"
+//#line 424 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -711,10 +707,6 @@ case 59:
 //#line 109 "gramatica.y"
 {yyerror("Cuerpo LOOP vacio");}
 break;
-case 60:
-//#line 112 "gramatica.y"
-{yyout("UNTIL");}
-break;
 case 63:
 //#line 117 "gramatica.y"
 {yyerror("Falta palabra clave END_IF");}
@@ -743,7 +735,7 @@ case 74:
 //#line 138 "gramatica.y"
 {yyerror("Condicion vacia");}
 break;
-//#line 674 "Parser.java"
+//#line 665 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####
@@ -799,6 +791,10 @@ public void run()
 }
 //## end of method run() ########################################
 
+
+
+//## Constructors ###############################################
+//## The -Jnoconstruct option was used ##
 //###############################################################
 
 

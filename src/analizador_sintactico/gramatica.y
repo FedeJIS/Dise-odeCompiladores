@@ -109,7 +109,7 @@ cuerpo_loop : LOOP bloque_estruct_ctrl
             | LOOP                      {yyerror("Cuerpo LOOP vacio");}
             ;
 
-cuerpo_until    : UNTIL condicion   {yyout("UNTIL");}
+cuerpo_until    : UNTIL condicion
                 ;
 
 sentencia_if    : encabezado_if rama_then rama_else END_IF
@@ -158,8 +158,8 @@ imprimible  : CADENA
 
 %%
 
-    private final AnalizadorLexico aLexico;
-    private final TablaDeSimbolos tablaS;
+    private AnalizadorLexico aLexico;
+    private TablaDeSimbolos tablaS;
 
     /**
      * Create a parser, setting the debug to true or false.
@@ -187,22 +187,17 @@ imprimible  : CADENA
     }
 
     private void checkCambioSigno() {
-        String lexemaOriginal = yylval.sval; //Obtengo el lexema del factor.
-        Celda celdaFactor = tablaS.getValor(lexemaOriginal); //Busco la entrada correspondiente en la TS.
+        String lexemaSignoNoC = yylval.sval; //Obtengo el lexema del factor.
+        Celda celdaOriginal = tablaS.getValor(lexemaSignoNoC); //La sentencia va aca si o si, porque mas adelante ya no existe la entrada en la TS.
 
-        try {
-            double factor = Double.parseDouble(lexemaOriginal); //Parseo a double el valor (No puede fallar).
-            factor = factor * -1; //Cambio el signo del factor.
-            String lexemaSignoCambiado = String.valueOf(factor); //Parseo a string el nuevo valor del factor.
+        if (celdaOriginal.getTipo().equals("DOUBLE")) {
+            tablaS.quitarReferencia(lexemaSignoNoC); //El lexema esta en la TS si o si. refs--.
+            if (tablaS.entradaSinReferencias(lexemaSignoNoC)) tablaS.eliminarEntrada(lexemaSignoNoC);
 
-            tablaS.agregarEntrada(celdaFactor.getToken(),lexemaSignoCambiado,celdaFactor.getTipo()); //Agrego a la TS el factor negativo.
-
-            System.out.println("Original:"+lexemaOriginal+", Signo cambiado:"+lexemaSignoCambiado);
-
-            if (celdaFactor.sinReferencias())
-                tablaS.eliminarEntrada(lexemaOriginal); //Si el lexema original quedo sin referencias, lo elimino.
-        } catch (NumberFormatException nfEx){ //Se invoco al metodo cuando el lexema no es un numero.
-            System.err.println("Invocacion del metodo 'checkCambioSigno()' con un lexema no numerico.");
+            String lexemaSignoC = String.valueOf(Double.parseDouble(lexemaSignoNoC) * -1); //Cambio el signo del factor.
+            if (!tablaS.contieneLexema(lexemaSignoC)) {
+                tablaS.agregarEntrada(celdaOriginal.getToken(), lexemaSignoC, celdaOriginal.getTipo());
+            }
         }
     }
 	

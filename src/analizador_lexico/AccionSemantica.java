@@ -130,10 +130,7 @@ public class AccionSemantica {
          */
         @Override
         public void ejecutar() {
-            if (tablaS.contieneEntrada(sTemporal))
-                tablaS.agregarReferencia(sTemporal);
-            else
-                tablaS.agregarEntrada(token,sTemporal,"");
+            tablaS.agregarEntrada(token,sTemporal,"");
             maquinaEstados.setVariablesSintactico(token,sTemporal);
         }
     }
@@ -281,13 +278,7 @@ public class AccionSemantica {
                 if (doubleValido(baseNumDouble,expNumDouble)) {
                     double doubleNormalizado = baseNumDouble * Math.pow(10, expNumDouble);
 
-                    String stringDouble = String.valueOf(doubleNormalizado);
-
-                    if (tablaS.contieneEntrada(stringDouble))
-                        tablaS.agregarReferencia(stringDouble);
-                    else
-                        tablaS.agregarEntrada(token,stringDouble,"DOUBLE");
-//                    tablaS.agregarEntrada(token, String.valueOf(doubleNormalizado), "DOUBLE");
+                    tablaS.agregarEntrada(token, String.valueOf(doubleNormalizado), "DOUBLE");
                     maquinaEstados.setVariablesSintactico(token, String.valueOf(doubleNormalizado));
                 }
             }

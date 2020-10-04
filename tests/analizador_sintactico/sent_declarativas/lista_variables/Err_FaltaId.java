@@ -1,6 +1,6 @@
 package analizador_sintactico.sent_declarativas.lista_variables;
 
-import util.RunSintactico;
+import util.testing.RunSintactico;
 
 public class Err_FaltaId {
     public static void main(String[] args) {

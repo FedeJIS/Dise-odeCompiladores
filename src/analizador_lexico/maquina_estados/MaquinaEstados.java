@@ -303,7 +303,7 @@ public class MaquinaEstados {
         AccionSemantica parseBaseDouble = new AccionSemantica.ParseBaseDouble();
 
         /* Parte entera (9). El lexico "da por hecho" que es un UINT, asi se evita dar problemas al sintactico. */
-        inicTransiciones(Estado.CTE_PARTE_ENTERA, Estado.FINAL,generaTokenUINT, devuelveUltimoLeido, generaTokenUINT); //TODO: Mostrar warning porque falto "_ui".
+        inicTransiciones(Estado.CTE_PARTE_ENTERA, Estado.FINAL,generaTokenUINT, devuelveUltimoLeido); //TODO: Mostrar warning porque falto "_ui".
         maquinaEstados[Estado.CTE_PARTE_ENTERA][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL, generaTokenUINT,
                 cuentaSaltoLinea); //Permite contar un salto de linea (No devuelve el ultimo leido pq se descartaria de todas formas).
         maquinaEstados[Estado.CTE_PARTE_ENTERA][Input.EOF] = new TransicionEstado(Estado.FINAL, generaTokenUINT); //No devuelve ultimo leido dsp de un EOF.

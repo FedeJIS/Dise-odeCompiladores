@@ -1,6 +1,6 @@
 package analizador_sintactico.sent_ejecutables.loop;
 
-import util.RunSintactico;
+import util.testing.RunSintactico;
 
 public class OK {
     public static void main(String[] args) {

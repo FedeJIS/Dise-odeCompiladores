@@ -1,7 +1,9 @@
-package util;
+package util.testing;
 
 import analizador_lexico.AnalizadorLexico;
 import analizador_sintactico.Parser;
+import util.CodigoFuente;
+import util.FileProcessor;
 import util.tabla_simbolos.TablaDeSimbolos;
 
 import java.util.ArrayList;
@@ -24,5 +26,20 @@ public class RunSintactico {
 
     public static TablaDeSimbolos getTablaS(){
         return tablaS;
+    }
+
+    public static void clearTablaS() {
+        tablaS = new TablaDeSimbolos();
+    }
+
+    public static void execute(String linea) {
+        RunSintactico.clearTablaS();
+        RunSintactico.run(false, linea);
+
+        TablaDeSimbolos tablaS = RunSintactico.getTablaS();
+
+        tablaS.printAll();
+
+        System.out.println("$$$$$$$$");
     }
 }

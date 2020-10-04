@@ -9,6 +9,10 @@ public class TablaDeSimbolos {
         tablaSimb = new Hashtable<>();
     }
 
+    public boolean contieneLexema(String lexema){
+        return tablaSimb.containsKey(lexema);
+    }
+
     /**
      * Agrega una celda (token,lexema,tipo). En caso de existir previamente, incrementa en uno las referencias a la
      * celda.
@@ -16,13 +20,13 @@ public class TablaDeSimbolos {
     public void agregarEntrada(int token, String lexema, String tipo){
         Celda celda;
 
-        if (tablaSimb.containsKey(lexema))
+        if (tablaSimb.containsKey(lexema)) {
             celda = getValor(lexema);
+        }
         else {
             celda = new Celda(token, lexema, tipo);
             tablaSimb.put(lexema,celda);
         }
-
         celda.actualizarReferencias(1);
     }
 
@@ -54,11 +58,15 @@ public class TablaDeSimbolos {
             System.out.println(c.toString());
     }
 
-    public boolean contieneEntrada(String lexema) {
-        return tablaSimb.contains(lexema);
+    public boolean entradaSinReferencias(String lexema){
+        return getValor(lexema).sinReferencias();
     }
 
     public void agregarReferencia(String lexema) {
         tablaSimb.get(lexema).actualizarReferencias(1); //refs++
+    }
+
+    public void quitarReferencia(String lexema) {
+        tablaSimb.get(lexema).actualizarReferencias(-1); //refs--
     }
 }

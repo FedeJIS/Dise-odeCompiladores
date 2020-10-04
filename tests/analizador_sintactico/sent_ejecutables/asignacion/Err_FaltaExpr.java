@@ -1,6 +1,6 @@
 package analizador_sintactico.sent_ejecutables.asignacion;
 
-import util.RunSintactico;
+import util.testing.RunSintactico;
 
 public class Err_FaltaExpr {
     public static void main(String[] args) {

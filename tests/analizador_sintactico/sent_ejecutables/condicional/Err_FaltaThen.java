@@ -1,6 +1,6 @@
 package analizador_sintactico.sent_ejecutables.condicional;
 
-import util.RunSintactico;
+import util.testing.RunSintactico;
 
 public class Err_FaltaThen {
     public static void main(String[] args) {

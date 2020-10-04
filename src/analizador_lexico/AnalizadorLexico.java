@@ -38,7 +38,7 @@ public class AnalizadorLexico {
     public static final int T_CTE_DOUBLE = Parser.CTE_DOUBLE;
 
     public int ultimoTokenGenerado = -1;
-    public ParserVal ultimoLexemaGenerado;
+    public String ultimoLexemaGenerado;
 
     public AnalizadorLexico(FileProcessor fileProcessor, CodigoFuente cFuente, TablaDeSimbolos tablaS){
         this.cFuente = cFuente;
@@ -47,7 +47,7 @@ public class AnalizadorLexico {
 
     public void setVariablesSintactico(int token, String lexema){
         this.ultimoTokenGenerado = token;
-        this.ultimoLexemaGenerado = new ParserVal(lexema);
+        this.ultimoLexemaGenerado = lexema;
     }
 
     public int getLineaActual(){

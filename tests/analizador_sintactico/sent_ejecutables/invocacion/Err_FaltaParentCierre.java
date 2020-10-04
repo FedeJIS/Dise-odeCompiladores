@@ -1,6 +1,6 @@
 package analizador_sintactico.sent_ejecutables.invocacion;
 
-import util.RunSintactico;
+import util.testing.RunSintactico;
 
 public class Err_FaltaParentCierre {
     public static void main(String[] args) {

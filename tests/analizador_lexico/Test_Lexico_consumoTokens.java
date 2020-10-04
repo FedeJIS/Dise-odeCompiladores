@@ -1,5 +1,6 @@
 package analizador_lexico;
 
+import analizador_sintactico.Parser;
 import util.CodigoFuente;
 import util.FileProcessor;
 import util.tabla_simbolos.TablaDeSimbolos;
@@ -9,21 +10,21 @@ import java.util.List;
 
 public class Test_Lexico_consumoTokens {
     public static void main(String[] args) {
-        System.out.print("[x<y]:");
-        testGenerico("x<y");
+//        System.out.print("[x=55;y=55;z=55;]:");
+        testGenerico("x=55;y=55;z=55;");
         System.out.println();
-
-        System.out.print("[x = 5]:");
-        testGenerico("x = 5");
-        System.out.println();
-
-        System.out.print("[IF (x != y) THEN]:");
-        testGenerico("IF (x != y) THEN");
-        System.out.println();
-
-        System.out.print("[\"CADENA-MULTI\"]:");
-        testGenerico("\"CADENA-multi\"");
-        System.out.println();
+//
+//        System.out.print("[x = 5]:");
+//        testGenerico("x = 5");
+//        System.out.println();
+//
+//        System.out.print("[IF (x != y) THEN]:");
+//        testGenerico("IF (x != y) THEN");
+//        System.out.println();
+//
+//        System.out.print("[\"CADENA-MULTI\"]:");
+//        testGenerico("\"CADENA-multi\"");
+//        System.out.println();
     }
 
     private static void testGenerico(String lineaFuente) {
@@ -33,11 +34,8 @@ public class Test_Lexico_consumoTokens {
         AnalizadorLexico aLexico;
         aLexico = new AnalizadorLexico(fileProcessor, inicCodigoFuente(lineaFuente), tablaS);
 
-        int tokenOriginal = -1;
-        while (tokenOriginal != 0){
-            tokenOriginal = aLexico.produceToken();
-            System.out.print(tokenOriginal + " ");
-        }
+        Parser parser = new Parser(false,aLexico,tablaS);
+        parser.run();
         tablaS.printAll();
 
     }

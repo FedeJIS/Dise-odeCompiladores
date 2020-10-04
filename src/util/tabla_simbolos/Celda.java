@@ -46,4 +46,8 @@ public class Celda {
                 ", referencias=" + referencias +
                 '}';
     }
+
+    public Celda copiar(String nuevoLexema) {
+        return new Celda(token,nuevoLexema,tipo);
+    }
 }
