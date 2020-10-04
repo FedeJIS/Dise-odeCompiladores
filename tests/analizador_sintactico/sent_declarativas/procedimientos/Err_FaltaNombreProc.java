@@ -1,4 +1,4 @@
-package analizador_sintactico.sent_ejecutables.invocacion;
+package analizador_sintactico.sent_declarativas.procedimientos;
 
 import util.testing.RunSintactico;
 

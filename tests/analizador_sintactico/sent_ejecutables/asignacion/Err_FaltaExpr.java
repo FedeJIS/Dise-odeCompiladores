@@ -8,7 +8,7 @@ public class Err_FaltaExpr {
         RunSintactico.run(false,linea);
         System.out.println("$$$$$$$$");
 
-        linea = "x = ";
+        linea = "x = ;";
         RunSintactico.run(false,linea);
         System.out.println("$$$$$$$$");
     }

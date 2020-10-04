@@ -10,5 +10,12 @@ public class Err_FaltaCond {
                 "UNTIL ();";
         RunSintactico.run(false,linea);
         System.out.println("$$$$$$$$");
+
+        linea =
+                "LOOP\n" +
+                    "x = 1;\n" +
+                "UNTIL ";
+        RunSintactico.run(false,linea);
+        System.out.println("$$$$$$$$");
     }
 }

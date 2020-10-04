@@ -12,7 +12,7 @@ public class Err_FaltaCond {
         System.out.println("$$$$$$$$");
 
         linea =
-                "IF () THEN\n" +
+                "IF (THEN\n" +
                     "UINT x\n;" +
                 "ELSE\n" +
                     "UINT y\n;" +

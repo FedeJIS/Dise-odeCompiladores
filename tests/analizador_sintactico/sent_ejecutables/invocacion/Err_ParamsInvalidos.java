@@ -2,12 +2,10 @@ package analizador_sintactico.sent_ejecutables.invocacion;
 
 import util.testing.RunSintactico;
 
-public class Err_FaltaNI {
+public class Err_ParamsInvalidos {
     public static void main(String[] args) {
-        String linea =
-                "PROC x(){\n" +
-                    "x = 5;\n" +
-                "};";
+        String linea = "mi_funcion\n(UINT,x,DOUBLE);";
         RunSintactico.run(false,linea);
+        System.out.println("$$$$$$$$");
     }
 }

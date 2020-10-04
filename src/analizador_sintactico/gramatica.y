@@ -72,6 +72,7 @@ tipo	: UINT
 
 lista_variables : ID
 				| ID ',' lista_variables
+				| error                     {yyerror("Lista de variables mal definida");}
 				;
 
 sentencia_ejecutable	: invocacion

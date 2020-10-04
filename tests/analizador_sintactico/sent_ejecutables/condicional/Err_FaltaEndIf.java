@@ -7,7 +7,7 @@ public class Err_FaltaEndIf {
         String linea =
                 "IF (x==y) THEN\n" +
                     "OUT(x);\n" +
-                "";
+                ";";
         RunSintactico.run(false,linea);
         System.out.println("$$$$$$$$");
 
@@ -23,7 +23,7 @@ public class Err_FaltaEndIf {
                     "OUT(x);\n" +
                 "ELSE\n" +
                     "OUT(y);\n" +
-                "";
+                ";";
         RunSintactico.run(false,linea);
         System.out.println("$$$$$$$$");
 
