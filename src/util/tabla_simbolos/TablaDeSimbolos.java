@@ -10,11 +10,30 @@ public class TablaDeSimbolos {
     }
 
     /**
-     * Agrega una celda (token,lexema,tipo). En caso de existir previamente, retorna el value anterior.
+     * Agrega una celda (token,lexema,tipo). En caso de existir previamente, incrementa en uno las referencias a la
+     * celda.
      */
-    public Celda agregar(Celda celda){
-        if (!tablaSimb.containsKey(celda.getLexema())) tablaSimb.put(celda.getLexema(), celda);
-        return getValor(celda.getLexema());
+    public void agregarEntrada(int token, String lexema, String tipo){
+        Celda celda;
+
+        if (tablaSimb.containsKey(lexema))
+            celda = getValor(lexema);
+        else {
+            celda = new Celda(token, lexema, tipo);
+            tablaSimb.put(lexema,celda);
+        }
+
+        celda.actualizarReferencias(1);
+    }
+
+    public void eliminarEntrada(String lexema){
+        Celda celda = tablaSimb.get(lexema);
+        if (celda == null)
+            throw new IllegalStateException("El lexema '"+lexema+"' no se encontro en la tabla de simbolos.");
+        if (!celda.sinReferencias()) //No deja eliminar celdas con referencias.
+            throw new IllegalStateException("La entrada asociada al lexema '"+lexema+"' no puede ser eliminada porque" +
+                    "aun esta siendo referenciada.");
+        tablaSimb.remove(lexema);
     }
 
     /**
@@ -30,7 +49,16 @@ public class TablaDeSimbolos {
     }
 
     public void printAll(){
+        if (tablaSimb.isEmpty()) System.out.println("Tabla de simbolos vacia.");
         for (Celda c : tablaSimb.values())
             System.out.println(c.toString());
+    }
+
+    public boolean contieneEntrada(String lexema) {
+        return tablaSimb.contains(lexema);
+    }
+
+    public void agregarReferencia(String lexema) {
+        tablaSimb.get(lexema).actualizarReferencias(1); //refs++
     }
 }

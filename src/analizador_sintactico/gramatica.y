@@ -20,20 +20,20 @@ sentencia_declarativa	: nombre_proc params_proc ni_proc cuerpo_proc
 						| tipo lista_variables
 						;
 
-nombre_proc : PROC ID   {yyout("Declaracion_nombre_proc");}
+nombre_proc : PROC ID
             | PROC      {yyerror("Procedimiento sin nombre");}
             ;
 
-params_proc : '(' lista_params ')'  {yyout("Declaracion_params_proc");}
+params_proc : '(' lista_params ')'
             | '(' lista_params      {yyerror("Falta parentesis de cierre de parametros");}
             ;
 
-ni_proc : NI '=' CTE_UINT   {yyout("Declaracion_ni_proc");}
+ni_proc : NI '=' CTE_UINT
         | NI '='            {yyerror("Formato incorrecto de NI. El formato correcto es: 'NI = CTE_UINT'");}
         |                   {yyerror("Formato incorrecto de NI. El formato correcto es: 'NI = CTE_UINT'");}
         ;
 
-cuerpo_proc : '{' bloque_estruct_ctrl '}'   {yyout("Declaracion_cuerpo_proc");}
+cuerpo_proc : '{' bloque_estruct_ctrl '}'
             ;
 
 lista_params    :
@@ -48,21 +48,21 @@ param	: param_var
         | param_comun
         ;
 
-param_var   : VAR tipo ID   {yyout("Parametro_VAR");}
+param_var   : VAR tipo ID
             | VAR ID        {yyerror("Falta el tipo de un parametro");}
             | VAR tipo      {yyerror("Falta el nombre de un parametro");}
             ;
 
-param_comun : tipo ID   {yyout("Parametro_comun");}
+param_comun : tipo ID
             | ID        {yyerror("Falta el tipo de un parametro");}
             | tipo      {yyerror("Falta el nombre de un parametro");}
             ;
 
-tipo	: UINT      {yyout("UINT");}
-		| DOUBLE    {yyout("DOUBLE");}
+tipo	: UINT
+		| DOUBLE
 		;
 
-lista_variables : ID                        {yyout("Variable");}
+lista_variables : ID
 				| ID ',' lista_variables
 				;
 
@@ -76,13 +76,13 @@ sentencia_ejecutable	: invocacion
 invocacion	: ID params_invocacion
 			;
 
-params_invocacion   : '(' ')'                   {yyout("Invocacion_Vacia");}
-                    | '(' lista_variables ')'   {yyout("Invocacion");}
+params_invocacion   : '(' ')'
+                    | '(' lista_variables ')'
                     | '('                       {yyerror("Falta parentesis de cierre");}
                     | '(' lista_variables       {yyerror("Falta parentesis de cierre");}
                     ;
 
-asignacion	: ID '=' expresion      {yyout("Asignacion");}
+asignacion	: ID '=' expresion
             | ID '='                {yyerror("Falta expresion para la asignacion");}
 			;
 
@@ -96,24 +96,24 @@ termino	: termino '*' factor
 		| factor
      	;	
 		
-factor 	: ID            {yyout("ID");}
-		| CTE_UINT      {yyout("CTE_UINT");}
-		| CTE_DOUBLE    {yyout("CTE_DOUBLE");}
-		| '-' factor
+factor 	: ID
+		| CTE_UINT
+		| CTE_DOUBLE
+		| '-' factor    {checkCambioSigno();}
 		;
 
 sentencia_loop	: cuerpo_loop cuerpo_until
 				;
 
-cuerpo_loop : LOOP bloque_estruct_ctrl  {yyout("LOOP");}
+cuerpo_loop : LOOP bloque_estruct_ctrl
             | LOOP                      {yyerror("Cuerpo LOOP vacio");}
             ;
 
 cuerpo_until    : UNTIL condicion   {yyout("UNTIL");}
                 ;
 
-sentencia_if    : encabezado_if rama_then rama_else END_IF  {yyout("IF-THEN-ELSE");}
-                | encabezado_if rama_then END_IF            {yyout("IF-THEN");}
+sentencia_if    : encabezado_if rama_then rama_else END_IF
+                | encabezado_if rama_then END_IF
                 | encabezado_if rama_then rama_else         {yyerror("Falta palabra clave END_IF");}
                 | encabezado_if rama_then                   {yyerror("Falta palabra clave END_IF");}
                 ;
@@ -122,12 +122,12 @@ encabezado_if   : IF condicion
                 | condicion     {yyerror("Falta palabra clave IF");}
                 ;
 
-rama_then   : THEN bloque_estruct_ctrl  {yyout("THEN bloque_estruct_ctrl");}
+rama_then   : THEN bloque_estruct_ctrl
             | THEN                      {yyerror("Cuerpo THEN vacio");}
             | bloque_estruct_ctrl       {yyerror("Falta palabra clave THEN");}
             ;
 
-rama_else   : ELSE bloque_estruct_ctrl  {yyout("ELSE bloque_estruct_ctrl");}
+rama_else   : ELSE bloque_estruct_ctrl
             | ELSE                      {yyerror("Cuerpo ELSE vacio");}
             ;
 
@@ -150,11 +150,61 @@ comparador 	: COMP_MAYOR_IGUAL
 print	: OUT '(' imprimible ')'
 		;
 
-imprimible  : CADENA        {yyout("Print_CADENA");}
-            | CTE_UINT      {yyout("Print_UINT");}
-            | CTE_DOUBLE    {yyout("Print_DOUBLE");}
-            | ID            {yyout("Print_ID");}
+imprimible  : CADENA
+            | CTE_UINT
+            | CTE_DOUBLE
+            | ID
             ;
+
+%%
+
+    private final AnalizadorLexico aLexico;
+    private final TablaDeSimbolos tablaS;
+
+    /**
+     * Create a parser, setting the debug to true or false.
+     *
+     * @param debugMe true for debugging, false for no debug.
+     */
+    public Parser(boolean debugMe, AnalizadorLexico aLexico, TablaDeSimbolos tablaS) {
+        yydebug = debugMe;
+        this.aLexico = aLexico;
+        this.tablaS = tablaS;
+    }
+
+    private int yylex() {
+        int token = aLexico.produceToken();
+        yylval = aLexico.ultimoLexemaGenerado;
+        return token;
+    }
+
+    private void yyout(String mensaje) {
+        System.out.println(mensaje);
+    }
+
+    private void yyerror(String mensajeError) {
+        System.err.println("Error en la linea " + aLexico.getLineaActual() + ": " + mensajeError);
+    }
+
+    private void checkCambioSigno() {
+        String lexemaOriginal = yylval.sval; //Obtengo el lexema del factor.
+        Celda celdaFactor = tablaS.getValor(lexemaOriginal); //Busco la entrada correspondiente en la TS.
+
+        try {
+            double factor = Double.parseDouble(lexemaOriginal); //Parseo a double el valor (No puede fallar).
+            factor = factor * -1; //Cambio el signo del factor.
+            String lexemaSignoCambiado = String.valueOf(factor); //Parseo a string el nuevo valor del factor.
+
+            tablaS.agregarEntrada(celdaFactor.getToken(),lexemaSignoCambiado,celdaFactor.getTipo()); //Agrego a la TS el factor negativo.
+
+            System.out.println("Original:"+lexemaOriginal+", Signo cambiado:"+lexemaSignoCambiado);
+
+            if (celdaFactor.sinReferencias())
+                tablaS.eliminarEntrada(lexemaOriginal); //Si el lexema original quedo sin referencias, lo elimino.
+        } catch (NumberFormatException nfEx){ //Se invoco al metodo cuando el lexema no es un numero.
+            System.err.println("Invocacion del metodo 'checkCambioSigno()' con un lexema no numerico.");
+        }
+    }
 	
 	
 	

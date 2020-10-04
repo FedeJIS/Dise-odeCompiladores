@@ -9,13 +9,16 @@ public class Test_getValor {
 
         int token = 1;
         String lexema = "5";
-        tS.agregar(new Celda(token,lexema,""));
+
+        tS.agregarEntrada(token,lexema,"");
 
         int resultadoToken = tS.getValor(lexema).getToken();
+
         System.out.println("Token esperado: "+token+". Token conseguido: "+resultadoToken);
 
         try {
-            tS.getValor("lexema");
+            tS.getValor(lexema);
+            tS.printAll();
         } catch (IllegalStateException illegalStateException){
             System.out.println(illegalStateException.getMessage());
         }

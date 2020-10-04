@@ -2,6 +2,7 @@ package analizador_lexico;
 
 import analizador_lexico.maquina_estados.MaquinaEstados;
 import analizador_sintactico.Parser;
+import analizador_sintactico.ParserVal;
 import util.CodigoFuente;
 import util.FileProcessor;
 import util.Reservado;
@@ -36,8 +37,8 @@ public class AnalizadorLexico {
     public static final int T_CTE_UINT = Parser.CTE_UINT;
     public static final int T_CTE_DOUBLE = Parser.CTE_DOUBLE;
 
-    public int ultimoTokenGenerado = -1; //TODO Reemplazar por nombre requerido por el parser.
-    public String ultimoLexemaGenerado; //TODO Reemplazar por nombre requerido por el parser.
+    public int ultimoTokenGenerado = -1;
+    public ParserVal ultimoLexemaGenerado;
 
     public AnalizadorLexico(FileProcessor fileProcessor, CodigoFuente cFuente, TablaDeSimbolos tablaS){
         this.cFuente = cFuente;
@@ -46,7 +47,7 @@ public class AnalizadorLexico {
 
     public void setVariablesSintactico(int token, String lexema){
         this.ultimoTokenGenerado = token;
-        this.ultimoLexemaGenerado = lexema;
+        this.ultimoLexemaGenerado = new ParserVal(lexema);
     }
 
     public int getLineaActual(){
@@ -71,7 +72,7 @@ public class AnalizadorLexico {
         return tPR;
     }
 
-    public int yylex(){
+    public int produceToken(){
         while (!maquinaEstados.estadoFinalAlcanzado()){
             if (cFuente.eof()) {
                 maquinaEstados.transicionarEOF();

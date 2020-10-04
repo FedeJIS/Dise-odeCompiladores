@@ -125,16 +125,15 @@ public class AccionSemantica {
         }
 
         /**
-         * Busca el lexema acumulado hasta el momento en la TS. Si lo encuentra, devuelve la celda asociada. En caso de
-         * que no lo encuentre, crea una nueva celda, la agrega y la retorna.
-         * Luego de acceder a la TS, se agrega el token generado a la maquina de estados, para que luego pueda ser
-         * accedido por el analizador sintactico.
-         *
-         * Ya no es necesario sacar el ultimo caracter leido, de eso se encarga la maquina de estados. (Bruno)
+         * Si la TS contiene una entrada con el lexema actual, incrementa su numero de referencias en uno. Si no la
+         * contiene, la crea y agrega.
          */
         @Override
         public void ejecutar() {
-            tablaS.agregar(new Celda(token,sTemporal,""));
+            if (tablaS.contieneEntrada(sTemporal))
+                tablaS.agregarReferencia(sTemporal);
+            else
+                tablaS.agregarEntrada(token,sTemporal,"");
             maquinaEstados.setVariablesSintactico(token,sTemporal);
         }
     }
@@ -226,7 +225,7 @@ public class AccionSemantica {
         public void ejecutar(){
             int numero = Integer.parseInt(sTemporal); //No genera NumberFormatEx porque solo se cargan digitos al string.
             if (numeroEnRango(numero)) {
-                tablaS.agregar(new Celda(token,sTemporal,"UINT"));
+                tablaS.agregarEntrada(token,sTemporal,"UINT");
                 maquinaEstados.setVariablesSintactico(token,sTemporal);
             }
             else{
@@ -281,7 +280,14 @@ public class AccionSemantica {
 
                 if (doubleValido(baseNumDouble,expNumDouble)) {
                     double doubleNormalizado = baseNumDouble * Math.pow(10, expNumDouble);
-                    tablaS.agregar(new Celda(token, String.valueOf(doubleNormalizado), "DOUBLE"));
+
+                    String stringDouble = String.valueOf(doubleNormalizado);
+
+                    if (tablaS.contieneEntrada(stringDouble))
+                        tablaS.agregarReferencia(stringDouble);
+                    else
+                        tablaS.agregarEntrada(token,stringDouble,"DOUBLE");
+//                    tablaS.agregarEntrada(token, String.valueOf(doubleNormalizado), "DOUBLE");
                     maquinaEstados.setVariablesSintactico(token, String.valueOf(doubleNormalizado));
                 }
             }
