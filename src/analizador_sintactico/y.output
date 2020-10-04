@@ -8,19 +8,19 @@
 
    5  sentencia : sentencia_declarativa
    6            | sentencia_ejecutable
+   7            | error
 
-   7  sentencia_declarativa : nombre_proc params_proc ni_proc cuerpo_proc
-   8                        | tipo lista_variables
+   8  sentencia_declarativa : nombre_proc params_proc ni_proc cuerpo_proc
+   9                        | tipo lista_variables
 
-   9  nombre_proc : PROC ID
-  10              | PROC
+  10  nombre_proc : PROC ID
+  11              | PROC
 
-  11  params_proc : '(' lista_params ')'
-  12              | '(' lista_params
+  12  params_proc : '(' lista_params ')'
+  13              | '(' lista_params
 
-  13  ni_proc : NI '=' CTE_UINT
-  14          | NI '='
-  15          |
+  14  ni_proc : NI '=' CTE_UINT
+  15          | error
 
   16  cuerpo_proc : '{' bloque_estruct_ctrl '}'
 
@@ -122,425 +122,435 @@
 state 0
 	$accept : . programa $end  (0)
 
-	ID  shift 1
-	UINT  shift 2
-	DOUBLE  shift 3
-	IF  shift 4
-	LOOP  shift 5
-	OUT  shift 6
-	PROC  shift 7
-	'('  shift 8
+	error  shift 1
+	ID  shift 2
+	UINT  shift 3
+	DOUBLE  shift 4
+	IF  shift 5
+	LOOP  shift 6
+	OUT  shift 7
+	PROC  shift 8
+	'('  shift 9
 	.  error
 
-	programa  goto 9
-	bloque_sentencias  goto 10
-	sentencia  goto 11
-	sentencia_declarativa  goto 12
-	sentencia_ejecutable  goto 13
-	nombre_proc  goto 14
-	tipo  goto 15
-	invocacion  goto 16
-	asignacion  goto 17
-	sentencia_loop  goto 18
-	sentencia_if  goto 19
-	print  goto 20
-	cuerpo_loop  goto 21
-	condicion  goto 22
-	encabezado_if  goto 23
+	programa  goto 10
+	bloque_sentencias  goto 11
+	sentencia  goto 12
+	sentencia_declarativa  goto 13
+	sentencia_ejecutable  goto 14
+	nombre_proc  goto 15
+	tipo  goto 16
+	invocacion  goto 17
+	asignacion  goto 18
+	sentencia_loop  goto 19
+	sentencia_if  goto 20
+	print  goto 21
+	cuerpo_loop  goto 22
+	condicion  goto 23
+	encabezado_if  goto 24
 
 
 state 1
+	sentencia : error .  (7)
+
+	.  reduce 7
+
+
+state 2
 	invocacion : ID . params_invocacion  (40)
 	asignacion : ID . '=' expresion  (45)
 	asignacion : ID . '='  (46)
 
-	'('  shift 24
-	'='  shift 25
+	'('  shift 25
+	'='  shift 26
 	.  error
 
-	params_invocacion  goto 26
+	params_invocacion  goto 27
 
 
-state 2
+state 3
 	tipo : UINT .  (31)
 
 	.  reduce 31
 
 
-state 3
+state 4
 	tipo : DOUBLE .  (32)
 
 	.  reduce 32
 
 
-state 4
+state 5
 	encabezado_if : IF . condicion  (65)
 
-	'('  shift 8
+	'('  shift 9
 	.  error
 
-	condicion  goto 27
-
-
-state 5
-	cuerpo_loop : LOOP . bloque_estruct_ctrl  (58)
-	cuerpo_loop : LOOP .  (59)
-
-	ID  shift 1
-	UINT  shift 2
-	DOUBLE  shift 3
-	IF  shift 4
-	LOOP  shift 5
-	OUT  shift 6
-	PROC  shift 7
-	'('  shift 8
-	'{'  shift 28
-	UNTIL  reduce 59
-
-	sentencia  goto 29
-	sentencia_declarativa  goto 12
-	sentencia_ejecutable  goto 13
-	nombre_proc  goto 14
-	tipo  goto 15
-	bloque_estruct_ctrl  goto 30
-	invocacion  goto 16
-	asignacion  goto 17
-	sentencia_loop  goto 18
-	sentencia_if  goto 19
-	print  goto 20
-	cuerpo_loop  goto 21
-	condicion  goto 22
-	encabezado_if  goto 23
+	condicion  goto 28
 
 
 state 6
-	print : OUT . '(' imprimible ')'  (82)
+	cuerpo_loop : LOOP . bloque_estruct_ctrl  (58)
+	cuerpo_loop : LOOP .  (59)
 
-	'('  shift 31
-	.  error
+	error  shift 1
+	ID  shift 2
+	UINT  shift 3
+	DOUBLE  shift 4
+	IF  shift 5
+	LOOP  shift 6
+	OUT  shift 7
+	PROC  shift 8
+	'('  shift 9
+	'{'  shift 29
+	UNTIL  reduce 59
+
+	sentencia  goto 30
+	sentencia_declarativa  goto 13
+	sentencia_ejecutable  goto 14
+	nombre_proc  goto 15
+	tipo  goto 16
+	bloque_estruct_ctrl  goto 31
+	invocacion  goto 17
+	asignacion  goto 18
+	sentencia_loop  goto 19
+	sentencia_if  goto 20
+	print  goto 21
+	cuerpo_loop  goto 22
+	condicion  goto 23
+	encabezado_if  goto 24
 
 
 state 7
-	nombre_proc : PROC . ID  (9)
-	nombre_proc : PROC .  (10)
+	print : OUT . '(' imprimible ')'  (82)
 
-	ID  shift 32
-	'('  reduce 10
+	'('  shift 32
+	.  error
 
 
 state 8
-	condicion : '(' . ')'  (74)
-	condicion : '(' . expresion comparador expresion ')'  (75)
+	nombre_proc : PROC . ID  (10)
+	nombre_proc : PROC .  (11)
 
 	ID  shift 33
-	CTE_UINT  shift 34
-	CTE_DOUBLE  shift 35
-	')'  shift 36
-	'-'  shift 37
-	.  error
-
-	expresion  goto 38
-	termino  goto 39
-	factor  goto 40
+	'('  reduce 11
 
 
 state 9
+	condicion : '(' . ')'  (74)
+	condicion : '(' . expresion comparador expresion ')'  (75)
+
+	ID  shift 34
+	CTE_UINT  shift 35
+	CTE_DOUBLE  shift 36
+	')'  shift 37
+	'-'  shift 38
+	.  error
+
+	expresion  goto 39
+	termino  goto 40
+	factor  goto 41
+
+
+state 10
 	$accept : programa . $end  (0)
 
 	$end  accept
 
 
-state 10
+state 11
 	programa : bloque_sentencias .  (1)
 
 	.  reduce 1
 
 
-state 11
+state 12
 	bloque_sentencias : sentencia .  (2)
 	bloque_sentencias : sentencia . ';'  (3)
 	bloque_sentencias : sentencia . ';' bloque_sentencias  (4)
 
-	';'  shift 41
+	';'  shift 42
 	$end  reduce 2
 	'}'  reduce 2
 
 
-state 12
+state 13
 	sentencia : sentencia_declarativa .  (5)
 
 	.  reduce 5
 
 
-state 13
+state 14
 	sentencia : sentencia_ejecutable .  (6)
 
 	.  reduce 6
 
 
-state 14
-	sentencia_declarativa : nombre_proc . params_proc ni_proc cuerpo_proc  (7)
-
-	'('  shift 42
-	.  error
-
-	params_proc  goto 43
-
-
 state 15
-	sentencia_declarativa : tipo . lista_variables  (8)
+	sentencia_declarativa : nombre_proc . params_proc ni_proc cuerpo_proc  (8)
 
-	ID  shift 44
+	'('  shift 43
 	.  error
 
-	lista_variables  goto 45
+	params_proc  goto 44
 
 
 state 16
+	sentencia_declarativa : tipo . lista_variables  (9)
+
+	ID  shift 45
+	.  error
+
+	lista_variables  goto 46
+
+
+state 17
 	sentencia_ejecutable : invocacion .  (35)
 
 	.  reduce 35
 
 
-state 17
+state 18
 	sentencia_ejecutable : asignacion .  (36)
 
 	.  reduce 36
 
 
-state 18
+state 19
 	sentencia_ejecutable : sentencia_loop .  (37)
 
 	.  reduce 37
 
 
-state 19
+state 20
 	sentencia_ejecutable : sentencia_if .  (38)
 
 	.  reduce 38
 
 
-state 20
+state 21
 	sentencia_ejecutable : print .  (39)
 
 	.  reduce 39
 
 
-state 21
+state 22
 	sentencia_loop : cuerpo_loop . cuerpo_until  (57)
 
-	UNTIL  shift 46
+	UNTIL  shift 47
 	.  error
 
-	cuerpo_until  goto 47
+	cuerpo_until  goto 48
 
 
-state 22
+state 23
 	encabezado_if : condicion .  (66)
 
 	.  reduce 66
 
 
-state 23
+state 24
 	sentencia_if : encabezado_if . rama_then rama_else END_IF  (61)
 	sentencia_if : encabezado_if . rama_then END_IF  (62)
 	sentencia_if : encabezado_if . rama_then rama_else  (63)
 	sentencia_if : encabezado_if . rama_then  (64)
 
-	ID  shift 1
-	UINT  shift 2
-	DOUBLE  shift 3
-	IF  shift 4
-	THEN  shift 48
-	LOOP  shift 5
-	OUT  shift 6
-	PROC  shift 7
-	'('  shift 8
-	'{'  shift 28
+	error  shift 1
+	ID  shift 2
+	UINT  shift 3
+	DOUBLE  shift 4
+	IF  shift 5
+	THEN  shift 49
+	LOOP  shift 6
+	OUT  shift 7
+	PROC  shift 8
+	'('  shift 9
+	'{'  shift 29
 	.  error
 
-	sentencia  goto 29
-	sentencia_declarativa  goto 12
-	sentencia_ejecutable  goto 13
-	nombre_proc  goto 14
-	tipo  goto 15
-	bloque_estruct_ctrl  goto 49
-	invocacion  goto 16
-	asignacion  goto 17
-	sentencia_loop  goto 18
-	sentencia_if  goto 19
-	print  goto 20
-	cuerpo_loop  goto 21
-	condicion  goto 22
-	encabezado_if  goto 23
-	rama_then  goto 50
+	sentencia  goto 30
+	sentencia_declarativa  goto 13
+	sentencia_ejecutable  goto 14
+	nombre_proc  goto 15
+	tipo  goto 16
+	bloque_estruct_ctrl  goto 50
+	invocacion  goto 17
+	asignacion  goto 18
+	sentencia_loop  goto 19
+	sentencia_if  goto 20
+	print  goto 21
+	cuerpo_loop  goto 22
+	condicion  goto 23
+	encabezado_if  goto 24
+	rama_then  goto 51
 
 
-state 24
+state 25
 	params_invocacion : '(' . ')'  (41)
 	params_invocacion : '(' . lista_variables ')'  (42)
 	params_invocacion : '(' .  (43)
 	params_invocacion : '(' . lista_variables  (44)
 
-	ID  shift 44
-	')'  shift 51
+	ID  shift 45
+	')'  shift 52
 	$end  reduce 43
 	';'  reduce 43
 	'}'  reduce 43
 
-	lista_variables  goto 52
+	lista_variables  goto 53
 
 
-state 25
+state 26
 	asignacion : ID '=' . expresion  (45)
 	asignacion : ID '=' .  (46)
 
-	ID  shift 33
-	CTE_UINT  shift 34
-	CTE_DOUBLE  shift 35
-	'-'  shift 37
+	ID  shift 34
+	CTE_UINT  shift 35
+	CTE_DOUBLE  shift 36
+	'-'  shift 38
 	$end  reduce 46
 	';'  reduce 46
 	'}'  reduce 46
 
-	expresion  goto 53
-	termino  goto 39
-	factor  goto 40
+	expresion  goto 54
+	termino  goto 40
+	factor  goto 41
 
 
-state 26
+state 27
 	invocacion : ID params_invocacion .  (40)
 
 	.  reduce 40
 
 
-state 27
+state 28
 	encabezado_if : IF condicion .  (65)
 
 	.  reduce 65
 
 
-state 28
+state 29
 	bloque_estruct_ctrl : '{' . bloque_sentencias '}'  (73)
 
-	ID  shift 1
-	UINT  shift 2
-	DOUBLE  shift 3
-	IF  shift 4
-	LOOP  shift 5
-	OUT  shift 6
-	PROC  shift 7
-	'('  shift 8
+	error  shift 1
+	ID  shift 2
+	UINT  shift 3
+	DOUBLE  shift 4
+	IF  shift 5
+	LOOP  shift 6
+	OUT  shift 7
+	PROC  shift 8
+	'('  shift 9
 	.  error
 
-	bloque_sentencias  goto 54
-	sentencia  goto 11
-	sentencia_declarativa  goto 12
-	sentencia_ejecutable  goto 13
-	nombre_proc  goto 14
-	tipo  goto 15
-	invocacion  goto 16
-	asignacion  goto 17
-	sentencia_loop  goto 18
-	sentencia_if  goto 19
-	print  goto 20
-	cuerpo_loop  goto 21
-	condicion  goto 22
-	encabezado_if  goto 23
-
-
-state 29
-	bloque_estruct_ctrl : sentencia . ';'  (72)
-
-	';'  shift 55
-	.  error
+	bloque_sentencias  goto 55
+	sentencia  goto 12
+	sentencia_declarativa  goto 13
+	sentencia_ejecutable  goto 14
+	nombre_proc  goto 15
+	tipo  goto 16
+	invocacion  goto 17
+	asignacion  goto 18
+	sentencia_loop  goto 19
+	sentencia_if  goto 20
+	print  goto 21
+	cuerpo_loop  goto 22
+	condicion  goto 23
+	encabezado_if  goto 24
 
 
 state 30
+	bloque_estruct_ctrl : sentencia . ';'  (72)
+
+	';'  shift 56
+	.  error
+
+
+state 31
 	cuerpo_loop : LOOP bloque_estruct_ctrl .  (58)
 
 	.  reduce 58
 
 
-state 31
+state 32
 	print : OUT '(' . imprimible ')'  (82)
 
-	ID  shift 56
-	CADENA  shift 57
-	CTE_UINT  shift 58
-	CTE_DOUBLE  shift 59
+	ID  shift 57
+	CADENA  shift 58
+	CTE_UINT  shift 59
+	CTE_DOUBLE  shift 60
 	.  error
 
-	imprimible  goto 60
-
-
-state 32
-	nombre_proc : PROC ID .  (9)
-
-	.  reduce 9
+	imprimible  goto 61
 
 
 state 33
+	nombre_proc : PROC ID .  (10)
+
+	.  reduce 10
+
+
+state 34
 	factor : ID .  (53)
 
 	.  reduce 53
 
 
-state 34
+state 35
 	factor : CTE_UINT .  (54)
 
 	.  reduce 54
 
 
-state 35
+state 36
 	factor : CTE_DOUBLE .  (55)
 
 	.  reduce 55
 
 
-state 36
+state 37
 	condicion : '(' ')' .  (74)
 
 	.  reduce 74
 
 
-state 37
+state 38
 	factor : '-' . factor  (56)
 
-	ID  shift 33
-	CTE_UINT  shift 34
-	CTE_DOUBLE  shift 35
-	'-'  shift 37
+	ID  shift 34
+	CTE_UINT  shift 35
+	CTE_DOUBLE  shift 36
+	'-'  shift 38
 	.  error
 
-	factor  goto 61
+	factor  goto 62
 
 
-state 38
+state 39
 	expresion : expresion . '+' termino  (47)
 	expresion : expresion . '-' termino  (48)
 	condicion : '(' expresion . comparador expresion ')'  (75)
 
-	COMP_MENOR_IGUAL  shift 62
-	COMP_MAYOR_IGUAL  shift 63
-	COMP_DISTINTO  shift 64
-	COMP_IGUAL  shift 65
-	'+'  shift 66
-	'-'  shift 67
-	'<'  shift 68
-	'>'  shift 69
+	COMP_MENOR_IGUAL  shift 63
+	COMP_MAYOR_IGUAL  shift 64
+	COMP_DISTINTO  shift 65
+	COMP_IGUAL  shift 66
+	'+'  shift 67
+	'-'  shift 68
+	'<'  shift 69
+	'>'  shift 70
 	.  error
 
-	comparador  goto 70
+	comparador  goto 71
 
 
-state 39
+state 40
 	expresion : termino .  (49)
 	termino : termino . '*' factor  (50)
 	termino : termino . '/' factor  (51)
 
-	'*'  shift 71
-	'/'  shift 72
+	'*'  shift 72
+	'/'  shift 73
 	$end  reduce 49
 	COMP_MENOR_IGUAL  reduce 49
 	COMP_MAYOR_IGUAL  reduce 49
@@ -555,522 +565,530 @@ state 39
 	'>'  reduce 49
 
 
-state 40
+state 41
 	termino : factor .  (52)
 
 	.  reduce 52
 
 
-state 41
+state 42
 	bloque_sentencias : sentencia ';' .  (3)
 	bloque_sentencias : sentencia ';' . bloque_sentencias  (4)
 
-	ID  shift 1
-	UINT  shift 2
-	DOUBLE  shift 3
-	IF  shift 4
-	LOOP  shift 5
-	OUT  shift 6
-	PROC  shift 7
-	'('  shift 8
+	error  shift 1
+	ID  shift 2
+	UINT  shift 3
+	DOUBLE  shift 4
+	IF  shift 5
+	LOOP  shift 6
+	OUT  shift 7
+	PROC  shift 8
+	'('  shift 9
 	$end  reduce 3
 	'}'  reduce 3
 
-	bloque_sentencias  goto 73
-	sentencia  goto 11
-	sentencia_declarativa  goto 12
-	sentencia_ejecutable  goto 13
-	nombre_proc  goto 14
-	tipo  goto 15
-	invocacion  goto 16
-	asignacion  goto 17
-	sentencia_loop  goto 18
-	sentencia_if  goto 19
-	print  goto 20
-	cuerpo_loop  goto 21
-	condicion  goto 22
-	encabezado_if  goto 23
-
-
-state 42
-	params_proc : '(' . lista_params ')'  (11)
-	params_proc : '(' . lista_params  (12)
-	lista_params : .  (17)
-
-	ID  shift 74
-	UINT  shift 2
-	DOUBLE  shift 3
-	VAR  shift 75
-	NI  reduce 17
-	')'  reduce 17
-	'{'  reduce 17
-
-	tipo  goto 76
-	lista_params  goto 77
-	param  goto 78
-	param_var  goto 79
-	param_comun  goto 80
+	bloque_sentencias  goto 74
+	sentencia  goto 12
+	sentencia_declarativa  goto 13
+	sentencia_ejecutable  goto 14
+	nombre_proc  goto 15
+	tipo  goto 16
+	invocacion  goto 17
+	asignacion  goto 18
+	sentencia_loop  goto 19
+	sentencia_if  goto 20
+	print  goto 21
+	cuerpo_loop  goto 22
+	condicion  goto 23
+	encabezado_if  goto 24
 
 
 state 43
-	sentencia_declarativa : nombre_proc params_proc . ni_proc cuerpo_proc  (7)
-	ni_proc : .  (15)
+	params_proc : '(' . lista_params ')'  (12)
+	params_proc : '(' . lista_params  (13)
+	lista_params : .  (17)
 
-	NI  shift 81
-	'{'  reduce 15
+	ID  shift 75
+	UINT  shift 3
+	DOUBLE  shift 4
+	VAR  shift 76
+	error  reduce 17
+	NI  reduce 17
+	')'  reduce 17
 
-	ni_proc  goto 82
+	tipo  goto 77
+	lista_params  goto 78
+	param  goto 79
+	param_var  goto 80
+	param_comun  goto 81
 
 
 state 44
+	sentencia_declarativa : nombre_proc params_proc . ni_proc cuerpo_proc  (8)
+
+	error  shift 82
+	NI  shift 83
+	.  error
+
+	ni_proc  goto 84
+
+
+state 45
 	lista_variables : ID .  (33)
 	lista_variables : ID . ',' lista_variables  (34)
 
-	','  shift 83
+	','  shift 85
 	$end  reduce 33
 	';'  reduce 33
 	')'  reduce 33
 	'}'  reduce 33
 
 
-state 45
-	sentencia_declarativa : tipo lista_variables .  (8)
-
-	.  reduce 8
-
-
 state 46
-	cuerpo_until : UNTIL . condicion  (60)
+	sentencia_declarativa : tipo lista_variables .  (9)
 
-	'('  shift 8
-	.  error
-
-	condicion  goto 84
+	.  reduce 9
 
 
 state 47
+	cuerpo_until : UNTIL . condicion  (60)
+
+	'('  shift 9
+	.  error
+
+	condicion  goto 86
+
+
+state 48
 	sentencia_loop : cuerpo_loop cuerpo_until .  (57)
 
 	.  reduce 57
 
 
-state 48
+state 49
 	rama_then : THEN . bloque_estruct_ctrl  (67)
 	rama_then : THEN .  (68)
 
-	ID  shift 1
-	UINT  shift 2
-	DOUBLE  shift 3
-	IF  shift 4
-	LOOP  shift 5
-	OUT  shift 6
-	PROC  shift 7
-	'('  shift 8
-	'{'  shift 28
+	error  shift 1
+	ID  shift 2
+	UINT  shift 3
+	DOUBLE  shift 4
+	IF  shift 5
+	LOOP  shift 6
+	OUT  shift 7
+	PROC  shift 8
+	'('  shift 9
+	'{'  shift 29
 	$end  reduce 68
 	ELSE  reduce 68
 	END_IF  reduce 68
 	';'  reduce 68
 	'}'  reduce 68
 
-	sentencia  goto 29
-	sentencia_declarativa  goto 12
-	sentencia_ejecutable  goto 13
-	nombre_proc  goto 14
-	tipo  goto 15
-	bloque_estruct_ctrl  goto 85
-	invocacion  goto 16
-	asignacion  goto 17
-	sentencia_loop  goto 18
-	sentencia_if  goto 19
-	print  goto 20
-	cuerpo_loop  goto 21
-	condicion  goto 22
-	encabezado_if  goto 23
+	sentencia  goto 30
+	sentencia_declarativa  goto 13
+	sentencia_ejecutable  goto 14
+	nombre_proc  goto 15
+	tipo  goto 16
+	bloque_estruct_ctrl  goto 87
+	invocacion  goto 17
+	asignacion  goto 18
+	sentencia_loop  goto 19
+	sentencia_if  goto 20
+	print  goto 21
+	cuerpo_loop  goto 22
+	condicion  goto 23
+	encabezado_if  goto 24
 
 
-state 49
+state 50
 	rama_then : bloque_estruct_ctrl .  (69)
 
 	.  reduce 69
 
 
-state 50
+state 51
 	sentencia_if : encabezado_if rama_then . rama_else END_IF  (61)
 	sentencia_if : encabezado_if rama_then . END_IF  (62)
 	sentencia_if : encabezado_if rama_then . rama_else  (63)
 	sentencia_if : encabezado_if rama_then .  (64)
 
-	ELSE  shift 86
-	END_IF  shift 87
+	ELSE  shift 88
+	END_IF  shift 89
 	$end  reduce 64
 	';'  reduce 64
 	'}'  reduce 64
 
-	rama_else  goto 88
+	rama_else  goto 90
 
 
-state 51
+state 52
 	params_invocacion : '(' ')' .  (41)
 
 	.  reduce 41
 
 
-state 52
+state 53
 	params_invocacion : '(' lista_variables . ')'  (42)
 	params_invocacion : '(' lista_variables .  (44)
 
-	')'  shift 89
+	')'  shift 91
 	$end  reduce 44
 	';'  reduce 44
 	'}'  reduce 44
 
 
-state 53
+state 54
 	asignacion : ID '=' expresion .  (45)
 	expresion : expresion . '+' termino  (47)
 	expresion : expresion . '-' termino  (48)
 
-	'+'  shift 66
-	'-'  shift 67
+	'+'  shift 67
+	'-'  shift 68
 	$end  reduce 45
 	';'  reduce 45
 	'}'  reduce 45
 
 
-state 54
+state 55
 	bloque_estruct_ctrl : '{' bloque_sentencias . '}'  (73)
 
-	'}'  shift 90
+	'}'  shift 92
 	.  error
 
 
-state 55
+state 56
 	bloque_estruct_ctrl : sentencia ';' .  (72)
 
 	.  reduce 72
 
 
-state 56
+state 57
 	imprimible : ID .  (86)
 
 	.  reduce 86
 
 
-state 57
+state 58
 	imprimible : CADENA .  (83)
 
 	.  reduce 83
 
 
-state 58
+state 59
 	imprimible : CTE_UINT .  (84)
 
 	.  reduce 84
 
 
-state 59
+state 60
 	imprimible : CTE_DOUBLE .  (85)
 
 	.  reduce 85
 
 
-state 60
+state 61
 	print : OUT '(' imprimible . ')'  (82)
 
-	')'  shift 91
+	')'  shift 93
 	.  error
 
 
-state 61
+state 62
 	factor : '-' factor .  (56)
 
 	.  reduce 56
 
 
-state 62
+state 63
 	comparador : COMP_MENOR_IGUAL .  (77)
 
 	.  reduce 77
 
 
-state 63
+state 64
 	comparador : COMP_MAYOR_IGUAL .  (76)
 
 	.  reduce 76
 
 
-state 64
+state 65
 	comparador : COMP_DISTINTO .  (81)
 
 	.  reduce 81
 
 
-state 65
+state 66
 	comparador : COMP_IGUAL .  (80)
 
 	.  reduce 80
 
 
-state 66
+state 67
 	expresion : expresion '+' . termino  (47)
 
-	ID  shift 33
-	CTE_UINT  shift 34
-	CTE_DOUBLE  shift 35
-	'-'  shift 37
+	ID  shift 34
+	CTE_UINT  shift 35
+	CTE_DOUBLE  shift 36
+	'-'  shift 38
 	.  error
 
-	termino  goto 92
-	factor  goto 40
-
-
-state 67
-	expresion : expresion '-' . termino  (48)
-
-	ID  shift 33
-	CTE_UINT  shift 34
-	CTE_DOUBLE  shift 35
-	'-'  shift 37
-	.  error
-
-	termino  goto 93
-	factor  goto 40
+	termino  goto 94
+	factor  goto 41
 
 
 state 68
+	expresion : expresion '-' . termino  (48)
+
+	ID  shift 34
+	CTE_UINT  shift 35
+	CTE_DOUBLE  shift 36
+	'-'  shift 38
+	.  error
+
+	termino  goto 95
+	factor  goto 41
+
+
+state 69
 	comparador : '<' .  (78)
 
 	.  reduce 78
 
 
-state 69
+state 70
 	comparador : '>' .  (79)
 
 	.  reduce 79
 
 
-state 70
+state 71
 	condicion : '(' expresion comparador . expresion ')'  (75)
 
-	ID  shift 33
-	CTE_UINT  shift 34
-	CTE_DOUBLE  shift 35
-	'-'  shift 37
+	ID  shift 34
+	CTE_UINT  shift 35
+	CTE_DOUBLE  shift 36
+	'-'  shift 38
 	.  error
 
-	expresion  goto 94
-	termino  goto 39
-	factor  goto 40
-
-
-state 71
-	termino : termino '*' . factor  (50)
-
-	ID  shift 33
-	CTE_UINT  shift 34
-	CTE_DOUBLE  shift 35
-	'-'  shift 37
-	.  error
-
-	factor  goto 95
+	expresion  goto 96
+	termino  goto 40
+	factor  goto 41
 
 
 state 72
-	termino : termino '/' . factor  (51)
+	termino : termino '*' . factor  (50)
 
-	ID  shift 33
-	CTE_UINT  shift 34
-	CTE_DOUBLE  shift 35
-	'-'  shift 37
+	ID  shift 34
+	CTE_UINT  shift 35
+	CTE_DOUBLE  shift 36
+	'-'  shift 38
 	.  error
 
-	factor  goto 96
+	factor  goto 97
 
 
 state 73
+	termino : termino '/' . factor  (51)
+
+	ID  shift 34
+	CTE_UINT  shift 35
+	CTE_DOUBLE  shift 36
+	'-'  shift 38
+	.  error
+
+	factor  goto 98
+
+
+state 74
 	bloque_sentencias : sentencia ';' bloque_sentencias .  (4)
 
 	.  reduce 4
 
 
-state 74
+state 75
 	param_comun : ID .  (29)
 
 	.  reduce 29
 
 
-state 75
+state 76
 	param_var : VAR . tipo ID  (25)
 	param_var : VAR . ID  (26)
 	param_var : VAR . tipo  (27)
 
-	ID  shift 97
-	UINT  shift 2
-	DOUBLE  shift 3
+	ID  shift 99
+	UINT  shift 3
+	DOUBLE  shift 4
 	.  error
 
-	tipo  goto 98
-
-
-state 76
-	param_comun : tipo . ID  (28)
-	param_comun : tipo .  (30)
-
-	ID  shift 99
-	NI  reduce 30
-	')'  reduce 30
-	'{'  reduce 30
-	','  reduce 30
+	tipo  goto 100
 
 
 state 77
-	params_proc : '(' lista_params . ')'  (11)
-	params_proc : '(' lista_params .  (12)
+	param_comun : tipo . ID  (28)
+	param_comun : tipo .  (30)
 
-	')'  shift 100
-	NI  reduce 12
-	'{'  reduce 12
+	ID  shift 101
+	error  reduce 30
+	NI  reduce 30
+	')'  reduce 30
+	','  reduce 30
 
 
 state 78
+	params_proc : '(' lista_params . ')'  (12)
+	params_proc : '(' lista_params .  (13)
+
+	')'  shift 102
+	error  reduce 13
+	NI  reduce 13
+
+
+state 79
 	lista_params : param .  (18)
 	lista_params : param . ',' param  (19)
 	lista_params : param . ',' param ',' param  (20)
 	lista_params : param . ',' param ',' param ',' param  (21)
 	lista_params : param . ',' param ',' param ',' param ',' lista_params  (22)
 
-	','  shift 101
+	','  shift 103
+	error  reduce 18
 	NI  reduce 18
 	')'  reduce 18
-	'{'  reduce 18
 
 
-state 79
+state 80
 	param : param_var .  (23)
 
 	.  reduce 23
 
 
-state 80
+state 81
 	param : param_comun .  (24)
 
 	.  reduce 24
 
 
-state 81
-	ni_proc : NI . '=' CTE_UINT  (13)
-	ni_proc : NI . '='  (14)
-
-	'='  shift 102
-	.  error
-
-
 state 82
-	sentencia_declarativa : nombre_proc params_proc ni_proc . cuerpo_proc  (7)
+	ni_proc : error .  (15)
 
-	'{'  shift 103
-	.  error
-
-	cuerpo_proc  goto 104
+	.  reduce 15
 
 
 state 83
-	lista_variables : ID ',' . lista_variables  (34)
+	ni_proc : NI . '=' CTE_UINT  (14)
 
-	ID  shift 44
+	'='  shift 104
 	.  error
-
-	lista_variables  goto 105
 
 
 state 84
+	sentencia_declarativa : nombre_proc params_proc ni_proc . cuerpo_proc  (8)
+
+	'{'  shift 105
+	.  error
+
+	cuerpo_proc  goto 106
+
+
+state 85
+	lista_variables : ID ',' . lista_variables  (34)
+
+	ID  shift 45
+	.  error
+
+	lista_variables  goto 107
+
+
+state 86
 	cuerpo_until : UNTIL condicion .  (60)
 
 	.  reduce 60
 
 
-state 85
+state 87
 	rama_then : THEN bloque_estruct_ctrl .  (67)
 
 	.  reduce 67
 
 
-state 86
+state 88
 	rama_else : ELSE . bloque_estruct_ctrl  (70)
 	rama_else : ELSE .  (71)
 
-	ID  shift 1
-	UINT  shift 2
-	DOUBLE  shift 3
-	IF  shift 4
-	LOOP  shift 5
-	OUT  shift 6
-	PROC  shift 7
-	'('  shift 8
-	'{'  shift 28
+	error  shift 1
+	ID  shift 2
+	UINT  shift 3
+	DOUBLE  shift 4
+	IF  shift 5
+	LOOP  shift 6
+	OUT  shift 7
+	PROC  shift 8
+	'('  shift 9
+	'{'  shift 29
 	$end  reduce 71
 	END_IF  reduce 71
 	';'  reduce 71
 	'}'  reduce 71
 
-	sentencia  goto 29
-	sentencia_declarativa  goto 12
-	sentencia_ejecutable  goto 13
-	nombre_proc  goto 14
-	tipo  goto 15
-	bloque_estruct_ctrl  goto 106
-	invocacion  goto 16
-	asignacion  goto 17
-	sentencia_loop  goto 18
-	sentencia_if  goto 19
-	print  goto 20
-	cuerpo_loop  goto 21
-	condicion  goto 22
-	encabezado_if  goto 23
+	sentencia  goto 30
+	sentencia_declarativa  goto 13
+	sentencia_ejecutable  goto 14
+	nombre_proc  goto 15
+	tipo  goto 16
+	bloque_estruct_ctrl  goto 108
+	invocacion  goto 17
+	asignacion  goto 18
+	sentencia_loop  goto 19
+	sentencia_if  goto 20
+	print  goto 21
+	cuerpo_loop  goto 22
+	condicion  goto 23
+	encabezado_if  goto 24
 
 
-state 87
+state 89
 	sentencia_if : encabezado_if rama_then END_IF .  (62)
 
 	.  reduce 62
 
 
-state 88
+state 90
 	sentencia_if : encabezado_if rama_then rama_else . END_IF  (61)
 	sentencia_if : encabezado_if rama_then rama_else .  (63)
 
-	END_IF  shift 107
+	END_IF  shift 109
 	$end  reduce 63
 	';'  reduce 63
 	'}'  reduce 63
 
 
-state 89
+state 91
 	params_invocacion : '(' lista_variables ')' .  (42)
 
 	.  reduce 42
 
 
-state 90
+state 92
 	bloque_estruct_ctrl : '{' bloque_sentencias '}' .  (73)
 
 	.  reduce 73
 
 
-state 91
+state 93
 	print : OUT '(' imprimible ')' .  (82)
 
 	.  reduce 82
 
 
-state 92
+state 94
 	expresion : expresion '+' termino .  (47)
 	termino : termino . '*' factor  (50)
 	termino : termino . '/' factor  (51)
 
-	'*'  shift 71
-	'/'  shift 72
+	'*'  shift 72
+	'/'  shift 73
 	$end  reduce 47
 	COMP_MENOR_IGUAL  reduce 47
 	COMP_MAYOR_IGUAL  reduce 47
@@ -1085,13 +1103,13 @@ state 92
 	'>'  reduce 47
 
 
-state 93
+state 95
 	expresion : expresion '-' termino .  (48)
 	termino : termino . '*' factor  (50)
 	termino : termino . '/' factor  (51)
 
-	'*'  shift 71
-	'/'  shift 72
+	'*'  shift 72
+	'/'  shift 73
 	$end  reduce 48
 	COMP_MENOR_IGUAL  reduce 48
 	COMP_MAYOR_IGUAL  reduce 48
@@ -1106,259 +1124,259 @@ state 93
 	'>'  reduce 48
 
 
-state 94
+state 96
 	expresion : expresion . '+' termino  (47)
 	expresion : expresion . '-' termino  (48)
 	condicion : '(' expresion comparador expresion . ')'  (75)
 
-	')'  shift 108
-	'+'  shift 66
-	'-'  shift 67
+	')'  shift 110
+	'+'  shift 67
+	'-'  shift 68
 	.  error
 
 
-state 95
+state 97
 	termino : termino '*' factor .  (50)
 
 	.  reduce 50
 
 
-state 96
+state 98
 	termino : termino '/' factor .  (51)
 
 	.  reduce 51
 
 
-state 97
+state 99
 	param_var : VAR ID .  (26)
 
 	.  reduce 26
 
 
-state 98
+state 100
 	param_var : VAR tipo . ID  (25)
 	param_var : VAR tipo .  (27)
 
-	ID  shift 109
+	ID  shift 111
+	error  reduce 27
 	NI  reduce 27
 	')'  reduce 27
-	'{'  reduce 27
 	','  reduce 27
 
 
-state 99
+state 101
 	param_comun : tipo ID .  (28)
 
 	.  reduce 28
 
 
-state 100
-	params_proc : '(' lista_params ')' .  (11)
+state 102
+	params_proc : '(' lista_params ')' .  (12)
 
-	.  reduce 11
+	.  reduce 12
 
 
-state 101
+state 103
 	lista_params : param ',' . param  (19)
 	lista_params : param ',' . param ',' param  (20)
 	lista_params : param ',' . param ',' param ',' param  (21)
 	lista_params : param ',' . param ',' param ',' param ',' lista_params  (22)
 
-	ID  shift 74
-	UINT  shift 2
-	DOUBLE  shift 3
-	VAR  shift 75
+	ID  shift 75
+	UINT  shift 3
+	DOUBLE  shift 4
+	VAR  shift 76
 	.  error
 
-	tipo  goto 76
-	param  goto 110
-	param_var  goto 79
-	param_comun  goto 80
-
-
-state 102
-	ni_proc : NI '=' . CTE_UINT  (13)
-	ni_proc : NI '=' .  (14)
-
-	CTE_UINT  shift 111
-	'{'  reduce 14
-
-
-state 103
-	cuerpo_proc : '{' . bloque_estruct_ctrl '}'  (16)
-
-	ID  shift 1
-	UINT  shift 2
-	DOUBLE  shift 3
-	IF  shift 4
-	LOOP  shift 5
-	OUT  shift 6
-	PROC  shift 7
-	'('  shift 8
-	'{'  shift 28
-	.  error
-
-	sentencia  goto 29
-	sentencia_declarativa  goto 12
-	sentencia_ejecutable  goto 13
-	nombre_proc  goto 14
-	tipo  goto 15
-	bloque_estruct_ctrl  goto 112
-	invocacion  goto 16
-	asignacion  goto 17
-	sentencia_loop  goto 18
-	sentencia_if  goto 19
-	print  goto 20
-	cuerpo_loop  goto 21
-	condicion  goto 22
-	encabezado_if  goto 23
+	tipo  goto 77
+	param  goto 112
+	param_var  goto 80
+	param_comun  goto 81
 
 
 state 104
-	sentencia_declarativa : nombre_proc params_proc ni_proc cuerpo_proc .  (7)
+	ni_proc : NI '=' . CTE_UINT  (14)
 
-	.  reduce 7
+	CTE_UINT  shift 113
+	.  error
 
 
 state 105
+	cuerpo_proc : '{' . bloque_estruct_ctrl '}'  (16)
+
+	error  shift 1
+	ID  shift 2
+	UINT  shift 3
+	DOUBLE  shift 4
+	IF  shift 5
+	LOOP  shift 6
+	OUT  shift 7
+	PROC  shift 8
+	'('  shift 9
+	'{'  shift 29
+	.  error
+
+	sentencia  goto 30
+	sentencia_declarativa  goto 13
+	sentencia_ejecutable  goto 14
+	nombre_proc  goto 15
+	tipo  goto 16
+	bloque_estruct_ctrl  goto 114
+	invocacion  goto 17
+	asignacion  goto 18
+	sentencia_loop  goto 19
+	sentencia_if  goto 20
+	print  goto 21
+	cuerpo_loop  goto 22
+	condicion  goto 23
+	encabezado_if  goto 24
+
+
+state 106
+	sentencia_declarativa : nombre_proc params_proc ni_proc cuerpo_proc .  (8)
+
+	.  reduce 8
+
+
+state 107
 	lista_variables : ID ',' lista_variables .  (34)
 
 	.  reduce 34
 
 
-state 106
+state 108
 	rama_else : ELSE bloque_estruct_ctrl .  (70)
 
 	.  reduce 70
 
 
-state 107
+state 109
 	sentencia_if : encabezado_if rama_then rama_else END_IF .  (61)
 
 	.  reduce 61
 
 
-state 108
+state 110
 	condicion : '(' expresion comparador expresion ')' .  (75)
 
 	.  reduce 75
 
 
-state 109
+state 111
 	param_var : VAR tipo ID .  (25)
 
 	.  reduce 25
 
 
-state 110
+state 112
 	lista_params : param ',' param .  (19)
 	lista_params : param ',' param . ',' param  (20)
 	lista_params : param ',' param . ',' param ',' param  (21)
 	lista_params : param ',' param . ',' param ',' param ',' lista_params  (22)
 
-	','  shift 113
+	','  shift 115
+	error  reduce 19
 	NI  reduce 19
 	')'  reduce 19
-	'{'  reduce 19
-
-
-state 111
-	ni_proc : NI '=' CTE_UINT .  (13)
-
-	.  reduce 13
-
-
-state 112
-	cuerpo_proc : '{' bloque_estruct_ctrl . '}'  (16)
-
-	'}'  shift 114
-	.  error
 
 
 state 113
+	ni_proc : NI '=' CTE_UINT .  (14)
+
+	.  reduce 14
+
+
+state 114
+	cuerpo_proc : '{' bloque_estruct_ctrl . '}'  (16)
+
+	'}'  shift 116
+	.  error
+
+
+state 115
 	lista_params : param ',' param ',' . param  (20)
 	lista_params : param ',' param ',' . param ',' param  (21)
 	lista_params : param ',' param ',' . param ',' param ',' lista_params  (22)
 
-	ID  shift 74
-	UINT  shift 2
-	DOUBLE  shift 3
-	VAR  shift 75
+	ID  shift 75
+	UINT  shift 3
+	DOUBLE  shift 4
+	VAR  shift 76
 	.  error
 
-	tipo  goto 76
-	param  goto 115
-	param_var  goto 79
-	param_comun  goto 80
+	tipo  goto 77
+	param  goto 117
+	param_var  goto 80
+	param_comun  goto 81
 
 
-state 114
+state 116
 	cuerpo_proc : '{' bloque_estruct_ctrl '}' .  (16)
 
 	.  reduce 16
 
 
-state 115
+state 117
 	lista_params : param ',' param ',' param .  (20)
 	lista_params : param ',' param ',' param . ',' param  (21)
 	lista_params : param ',' param ',' param . ',' param ',' lista_params  (22)
 
-	','  shift 116
+	','  shift 118
+	error  reduce 20
 	NI  reduce 20
 	')'  reduce 20
-	'{'  reduce 20
-
-
-state 116
-	lista_params : param ',' param ',' param ',' . param  (21)
-	lista_params : param ',' param ',' param ',' . param ',' lista_params  (22)
-
-	ID  shift 74
-	UINT  shift 2
-	DOUBLE  shift 3
-	VAR  shift 75
-	.  error
-
-	tipo  goto 76
-	param  goto 117
-	param_var  goto 79
-	param_comun  goto 80
-
-
-state 117
-	lista_params : param ',' param ',' param ',' param .  (21)
-	lista_params : param ',' param ',' param ',' param . ',' lista_params  (22)
-
-	','  shift 118
-	NI  reduce 21
-	')'  reduce 21
-	'{'  reduce 21
 
 
 state 118
-	lista_params : param ',' param ',' param ',' param ',' . lista_params  (22)
-	lista_params : .  (17)
+	lista_params : param ',' param ',' param ',' . param  (21)
+	lista_params : param ',' param ',' param ',' . param ',' lista_params  (22)
 
-	ID  shift 74
-	UINT  shift 2
-	DOUBLE  shift 3
-	VAR  shift 75
-	NI  reduce 17
-	')'  reduce 17
-	'{'  reduce 17
+	ID  shift 75
+	UINT  shift 3
+	DOUBLE  shift 4
+	VAR  shift 76
+	.  error
 
-	tipo  goto 76
-	lista_params  goto 119
-	param  goto 78
-	param_var  goto 79
-	param_comun  goto 80
+	tipo  goto 77
+	param  goto 119
+	param_var  goto 80
+	param_comun  goto 81
 
 
 state 119
+	lista_params : param ',' param ',' param ',' param .  (21)
+	lista_params : param ',' param ',' param ',' param . ',' lista_params  (22)
+
+	','  shift 120
+	error  reduce 21
+	NI  reduce 21
+	')'  reduce 21
+
+
+state 120
+	lista_params : param ',' param ',' param ',' param ',' . lista_params  (22)
+	lista_params : .  (17)
+
+	ID  shift 75
+	UINT  shift 3
+	DOUBLE  shift 4
+	VAR  shift 76
+	error  reduce 17
+	NI  reduce 17
+	')'  reduce 17
+
+	tipo  goto 77
+	lista_params  goto 121
+	param  goto 79
+	param_var  goto 80
+	param_comun  goto 81
+
+
+state 121
 	lista_params : param ',' param ',' param ',' param ',' lista_params .  (22)
 
 	.  reduce 22
 
 
 35 terminals, 34 nonterminals
-87 grammar rules, 120 states
+87 grammar rules, 122 states

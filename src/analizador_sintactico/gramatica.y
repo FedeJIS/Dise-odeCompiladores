@@ -1,3 +1,11 @@
+%{
+package analizador_sintactico;
+
+import analizador_lexico.AnalizadorLexico;
+import util.tabla_simbolos.Celda;
+import util.tabla_simbolos.TablaDeSimbolos;
+%}
+
 %token ID, COMP_MENOR_IGUAL, COMP_MAYOR_IGUAL, COMP_DISTINTO, COMP_IGUAL, UINT, DOUBLE, CADENA, IF , THEN, ELSE, END_IF,  LOOP, UNTIL, OUT , PROC , VAR,  NI, CTE_UINT, CTE_DOUBLE
 
 %start programa
@@ -14,6 +22,7 @@ bloque_sentencias	: sentencia                         {yyerror("Falta ';' al fin
 
 sentencia 	: sentencia_declarativa
             | sentencia_ejecutable
+            | error                 {yyerror("Sentencia mal definida");}
 			;
 			
 sentencia_declarativa	: nombre_proc params_proc ni_proc cuerpo_proc
@@ -29,8 +38,7 @@ params_proc : '(' lista_params ')'
             ;
 
 ni_proc : NI '=' CTE_UINT
-        | NI '='            {yyerror("Formato incorrecto de NI. El formato correcto es: 'NI = CTE_UINT'");}
-        |                   {yyerror("Formato incorrecto de NI. El formato correcto es: 'NI = CTE_UINT'");}
+        | error           {yyerror("Formato incorrecto de NI. El formato correcto es: 'NI = CTE_UINT'");}
         ;
 
 cuerpo_proc : '{' bloque_estruct_ctrl '}'
@@ -174,7 +182,7 @@ imprimible  : CADENA
 
     private int yylex() {
         int token = aLexico.produceToken();
-        yylval = aLexico.ultimoLexemaGenerado;
+        yylval = new ParserVal(aLexico.ultimoLexemaGenerado);
         return token;
     }
 
