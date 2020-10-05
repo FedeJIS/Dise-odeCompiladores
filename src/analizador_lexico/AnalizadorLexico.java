@@ -6,6 +6,9 @@ import util.CodigoFuente;
 import util.TablaPalabrasR;
 import util.tabla_simbolos.TablaSimbolos;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class AnalizadorLexico {
     private final CodigoFuente cFuente;
     private final MaquinaEstados maquinaEstados;
@@ -37,10 +40,50 @@ public class AnalizadorLexico {
 
     public int ultimoTokenGenerado = -1;
     public String ultimoLexemaGenerado;
+    private final Map<Integer, String> nombreTokens = new HashMap<>();
 
     public AnalizadorLexico(CodigoFuente cFuente, TablaSimbolos tablaS){
         this.cFuente = cFuente;
         this.maquinaEstados = new MaquinaEstados(this, cFuente,tablaS, inicTPR());
+        inicMapaToken();
+    }
+
+    private void inicMapaToken() {
+        nombreTokens.put(T_EOF,"EOF");
+        nombreTokens.put(T_ID,"ID");
+        nombreTokens.put((int)'<',"<");
+        nombreTokens.put(T_COMP_MENOR_IGUAL,"<=");
+        nombreTokens.put((int)'>',">");
+        nombreTokens.put(T_COMP_MAYOR_IGUAL,">=");
+        nombreTokens.put(T_COMP_DISTINTO,"!=");
+        nombreTokens.put((int)'=',"=");
+        nombreTokens.put(T_COMP_IGUAL,"==");
+        nombreTokens.put(T_UINT,"UINT");
+        nombreTokens.put(T_DOUBLE,"DOUBLE");
+        nombreTokens.put(T_CADENA,"CADENA");
+        nombreTokens.put(T_IF,"IF");
+        nombreTokens.put(T_THEN,"THEN");
+        nombreTokens.put(T_ELSE,"ELSE");
+        nombreTokens.put(T_END_IF,"END_IF");
+        nombreTokens.put(T_LOOP,"LOOP");
+        nombreTokens.put(T_UNTIL,"UNTIL");
+        nombreTokens.put(T_OUT,"OUT");
+        nombreTokens.put(T_PROC,"PROC");
+        nombreTokens.put(T_VAR,"VAR");
+        nombreTokens.put(T_NI,"NI");
+        nombreTokens.put(T_CTE_UINT,"CTE_UINT");
+        nombreTokens.put(T_CTE_DOUBLE,"CTE_DOUBLE");
+        nombreTokens.put((int)'+',"+");
+        nombreTokens.put((int)'-',"-");
+        nombreTokens.put((int)'*',"*");
+        nombreTokens.put((int)'/',"/");
+        nombreTokens.put((int)'{',"{");
+        nombreTokens.put((int)'}',"}");
+        nombreTokens.put((int)'(',"(");
+        nombreTokens.put((int)')',")");
+        nombreTokens.put((int)',',",");
+        nombreTokens.put((int)';',";");
+        nombreTokens.put((int)'"',"\"");
     }
 
     public void setVariablesSintactico(int token, String lexema){
@@ -74,13 +117,17 @@ public class AnalizadorLexico {
         while (!maquinaEstados.estadoFinalAlcanzado()){
             if (cFuente.eof()) {
                 maquinaEstados.transicionarEOF();
+                System.out.println();
             }
             else {
+                if (cFuente.simboloActual() == '\n') System.out.println();
+                if (cFuente.simboloActual() == '\t' || cFuente.simboloActual() == ' ') System.out.print(" ");
                 maquinaEstados.transicionar(cFuente.simboloActual());
                 cFuente.avanzar();
             }
         }
         maquinaEstados.reiniciar();
+        System.out.print(nombreTokens.get(ultimoTokenGenerado)); //Imprime el token que se leyo.
         return ultimoTokenGenerado;
     }
 }

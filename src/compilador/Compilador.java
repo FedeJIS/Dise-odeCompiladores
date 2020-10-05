@@ -13,9 +13,14 @@ public class Compilador {
         String pathCFuente = "codigo_fuente.txt"; //args[0];
 
         Parser parser = init(pathCFuente);
+        System.out.println("TOKENS GENERADOS POR EL LEXICO:");
         parser.run();
+        System.out.println("################################");
 
+        System.out.println();
+        System.out.println("TABLA DE SIMBOLOS FINAL:");
         tablaS.printAll();
+        System.out.println("################################");
     }
 
     private static Parser init(String pathCFuente) {

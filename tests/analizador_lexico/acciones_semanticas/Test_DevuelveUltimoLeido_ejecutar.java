@@ -13,13 +13,13 @@ public class Test_DevuelveUltimoLeido_ejecutar {
         lineas.add(l1+l2);
 
         CodigoFuente codigoFuente = new CodigoFuente(lineas);
-        AccionSemantica.DevuelveUltimoLeido devuelveUltimoLeido = new AccionSemantica.DevuelveUltimoLeido(codigoFuente);
+        AccionSemantica.RetrocedeFuente retrocedeFuente = new AccionSemantica.RetrocedeFuente(codigoFuente);
 
         System.out.println("1. Caracter leido:"+codigoFuente.simboloActual()); //Leo 'a'.
         codigoFuente.avanzar();
         System.out.println("2. Caracter leido:"+codigoFuente.simboloActual()); //Leo 'b'.
 
-        devuelveUltimoLeido.ejecutar(); //Retrocedo una posicion.
+        retrocedeFuente.ejecutar(); //Retrocedo una posicion.
 
         System.out.println("3. Caracter leido:"+codigoFuente.simboloActual()); //Leo 'a'.
     }

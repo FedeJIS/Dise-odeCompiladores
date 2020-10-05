@@ -87,10 +87,10 @@ public class AccionSemantica {
         }
     }
 
-    public static class DevuelveUltimoLeido extends AccionSemantica {
+    public static class RetrocedeFuente extends AccionSemantica {
         private final CodigoFuente codigoFuente;
 
-        public DevuelveUltimoLeido(CodigoFuente codigoFuente) {
+        public RetrocedeFuente(CodigoFuente codigoFuente) {
             this.codigoFuente = codigoFuente;
         }
 

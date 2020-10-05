@@ -10,7 +10,7 @@ public class CodigoFuente {
     public CodigoFuente(List<String> lineas) {
         StringBuilder builder = new StringBuilder();
         for (String linea : lineas)
-            builder.append(linea);
+            builder.append(linea).append('\n');
         simbolos = builder.toString();
     }
 

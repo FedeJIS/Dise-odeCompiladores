@@ -32,7 +32,6 @@ public class Test_ME_descartables {
     }
 
     public static TablaSimbolos testGenerico(String lineaFuente, int tokenEsperado) {
-        FileProcessor fileProcessor = new FileProcessor();
         TablaSimbolos tablaS = new TablaSimbolos();
 
         AnalizadorLexico aLexico;

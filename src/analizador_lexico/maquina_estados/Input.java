@@ -3,7 +3,7 @@ package analizador_lexico.maquina_estados;
 public class Input {
     public static final int DESCARTABLE = 0, SALTO_LINEA = 1, LETRA_MINUSC = 2, D_MINUSC = 3, U_MINUSC = 4, I_MINUSC = 5,
             LETRA_MAYUS = 6, DIGITO = 7, GUION_B = 8, PORCENTAJE = 9, MENOR = 10, MAYOR = 11, ADMIRACION = 12, IGUAL = 13,
-            SUMA = 14, GUION = 15, MULTIPL = 16, DIV = 17, CORCHETE_A = 18, CORCHETE_C = 19, PARENT_A = 20, PARENT_C = 21,
+            SUMA = 14, GUION = 15, MULTIPL = 16, DIV = 17, LLAVE_A = 18, LLAVE_C = 19, PARENT_A = 20, PARENT_C = 21,
             PUNTO = 22, COMA = 23, PUNTO_COMA = 24, COMILLA = 25, OTRO = 26, EOF = 27;
 
     public static final int TOTAL_INPUTS = 28;
@@ -48,9 +48,9 @@ public class Input {
             case '/':
                 return DIV;
             case '{':
-                return CORCHETE_A;
+                return LLAVE_A;
             case '}':
-                return CORCHETE_C;
+                return LLAVE_C;
             case '(':
                 return PARENT_A;
             case ')':
