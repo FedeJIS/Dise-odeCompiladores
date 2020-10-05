@@ -48,7 +48,7 @@ public class FileProcessor {
      * @param linea         string a escribir
      * @param existeArchivo si es false, lo crea. Si es true, agrega la linea al final.
      */
-    public void escribirArchivo(String path, String linea, boolean existeArchivo) {
+    public static void escribirArchivo(String path, String linea, boolean existeArchivo) {
         FileWriter fichero = null;
         PrintWriter pw;
         try {
