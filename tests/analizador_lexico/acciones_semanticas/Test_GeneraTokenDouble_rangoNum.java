@@ -16,6 +16,6 @@ public class Test_GeneraTokenDouble_rangoNum {
 
         System.out.println("Esperado: true. Resultado:"+generaTokenDouble.doubleFueraRango(LIM_INF_DOUBLE_POS-1,-308));
 
-        System.out.println("Esperado: true. Resultado:"+generaTokenDouble.doubleFueraRango(LIM_SUP_DOUBLE_POS+1,308));
+        System.out.println("Esperado: true. Resultado:"+generaTokenDouble.doubleFueraRango(LIM_SUP_DOUBLE_POS+0.0000000000000001,308));
     }
 }

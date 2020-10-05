@@ -16,6 +16,7 @@
 package analizador_sintactico;
 
 import analizador_lexico.AnalizadorLexico;
+import util.TablaNotificaciones;
 import util.tabla_simbolos.Celda;
 import util.tabla_simbolos.TablaSimbolos;
 //#line 23 "Parser.java"
@@ -482,7 +483,7 @@ public class Parser {
     }
 
     private void yyerror(String mensajeError) {
-        System.err.println("Error en la linea " + aLexico.getLineaActual() + ": " + mensajeError);
+        TablaNotificaciones.agregarError("Error en la linea " + aLexico.getLineaActual() + ": " + mensajeError);
     }
 
     private void checkCambioSigno() {
@@ -498,6 +499,8 @@ public class Parser {
                 tablaS.agregarEntrada(celdaOriginal.getToken(), lexemaSignoC, celdaOriginal.getTipo());
             }
         }
+        else
+            TablaNotificaciones.agregarError("Error en la linea " + aLexico.getLineaActual() + ": No se permiten UINT negativos");
     }
 
     //#line 435 "Parser.java"
