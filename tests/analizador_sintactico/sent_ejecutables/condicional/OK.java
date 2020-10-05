@@ -12,5 +12,14 @@ public class OK {
         System.out.println("$$$$$$$$");
         RunSintactico.run(false,"IF (x==y) THEN {OUT(x);x=5;} ELSE OUT(y); END_IF;");
         System.out.println("$$$$$$$$");
+
+        String linea =
+                "IF (x==y) THEN {\n" +
+                    "x = 5;\n" +
+                    "y = 10;\n" +
+                "} END_IF;";
+
+        RunSintactico.run(false,linea);
+        System.out.println("$$$$$$$$");
     }
 }

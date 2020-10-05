@@ -2,18 +2,16 @@ package analizador_lexico;
 
 import analizador_lexico.maquina_estados.MaquinaEstados;
 import analizador_sintactico.Parser;
-import analizador_sintactico.ParserVal;
 import util.CodigoFuente;
-import util.FileProcessor;
 import util.Reservado;
-import util.tabla_simbolos.TablaDeSimbolos;
+import util.tabla_simbolos.TablaSimbolos;
 
 public class AnalizadorLexico {
     private final CodigoFuente cFuente;
     private final MaquinaEstados maquinaEstados;
 
     /**
-     * Valores para tokens (TODO REEMPLAZAR POR LOS VALORES QUE DA YACC).
+     * Valores para tokens.
      */
     public static final int T_EOF = 0;
     public static final int T_ID = Parser.ID;
@@ -40,9 +38,9 @@ public class AnalizadorLexico {
     public int ultimoTokenGenerado = -1;
     public String ultimoLexemaGenerado;
 
-    public AnalizadorLexico(FileProcessor fileProcessor, CodigoFuente cFuente, TablaDeSimbolos tablaS){
+    public AnalizadorLexico(CodigoFuente cFuente, TablaSimbolos tablaS){
         this.cFuente = cFuente;
-        this.maquinaEstados = new MaquinaEstados(this,fileProcessor,cFuente,tablaS, inicTPR());
+        this.maquinaEstados = new MaquinaEstados(this, cFuente,tablaS, inicTPR());
     }
 
     public void setVariablesSintactico(int token, String lexema){

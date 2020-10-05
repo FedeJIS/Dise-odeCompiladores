@@ -3,7 +3,7 @@ package analizador_sintactico;
 
 import analizador_lexico.AnalizadorLexico;
 import util.tabla_simbolos.Celda;
-import util.tabla_simbolos.TablaDeSimbolos;
+import util.tabla_simbolos.TablaSimbolos;
 %}
 
 %token ID, COMP_MENOR_IGUAL, COMP_MAYOR_IGUAL, COMP_DISTINTO, COMP_IGUAL, UINT, DOUBLE, CADENA, IF , THEN, ELSE, END_IF,  LOOP, UNTIL, OUT , PROC , VAR,  NI, CTE_UINT, CTE_DOUBLE

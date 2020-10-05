@@ -3,7 +3,7 @@ package analizador_lexico.maquina_estados;
 import analizador_lexico.AnalizadorLexico;
 import util.CodigoFuente;
 import util.FileProcessor;
-import util.tabla_simbolos.TablaDeSimbolos;
+import util.tabla_simbolos.TablaSimbolos;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,12 +31,12 @@ public class Test_ME_descartables {
         testGenerico("\n\n\n\n\n\n",-1);
     }
 
-    public static TablaDeSimbolos testGenerico(String lineaFuente, int tokenEsperado) {
+    public static TablaSimbolos testGenerico(String lineaFuente, int tokenEsperado) {
         FileProcessor fileProcessor = new FileProcessor();
-        TablaDeSimbolos tablaS = new TablaDeSimbolos();
+        TablaSimbolos tablaS = new TablaSimbolos();
 
         AnalizadorLexico aLexico;
-        aLexico = new AnalizadorLexico(fileProcessor, inicCodigoFuente(lineaFuente), tablaS);
+        aLexico = new AnalizadorLexico(inicCodigoFuente(lineaFuente), tablaS);
         int tokenOriginal = aLexico.produceToken();
 
         System.out.println("Token generado:" + tokenOriginal + ". Esperado:" + tokenEsperado + ". Exito:" + (tokenOriginal == tokenEsperado));

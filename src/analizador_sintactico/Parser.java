@@ -21,7 +21,7 @@ package analizador_sintactico;
 
 import analizador_lexico.AnalizadorLexico;
 import util.tabla_simbolos.Celda;
-import util.tabla_simbolos.TablaDeSimbolos;
+import util.tabla_simbolos.TablaSimbolos;
 //#line 23 "Parser.java"
 
 
@@ -456,14 +456,14 @@ final static String yyrule[] = {
 //#line 169 "gramatica.y"
 
     private AnalizadorLexico aLexico;
-    private TablaDeSimbolos tablaS;
+    private TablaSimbolos tablaS;
 
     /**
      * Create a parser, setting the debug to true or false.
      *
      * @param debugMe true for debugging, false for no debug.
      */
-    public Parser(boolean debugMe, AnalizadorLexico aLexico, TablaDeSimbolos tablaS) {
+    public Parser(boolean debugMe, AnalizadorLexico aLexico, TablaSimbolos tablaS) {
         yydebug = debugMe;
         this.aLexico = aLexico;
         this.tablaS = tablaS;

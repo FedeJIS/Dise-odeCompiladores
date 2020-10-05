@@ -1,7 +1,7 @@
 package analizador_sintactico.sent_ejecutables.asignacion;
 
 import util.testing.RunSintactico;
-import util.tabla_simbolos.TablaDeSimbolos;
+import util.tabla_simbolos.TablaSimbolos;
 
 public class OK {
     public static void main(String[] args) {
@@ -24,7 +24,7 @@ public class OK {
         RunSintactico.clearTablaS();
         RunSintactico.run(false, linea);
 
-        TablaDeSimbolos tablaS = RunSintactico.getTablaS();
+        TablaSimbolos tablaS = RunSintactico.getTablaS();
 
         tablaS.printAll();
 

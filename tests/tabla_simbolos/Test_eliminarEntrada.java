@@ -1,11 +1,11 @@
 package tabla_simbolos;
 
 import util.tabla_simbolos.Celda;
-import util.tabla_simbolos.TablaDeSimbolos;
+import util.tabla_simbolos.TablaSimbolos;
 
 public class Test_eliminarEntrada {
     public static void main(String[] args) {
-        TablaDeSimbolos tS = new TablaDeSimbolos();
+        TablaSimbolos tS = new TablaSimbolos();
 
         int token = 1;
         String lexema = "5";

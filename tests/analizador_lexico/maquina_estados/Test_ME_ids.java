@@ -1,7 +1,7 @@
 package analizador_lexico.maquina_estados;
 
 import analizador_lexico.AnalizadorLexico;
-import util.tabla_simbolos.TablaDeSimbolos;
+import util.tabla_simbolos.TablaSimbolos;
 
 import static analizador_lexico.maquina_estados.Test_ME_descartables.testGenerico;
 
@@ -41,7 +41,7 @@ public class Test_ME_ids {
     }
 
     private static void test(String lexema, String linea) {
-        TablaDeSimbolos tablaS;
+        TablaSimbolos tablaS;
         tablaS = testGenerico(linea, AnalizadorLexico.T_ID);
         try{
             tablaS.getValor(lexema);

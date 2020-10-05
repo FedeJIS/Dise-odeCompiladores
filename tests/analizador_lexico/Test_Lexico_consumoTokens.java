@@ -3,7 +3,7 @@ package analizador_lexico;
 import analizador_sintactico.Parser;
 import util.CodigoFuente;
 import util.FileProcessor;
-import util.tabla_simbolos.TablaDeSimbolos;
+import util.tabla_simbolos.TablaSimbolos;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,10 +29,10 @@ public class Test_Lexico_consumoTokens {
 
     private static void testGenerico(String lineaFuente) {
         FileProcessor fileProcessor = new FileProcessor();
-        TablaDeSimbolos tablaS = new TablaDeSimbolos();
+        TablaSimbolos tablaS = new TablaSimbolos();
 
         AnalizadorLexico aLexico;
-        aLexico = new AnalizadorLexico(fileProcessor, inicCodigoFuente(lineaFuente), tablaS);
+        aLexico = new AnalizadorLexico(inicCodigoFuente(lineaFuente), tablaS);
 
         Parser parser = new Parser(false,aLexico,tablaS);
         parser.run();

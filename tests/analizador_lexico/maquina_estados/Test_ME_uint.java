@@ -1,13 +1,13 @@
 package analizador_lexico.maquina_estados;
 
 import analizador_lexico.AnalizadorLexico;
-import util.tabla_simbolos.TablaDeSimbolos;
+import util.tabla_simbolos.TablaSimbolos;
 
 import static analizador_lexico.maquina_estados.Test_ME_descartables.testGenerico;
 
 public class Test_ME_uint {
     public static void main(String[] args) {
-        TablaDeSimbolos tablaS;
+        TablaSimbolos tablaS;
         /*
          * Se genera el uint normal.
          */

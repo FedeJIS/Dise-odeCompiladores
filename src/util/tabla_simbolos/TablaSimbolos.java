@@ -2,10 +2,10 @@ package util.tabla_simbolos;
 
 import java.util.Hashtable;
 
-public class TablaDeSimbolos {
+public class TablaSimbolos {
     private final Hashtable<String, Celda> tablaSimb;
 
-    public TablaDeSimbolos(){
+    public TablaSimbolos(){
         tablaSimb = new Hashtable<>();
     }
 

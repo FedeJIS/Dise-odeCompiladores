@@ -2,10 +2,9 @@ package analizador_lexico;
 
 import analizador_lexico.maquina_estados.MaquinaEstados;
 import util.CodigoFuente;
-import util.FileProcessor;
 import util.Reservado;
-import util.tabla_simbolos.Celda;
-import util.tabla_simbolos.TablaDeSimbolos;
+import util.TablaNotificaciones;
+import util.tabla_simbolos.TablaSimbolos;
 
 public class AccionSemantica {
     private static String sTemporal;
@@ -68,10 +67,10 @@ public class AccionSemantica {
     public static class TruncaId extends AccionSemantica{
         private final static int LIMITE_STRING = 20;
 
-        private final FileProcessor fileProcessor;
+        private final AnalizadorLexico aLexico;
 
-        public TruncaId(FileProcessor fileProcessor) {
-            this.fileProcessor = fileProcessor;
+        public TruncaId(AnalizadorLexico aLexico) {
+            this.aLexico = aLexico;
         }
 
         /**
@@ -81,7 +80,7 @@ public class AccionSemantica {
         public void ejecutar (){
             if (LIMITE_STRING < sTemporal.length()){
                 sTemporal=sTemporal.substring(0,LIMITE_STRING);
-                fileProcessor.escribirArchivo("./warning.txt","WARNING: String truncado a: "+sTemporal,fileProcessor.existeArchivo("./warning.txt"));
+                TablaNotificaciones.agregarWarning("Warning en la linea "+aLexico.getLineaActual()+": Identificador truncado por superar limite de caracteres.");
             }
         }
 
@@ -114,11 +113,11 @@ public class AccionSemantica {
     public static class GeneraTokenTS extends AccionSemantica{
         private final MaquinaEstados maquinaEstados;
 
-        private final TablaDeSimbolos tablaS;
+        private final TablaSimbolos tablaS;
 
         private final int token;
 
-        public GeneraTokenTS(MaquinaEstados maquinaEstados, TablaDeSimbolos tablaS, int token) {
+        public GeneraTokenTS(MaquinaEstados maquinaEstados, TablaSimbolos tablaS, int token) {
             this.maquinaEstados = maquinaEstados;
             this.tablaS = tablaS;
             this.token = token;
@@ -154,8 +153,8 @@ public class AccionSemantica {
                 maquinaEstados.setVariablesSintactico(tablaPR.getToken(sTemporal),""); //No tiene lexema.
             }
             else{
+                TablaNotificaciones.agregarError("La palabra '"+sTemporal+"' no es una palabra reservada valida.");
                 maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token.
-                //TODO Notificar error.
             }
         }
     }
@@ -205,11 +204,11 @@ public class AccionSemantica {
 
         private final MaquinaEstados maquinaEstados;
 
-        private final TablaDeSimbolos tablaS;
+        private final TablaSimbolos tablaS;
 
         private final int token;
 
-        public GeneraTokenUINT(MaquinaEstados maquinaEstados, TablaDeSimbolos tablaS, int token) {
+        public GeneraTokenUINT(MaquinaEstados maquinaEstados, TablaSimbolos tablaS, int token) {
             this.maquinaEstados = maquinaEstados;
             this.tablaS = tablaS;
             this.token = token;
@@ -226,7 +225,7 @@ public class AccionSemantica {
                 maquinaEstados.setVariablesSintactico(token,sTemporal);
             }
             else{
-                //TODO Notificar error.
+                TablaNotificaciones.agregarError("El numero UINT '"+sTemporal+"' esta fuera de rango.");
                 maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token.
             }
         }
@@ -256,11 +255,11 @@ public class AccionSemantica {
 
         private final MaquinaEstados maquinaEstados;
 
-        private final TablaDeSimbolos tablaS;
+        private final TablaSimbolos tablaS;
 
         private final int token;
 
-        public GeneraTokenDouble(MaquinaEstados maquinaEstados, TablaDeSimbolos tablaS, int token) {
+        public GeneraTokenDouble(MaquinaEstados maquinaEstados, TablaSimbolos tablaS, int token) {
             this.maquinaEstados = maquinaEstados;
             this.tablaS = tablaS;
             this.token = token;
@@ -289,13 +288,13 @@ public class AccionSemantica {
             if (expFueraRango(expNumDouble)) {
                 maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token.
                 doubleValido = false;
-                //TODO Notificar error.
+                TablaNotificaciones.agregarError("El exponente '"+expNumDouble+"' esta fuera de rango.");
             }
 
             if (doubleFueraRango(baseNumDouble,expNumDouble)) {
                 maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token.
                 doubleValido = false;
-                //TODO Notificar error.
+                TablaNotificaciones.agregarError("El numero DOUBLE '"+baseNumDouble * Math.pow(10,expNumDouble)+"' esta fuera de rango.");
             }
 
             return doubleValido;
@@ -321,12 +320,55 @@ public class AccionSemantica {
          */
         private int cantLineas = 1;
 
+        @Override
         public void ejecutar(){
                 cantLineas++;
         }
 
         public int getCantLineas() {
             return cantLineas;
+        }
+    }
+
+    public static class NotificaError extends AccionSemantica {
+        private final String mensaje;
+        private final AnalizadorLexico aLexico;
+        private final CodigoFuente cFuente;
+
+        public NotificaError(String mensaje, AnalizadorLexico aLexico, CodigoFuente cFuente) {
+            this.mensaje = mensaje;
+            this.aLexico = aLexico;
+            this.cFuente = cFuente;
+        }
+
+        /**
+         * Accion semantica auxiliar para notificar errores.
+         */
+        @Override
+        public void ejecutar() {
+            String error = "Error en la linea "+aLexico.getLineaActual()+":"+mensaje;
+            System.err.println(error);
+            TablaNotificaciones.agregarError(error);
+        }
+    }
+
+    public static class NotificaWarning extends AccionSemantica {
+        private final String mensaje;
+        private final AnalizadorLexico aLexico;
+
+        public NotificaWarning(String mensaje, AnalizadorLexico aLexico) {
+            this.mensaje = mensaje;
+            this.aLexico = aLexico;
+        }
+
+        /**
+         * Accion semantica auxiliar para notificar warnings.
+         */
+        @Override
+        public void ejecutar() {
+            String warning = "Warning en la linea "+aLexico.getLineaActual()+":"+mensaje;
+            System.out.println(warning);
+            TablaNotificaciones.agregarWarning(warning);
         }
     }
 

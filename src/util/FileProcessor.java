@@ -10,7 +10,7 @@ public class FileProcessor {
      * @param path del archivo.
      * @return ArrayList<String> lineas
      */
-    public ArrayList<String> getLineas(String path){
+    public static ArrayList<String> getLineas(String path){
         File archivo;
         FileReader fr = null;
         BufferedReader br;
