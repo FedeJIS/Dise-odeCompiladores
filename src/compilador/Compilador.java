@@ -6,8 +6,6 @@ import util.CodigoFuente;
 import util.FileProcessor;
 import util.tabla_simbolos.TablaSimbolos;
 
-import java.io.File;
-
 public class Compilador {
     private static final TablaSimbolos tablaS = new TablaSimbolos();
 
@@ -20,9 +18,9 @@ public class Compilador {
         tablaS.printAll();
     }
 
-    private static Parser init(String pathCFuente){
+    private static Parser init(String pathCFuente) {
         CodigoFuente cFuente = new CodigoFuente(FileProcessor.getLineas(pathCFuente));
-        AnalizadorLexico aLexico = new AnalizadorLexico(cFuente,tablaS);
-        return new Parser(false,aLexico,tablaS);
+        AnalizadorLexico aLexico = new AnalizadorLexico(cFuente, tablaS);
+        return new Parser(false, aLexico, tablaS);
     }
 }

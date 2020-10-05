@@ -13,7 +13,7 @@ public class Celda {
         this.referencias = 0;
     }
 
-    public void actualizarReferencias(int i){
+    public void actualizarReferencias(int i) {
         referencias += i;
     }
 
@@ -29,11 +29,7 @@ public class Celda {
         return tipo;
     }
 
-    public int getReferencias() {
-        return referencias;
-    }
-
-    public boolean sinReferencias(){
+    public boolean sinReferencias() {
         return referencias == 0;
     }
 
@@ -45,9 +41,5 @@ public class Celda {
                 ", tipo='" + tipo + '\'' +
                 ", referencias=" + referencias +
                 '}';
-    }
-
-    public Celda copiar(String nuevoLexema) {
-        return new Celda(token,nuevoLexema,tipo);
     }
 }

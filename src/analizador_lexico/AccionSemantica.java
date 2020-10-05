@@ -2,8 +2,8 @@ package analizador_lexico;
 
 import analizador_lexico.maquina_estados.MaquinaEstados;
 import util.CodigoFuente;
-import util.Reservado;
 import util.TablaNotificaciones;
+import util.TablaPalabrasR;
 import util.tabla_simbolos.TablaSimbolos;
 
 public class AccionSemantica {
@@ -11,21 +11,23 @@ public class AccionSemantica {
 
     private static double baseNumDouble = Double.NEGATIVE_INFINITY; // Utilizado para AS-double (parte numerica y parte exp)
 
-    public AccionSemantica(){}
+    public AccionSemantica() {
+    }
 
     /**
      * Metodo hook que se sobre escribe segun la accion particular.
      */
-    public void ejecutar(){}
+    public void ejecutar() {
+    }
 
     /* ---Implementaciones--- */
 
-    public static class InicStringVacio extends AccionSemantica{
+    public static class InicStringVacio extends AccionSemantica {
         /**
          * Inicializa un string en vacio.
          */
         @Override
-        public void ejecutar (){
+        public void ejecutar() {
             sTemporal = "";
         }
 
@@ -34,12 +36,12 @@ public class AccionSemantica {
          *
          * @return true si el string temporal esta vacio, false en cualquier otro caso.
          */
-        public boolean isStringVacio(){
+        public boolean isStringVacio() {
             return sTemporal.equals("");
         }
     }
 
-    public static class ConcatenaChar extends AccionSemantica{
+    public static class ConcatenaChar extends AccionSemantica {
         private final CodigoFuente codigoFuente;
 
         public ConcatenaChar(CodigoFuente codigoFuente) {
@@ -50,7 +52,7 @@ public class AccionSemantica {
          * Concatena un caracter al final de un string.
          */
         @Override
-        public void ejecutar(){
+        public void ejecutar() {
             sTemporal = sTemporal + codigoFuente.simboloActual();
         }
 
@@ -59,12 +61,12 @@ public class AccionSemantica {
          *
          * @return el ultimo char concatenado al string temporal.
          */
-        public char getUltimoChar(){
-            return sTemporal.charAt(sTemporal.length()-1);
+        public char getUltimoChar() {
+            return sTemporal.charAt(sTemporal.length() - 1);
         }
     }
 
-    public static class TruncaId extends AccionSemantica{
+    public static class TruncaId extends AccionSemantica {
         private final static int LIMITE_STRING = 20;
 
         private final AnalizadorLexico aLexico;
@@ -77,24 +79,15 @@ public class AccionSemantica {
          * Si se excede el limite de un string, se trunca y genera un WARNING.
          */
         @Override
-        public void ejecutar (){
-            if (LIMITE_STRING < sTemporal.length()){
-                sTemporal=sTemporal.substring(0,LIMITE_STRING);
-                TablaNotificaciones.agregarWarning("Warning en la linea "+aLexico.getLineaActual()+": Identificador truncado por superar limite de caracteres.");
+        public void ejecutar() {
+            if (LIMITE_STRING < sTemporal.length()) {
+                sTemporal = sTemporal.substring(0, LIMITE_STRING);
+                TablaNotificaciones.agregarWarning("Warning en la linea " + aLexico.getLineaActual() + ": Identificador truncado por superar limite de caracteres.");
             }
-        }
-
-        /**
-         * Usado solo para testeos.
-         *
-         * @return el string temporal almacenado.
-         */
-        public String getSTemporal(){
-            return sTemporal;
         }
     }
 
-    public static class DevuelveUltimoLeido extends AccionSemantica{
+    public static class DevuelveUltimoLeido extends AccionSemantica {
         private final CodigoFuente codigoFuente;
 
         public DevuelveUltimoLeido(CodigoFuente codigoFuente) {
@@ -105,12 +98,12 @@ public class AccionSemantica {
          * Retrocede una posicion en el codigo fuente, para que se vuelva a leer el ultimo caracter leido.
          */
         @Override
-        public void ejecutar (){
+        public void ejecutar() {
             codigoFuente.retroceder();
         }
     }
 
-    public static class GeneraTokenTS extends AccionSemantica{
+    public static class GeneraTokenTS extends AccionSemantica {
         private final MaquinaEstados maquinaEstados;
 
         private final TablaSimbolos tablaS;
@@ -129,17 +122,17 @@ public class AccionSemantica {
          */
         @Override
         public void ejecutar() {
-            tablaS.agregarEntrada(token,sTemporal,"");
-            maquinaEstados.setVariablesSintactico(token,sTemporal);
+            tablaS.agregarEntrada(token, sTemporal, "");
+            maquinaEstados.setVariablesSintactico(token, sTemporal);
         }
     }
 
-    public static class GeneraTokenPR extends AccionSemantica{
+    public static class GeneraTokenPR extends AccionSemantica {
         private final MaquinaEstados maquinaEstados;
 
-        private final Reservado tablaPR;
+        private final TablaPalabrasR tablaPR;
 
-        public GeneraTokenPR(MaquinaEstados maquinaEstados, Reservado tablaPR) {
+        public GeneraTokenPR(MaquinaEstados maquinaEstados, TablaPalabrasR tablaPR) {
             this.maquinaEstados = maquinaEstados;
             this.tablaPR = tablaPR;
         }
@@ -148,18 +141,17 @@ public class AccionSemantica {
          * Chequea que la palabra almacenada sea una palabra reservada valida y agrega el token a la lista de tokens.
          */
         @Override
-        public void ejecutar(){
+        public void ejecutar() {
             if (tablaPR.esReservada(sTemporal)) {
-                maquinaEstados.setVariablesSintactico(tablaPR.getToken(sTemporal),""); //No tiene lexema.
-            }
-            else{
-                TablaNotificaciones.agregarError("La palabra '"+sTemporal+"' no es una palabra reservada valida.");
+                maquinaEstados.setVariablesSintactico(tablaPR.getToken(sTemporal), ""); //No tiene lexema.
+            } else {
+                TablaNotificaciones.agregarError("La palabra '" + sTemporal + "' no es una palabra reservada valida.");
                 maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token.
             }
         }
     }
 
-    public static class GeneraTokenLiteral extends AccionSemantica{
+    public static class GeneraTokenLiteral extends AccionSemantica {
         private final MaquinaEstados maquinaEstados;
 
         private final CodigoFuente cFuente;
@@ -172,11 +164,11 @@ public class AccionSemantica {
         @Override
         public void ejecutar() {
             int token = cFuente.simboloActual(); //Conversion implicita de char a ASCII.
-            maquinaEstados.setVariablesSintactico(token,""); //No tiene lexema.
+            maquinaEstados.setVariablesSintactico(token, ""); //No tiene lexema.
         }
     }
 
-    public static class GeneraTokenParticular extends AccionSemantica{
+    public static class GeneraTokenParticular extends AccionSemantica {
         private final MaquinaEstados maquinaEstados;
 
         private final int token;
@@ -188,7 +180,7 @@ public class AccionSemantica {
 
         @Override
         public void ejecutar() {
-            maquinaEstados.setVariablesSintactico(token,""); //No tiene lexema.
+            maquinaEstados.setVariablesSintactico(token, ""); //No tiene lexema.
         }
     }
 
@@ -196,11 +188,11 @@ public class AccionSemantica {
      * Consumir caracter. Esta AS esta solo para que quede claro que se consume un caracter.
      * No tiene ninguna otra utilidad.
      */
-    public static class ConsumeChar extends AccionSemantica{
+    public static class ConsumeChar extends AccionSemantica {
     }
 
     public static class GeneraTokenUINT extends AccionSemantica {
-        private final static int LIMITE_INT=(int)(Math.pow(2,16)-1);
+        private final static int LIMITE_INT = (int) (Math.pow(2, 16) - 1);
 
         private final MaquinaEstados maquinaEstados;
 
@@ -218,14 +210,13 @@ public class AccionSemantica {
          * Verifica los limites de un numero entero.
          */
         @Override
-        public void ejecutar(){
+        public void ejecutar() {
             int numero = Integer.parseInt(sTemporal); //No genera NumberFormatEx porque solo se cargan digitos al string.
             if (numeroEnRango(numero)) {
-                tablaS.agregarEntrada(token,sTemporal,"UINT");
-                maquinaEstados.setVariablesSintactico(token,sTemporal);
-            }
-            else{
-                TablaNotificaciones.agregarError("El numero UINT '"+sTemporal+"' esta fuera de rango.");
+                tablaS.agregarEntrada(token, sTemporal, "UINT");
+                maquinaEstados.setVariablesSintactico(token, sTemporal);
+            } else {
+                TablaNotificaciones.agregarError("El numero UINT '" + sTemporal + "' esta fuera de rango.");
                 maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token.
             }
         }
@@ -240,13 +231,13 @@ public class AccionSemantica {
          * Verifica si la parte numerica es un numero double y lo asigna a numeroIntD
          * Si es invalido, numeroIntD se vuelve Double.NEGATIVEINFINITY
          */
-        public void ejecutar(){
+        public void ejecutar() {
             baseNumDouble = Double.parseDouble(sTemporal); //No genera NumberFormatEx porque solo se cargan digitos al string.
             sTemporal = ""; //Reinicia el string temporal.
         }
     }
 
-    public static class GeneraTokenDouble extends AccionSemantica{
+    public static class GeneraTokenDouble extends AccionSemantica {
         private final static double LIM_INF_DOUBLE_NEG = -1.7976931348623157;
         private final static double LIM_SUP_DOUBLE_NEG = -2.2250738585072014;
         private final static double LIM_INF_DOUBLE_POS = 2.2250738585072014;
@@ -272,9 +263,12 @@ public class AccionSemantica {
         public void ejecutar() {
             if (baseNumDouble != Double.NEGATIVE_INFINITY) {
                 int expNumDouble = 0; //Vale 0 por defecto (Util para los casos donde no se tiene exponente).
-                if (!sTemporal.isEmpty() && !sTemporal.equals("-") && !sTemporal.equals("+")) expNumDouble = Integer.parseInt(sTemporal);
+                if (!sTemporal.isEmpty() && !sTemporal.equals("-") && !sTemporal.equals("+"))
+                    expNumDouble = Integer.parseInt(sTemporal);
+                else
+                    TablaNotificaciones.agregarWarning("Falto el exponente del numero DOUBLE. El exponente es 0 por defecto");
 
-                if (doubleValido(baseNumDouble,expNumDouble)) {
+                if (doubleValido(baseNumDouble, expNumDouble)) {
                     double doubleNormalizado = baseNumDouble * Math.pow(10, expNumDouble);
 
                     tablaS.agregarEntrada(token, String.valueOf(doubleNormalizado), "DOUBLE");
@@ -283,18 +277,18 @@ public class AccionSemantica {
             }
         }
 
-        private boolean doubleValido(double baseNumDouble, double expNumDouble){
+        private boolean doubleValido(double baseNumDouble, double expNumDouble) {
             boolean doubleValido = true;
             if (expFueraRango(expNumDouble)) {
                 maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token.
                 doubleValido = false;
-                TablaNotificaciones.agregarError("El exponente '"+expNumDouble+"' esta fuera de rango.");
+                TablaNotificaciones.agregarError("El exponente '" + expNumDouble + "' esta fuera de rango.");
             }
 
-            if (doubleFueraRango(baseNumDouble,expNumDouble)) {
+            if (doubleFueraRango(baseNumDouble, expNumDouble)) {
                 maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token.
                 doubleValido = false;
-                TablaNotificaciones.agregarError("El numero DOUBLE '"+baseNumDouble * Math.pow(10,expNumDouble)+"' esta fuera de rango.");
+                TablaNotificaciones.agregarError("El numero DOUBLE '" + baseNumDouble * Math.pow(10, expNumDouble) + "' esta fuera de rango.");
             }
 
             return doubleValido;
@@ -305,24 +299,24 @@ public class AccionSemantica {
         }
 
         public boolean doubleFueraRango(double baseNumDouble, double expNumDouble) {
-            double min = LIM_INF_DOUBLE_POS * Math.pow(10,-MAX_DOUBLE_EXP);
+            double min = LIM_INF_DOUBLE_POS * Math.pow(10, -MAX_DOUBLE_EXP);
             double max = LIM_SUP_DOUBLE_POS * Math.pow(10, MAX_DOUBLE_EXP);
 
-            double doubleNormalizado = baseNumDouble * Math.pow(10,expNumDouble);
+            double doubleNormalizado = baseNumDouble * Math.pow(10, expNumDouble);
 
             return doubleNormalizado != 0.0 && (doubleNormalizado < min || doubleNormalizado > max);
         }
     }
 
-    public static class CuentaSaltoLinea extends AccionSemantica{
+    public static class CuentaSaltoLinea extends AccionSemantica {
         /**
          * Incrementa en uno la cantidad de lineas de un archivo.
          */
         private int cantLineas = 1;
 
         @Override
-        public void ejecutar(){
-                cantLineas++;
+        public void ejecutar() {
+            cantLineas++;
         }
 
         public int getCantLineas() {
@@ -334,11 +328,13 @@ public class AccionSemantica {
         private final String mensaje;
         private final AnalizadorLexico aLexico;
         private final CodigoFuente cFuente;
+        private final boolean simboloNoReconocido;
 
-        public NotificaError(String mensaje, AnalizadorLexico aLexico, CodigoFuente cFuente) {
+        public NotificaError(String mensaje, AnalizadorLexico aLexico, CodigoFuente cFuente, boolean simboloNoReconocido) {
             this.mensaje = mensaje;
             this.aLexico = aLexico;
             this.cFuente = cFuente;
+            this.simboloNoReconocido = simboloNoReconocido;
         }
 
         /**
@@ -346,7 +342,11 @@ public class AccionSemantica {
          */
         @Override
         public void ejecutar() {
-            String error = "Error en la linea "+aLexico.getLineaActual()+":"+mensaje;
+            String error = "Error en la linea " + aLexico.getLineaActual();
+            if (simboloNoReconocido)
+                error += ": Simbolo '" + cFuente.simboloActual() + "' no reconocido.";
+            else error += ": " + mensaje;
+
             System.err.println(error);
             TablaNotificaciones.agregarError(error);
         }
@@ -366,7 +366,7 @@ public class AccionSemantica {
          */
         @Override
         public void ejecutar() {
-            String warning = "Warning en la linea "+aLexico.getLineaActual()+":"+mensaje;
+            String warning = "Warning en la linea " + aLexico.getLineaActual() + ": " + mensaje;
             System.out.println(warning);
             TablaNotificaciones.agregarWarning(warning);
         }

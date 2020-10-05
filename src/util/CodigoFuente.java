@@ -14,21 +14,21 @@ public class CodigoFuente {
         simbolos = builder.toString();
     }
 
-    public void avanzar(){
+    public void avanzar() {
         if (eof()) return; //Evita seguir avanzando cuando se esta en el eof.
         posicionActual++;
     }
 
-    public void retroceder(){
+    public void retroceder() {
         if (posicionActual == 0) return; //Evita seguir retrocediendo cuando se esta en el principio del archivo.
         posicionActual--;
     }
 
-    public boolean eof(){
+    public boolean eof() {
         return posicionActual == simbolos.length();
     }
 
-    public char simboloActual(){
+    public char simboloActual() {
         return simbolos.charAt(posicionActual);
     }
 }

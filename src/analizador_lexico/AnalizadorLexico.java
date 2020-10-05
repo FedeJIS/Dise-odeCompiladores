@@ -3,7 +3,7 @@ package analizador_lexico;
 import analizador_lexico.maquina_estados.MaquinaEstados;
 import analizador_sintactico.Parser;
 import util.CodigoFuente;
-import util.Reservado;
+import util.TablaPalabrasR;
 import util.tabla_simbolos.TablaSimbolos;
 
 public class AnalizadorLexico {
@@ -52,8 +52,8 @@ public class AnalizadorLexico {
         return maquinaEstados.getLineaActual();
     }
 
-    private Reservado inicTPR(){
-        Reservado tPR = new Reservado();
+    private TablaPalabrasR inicTPR(){
+        TablaPalabrasR tPR = new TablaPalabrasR();
         tPR.agregar("UINT", T_UINT);
         tPR.agregar("DOUBLE", T_DOUBLE);
         tPR.agregar("IF", T_IF);
