@@ -21,13 +21,13 @@ public class Compilador {
         System.out.println();
         System.out.println("###############################################");
 
-        saveOrPrint("/tabla_simbolos.txt",tablaS.toString(),"Tabla de simbolos generada en: '/tabla_simbolos.txt'.","Tabla de simbolos:");
+        saveOrPrint("tabla_simbolos.txt",tablaS.toString(),"Tabla de simbolos generada en: 'tabla_simbolos.txt'.","Tabla de simbolos:");
         System.out.println("###############################################");
 
-        saveOrPrint("/errores.txt",TablaNotificaciones.getErrores(),"Errores generados en: '/errores.txt'.","Errores:");
+        saveOrPrint("errores.txt",TablaNotificaciones.getErrores(),"Errores generados en: 'errores.txt'.","Errores:");
         System.out.println("###############################################");
 
-        saveOrPrint("/warning.txt",TablaNotificaciones.getWarnings(),"Warnings generados en: '/warnings.txt'.","Warnings:");
+        saveOrPrint("warning.txt",TablaNotificaciones.getWarnings(),"Warnings generados en: 'warnings.txt'.","Warnings:");
         System.out.println("###############################################");
     }
 
