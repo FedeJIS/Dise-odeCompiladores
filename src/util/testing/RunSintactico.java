@@ -37,7 +37,7 @@ public class RunSintactico {
 
         TablaSimbolos tablaS = RunSintactico.getTablaS();
 
-        tablaS.printAll();
+//        tablaS.printAll();
 
         System.out.println("$$$$$$$$");
     }

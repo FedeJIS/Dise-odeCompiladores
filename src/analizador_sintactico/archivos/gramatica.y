@@ -16,10 +16,14 @@ import util.tabla_simbolos.TablaSimbolos;
 programa	: bloque_sentencias
 			;
 			
-bloque_sentencias	: sentencia                         {yyerror("Falta ';' al final de la sentencia");}
+bloque_sentencias	: sentencia {yyerror("Falta ';' al final de la sentencia");}
                     | sentencia ';'
 					| sentencia ';' bloque_sentencias
 					;
+
+bloque_sentencias_ejec  : sentencia_ejecutable ';'
+                        | sentencia_ejecutable ';' bloque_sentencias_ejec
+                        ;
 
 sentencia 	: sentencia_declarativa
             | sentencia_ejecutable
@@ -42,14 +46,13 @@ ni_proc : NI '=' CTE_UINT
         | error           {yyerror("Formato incorrecto de NI. El formato correcto es: 'NI = CTE_UINT'");}
         ;
 
-cuerpo_proc : '{' bloque_estruct_ctrl '}'
+cuerpo_proc : '{' bloque_sentencias '}'
             ;
 
 lista_params    :
                 | param
                 | param ',' param
                 | param ',' param ',' param
-                | param ',' param ',' param ',' param   {yyerror("El procedimiento no puede tener mas de 3 parametros");}
                 | param ',' param ',' param ',' param ',' lista_params {yyerror("El procedimiento no puede tener mas de 3 parametros");}
                 ;
 
@@ -141,8 +144,8 @@ rama_else   : ELSE bloque_estruct_ctrl
             | ELSE                      {yyerror("Cuerpo ELSE vacio");}
             ;
 
-bloque_estruct_ctrl : sentencia ';'
-                    | '{' bloque_sentencias '}'
+bloque_estruct_ctrl : sentencia_ejecutable ';'
+                    | '{' bloque_sentencias_ejec '}'
                     ;
 
 condicion 	: '(' ')'                                   {yyerror("Condicion vacia");}

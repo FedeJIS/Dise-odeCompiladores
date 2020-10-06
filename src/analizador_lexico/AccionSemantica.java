@@ -367,7 +367,6 @@ public class AccionSemantica {
         @Override
         public void ejecutar() {
             String warning = "Warning en la linea " + aLexico.getLineaActual() + ": " + mensaje;
-            System.out.println(warning);
             TablaNotificaciones.agregarWarning(warning);
         }
     }
