@@ -10,43 +10,43 @@ public class Test_ME_double {
         TablaSimbolos tablaS;
 
         tablaS = testGenerico("1.", AnalizadorLexico.T_CTE_DOUBLE);
-        tablaS.printAll();
+        tablaS.toString();
         System.out.println();
 
         tablaS = testGenerico(".6",AnalizadorLexico.T_CTE_DOUBLE);
-        tablaS.printAll();
+        tablaS.toString();
         System.out.println();
 
         tablaS = testGenerico("1.2",AnalizadorLexico.T_CTE_DOUBLE);
-        tablaS.printAll();
+        tablaS.toString();
         System.out.println();
 
         tablaS = testGenerico("3.d+5",AnalizadorLexico.T_CTE_DOUBLE);
-        tablaS.printAll();
+        tablaS.toString();
         System.out.println();
 
         tablaS = testGenerico("2.5d2",AnalizadorLexico.T_CTE_DOUBLE); //Le falta el '+'. Genera un double sin exponente.
-        tablaS.printAll();
+        tablaS.toString();
         System.out.println();
 
         tablaS = testGenerico("0.",AnalizadorLexico.T_CTE_DOUBLE);
-        tablaS.printAll();
+        tablaS.toString();
         System.out.println();
 
         tablaS = testGenerico(".0",AnalizadorLexico.T_CTE_DOUBLE);
-        tablaS.printAll();
+        tablaS.toString();
         System.out.println();
 
         tablaS = testGenerico("5.0d-1",AnalizadorLexico.T_CTE_DOUBLE);
-        tablaS.printAll();
+        tablaS.toString();
         System.out.println();
 
         tablaS = testGenerico("5.0d-",AnalizadorLexico.T_CTE_DOUBLE);
-        tablaS.printAll();
+        tablaS.toString();
         System.out.println();
 
         tablaS = testGenerico("5.0d+",AnalizadorLexico.T_CTE_DOUBLE);
-        tablaS.printAll();
+        tablaS.toString();
         System.out.println();
     }
 }

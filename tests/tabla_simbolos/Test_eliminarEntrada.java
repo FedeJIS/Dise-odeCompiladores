@@ -13,16 +13,16 @@ public class Test_eliminarEntrada {
         tS.agregarEntrada(token,lexema,"");
 
         System.out.println("Original:");
-        tS.printAll();
+        tS.toString();
 
         Celda celda = tS.getValor(lexema);
         celda.actualizarReferencias(-1);
 
         System.out.println("Quito referencia:");
-        tS.printAll();
+        tS.toString();
         if (celda.sinReferencias()) tS.eliminarEntrada(lexema);
         System.out.println("Final:");
-        tS.printAll();
+        tS.toString();
 
 
     }

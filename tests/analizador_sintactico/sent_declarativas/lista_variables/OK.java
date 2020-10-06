@@ -4,7 +4,7 @@ import util.testing.RunSintactico;
 
 public class OK {
     public static void main(String[] args) {
-        RunSintactico.run(true,"UINT x, y, z,w;");
+        RunSintactico.run(false,"UINT x, y, z,w;");
         System.out.println();
     }
 }

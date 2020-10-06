@@ -17,7 +17,7 @@ public class Test_getValor {
 
         try {
             tS.getValor(lexema);
-            tS.printAll();
+            tS.toString();
         } catch (IllegalStateException illegalStateException){
             System.out.println(illegalStateException.getMessage());
         }

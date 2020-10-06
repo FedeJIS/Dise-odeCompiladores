@@ -12,7 +12,7 @@ public class Test_ME_uint {
          * Se genera el uint normal.
          */
         tablaS = testGenerico("55_ui", AnalizadorLexico.T_CTE_UINT);
-        tablaS.printAll();
+        tablaS.toString();
         System.out.println("Lexema encontrado:"+tablaS.getValor("55").getLexema());
         System.out.println();
 
@@ -20,7 +20,7 @@ public class Test_ME_uint {
          * Se genera el uint normal y se notifica un warning porque el sufijo no esta.
          */
         tablaS = testGenerico("56",AnalizadorLexico.T_CTE_UINT);
-        tablaS.printAll();
+        tablaS.toString();
         System.out.println("Lexema encontrado:"+tablaS.getValor("56").getLexema());
         System.out.println();
 
@@ -28,12 +28,12 @@ public class Test_ME_uint {
          * Se genera el uint normal y se notifica un warning porque el sufijo esta incompleto.
          */
         tablaS = testGenerico("57_",AnalizadorLexico.T_CTE_UINT);
-        tablaS.printAll();
+        tablaS.toString();
         System.out.println("Lexema encontrado:"+tablaS.getValor("57").getLexema());
         System.out.println();
 
         tablaS = testGenerico("58_u",AnalizadorLexico.T_CTE_UINT);
-        tablaS.printAll();
+        tablaS.toString();
         System.out.println("Lexema encontrado:"+tablaS.getValor("58").getLexema());
         System.out.println();
 
@@ -43,12 +43,12 @@ public class Test_ME_uint {
         int maximo = (int)(Math.pow(2,16)-1);
 
         tablaS = testGenerico(maximo+"_ui", AnalizadorLexico.T_CTE_UINT);
-        tablaS.printAll();
+        tablaS.toString();
         System.out.println("Lexema encontrado:"+tablaS.getValor(String.valueOf(maximo)).getLexema());
         System.out.println();
 
         tablaS = testGenerico(String.valueOf(maximo),AnalizadorLexico.T_CTE_UINT);
-        tablaS.printAll();
+        tablaS.toString();
         System.out.println("Lexema encontrado:"+tablaS.getValor(String.valueOf(maximo)).getLexema());
         System.out.println();
 
@@ -56,7 +56,7 @@ public class Test_ME_uint {
          * Se supera el limite para el UINT, no se genera el token.
          */
         tablaS = testGenerico(String.valueOf(maximo+1),-1);
-        tablaS.printAll();
+        tablaS.toString();
         System.out.println();
     }
 }

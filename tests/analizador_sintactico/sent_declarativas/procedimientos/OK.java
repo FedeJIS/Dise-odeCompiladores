@@ -4,7 +4,7 @@ import util.testing.RunSintactico;
 
 public class OK {
     public static void main(String[] args) {
-        RunSintactico.run(false,"PROC procedimiento () NI = 1 {x = 5;};"); //Sin parametros.
+        RunSintactico.run(false,"PROC procedimiento () NI = 1 {x = 5;PROC procedimiento () NI = 1 {x = 5;};};"); //Sin parametros.
         System.out.println();
         RunSintactico.run(false,"PROC procedimiento (VAR UINT x) NI = 1 {x = 5;};"); //1 parametro.
         System.out.println();

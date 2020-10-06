@@ -26,7 +26,7 @@ public class OK {
 
         TablaSimbolos tablaS = RunSintactico.getTablaS();
 
-        tablaS.printAll();
+        tablaS.toString();
 
         System.out.println("$$$$$$$$");
     }
