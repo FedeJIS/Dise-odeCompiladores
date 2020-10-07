@@ -9,7 +9,7 @@ import util.tabla_simbolos.TablaSimbolos;
 
 import java.io.FileNotFoundException;
 
-public class Compilador {
+public class CompiladorTxT {
     private static final TablaSimbolos tablaS = new TablaSimbolos();
 
     public static void main(String[] args) {
@@ -41,6 +41,8 @@ public class Compilador {
         try {
             FileProcessor.escribirArchivo(path, toSave,false);
             System.out.println(mensajeExito);
+            System.out.println(tituloFallo);
+            System.out.println(toSave);
         } catch (FileNotFoundException fileNotFoundEx){
             System.out.println("Fallo de escritura: "+fileNotFoundEx.getMessage());
             System.out.println(tituloFallo);

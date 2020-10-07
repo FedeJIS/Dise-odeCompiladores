@@ -480,7 +480,7 @@ final static String yyrule[] = {
     }
 
     private void yyerror(String mensajeError) {
-        TablaNotificaciones.agregarError("Error en la linea " + aLexico.getLineaActual() + ": " + mensajeError);
+        TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": " + mensajeError);
     }
 
     private void checkCambioSigno() {
@@ -496,7 +496,7 @@ final static String yyrule[] = {
                 tablaS.agregarEntrada(celdaOriginal.getToken(), lexemaSignoC, celdaOriginal.getTipo());
             }
         } else
-            TablaNotificaciones.agregarError("Error en la linea " + aLexico.getLineaActual() + ": No se permiten UINT negativos");
+            TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": No se permiten UINT negativos");
 
     }
 	

@@ -145,7 +145,7 @@ public class AccionSemantica {
             if (tablaPR.esReservada(sTemporal)) {
                 maquinaEstados.setVariablesSintactico(tablaPR.getToken(sTemporal), ""); //No tiene lexema.
             } else {
-                TablaNotificaciones.agregarError("La palabra '" + sTemporal + "' no es una palabra reservada valida.");
+                TablaNotificaciones.agregarError("Linea: "+maquinaEstados.getLineaActual()+": La palabra '" + sTemporal + "' no es una palabra reservada valida.");
                 maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token.
             }
         }
@@ -216,7 +216,7 @@ public class AccionSemantica {
                 tablaS.agregarEntrada(token, sTemporal, "UINT");
                 maquinaEstados.setVariablesSintactico(token, sTemporal);
             } else {
-                TablaNotificaciones.agregarError("El numero UINT '" + sTemporal + "' esta fuera de rango.");
+                TablaNotificaciones.agregarError("Linea "+maquinaEstados.getLineaActual()+": El numero UINT '" + sTemporal + "' esta fuera de rango.");
                 maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token.
             }
         }
@@ -232,14 +232,13 @@ public class AccionSemantica {
          * Si es invalido, numeroIntD se vuelve Double.NEGATIVEINFINITY
          */
         public void ejecutar() {
-            baseNumDouble = Double.parseDouble(sTemporal); //No genera NumberFormatEx porque solo se cargan digitos al string.
+            if (sTemporal.equals(".")) baseNumDouble = 0;
+            else baseNumDouble = Double.parseDouble(sTemporal); //No genera NumberFormatEx porque solo se cargan digitos al string.
             sTemporal = ""; //Reinicia el string temporal.
         }
     }
 
     public static class GeneraTokenDouble extends AccionSemantica {
-        private final static double LIM_INF_DOUBLE_NEG = -1.7976931348623157;
-        private final static double LIM_SUP_DOUBLE_NEG = -2.2250738585072014;
         private final static double LIM_INF_DOUBLE_POS = 2.2250738585072014;
         private final static double LIM_SUP_DOUBLE_POS = 1.7976931348623157;
         private final static int MAX_DOUBLE_EXP = 308;
@@ -266,7 +265,7 @@ public class AccionSemantica {
                 if (!sTemporal.isEmpty() && !sTemporal.equals("-") && !sTemporal.equals("+"))
                     expNumDouble = Integer.parseInt(sTemporal);
                 else
-                    TablaNotificaciones.agregarWarning("Falto el exponente del numero DOUBLE. El exponente es 0 por defecto");
+                    TablaNotificaciones.agregarWarning("Linea "+maquinaEstados.getLineaActual()+": Falto el exponente del numero DOUBLE. El exponente es 0 por defecto");
 
                 if (doubleValido(baseNumDouble, expNumDouble)) {
                     double doubleNormalizado = baseNumDouble * Math.pow(10, expNumDouble);
@@ -282,13 +281,13 @@ public class AccionSemantica {
             if (expFueraRango(expNumDouble)) {
                 maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token.
                 doubleValido = false;
-                TablaNotificaciones.agregarError("El exponente '" + expNumDouble + "' esta fuera de rango.");
+                TablaNotificaciones.agregarError("Linea "+maquinaEstados.getLineaActual()+": El exponente '" + expNumDouble + "' esta fuera de rango.");
             }
 
             if (doubleFueraRango(baseNumDouble, expNumDouble)) {
                 maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token.
                 doubleValido = false;
-                TablaNotificaciones.agregarError("El numero DOUBLE '" + baseNumDouble * Math.pow(10, expNumDouble) + "' esta fuera de rango.");
+                TablaNotificaciones.agregarError("Linea "+maquinaEstados.getLineaActual()+": El numero DOUBLE '" + baseNumDouble * Math.pow(10, expNumDouble) + "' esta fuera de rango.");
             }
 
             return doubleValido;
@@ -342,12 +341,11 @@ public class AccionSemantica {
          */
         @Override
         public void ejecutar() {
-            String error = "Error en la linea " + aLexico.getLineaActual();
+            String error = "Linea "+aLexico.getLineaActual()+": ";
             if (simboloNoReconocido)
-                error += ": Simbolo '" + cFuente.simboloActual() + "' no reconocido.";
-            else error += ": " + mensaje;
+                error += "Simbolo '" + cFuente.simboloActual() + "' no reconocido.";
+            else error += mensaje;
 
-            System.err.println(error);
             TablaNotificaciones.agregarError(error);
         }
     }
@@ -366,7 +364,7 @@ public class AccionSemantica {
          */
         @Override
         public void ejecutar() {
-            String warning = "Warning en la linea " + aLexico.getLineaActual() + ": " + mensaje;
+            String warning = "Linea "+aLexico.getLineaActual()+": " + mensaje;
             TablaNotificaciones.agregarWarning(warning);
         }
     }
