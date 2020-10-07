@@ -1,0 +1,3 @@
+%%Valor minimo y maximo para las constantes UINT.
+y = 0_ui;
+x = 65535_ui;

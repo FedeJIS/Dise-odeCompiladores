@@ -1,0 +1,3 @@
+if (5 < 5) then
+	out(5);
+end_if;

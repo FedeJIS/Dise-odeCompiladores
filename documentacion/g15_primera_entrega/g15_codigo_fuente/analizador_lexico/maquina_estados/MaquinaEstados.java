@@ -301,7 +301,7 @@ public class MaquinaEstados {
         //Punto ('.'). Salto a deteccion de parte decimal de doubles.
         maquinaEstados[Estado.CTE_PARTE_ENTERA][Input.PUNTO] = new TransicionEstado(Estado.CTE_PARTE_DECIM, concatenaChar);
         //Letra 'd' minuscula. Salto a deteccion de parte exponencial de doubles. Como ya detecte toda la base la parseo.
-        maquinaEstados[Estado.CTE_PARTE_ENTERA][Input.D_MINUSC] = new TransicionEstado(Estado.CTE_PARTE_EXP_VALOR, parseBaseDouble, consumeChar);
+        maquinaEstados[Estado.CTE_PARTE_ENTERA][Input.D_MINUSC] = new TransicionEstado(Estado.CTE_PARTE_EXP_SIGNO, parseBaseDouble, consumeChar);
         //EOF. Crea un UINT pero genera un warning por falta de sufijo.
         maquinaEstados[Estado.CTE_PARTE_ENTERA][Input.EOF] = new TransicionEstado(Estado.FINAL, generaTokenUINT, warningFaltaSufijo);
 

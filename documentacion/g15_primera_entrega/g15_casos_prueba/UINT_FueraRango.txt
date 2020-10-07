@@ -1,0 +1,4 @@
+%%Valor (minimo - 1) y (maximo+1) para las constantes UINT.
+y = -1_ui; %%El lexico genera los tokens '-' y 'CTE_UINT', pero el sintactico genera el error
+		%%por constante UINT negativa.
+x = 65536_ui; %%El lexico genera el error al chequear el rango.

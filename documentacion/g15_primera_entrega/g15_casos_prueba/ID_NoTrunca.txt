@@ -1,0 +1,4 @@
+a_123456789123456789 = 1_ui; %%20 simbolos
+a___________________ = 1_ui; %%20 simbolos
+abcdefghijklmnopqrst = 1_ui; %%20 simbolos
+a_12345678912345678 = 1_ui; %%19 simbolos
