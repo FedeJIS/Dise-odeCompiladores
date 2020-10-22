@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AnalysisUIOptions">
+    <option name="ANALYZE_TEST_SOURCES" value="false" />
+  </component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="593fd477-49da-4fa6-ac05-b714f65ecf31" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHome" value="$APPLICATION_HOME_DIR$/plugins/maven/lib/maven3" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="1jFSEJrot0M0NZ0d1k8Tt1UqfBR" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="extract.method.default.visibility" value="private" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/test/java" />
+    <property name="project.structure.last.edited" value="Artifacts" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
+    <property name="settings.editor.selected.configurable" value="reference.projectsettings.compiler.javacompiler" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="analizador_lexico.acciones_semanticas" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/test/java" />
+      <recent name="$PROJECT_DIR$/src/main/java" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.Cadena_BienDef">
+    <configuration name="Cadena_BienDef" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="casos_prueba_catedra.Cadena_BienDef" />
+      <module name="compilador_maven_g15" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UINT_EnRango" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="casos_prueba_catedra.UINT_EnRango" />
+      <module name="compilador_maven_g15" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Cadena_BienDef" />
+        <item itemvalue="Application.UINT_EnRango" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="WindowStateProjectService">
+    <state x="203" y="41" width="1024" height="852" key="#Project_Structure" timestamp="1603398980348">
+      <screen x="0" y="27" width="1440" height="873" />
+    </state>
+    <state x="203" y="41" width="1024" height="852" key="#Project_Structure/0.27.1440.873@0.27.1440.873" timestamp="1603398980348" />
+    <state x="528" y="171" width="374" height="592" key="#com.intellij.ide.util.MemberChooser" timestamp="1603402253266">
+      <screen x="0" y="27" width="1440" height="873" />
+    </state>
+    <state x="528" y="171" width="374" height="592" key="#com.intellij.ide.util.MemberChooser/0.27.1440.873@0.27.1440.873" timestamp="1603402253266" />
+    <state x="471" y="320" width="488" height="294" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1603400511888">
+      <screen x="0" y="27" width="1440" height="873" />
+    </state>
+    <state x="471" y="320" width="488" height="294" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.27.1440.873@0.27.1440.873" timestamp="1603400511888" />
+    <state width="1394" height="514" key="GridCell.Tab.0.bottom" timestamp="1603401801435">
+      <screen x="0" y="27" width="1440" height="873" />
+    </state>
+    <state width="1394" height="514" key="GridCell.Tab.0.bottom/0.27.1440.873@0.27.1440.873" timestamp="1603401801435" />
+    <state width="1394" height="514" key="GridCell.Tab.0.center" timestamp="1603401801434">
+      <screen x="0" y="27" width="1440" height="873" />
+    </state>
+    <state width="1394" height="514" key="GridCell.Tab.0.center/0.27.1440.873@0.27.1440.873" timestamp="1603401801434" />
+    <state width="1394" height="514" key="GridCell.Tab.0.left" timestamp="1603401801434">
+      <screen x="0" y="27" width="1440" height="873" />
+    </state>
+    <state width="1394" height="514" key="GridCell.Tab.0.left/0.27.1440.873@0.27.1440.873" timestamp="1603401801434" />
+    <state width="1394" height="514" key="GridCell.Tab.0.right" timestamp="1603401801434">
+      <screen x="0" y="27" width="1440" height="873" />
+    </state>
+    <state width="1394" height="514" key="GridCell.Tab.0.right/0.27.1440.873@0.27.1440.873" timestamp="1603401801434" />
+    <state x="209" y="98" width="1022" height="737" key="SettingsEditor" timestamp="1603399016696">
+      <screen x="0" y="27" width="1440" height="873" />
+    </state>
+    <state x="209" y="98" width="1022" height="737" key="SettingsEditor/0.27.1440.873@0.27.1440.873" timestamp="1603399016696" />
+    <state x="453" y="235" width="524" height="463" key="extract.method.dialog" timestamp="1603401533551">
+      <screen x="0" y="27" width="1440" height="873" />
+    </state>
+    <state x="453" y="235" width="524" height="463" key="extract.method.dialog/0.27.1440.873@0.27.1440.873" timestamp="1603401533551" />
+  </component>
+</project>
