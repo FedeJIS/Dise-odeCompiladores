@@ -1,6 +1,8 @@
 package analizador_lexico.acciones_semanticas;
 
 import analizador_lexico.maquina_estados.MaquinaEstados;
+import util.TablaNotificaciones;
+import util.TablaPalabrasR;
 import util.tabla_simbolos.TablaSimbolos;
 
 /**
@@ -25,5 +27,10 @@ public class GeneraTokenTS extends AccionSemantica {
         String lexema = getString();
         tablaS.agregarEntrada(token, lexema, "");
         maquinaEstados.setVariablesSintactico(token, lexema);
+
+        if (TablaPalabrasR.esReservada(lexema.toUpperCase())) //Si el lexema coincide con una PR, genera un warning para notificar.
+            TablaNotificaciones.agregarWarning("Linea: "+maquinaEstados.getLineaActual()+": " +
+                    "El identificador '" + lexema + "' coincide con una palabra reservada.");
+
     }
 }

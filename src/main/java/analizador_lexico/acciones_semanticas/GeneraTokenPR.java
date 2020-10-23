@@ -15,7 +15,6 @@ public class GeneraTokenPR extends AccionSemantica {
     }
     @Override
     public void ejecutar() {
-        TablaPalabrasR.printPRs();
         String palabraR = getString();
 
         if (TablaPalabrasR.esReservada(palabraR)) {
