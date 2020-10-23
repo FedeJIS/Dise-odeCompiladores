@@ -1,8 +1,7 @@
 package analizador_lexico.maquina_estados;
 
-import analizador_lexico.AccionSemantica;
 import analizador_lexico.AnalizadorLexico;
-import analizador_lexico.acciones_semanticas.InicStringVacio;
+import analizador_lexico.acciones_semanticas.*;
 import analizador_sintactico.Parser;
 import util.CodigoFuente;
 import util.TablaPalabrasR;
@@ -11,7 +10,7 @@ import util.tabla_simbolos.TablaSimbolos;
 public class MaquinaEstados {
     private final TransicionEstado[][] maquinaEstados = new TransicionEstado[Estado.TOTAL_ESTADOS][Input.TOTAL_INPUTS]; //[filas][columnas].
     private final AnalizadorLexico aLexico; //Permite agregar tokens a medida que se generan.
-    private final AccionSemantica.CuentaSaltoLinea cuentaSaltoLinea = new AccionSemantica.CuentaSaltoLinea(); //Permite saber linea actual
+    private final CuentaSaltoLinea cuentaSaltoLinea = new CuentaSaltoLinea(); //Permite saber la linea actual
     private int estadoActual = Estado.INICIAL;
 
     /**
@@ -25,18 +24,18 @@ public class MaquinaEstados {
 
     private void inicMaquinaEstados(CodigoFuente cFuente, TablaSimbolos tablaS, TablaPalabrasR tablaPR) {
         /* Acciones semanticas */
-        AccionSemantica inicStringVacio = new AccionSemantica.InicStringVacio();
-        AccionSemantica concatenaChar = new AccionSemantica.ConcatenaChar(cFuente);
-        AccionSemantica truncaId = new AccionSemantica.TruncaId(aLexico);
-        AccionSemantica retrocedeFuente = new AccionSemantica.RetrocedeFuente(cFuente);
-        AccionSemantica generaTokenId = new AccionSemantica.GeneraTokenTS(this, tablaS, Parser.ID);
-        AccionSemantica generaTokenCadena = new AccionSemantica.GeneraTokenTS(this, tablaS, Parser.CADENA);
-        AccionSemantica generaTokenPR = new AccionSemantica.GeneraTokenPR(this, tablaPR);
-        AccionSemantica consumeChar = new AccionSemantica.ConsumeChar();
-        AccionSemantica generaTokenUINT = new AccionSemantica.GeneraTokenUINT(this, tablaS, Parser.CTE_UINT);
-        AccionSemantica generaTokenDouble = new AccionSemantica.GeneraTokenDouble(this, tablaS, Parser.CTE_DOUBLE);
-        AccionSemantica notificaErrorLexico = new AccionSemantica.NotificaError("Simbolo no reconocido", aLexico, cFuente, true);
-        AccionSemantica generaTokenEOF = new AccionSemantica.GeneraTokenParticular(this, AnalizadorLexico.T_EOF);
+        InicStringVacio inicStringVacio = new InicStringVacio();
+        ConcatenaChar concatenaChar = new ConcatenaChar(cFuente);
+        TruncaId truncaId = new TruncaId(aLexico);
+        RetrocedeCFuente retrocedeFuente = new RetrocedeCFuente(cFuente);
+        GeneraTokenTS generaTokenId = new GeneraTokenTS(this, tablaS, Parser.ID);
+        GeneraTokenTS generaTokenCadena = new GeneraTokenTS(this, tablaS, Parser.CADENA);
+        GeneraTokenPR generaTokenPR = new GeneraTokenPR(this);
+        ConsumeChar consumeChar = new ConsumeChar();
+        GeneraTokenUINT generaTokenUINT = new GeneraTokenUINT(this, tablaS, Parser.CTE_UINT);
+        GeneraTokenDouble generaTokenDouble = new GeneraTokenDouble(this, tablaS, Parser.CTE_DOUBLE);
+        NotificaError notificaErrorLexico = new NotificaError("Simbolo no reconocido", aLexico, cFuente, true);
+        GeneraTokenParticular generaTokenEOF = new GeneraTokenParticular(this, AnalizadorLexico.T_EOF);
 
         /* Estados y transiciones */
         inicTransiciones(Estado.INICIAL, Estado.INICIAL, notificaErrorLexico); //Transiciones por defecto para cualquier simbolo no reconocido.
@@ -118,7 +117,7 @@ public class MaquinaEstados {
      * Transiciones asociadas a la deteccion de tokens literales.
      */
     private void inicCaminoLiterales(CodigoFuente cFuente) {
-        AccionSemantica generaTokenLiteral = new AccionSemantica.GeneraTokenLiteral(this, cFuente);
+        GeneraTokenLiteral generaTokenLiteral = new GeneraTokenLiteral(this, cFuente);
         maquinaEstados[Estado.INICIAL][Input.SUMA] = new TransicionEstado(Estado.FINAL, generaTokenLiteral);
         maquinaEstados[Estado.INICIAL][Input.GUION] = new TransicionEstado(Estado.FINAL, generaTokenLiteral);
         maquinaEstados[Estado.INICIAL][Input.MULTIPL] = new TransicionEstado(Estado.FINAL, generaTokenLiteral);
@@ -197,7 +196,7 @@ public class MaquinaEstados {
         //'%'
         maquinaEstados[Estado.INICIO_COMENT][Input.PORCENTAJE] = new TransicionEstado(Estado.CUERPO_COMENT);
         //EOF. Voy directo al estado final. No hace falta devolver ultimo leido. Hay que notificar error porque queda el '%' solo.
-        AccionSemantica errorEOFComentario = new AccionSemantica.NotificaError("Simbolo no reconocido", aLexico, cFuente, true);
+        NotificaError errorEOFComentario = new NotificaError("Simbolo no reconocido", aLexico, cFuente, true);
         maquinaEstados[Estado.INICIO_COMENT][Input.EOF] = new TransicionEstado(Estado.FINAL, errorEOFComentario);
 
         /* Estado 4 */
@@ -213,13 +212,13 @@ public class MaquinaEstados {
      * Transiciones asociadas a la deteccion de comparadores y token asignacion.
      */
     private void inicCaminoComparadores(CodigoFuente cFuente, AccionSemantica retrocedeFuente, AccionSemantica consumeChar) {
-        AccionSemantica generaTokenParticular;
+        GeneraTokenParticular generaTokenParticular;
 
         /* Token '<': Estado 0 */
         maquinaEstados[Estado.INICIAL][Input.MENOR] = new TransicionEstado(Estado.COMP_MENOR);
 
         /* Estado 5 */
-        generaTokenParticular = new AccionSemantica.GeneraTokenParticular(this, '<');
+        generaTokenParticular = new GeneraTokenParticular(this, '<');
         //Inputs no definidos. Comparacion por menor estricto.
         inicTransiciones(Estado.COMP_MENOR, Estado.FINAL, retrocedeFuente, generaTokenParticular);
         //Salto de linea. Comparacion por menor estricto.
@@ -227,14 +226,14 @@ public class MaquinaEstados {
         //EOF. Comparacion por menor estricto.
         maquinaEstados[Estado.COMP_MENOR][Input.EOF] = new TransicionEstado(Estado.FINAL, generaTokenParticular);
         //'='. Comparacion por menor e igual.
-        generaTokenParticular = new AccionSemantica.GeneraTokenParticular(this, Parser.COMP_MENOR_IGUAL);
+        generaTokenParticular = new GeneraTokenParticular(this, Parser.COMP_MENOR_IGUAL);
         maquinaEstados[Estado.COMP_MENOR][Input.IGUAL] = new TransicionEstado(Estado.FINAL, consumeChar, generaTokenParticular);
 
         /* Token '>': Estado 0 */
         maquinaEstados[Estado.INICIAL][Input.MAYOR] = new TransicionEstado(Estado.COMP_MAYOR);
 
         /* Estado 6 */
-        generaTokenParticular = new AccionSemantica.GeneraTokenParticular(this, '>');
+        generaTokenParticular = new GeneraTokenParticular(this, '>');
         //Inputs no definidos. Comparacion por mayor estricto.
         inicTransiciones(Estado.COMP_MAYOR, Estado.FINAL, retrocedeFuente, generaTokenParticular);
         //Salto de linea. Comparacion por mayor estricto.
@@ -242,7 +241,7 @@ public class MaquinaEstados {
         //EOF. Comparacion por mayor estricto.
         maquinaEstados[Estado.COMP_MAYOR][Input.EOF] = new TransicionEstado(Estado.FINAL, generaTokenParticular);
         //'='. Comparacion por mayor e igual.
-        generaTokenParticular = new AccionSemantica.GeneraTokenParticular(this, Parser.COMP_MAYOR_IGUAL);
+        generaTokenParticular = new GeneraTokenParticular(this, Parser.COMP_MAYOR_IGUAL);
         maquinaEstados[Estado.COMP_MAYOR][Input.IGUAL] = new TransicionEstado(Estado.FINAL, consumeChar, generaTokenParticular);
 
         /* Token '!': Estado 0 */
@@ -250,21 +249,21 @@ public class MaquinaEstados {
 
         /* Estado 7 */
         //Inputs invalidos. El simbolo '!' por si solo no hace nada, solo puede estar acompañado por un '='.
-        AccionSemantica errorSimboloInvalido = new AccionSemantica.NotificaError("El simbolo '!' por si solo no tiene ninguna funcion en el lenguaje", aLexico, cFuente, false);
+        NotificaError errorSimboloInvalido = new NotificaError("El simbolo '!' por si solo no tiene ninguna funcion en el lenguaje", aLexico, cFuente, false);
         inicTransiciones(Estado.COMP_DISTINTO, Estado.INICIAL, retrocedeFuente, errorSimboloInvalido);
         //Salto de linea. Misma situacion que sentencia anterior.
         maquinaEstados[Estado.COMP_DISTINTO][Input.SALTO_LINEA] = new TransicionEstado(Estado.INICIAL, cuentaSaltoLinea, errorSimboloInvalido);
         //EOF. Misma situacion que sentencia anterior.
         maquinaEstados[Estado.COMP_DISTINTO][Input.EOF] = new TransicionEstado(Estado.INICIAL, errorSimboloInvalido);
         //'='. Comparacion por distincion.
-        generaTokenParticular = new AccionSemantica.GeneraTokenParticular(this, Parser.COMP_DISTINTO);
+        generaTokenParticular = new GeneraTokenParticular(this, Parser.COMP_DISTINTO);
         maquinaEstados[Estado.COMP_DISTINTO][Input.IGUAL] = new TransicionEstado(Estado.FINAL, consumeChar, generaTokenParticular);
 
         /* Token '=': Estado 0 */
         maquinaEstados[Estado.INICIAL][Input.IGUAL] = new TransicionEstado(Estado.SIGNO_IGUAL);
 
         /* Estado 8 */
-        generaTokenParticular = new AccionSemantica.GeneraTokenParticular(this, '=');
+        generaTokenParticular = new GeneraTokenParticular(this, '=');
         //Inputs no definidos. Asignacion.
         inicTransiciones(Estado.SIGNO_IGUAL, Estado.FINAL, retrocedeFuente, generaTokenParticular);
         //Salto de linea. Asignacion
@@ -272,7 +271,7 @@ public class MaquinaEstados {
         //EOF. Asignacion
         maquinaEstados[Estado.SIGNO_IGUAL][Input.EOF] = new TransicionEstado(Estado.FINAL, generaTokenParticular);
         //'='. Comparacion por igualdad.
-        generaTokenParticular = new AccionSemantica.GeneraTokenParticular(this, Parser.COMP_IGUAL);
+        generaTokenParticular = new GeneraTokenParticular(this, Parser.COMP_IGUAL);
         maquinaEstados[Estado.SIGNO_IGUAL][Input.IGUAL] = new TransicionEstado(Estado.FINAL, consumeChar, generaTokenParticular);
     }
 
@@ -283,9 +282,9 @@ public class MaquinaEstados {
                                    AccionSemantica retrocedeFuente, AccionSemantica generaTokenUINT,
                                    AccionSemantica consumeChar, AccionSemantica generaTokenDouble) {
         /* Acciones semanticas usadas */
-        AccionSemantica parseBaseDouble = new AccionSemantica.ParseBaseDouble();
-        AccionSemantica warningFaltaSufijo = new AccionSemantica.NotificaWarning("Falto el sufijo '_ui' luego del numero. El numero fue tomado como un UINT", aLexico);
-        AccionSemantica warningFaltaExponente = new AccionSemantica.NotificaWarning("Falto el exponente del numero DOUBLE. El exponente es 0 por defecto", aLexico);
+        ParseBaseDouble parseBaseDouble = new ParseBaseDouble();
+        NotificaWarning warningFaltaSufijo = new NotificaWarning("Falto el sufijo '_ui' luego del numero. El numero fue tomado como un UINT", aLexico);
+        NotificaWarning warningFaltaExponente = new NotificaWarning("Falto el exponente del numero DOUBLE. El exponente es 0 por defecto", aLexico);
 
         /* Estado 0. */
         maquinaEstados[Estado.INICIAL][Input.DIGITO] = new TransicionEstado(Estado.CTE_PARTE_ENTERA, inicStringVacio, concatenaChar);
@@ -389,15 +388,15 @@ public class MaquinaEstados {
         //'"'. Fin de cadena.
         maquinaEstados[Estado.CADENA][Input.COMILLA] = new TransicionEstado(Estado.FINAL, concatenaChar, generaTokenCadena);
         //Hay un salto de linea sin el '-'.
-        AccionSemantica warningFaltaGuion = new AccionSemantica.NotificaWarning("Falta un '-' antes del salto de linea.", aLexico);
+        NotificaWarning warningFaltaGuion = new NotificaWarning("Falta un '-' antes del salto de linea.", aLexico);
         maquinaEstados[Estado.CADENA][Input.SALTO_LINEA] = new TransicionEstado(Estado.CADENA, cuentaSaltoLinea, warningFaltaGuion);
         //EOF. Queda la cadena abierta, por lo que hay que notificar un error.
-        AccionSemantica errorCadenaAbierta = new AccionSemantica.NotificaError("Se llego al EOF y la cadena quedo abierta", aLexico, cFuente, false);
+        NotificaError errorCadenaAbierta = new NotificaError("Se llego al EOF y la cadena quedo abierta", aLexico, cFuente, false);
         maquinaEstados[Estado.CADENA][Input.EOF] = new TransicionEstado(Estado.FINAL, errorCadenaAbierta);
 
         /* Estado 17 */
         //Inputs invalidos. Falta el \n que sigue al '-'.
-        AccionSemantica errorMalSaltoLinea = new AccionSemantica.NotificaError("Se esperaba un salto de linea, pero se encontro otro simbolo", aLexico, cFuente, false);
+        NotificaError errorMalSaltoLinea = new NotificaError("Se esperaba un salto de linea, pero se encontro otro simbolo", aLexico, cFuente, false);
         inicTransiciones(Estado.CADENA_NUEVA_LINEA, Estado.INICIAL, errorMalSaltoLinea);
         //Salto de linea. Es el unico input valido en este estado.
         maquinaEstados[Estado.CADENA_NUEVA_LINEA][Input.SALTO_LINEA] = new TransicionEstado(Estado.CADENA, cuentaSaltoLinea);

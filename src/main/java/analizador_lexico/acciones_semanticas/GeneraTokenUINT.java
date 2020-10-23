@@ -1,0 +1,41 @@
+package analizador_lexico.acciones_semanticas;
+
+import analizador_lexico.maquina_estados.MaquinaEstados;
+import util.TablaNotificaciones;
+import util.tabla_simbolos.TablaSimbolos;
+
+/**
+ * Verifica los limites de un numero entero y genera el token asociado en caso de que corresponda.
+ */
+public class GeneraTokenUINT extends AccionSemantica {
+    private final static int LIMITE_INT = (int) (Math.pow(2, 16) - 1);
+
+    private final MaquinaEstados maquinaEstados;
+
+    private final TablaSimbolos tablaS;
+
+    private final int token;
+
+    public GeneraTokenUINT(MaquinaEstados maquinaEstados, TablaSimbolos tablaS, int token) {
+        this.maquinaEstados = maquinaEstados;
+        this.tablaS = tablaS;
+        this.token = token;
+    }
+
+    @Override
+    public void ejecutar() {
+        String numeroString = getString();
+        int numero = Integer.parseInt(numeroString); //No genera NumberFormatEx porque solo se cargan digitos al string.
+        if (numeroEnRango(numero)) {
+            tablaS.agregarEntrada(token, numeroString, "UINT");
+            maquinaEstados.setVariablesSintactico(token, numeroString);
+        } else {
+            TablaNotificaciones.agregarError("Linea "+maquinaEstados.getLineaActual()+": El numero UINT '" + numeroString + "' esta fuera de rango.");
+            maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token.
+        }
+    }
+
+    public boolean numeroEnRango(int numero) {
+        return numero >= 0 && numero <= LIMITE_INT;
+    }
+}

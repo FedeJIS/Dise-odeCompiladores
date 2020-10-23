@@ -18,6 +18,11 @@ public class TablaPalabrasR {
         palabrasReserv.putIfAbsent(palabra,token);
     }
 
+    public static void printPRs(){
+        for (String pR : palabrasReserv.keySet())
+            System.out.print(pR+",");
+    }
+
     public static void clear() {
         palabrasReserv.clear();
     }

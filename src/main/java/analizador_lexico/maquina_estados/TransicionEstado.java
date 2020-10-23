@@ -1,6 +1,6 @@
 package analizador_lexico.maquina_estados;
 
-import analizador_lexico.AccionSemantica;
+import analizador_lexico.acciones_semanticas.AccionSemantica;
 
 import java.util.Arrays;
 import java.util.List;
