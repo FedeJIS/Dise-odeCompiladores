@@ -96,7 +96,7 @@ public class MaquinaEstados {
         TransicionEstado transicionEstado = maquinaEstados[estadoActual][Input.EOF];
 
         transicionEstado.ejecutarAccionSemantica();
-
+        aLexico.setVariablesSintactico(0,""); //Genera el token asociado al EOF ('0').
         estadoActual = Estado.FINAL; //Finalizo ejecucion
     }
 
