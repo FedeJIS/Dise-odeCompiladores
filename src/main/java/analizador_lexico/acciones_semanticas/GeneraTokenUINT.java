@@ -25,7 +25,7 @@ public class GeneraTokenUINT extends AccionSemantica {
     @Override
     public void ejecutar() {
         String numeroString = getString();
-        int numero = Integer.parseInt(numeroString); //No genera NumberFormatEx porque solo se cargan digitos al string.
+        int numero = Integer.parseInt(numeroString);
         if (numeroEnRango(numero)) {
             tablaS.agregarEntrada(token, numeroString, "UINT");
             maquinaEstados.setVariablesSintactico(token, numeroString);
@@ -35,7 +35,7 @@ public class GeneraTokenUINT extends AccionSemantica {
         }
     }
 
-    public boolean numeroEnRango(int numero) {
+    private boolean numeroEnRango(int numero) {
         return numero >= 0 && numero <= LIMITE_INT;
     }
 }

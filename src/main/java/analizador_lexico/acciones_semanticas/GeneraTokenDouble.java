@@ -24,6 +24,7 @@ public class GeneraTokenDouble extends AccionSemantica {
         this.tablaS = tablaS;
         this.token = token;
     }
+
     public void ejecutar() {
         if (baseNumDoubleInicializado()) {
             int exp = 0; //Vale 0 por defecto (Util para los casos donde no se tiene exponente).
@@ -62,11 +63,11 @@ public class GeneraTokenDouble extends AccionSemantica {
         return doubleValido;
     }
 
-    public boolean expFueraRango(double expNumDouble) {
+    private boolean expFueraRango(double expNumDouble) {
         return expNumDouble < -MAX_DOUBLE_EXP || expNumDouble > MAX_DOUBLE_EXP;
     }
 
-    public boolean doubleFueraRango(double baseNumDouble, double expNumDouble) {
+    private boolean doubleFueraRango(double baseNumDouble, double expNumDouble) {
         double min = LIM_INF_DOUBLE_POS * Math.pow(10, -MAX_DOUBLE_EXP);
         double max = LIM_SUP_DOUBLE_POS * Math.pow(10, MAX_DOUBLE_EXP);
 

@@ -8,7 +8,7 @@ public class ParseBaseDouble extends AccionSemantica {
     public void ejecutar() {
         String doubleString = getString();
         if (getString().equals(".")) setBaseNumDouble(0);
-        else setBaseNumDouble(Double.parseDouble(doubleString)); //TODO REVISAR: No genera NumberFormatEx porque solo se cargan digitos al string.
+        else setBaseNumDouble(Double.parseDouble(doubleString));
 
         inicString(); //Reinicia el string temporal.
     }
