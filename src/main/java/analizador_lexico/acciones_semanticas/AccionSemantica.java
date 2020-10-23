@@ -1,11 +1,16 @@
 package analizador_lexico.acciones_semanticas;
 
 public abstract class AccionSemantica {
-    private static StringBuilder sTemporal = new StringBuilder();
+    private static final StringBuilder sTemporal = new StringBuilder();
     private static double baseNumDouble = Double.NEGATIVE_INFINITY; // Utilizado para AS-double (parte numerica y parte exp)
 
     public void inicString(){
         sTemporal.delete(0,sTemporal.length());
+    }
+
+    public void quitaChar(){
+        if (sTemporal.length() == 0) throw new IllegalStateException("String temporal vacio. No hay elementos para eliminar.");
+        sTemporal.delete(sTemporal.length()-1,sTemporal.length());
     }
 
     public void concatenaChar(char nuevoChar){

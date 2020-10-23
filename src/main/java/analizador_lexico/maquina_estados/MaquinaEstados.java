@@ -383,22 +383,13 @@ public class MaquinaEstados {
         /* Estado 16 */
         //Inputs validos. Cualquier caracter que se lee se mete en la cadena.
         inicTransiciones(Estado.CADENA, Estado.CADENA, concatenaChar);
-        //'-'. Caracter que determina un salto de linea. Para que se consolide el salto se debe tener un \n posterior al guion.
-        maquinaEstados[Estado.CADENA][Input.GUION] = new TransicionEstado(Estado.CADENA_NUEVA_LINEA);
         //'"'. Fin de cadena.
         maquinaEstados[Estado.CADENA][Input.COMILLA] = new TransicionEstado(Estado.FINAL, concatenaChar, generaTokenCadena);
-        //Hay un salto de linea sin el '-'.
-        NotificaWarning warningFaltaGuion = new NotificaWarning("Falta un '-' antes del salto de linea.", aLexico);
-        maquinaEstados[Estado.CADENA][Input.SALTO_LINEA] = new TransicionEstado(Estado.CADENA, cuentaSaltoLinea, warningFaltaGuion);
+        //Hay un salto de linea.
+        CheckSaltoLinea checkSaltoLinea = new CheckSaltoLinea(cFuente,this);
+        maquinaEstados[Estado.CADENA][Input.SALTO_LINEA] = new TransicionEstado(Estado.CADENA, cuentaSaltoLinea, checkSaltoLinea);
         //EOF. Queda la cadena abierta, por lo que hay que notificar un error.
         NotificaError errorCadenaAbierta = new NotificaError("Se llego al EOF y la cadena quedo abierta", aLexico, cFuente, false);
         maquinaEstados[Estado.CADENA][Input.EOF] = new TransicionEstado(Estado.FINAL, errorCadenaAbierta);
-
-        /* Estado 17 */
-        //Inputs invalidos. Falta el \n que sigue al '-'.
-        NotificaError errorMalSaltoLinea = new NotificaError("Se esperaba un salto de linea, pero se encontro otro simbolo", aLexico, cFuente, false);
-        inicTransiciones(Estado.CADENA_NUEVA_LINEA, Estado.INICIAL, errorMalSaltoLinea);
-        //Salto de linea. Es el unico input valido en este estado.
-        maquinaEstados[Estado.CADENA_NUEVA_LINEA][Input.SALTO_LINEA] = new TransicionEstado(Estado.CADENA, cuentaSaltoLinea);
     }
 }

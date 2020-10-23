@@ -26,4 +26,9 @@ public class CodigoFuente {
     public char simboloActual() {
         return cFuente.charAt(posicionActual);
     }
+
+    public char simboloAnterior(){
+        if (posicionActual == 0) throw new IllegalStateException("No se puede leer el simbolo anterior.");
+        return cFuente.charAt(posicionActual-1);
+    }
 }
