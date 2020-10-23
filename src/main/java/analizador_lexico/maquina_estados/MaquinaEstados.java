@@ -306,25 +306,28 @@ public class MaquinaEstados {
         //EOF. Crea un UINT pero genera un warning por falta de sufijo.
         maquinaEstados[Estado.CTE_PARTE_ENTERA][Input.EOF] = new TransicionEstado(Estado.FINAL, generaTokenUINT, warningFaltaSufijo);
 
+        NotificaError errorSufijoInvalido;
         /* Estado 10 */
-        //Inputs invalidos. Crea un UINT pero genera un warning por falta de sufijo.
-        inicTransiciones(Estado.CTE_UI_SUF1, Estado.FINAL, retrocedeFuente, generaTokenUINT, warningFaltaSufijo);
-        //Salto de linea. Crea un UINT pero genera un warning por falta de sufijo.
-        maquinaEstados[Estado.CTE_UI_SUF1][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL, generaTokenUINT, cuentaSaltoLinea, warningFaltaSufijo);
+        //Inputs invalidos. Genera un error por sufijo invalido.
+        errorSufijoInvalido = new NotificaError("El sufijo '_' no es un sufijo valido.",aLexico,null,false);
+        inicTransiciones(Estado.CTE_UI_SUF1, Estado.FINAL, retrocedeFuente, errorSufijoInvalido);
+        //Salto de linea. Genera un error por sufijo invalido.
+        maquinaEstados[Estado.CTE_UI_SUF1][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL, cuentaSaltoLinea, errorSufijoInvalido);
         //Letra 'u' minuscula.
         maquinaEstados[Estado.CTE_UI_SUF1][Input.U_MINUSC] = new TransicionEstado(Estado.CTE_UI_SUF2);
-        //EOF. Crea un UINT pero genera un warning por falta de sufijo.
-        maquinaEstados[Estado.CTE_UI_SUF1][Input.EOF] = new TransicionEstado(Estado.FINAL, generaTokenUINT, warningFaltaSufijo);
+        //EOF. Genera un error por sufijo invalido.
+        maquinaEstados[Estado.CTE_UI_SUF1][Input.EOF] = new TransicionEstado(Estado.FINAL, errorSufijoInvalido);
 
         /* Estado 11 */
-        //Inputs invalidos. Crea un UINT pero genera un warning por falta de sufijo.
-        inicTransiciones(Estado.CTE_UI_SUF2, Estado.FINAL, retrocedeFuente, generaTokenUINT, warningFaltaSufijo);
-        //Salto de linea. Crea un UINT pero genera un warning por falta de sufijo.
-        maquinaEstados[Estado.CTE_UI_SUF2][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL, generaTokenUINT, cuentaSaltoLinea, warningFaltaSufijo);
+        //Inputs invalidos. Genera un error por sufijo invalido.
+        errorSufijoInvalido = new NotificaError("El sufijo '_u' no es un sufijo valido.",aLexico,null,false);
+        inicTransiciones(Estado.CTE_UI_SUF2, Estado.FINAL, retrocedeFuente, errorSufijoInvalido);
+        //Salto de linea. Genera un error por sufijo invalido.
+        maquinaEstados[Estado.CTE_UI_SUF2][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL, cuentaSaltoLinea, errorSufijoInvalido);
         //Letra 'i' minuscula.
         maquinaEstados[Estado.CTE_UI_SUF2][Input.I_MINUSC] = new TransicionEstado(Estado.CTE_UI_SUF3);
-        //EOF. Crea un UINT pero genera un warning por falta de sufijo.
-        maquinaEstados[Estado.CTE_UI_SUF2][Input.EOF] = new TransicionEstado(Estado.FINAL, generaTokenUINT, warningFaltaSufijo);
+        //EOF. Genera un error por sufijo invalido.
+        maquinaEstados[Estado.CTE_UI_SUF2][Input.EOF] = new TransicionEstado(Estado.FINAL, errorSufijoInvalido);
 
         /* Estado 12 */
         //Cualquier input es valido. Ya se leyo el sufijo completo, se genera el token y se retrocede el fuente una posicion.
