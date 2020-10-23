@@ -10,6 +10,10 @@ public class TablaSimbolos {
         tablaSimb = new Hashtable<>();
     }
 
+    public boolean contieneLexema(String lexema) {
+        return tablaSimb.containsKey(lexema);
+    }
+
     /**
      * Agrega una celda (token,lexema,tipo). En caso de existir previamente, incrementa en uno las referencias a la
      * celda.

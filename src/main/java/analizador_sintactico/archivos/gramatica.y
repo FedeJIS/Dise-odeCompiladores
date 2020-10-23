@@ -16,18 +16,18 @@ import util.tabla_simbolos.TablaSimbolos;
 programa	: bloque_sentencias
 			;
 			
-bloque_sentencias	: sentencia {yyerror("Falta ';' al final de la sentencia");}
-                    | sentencia ';'
-					| sentencia ';' bloque_sentencias
+bloque_sentencias	: sentencia
+					| sentencia bloque_sentencias
 					;
 
 sentencia 	: sentencia_declarativa
-            | sentencia_ejecutable
-            | error                 {yyerror("Sentencia mal definida");}
+            | sentencia_ejecutable ';'
 			;
 			
-sentencia_declarativa	: nombre_proc params_proc ni_proc cuerpo_proc
-						| tipo lista_variables
+sentencia_declarativa	: nombre_proc params_proc ni_proc cuerpo_proc ';'
+                        | nombre_proc params_proc ni_proc cuerpo_proc {yyerror("Falta ';' al final de la sentencia");}
+						| tipo lista_variables ';'
+						| tipo lista_variables {yyerror("Falta ';' al final de la sentencia");}
 						;
 
 nombre_proc : PROC ID
@@ -43,6 +43,7 @@ ni_proc : NI '=' CTE_UINT
         ;
 
 cuerpo_proc : '{' bloque_sentencias '}'
+            | '{' '}' {yyerror("Bloque de sentencias vacio");}
             ;
 
 lista_params    :
@@ -85,6 +86,10 @@ sentencia_ejecutable	: invocacion
 bloque_sentencias_ejec  : sentencia_ejecutable ';'
                         | sentencia_ejecutable ';' bloque_sentencias_ejec
                         ;
+
+bloque_estruct_ctrl : sentencia_ejecutable ';'
+                    | '{' bloque_sentencias_ejec '}'
+                    ;
 
 invocacion	: ID params_invocacion
 			;
@@ -143,10 +148,6 @@ rama_then   : THEN bloque_estruct_ctrl
 rama_else   : ELSE bloque_estruct_ctrl
             | ELSE                      {yyerror("Cuerpo ELSE vacio");}
             ;
-
-bloque_estruct_ctrl : sentencia_ejecutable ';'
-                    | '{' bloque_sentencias_ejec '}'
-                    ;
 
 condicion 	: '(' ')'                                   {yyerror("Condicion vacia");}
             | '(' expresion comparador expresion ')'
