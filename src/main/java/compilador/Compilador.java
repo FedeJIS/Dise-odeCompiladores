@@ -15,7 +15,7 @@ public class Compilador {
 
         CodigoFuente cFuente = new CodigoFuente(lineasCFuente);
         AnalizadorLexico aLexico = new AnalizadorLexico(cFuente, tablaS);
-        Parser parser = new Parser(false,aLexico,tablaS,cFuente);
+        Parser parser = new Parser(false,aLexico,tablaS);
 
         parser.run();
         finCompilacion();

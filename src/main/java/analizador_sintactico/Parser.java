@@ -1,4 +1,4 @@
-package analizador_sintactico;//### This file created by BYACC 1.8(/Java extension  1.15)
+//### This file created by BYACC 1.8(/Java extension  1.15)
 //### Java capabilities added 7 Jan 97, Bob Jamison
 //### Updated : 27 Nov 97  -- Bob Jamison, Joe Nieten
 //###           01 Jan 98  -- Bob Jamison -- fixed generic semantic constructor
@@ -12,11 +12,23 @@ package analizador_sintactico;//### This file created by BYACC 1.8(/Java extensi
 //### static char yysccsid[] = "@(#)yaccpar	1.8 (Berkeley) 01/20/90";
 
 
+
+
+
+
+//#line 1 "archivos/gramatica.y"
+
+package analizador_sintactico;
+
 import analizador_lexico.AnalizadorLexico;
-import util.CodigoFuente;
 import util.TablaNotificaciones;
 import util.tabla_simbolos.Celda;
 import util.tabla_simbolos.TablaSimbolos;
+import util.CodigoFuente;
+//#line 26 "Parser.java"
+
+
+
 
 public class Parser
 {
@@ -435,23 +447,20 @@ final static String yyrule[] = {
 "imprimible : ID",
 };
 
-//#line 149 "archivos/gramatica.y"
-
+//#line 158 "archivos/gramatica.y"
 
     private AnalizadorLexico aLexico;
     private TablaSimbolos tablaS;
-    private CodigoFuente cFuente;
 
     /**
      * Create a parser, setting the debug to true or false.
      *
      * @param debugMe true for debugging, false for no debug.
      */
-    public Parser(boolean debugMe, AnalizadorLexico aLexico, TablaSimbolos tablaS, CodigoFuente cFuente) {
+    public Parser(boolean debugMe, AnalizadorLexico aLexico, TablaSimbolos tablaS) {
         yydebug = debugMe;
         this.aLexico = aLexico;
         this.tablaS = tablaS;
-        this.cFuente = cFuente;
     }
 
     private int yylex() {
@@ -513,7 +522,7 @@ final static String yyrule[] = {
 
 			
 
-//#line 445 "Parser.java"
+//#line 454 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -668,42 +677,42 @@ boolean doaction;
       {
 //########## USER-SUPPLIED ACTIONS ##########
 case 8:
-//#line 22 "archivos/gramatica.y"
-{yyerror("Falta ';' al final de la sentencia.");}
+//#line 32 "archivos/gramatica.y"
+{yyerror("Falta ';' al final de la sentencia");}
 break;
 case 13:
-//#line 31 "archivos/gramatica.y"
+//#line 41 "archivos/gramatica.y"
 {yyerror("Falta el identificador del procedimiento.");}
 break;
 case 16:
-//#line 36 "archivos/gramatica.y"
+//#line 46 "archivos/gramatica.y"
 {yyerror("Falta el parentesis de cierre para los parametros.");}
 break;
 case 17:
-//#line 37 "archivos/gramatica.y"
+//#line 47 "archivos/gramatica.y"
 {yyerror("Falta el parentesis de cierre para los parametros.");}
 break;
 case 20:
-//#line 44 "archivos/gramatica.y"
+//#line 54 "archivos/gramatica.y"
 {yyerror("Falta una ',' para separar dos parametros.");}
 break;
 case 26:
-//#line 56 "archivos/gramatica.y"
+//#line 66 "archivos/gramatica.y"
 {yyerror("Cuerpo del procedimiento vacio.");}
 break;
 case 39:
-//#line 77 "archivos/gramatica.y"
+//#line 87 "archivos/gramatica.y"
 {yyerror("Un procedimiento no puede tener mas de 3 parametros.");}
 break;
 case 50:
-//#line 96 "archivos/gramatica.y"
-{}
+//#line 105 "archivos/gramatica.y"
+{checkCambioSigno();}
 break;
 case 55:
-//#line 107 "archivos/gramatica.y"
+//#line 116 "archivos/gramatica.y"
 {yyerror("Bloque de sentencias vacio.");}
 break;
-//#line 630 "Parser.java"
+//#line 639 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

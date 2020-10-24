@@ -5,6 +5,7 @@ import analizador_lexico.AnalizadorLexico;
 import util.TablaNotificaciones;
 import util.tabla_simbolos.Celda;
 import util.tabla_simbolos.TablaSimbolos;
+import util.CodigoFuente;
 %}
 
 %token ID, COMP_MENOR_IGUAL, COMP_MAYOR_IGUAL, COMP_DISTINTO, COMP_IGUAL, UINT, DOUBLE, CADENA, IF , THEN, ELSE, END_IF,  LOOP, UNTIL, OUT , PROC , VAR,  NI, CTE_UINT, CTE_DOUBLE
@@ -27,8 +28,8 @@ bloque_sentencias	: tipo_sentencia fin_sentencia
 tipo_sentencia	: sentencia_decl
 				| sentencia_ejec
 				;
-				
-fin_sentencia	: {yyerror("Falta ';' al final de la sentencia.");}
+
+fin_sentencia	: {yyerror("Falta ';' al final de la sentencia");}
 				| ';'
 				;
 			
@@ -57,7 +58,7 @@ separador_variables	: {yyerror("Falta una ',' para separar dos parametros.");}
 param	: VAR tipo_id ID
 		| tipo_id ID
 		;
-			
+
 ni_proc	: NI '=' CTE_UINT
 		;
 		
@@ -75,7 +76,7 @@ sentencia_ejec	: invocacion
 				| if
 				| print
 				;
-				
+
 invocacion	: ID '(' ')'
 			| ID '(' lista_params_inv ')'
 			;
@@ -84,8 +85,7 @@ lista_params_inv	: ID
 					| ID separador_variables ID
 					| ID separador_variables ID separador_variables ID
 					| ID separador_variables ID separador_variables ID separador_variables lista_params_inv {yyerror("Un procedimiento no puede tener mas de 3 parametros.");}
-					;
-					
+
 asignacion	: ID '=' expresion
 			;
 			
