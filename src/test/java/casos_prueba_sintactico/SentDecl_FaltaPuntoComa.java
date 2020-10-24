@@ -14,6 +14,6 @@ public class SentDecl_FaltaPuntoComa {
                 "OUT(3.0d1); \n" +
                 "UINT x,y,z %%FALTA ';' ACA\n";
 
-        Compilador.compilar(lineasCFuente);
+        Compilador.compilar(lineasCFuente,false,true);
     }
 }

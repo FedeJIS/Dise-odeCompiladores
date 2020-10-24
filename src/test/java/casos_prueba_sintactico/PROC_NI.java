@@ -22,6 +22,6 @@ public class PROC_NI {
                 "};\n"
                 ;
 
-        Compilador.compilar(lineasCFuente);
+        Compilador.compilar(lineasCFuente,false,true);
     }
 }

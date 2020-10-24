@@ -16,7 +16,7 @@ public class DOUBLE_ValoresValidos {
         + "a = 0.;" +'\n'
         + "a = .d4;" +'\n';
 
-        Compilador.compilar(lineasCFuente);
+        Compilador.compilar(lineasCFuente,false,true);
 
     }
 }

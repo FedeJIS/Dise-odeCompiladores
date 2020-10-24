@@ -5,6 +5,7 @@ import analizador_lexico.AnalizadorLexico;
 import util.TablaNotificaciones;
 import util.tabla_simbolos.Celda;
 import util.tabla_simbolos.TablaSimbolos;
+import generacion_assembler.Polaca;
 import util.CodigoFuente;
 %}
 
@@ -102,31 +103,34 @@ lista_params_inv	: ID
 					| ID separador_variables ID separador_variables ID separador_variables lista_params_inv {yyerror("Un procedimiento no puede tener mas de 3 parametros.");}
                     ;
 
-asignacion	: ID '=' expresion
+asignacion	: ID '=' expresion {agregarPasosPolaca($1.sval,"=");}
             | ID '=' error {yyerror("El lado izquierdo de la asignacio no es valido.");}
             ;
 			
-expresion	: expresion '+' termino
-			| expresion '-' termino
+expresion	: expresion '+' termino {agregarPasosPolaca("+");}
+			| expresion '-' termino {agregarPasosPolaca("-");}
 	        | termino
 			;
     		
-termino	: termino '*' factor
-		| termino '/' factor
+termino	: termino '*' factor {agregarPasosPolaca("*");}
+		| termino '/' factor {agregarPasosPolaca("/");}
 		| factor
      	;	
 		
-factor 	: ID
-		| CTE_UINT
-		| CTE_DOUBLE
-		| '-' factor    {checkCambioSigno();}
+factor 	: ID {agregarPasosPolaca($1.sval);}
+		| CTE_UINT {agregarPasosPolaca($1.sval);}
+		| CTE_DOUBLE {agregarPasosPolaca($1.sval);}
+		| '-' factor    {checkCambioSigno(); agregarPasosPolaca("-");}
 		;
 		
-loop	: cuerpo_loop cuerpo_until
+loop	: encab_loop cuerpo_loop cuerpo_until
 		;
+
+encab_loop  : LOOP {puntoControlLoop();}
+            ;
 		
-cuerpo_loop	: LOOP bloque_estruct_ctrl
-            | LOOP {yyerror("Falta el bloque de sentencias ejecutables del LOOP.");}
+cuerpo_loop	: bloque_estruct_ctrl
+            | {yyerror("Falta el bloque de sentencias ejecutables del LOOP.");}
 			;
 		
 bloque_estruct_ctrl	: sentencia_ejec fin_sentencia
@@ -138,11 +142,11 @@ bloque_sentencias_ejec	: sentencia_ejec fin_sentencia
 						| sentencia_ejec fin_sentencia bloque_sentencias_ejec
 						;
 
-cuerpo_until	: UNTIL condicion
+cuerpo_until	: UNTIL condicion {puntoControlUntil();}
                 | UNTIL {yyerror("Falta la condicion de corte del LOOP.");}
                 ;
 
-condicion	: '(' expresion comparador expresion ')'
+condicion	: '(' expresion comparador expresion ')' {agregarPasosPolaca($3.sval);}
             | '(' expresion comparador expresion {yyerror("Falta parentesis de cierre de la condicion.");}
             | '(' comparador expresion ')' {yyerror("Falta expresion en el lado izquierdo de la condicion.");}
             | '(' expresion comparador ')' {yyerror("Falta expresion en el lado derecho de la condicion.");}
@@ -161,15 +165,15 @@ if	: encabezado_if rama_then rama_else END_IF
 	| encabezado_if rama_then END_IF
 	;
 
-encabezado_if	: IF condicion
+encabezado_if	: IF condicion {puntoControlThen();}
                 | IF {yyerror("Falta la condicion del IF.");}
 				;
 				
-rama_then	: THEN bloque_estruct_ctrl
+rama_then	: THEN bloque_estruct_ctrl {puntoControlElse();}
             | THEN {yyerror("Falta el bloque de sentencias ejecutables de la rama THEN.");}
 			;
 			
-rama_else	: ELSE bloque_estruct_ctrl
+rama_else	: ELSE bloque_estruct_ctrl {puntoControlFinCondicional();}
             | ELSE {yyerror("Falta el bloque de sentencias ejecutables de la rama ELSE.");}
 			;
 			
@@ -185,8 +189,9 @@ imprimible	: CADENA
 			;
 
 %%
-    private AnalizadorLexico aLexico;
-    private TablaSimbolos tablaS;
+    private final AnalizadorLexico aLexico;
+    private final TablaSimbolos tablaS;
+    private final Polaca polaca = new Polaca();
 
     /**
      * Create a parser, setting the debug to true or false.
@@ -230,31 +235,30 @@ imprimible	: CADENA
 
     }
 
+    private void agregarPasosPolaca(String... pasos){
+        polaca.agregarPasos(pasos);
+    }
 
+    private void puntoControlThen(){
+        polaca.puntoControlThen();
+    }
 
+    private void puntoControlElse(){
+        polaca.puntoControlElse();
+    }
 
+    private void puntoControlFinCondicional(){
+        polaca.puntoControlFinCondicional();
+    }
 
+    private void puntoControlLoop(){
+        polaca.puntoControlLoop();
+    }
 
+    private void puntoControlUntil(){
+        polaca.puntoControlUntil();
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-			
-
+    public void printPolaca() {
+        polaca.print();
+    }

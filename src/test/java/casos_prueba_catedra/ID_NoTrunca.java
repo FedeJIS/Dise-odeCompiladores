@@ -11,6 +11,6 @@ public class ID_NoTrunca {
                 + "abcdefghijklmnopqrst = 1_ui; %%20 simbolos" + '\n'
                 + "a_12345678912345678 = 1_ui; %%19 simbolos";
 
-        Compilador.compilar(lineasCFuente);
+        Compilador.compilar(lineasCFuente,false,true);
     }
 }

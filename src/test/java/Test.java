@@ -1,11 +1,10 @@
-package casos_prueba_sintactico;
-
 import compilador.Compilador;
 
-public class OUT_PrintInvalido {
+public class Test {
+
     public static void main(String[] args) {
         String lineasCFuente =
-                "OUT(OUT(x));";
+                "a = 99_ui;";
 
         Compilador.compilar(lineasCFuente,false,true);
 

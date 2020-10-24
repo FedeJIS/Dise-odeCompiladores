@@ -9,6 +9,6 @@ public class LOOP_FaltaCond {
                 " OUT(a);\n" +
                 "} UNTIL;";
 
-        Compilador.compilar(lineasCFuente);
+        Compilador.compilar(lineasCFuente,false,true);
     }
 }

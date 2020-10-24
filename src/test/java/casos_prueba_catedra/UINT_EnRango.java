@@ -11,6 +11,6 @@ public class UINT_EnRango {
                 "y = "+min+"_ui;\n" +
                 "x = "+max+"_ui;";
 
-        Compilador.compilar(lineasCFuente);
+        Compilador.compilar(lineasCFuente,false,true);
     }
 }

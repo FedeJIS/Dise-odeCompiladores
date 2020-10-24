@@ -22,6 +22,6 @@ public class Comp_CasosInvalidos {
                 "END_IF;\n"
                 ;
 
-        Compilador.compilar(lineasCFuente);
+        Compilador.compilar(lineasCFuente,false,true);
     }
 }

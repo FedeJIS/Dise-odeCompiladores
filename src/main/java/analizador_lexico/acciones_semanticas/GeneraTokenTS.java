@@ -14,9 +14,9 @@ public class GeneraTokenTS extends AccionSemantica {
 
     private final TablaSimbolos tablaS;
 
-    private final int token;
+    private final short token;
 
-    public GeneraTokenTS(MaquinaEstados maquinaEstados, TablaSimbolos tablaS, int token) {
+    public GeneraTokenTS(MaquinaEstados maquinaEstados, TablaSimbolos tablaS, short token) {
         this.maquinaEstados = maquinaEstados;
         this.tablaS = tablaS;
         this.token = token;
@@ -31,6 +31,5 @@ public class GeneraTokenTS extends AccionSemantica {
         if (TablaPalabrasR.esReservada(lexema.toUpperCase())) //Si el lexema coincide con una PR, genera un warning para notificar.
             TablaNotificaciones.agregarWarning("Linea: "+maquinaEstados.getLineaActual()+": " +
                     "El identificador '" + lexema + "' coincide con una palabra reservada.");
-
     }
 }

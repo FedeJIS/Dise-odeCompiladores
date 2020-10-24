@@ -11,6 +11,6 @@ public class PROC_LimiteParams {
 
                 "lala(a,b,c,d);";
 
-        Compilador.compilar(lineasCFuente);
+        Compilador.compilar(lineasCFuente,false,true);
     }
 }

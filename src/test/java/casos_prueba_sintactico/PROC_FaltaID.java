@@ -9,6 +9,6 @@ public class PROC_FaltaID {
                 "   OUT(a);\n" +
                 "};";
 
-        Compilador.compilar(lineasCFuente);
+        Compilador.compilar(lineasCFuente,false,true);
     }
 }

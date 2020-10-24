@@ -15,6 +15,6 @@ public class IF_BloqueEstructCtrlVacio {
                 "}END_IF;\n"
                 ;
 
-        Compilador.compilar(lineasCFuente);
+        Compilador.compilar(lineasCFuente,false,true);
     }
 }

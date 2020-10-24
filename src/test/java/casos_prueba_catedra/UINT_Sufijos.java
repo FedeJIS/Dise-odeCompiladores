@@ -11,6 +11,6 @@ public class UINT_Sufijos {
                 + "a = 1_u; %%Error sufijo incompleto" + '\n'
                 + "a = 1_ui; %%UINT bien definido";
 
-        Compilador.compilar(lineasCFuente);
+        Compilador.compilar(lineasCFuente,false,true);
     }
 }

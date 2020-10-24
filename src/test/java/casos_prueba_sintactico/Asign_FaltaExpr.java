@@ -6,6 +6,6 @@ public class Asign_FaltaExpr {
     public static void main(String[] args) {
         String lineasCFuente ="x = ;";
 
-        Compilador.compilar(lineasCFuente);
+        Compilador.compilar(lineasCFuente,false,true);
     }
 }

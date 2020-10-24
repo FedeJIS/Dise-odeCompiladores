@@ -8,6 +8,6 @@ public class Coment_MalDef { //TODO ARREGLAR GRAMATICA PARA COMENT MAL DEF EN ME
                 "%%NO RECONOCE EL SIGUIENTE COMENTARIO PORQUE FALTA UN '%'. TOMA EL CONTENIDO COMO UN IDENTIFICADOR" + '\n' +
                 "%mal_coment" + '\n' +
                 "x = 5_ui;";
-        Compilador.compilar(lineasCFuente);
+        Compilador.compilar(lineasCFuente,false,true);
     }
 }

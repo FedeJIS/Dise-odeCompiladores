@@ -9,6 +9,6 @@ public class PR_Mayusc {
                 +       "OUT(y);"
                 +   "END_IF;";
 
-        Compilador.compilar(lineasCFuente);
+        Compilador.compilar(lineasCFuente,false,true);
     }
 }

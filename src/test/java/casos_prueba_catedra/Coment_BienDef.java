@@ -10,6 +10,6 @@ public class Coment_BienDef {
                 "%%125445?¡{-'¿" + '\n' +
                 "x = 5_ui;";
 
-        Compilador.compilar(lineasCFuente);
+        Compilador.compilar(lineasCFuente,false,true);
     }
 }

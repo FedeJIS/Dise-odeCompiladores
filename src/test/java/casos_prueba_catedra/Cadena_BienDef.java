@@ -11,6 +11,6 @@ public class Cadena_BienDef {
                     "LINEA3\"" +
                 ");";
 
-        Compilador.compilar(lineasCFuente);
+        Compilador.compilar(lineasCFuente,false,true);
     }
 }

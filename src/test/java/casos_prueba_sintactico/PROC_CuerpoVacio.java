@@ -8,6 +8,6 @@ public class PROC_CuerpoVacio {
                 = "PROC lala(DOUBLE a) NI = 5_ui {\n" +
                 "};";
 
-        Compilador.compilar(lineasCFuente);
+        Compilador.compilar(lineasCFuente,false,true);
     }
 }

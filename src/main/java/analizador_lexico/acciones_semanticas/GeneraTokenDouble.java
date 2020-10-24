@@ -17,9 +17,9 @@ public class GeneraTokenDouble extends AccionSemantica {
 
     private final TablaSimbolos tablaS;
 
-    private final int token;
+    private final short token;
 
-    public GeneraTokenDouble(MaquinaEstados maquinaEstados, TablaSimbolos tablaS, int token) {
+    public GeneraTokenDouble(MaquinaEstados maquinaEstados, TablaSimbolos tablaS, short token) {
         this.maquinaEstados = maquinaEstados;
         this.tablaS = tablaS;
         this.token = token;

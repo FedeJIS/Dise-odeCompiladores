@@ -9,6 +9,6 @@ public class LOOP_FaltaCuerpo {
                 " \n" +
                 "UNTIL (a == 1_ui);";
 
-        Compilador.compilar(lineasCFuente);
+        Compilador.compilar(lineasCFuente,false,true);
     }
 }

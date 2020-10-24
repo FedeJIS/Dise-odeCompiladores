@@ -11,6 +11,6 @@ public class Cadena_MalDef {
                     "LIN-----EA3\"" +
                 ");";
 
-        Compilador.compilar(lineasCFuente);
+        Compilador.compilar(lineasCFuente,false,true);
     }
 }

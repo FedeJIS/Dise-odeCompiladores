@@ -10,6 +10,6 @@ public class DOUBLE_FueraRango {
                 + "min_negat = -2.2250738585072011d-308;\n" //TODO AGREGAR ERROR CUANDO NO HAY NADA DEL LADO DER.
                 + "max_negat = -1.7976931348623159d308;";
 
-        Compilador.compilar(lineasCFuente);
+        Compilador.compilar(lineasCFuente,false,true);
     }
 }

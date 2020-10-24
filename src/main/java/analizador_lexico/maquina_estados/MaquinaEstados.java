@@ -63,7 +63,7 @@ public class MaquinaEstados {
         estadoActual = 0;
     }
 
-    public void setVariablesSintactico(int token, String lexema) {
+    public void setVariablesSintactico(short token, String lexema) {
         aLexico.setVariablesSintactico(token, lexema);
     }
 
@@ -96,7 +96,7 @@ public class MaquinaEstados {
         TransicionEstado transicionEstado = maquinaEstados[estadoActual][Input.EOF];
 
         transicionEstado.ejecutarAccionSemantica();
-        aLexico.setVariablesSintactico(0,""); //Genera el token asociado al EOF ('0').
+        aLexico.setVariablesSintactico(AnalizadorLexico.T_EOF,""); //Genera el token asociado al EOF ('0').
         estadoActual = Estado.FINAL; //Finalizo ejecucion
     }
 
@@ -218,7 +218,7 @@ public class MaquinaEstados {
         maquinaEstados[Estado.INICIAL][Input.MENOR] = new TransicionEstado(Estado.COMP_MENOR);
 
         /* Estado 5 */
-        generaTokenParticular = new GeneraTokenParticular(this, '<');
+        generaTokenParticular = new GeneraTokenParticular(this, (short) '<');
         //Inputs no definidos. Comparacion por menor estricto.
         inicTransiciones(Estado.COMP_MENOR, Estado.FINAL, retrocedeFuente, generaTokenParticular);
         //Salto de linea. Comparacion por menor estricto.
@@ -233,7 +233,7 @@ public class MaquinaEstados {
         maquinaEstados[Estado.INICIAL][Input.MAYOR] = new TransicionEstado(Estado.COMP_MAYOR);
 
         /* Estado 6 */
-        generaTokenParticular = new GeneraTokenParticular(this, '>');
+        generaTokenParticular = new GeneraTokenParticular(this, (short) '>');
         //Inputs no definidos. Comparacion por mayor estricto.
         inicTransiciones(Estado.COMP_MAYOR, Estado.FINAL, retrocedeFuente, generaTokenParticular);
         //Salto de linea. Comparacion por mayor estricto.
@@ -263,7 +263,7 @@ public class MaquinaEstados {
         maquinaEstados[Estado.INICIAL][Input.IGUAL] = new TransicionEstado(Estado.SIGNO_IGUAL);
 
         /* Estado 8 */
-        generaTokenParticular = new GeneraTokenParticular(this, '=');
+        generaTokenParticular = new GeneraTokenParticular(this, (short) '=');
         //Inputs no definidos. Asignacion.
         inicTransiciones(Estado.SIGNO_IGUAL, Estado.FINAL, retrocedeFuente, generaTokenParticular);
         //Salto de linea. Asignacion

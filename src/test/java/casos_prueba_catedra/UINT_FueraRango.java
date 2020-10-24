@@ -10,6 +10,6 @@ public class UINT_FueraRango {
                 "y = "+max_pasado+"_ui;\n" +
                 "x = "+(max_pasado+1)+"_ui;";
 
-        Compilador.compilar(lineasCFuente);
+        Compilador.compilar(lineasCFuente,false,true);
     }
 }

@@ -8,6 +8,6 @@ public class ID_Trunca {
                 "a_1234567891234567891 = 1_ui; %%21 simbolos" + '\n' +
                 "a____________________ = 1_ui; %%21 simbolos" + '\n' +
                 "abcdefghijklmnopqrstu = 1_ui; %%21 simbolos" + '\n';
-        Compilador.compilar(lineasCFuente);
+        Compilador.compilar(lineasCFuente,false,true);
     }
 }

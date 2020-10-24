@@ -10,6 +10,6 @@ public class DOUBLE_EnRango {
             + "min_negat = -2.2250738585072014d-308;\n"
             + "max_negat = -1.7976931348623157d308;";
 
-        Compilador.compilar(lineasCFuente);
+        Compilador.compilar(lineasCFuente,false,true);
     }
 }

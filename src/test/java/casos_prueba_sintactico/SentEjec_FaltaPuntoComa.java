@@ -14,6 +14,6 @@ public class SentEjec_FaltaPuntoComa {
                 "END_IF %%FALTA ';' ACA\n"
                 ;
 
-        Compilador.compilar(lineasCFuente);
+        Compilador.compilar(lineasCFuente,false,true);
     }
 }

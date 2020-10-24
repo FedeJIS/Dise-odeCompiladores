@@ -19,6 +19,6 @@ public class PROC_FaltaSeparacionParams {
 
                 ;
 
-        Compilador.compilar(lineasCFuente);
+        Compilador.compilar(lineasCFuente,false,true);
     }
 }

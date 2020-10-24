@@ -16,11 +16,9 @@ public class AnalizadorLexico {
     /**
      * Valores para tokens.
      */
-    public static final int T_EOF = 0;
-    public static final int T_CTE_UINT = Parser.CTE_UINT;
-    public static final int T_CTE_DOUBLE = Parser.CTE_DOUBLE;
+    public static final short T_EOF = 0;
 
-    public int ultimoTokenGenerado = -1;
+    public short ultimoTokenGenerado = -1;
     public String ultimoLexemaGenerado;
 
     public AnalizadorLexico(CodigoFuente cFuente, TablaSimbolos tablaS){
@@ -28,7 +26,7 @@ public class AnalizadorLexico {
         this.maquinaEstados = new MaquinaEstados(this, cFuente,tablaS, inicTPR());
     }
 
-    public void setVariablesSintactico(int token, String lexema){
+    public void setVariablesSintactico(short token, String lexema){
         this.ultimoTokenGenerado = token;
         this.ultimoLexemaGenerado = lexema;
     }

@@ -9,6 +9,6 @@ public class PR_MalDef {
                 + "OUt(5_ui); \n"
                 + "oUT(5_ui);";
 
-        Compilador.compilar(lineasCFuente);
+        Compilador.compilar(lineasCFuente,false,true);
     }
 }
