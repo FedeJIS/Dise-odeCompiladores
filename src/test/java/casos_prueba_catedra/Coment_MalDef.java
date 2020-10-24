@@ -1,10 +1,6 @@
 package casos_prueba_catedra;
 
 import compilador.Compilador;
-import compilador.CompiladorFijo;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Coment_MalDef { //TODO ARREGLAR GRAMATICA PARA COMENT MAL DEF EN MEDIO DEL FUENTE.
     public static void main(String[] args) {

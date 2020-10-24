@@ -1,10 +1,6 @@
 package casos_prueba_catedra;
 
 import compilador.Compilador;
-import compilador.CompiladorFijo;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ID_EmpiezaGuion {
     public static void main(String[] args) { //TODO VER SI SE PUEDE MOSTRAR MEJOR EL ERROR CUANDO FALTA ID DEL LADO DER.

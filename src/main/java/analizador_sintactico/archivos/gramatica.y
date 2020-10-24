@@ -48,18 +48,33 @@ params_proc	: '(' lista_params_decl ')'
 			;
 			
 lista_params_decl	: param
-					| param separador_variables lista_params_decl
+					| param separador_variables param
+					| param separador_variables param separador_variables param
+					| param separador_variables param separador_variables param separador_variables lista_params_decl {yyerror("Un procedimiento no puede tener mas de 3 parametros.");}
 					;
 
 separador_variables	: {yyerror("Falta una ',' para separar dos parametros.");}
 					| ','
 					;
+
+param   : param_var
+        | param_comun
+        ;
 					
-param	: VAR tipo_id ID
-		| tipo_id ID
-		;
+param_var	: VAR tipo_id ID
+            | VAR ID {yyerror("Falta el tipo de un parametro.");}
+            | VAR tipo_id {yyerror("Falta el identificador de un parametro.");}
+		    ;
+
+param_comun : tipo_id ID
+		    | tipo_id {yyerror("Falta el identificador de un parametro.");}
+		    ;
 
 ni_proc	: NI '=' CTE_UINT
+        | NI '=' {yyerror("Formato de declaracion de NI invalido. El formato correcto es 'NI = CTE_UINT'.");}
+        | '=' CTE_UINT {yyerror("Formato de declaracion de NI invalido. El formato correcto es 'NI = CTE_UINT'.");}
+        | NI CTE_UINT {yyerror("Formato de declaracion de NI invalido. El formato correcto es 'NI = CTE_UINT'.");}
+        | error {yyerror("Formato de declaracion de NI invalido. El formato correcto es 'NI = CTE_UINT'.");}
 		;
 		
 cuerpo_proc	: '{' bloque_sentencias '}'
@@ -67,7 +82,7 @@ cuerpo_proc	: '{' bloque_sentencias '}'
 			;
 			
 lista_variables	: ID
-				| ID ',' lista_variables 
+				| ID ',' lista_variables
 				;
 
 sentencia_ejec	: invocacion
@@ -85,9 +100,11 @@ lista_params_inv	: ID
 					| ID separador_variables ID
 					| ID separador_variables ID separador_variables ID
 					| ID separador_variables ID separador_variables ID separador_variables lista_params_inv {yyerror("Un procedimiento no puede tener mas de 3 parametros.");}
+                    ;
 
 asignacion	: ID '=' expresion
-			;
+            | ID '=' error {yyerror("El lado izquierdo de la asignacio no es valido.");}
+            ;
 			
 expresion	: expresion '+' termino
 			| expresion '-' termino
@@ -109,6 +126,7 @@ loop	: cuerpo_loop cuerpo_until
 		;
 		
 cuerpo_loop	: LOOP bloque_estruct_ctrl
+            | LOOP {yyerror("Falta el bloque de sentencias ejecutables del LOOP.");}
 			;
 		
 bloque_estruct_ctrl	: sentencia_ejec fin_sentencia
@@ -119,10 +137,16 @@ bloque_estruct_ctrl	: sentencia_ejec fin_sentencia
 bloque_sentencias_ejec	: sentencia_ejec fin_sentencia
 						| sentencia_ejec fin_sentencia bloque_sentencias_ejec
 						;
-			
+
 cuerpo_until	: UNTIL condicion
+                | UNTIL {yyerror("Falta la condicion de corte del LOOP.");}
+                ;
 
 condicion	: '(' expresion comparador expresion ')'
+            | '(' expresion comparador expresion {yyerror("Falta parentesis de cierre de la condicion.");}
+            | '(' comparador expresion ')' {yyerror("Falta expresion en el lado izquierdo de la condicion.");}
+            | '(' expresion comparador ')' {yyerror("Falta expresion en el lado derecho de la condicion.");}
+            | '(' error ')' {yyerror("Error en la condicion.");}
 			;
 			
 comparador 	: COMP_MAYOR_IGUAL
@@ -136,17 +160,22 @@ comparador 	: COMP_MAYOR_IGUAL
 if	: encabezado_if rama_then rama_else END_IF
 	| encabezado_if rama_then END_IF
 	;
-	
+
 encabezado_if	: IF condicion
+                | IF {yyerror("Falta la condicion del IF.");}
 				;
 				
 rama_then	: THEN bloque_estruct_ctrl
+            | THEN {yyerror("Falta el bloque de sentencias ejecutables de la rama THEN.");}
 			;
 			
 rama_else	: ELSE bloque_estruct_ctrl
+            | ELSE {yyerror("Falta el bloque de sentencias ejecutables de la rama ELSE.");}
 			;
 			
 print	: OUT '(' imprimible ')'
+        | OUT '(' imprimible {yyerror("Falta parentesis de cierre de la sentencia OUT.");}
+        | OUT '(' error ')' {yyerror("El contenido de la sentencia OUT no es valido.");}
 		;
 		
 imprimible	: CADENA
@@ -181,7 +210,7 @@ imprimible	: CADENA
     }
 
     private void yyerror(String mensajeError) {
-        TablaNotificaciones.agregarError("Error en la linea " + aLexico.getLineaActual() + ": " + mensajeError);
+        TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": " + mensajeError);
     }
 
     private void checkCambioSigno() {
