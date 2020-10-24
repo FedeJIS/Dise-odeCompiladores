@@ -34,7 +34,7 @@ public class CompiladorTxT {
     private static Parser init(String pathCFuente) {
         CodigoFuente cFuente = new CodigoFuente(FileProcessor.getLineasFuente(pathCFuente));
         AnalizadorLexico aLexico = new AnalizadorLexico(cFuente, tablaS);
-        return new Parser(false, aLexico, tablaS);
+        return new Parser(false, aLexico, tablaS,cFuente);
     }
 
     private static void saveOrPrint(String path, String toSave, String mensajeExito, String tituloFallo){

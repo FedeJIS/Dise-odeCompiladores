@@ -16,94 +16,79 @@ import util.tabla_simbolos.TablaSimbolos;
 programa	: bloque_sentencias
 			;
 			
-bloque_sentencias	: sentencia
-					| sentencia bloque_sentencias
-					;
-
-sentencia 	: sentencia_declarativa
-            | sentencia_ejecutable ';'
-			;
-			
-sentencia_declarativa	: nombre_proc params_proc ni_proc cuerpo_proc ';'
-                        | nombre_proc params_proc ni_proc cuerpo_proc {yyerror("Falta ';' al final de la sentencia");}
-						| tipo lista_variables ';'
-						| tipo lista_variables {yyerror("Falta ';' al final de la sentencia");}
-						;
-
-nombre_proc : PROC ID
-            | PROC      {yyerror("Procedimiento sin nombre");}
-            ;
-
-params_proc : '(' lista_params ')'
-            | '(' lista_params      {yyerror("Falta parentesis de cierre de parametros");}
-            ;
-
-ni_proc : NI '=' CTE_UINT
-        | error           {yyerror("Formato incorrecto de NI. El formato correcto es: 'NI = CTE_UINT'");}
-        ;
-
-cuerpo_proc : '{' bloque_sentencias '}'
-            | '{' '}' {yyerror("Bloque de sentencias vacio");}
-            ;
-
-lista_params    :
-                | param
-                | param ',' param
-                | param ',' param ',' param
-                | param ',' param ',' param ',' param ',' lista_params {yyerror("El procedimiento no puede tener mas de 3 parametros");}
-                ;
-
-param	: param_var
-        | param_comun
-        ;
-
-param_var   : VAR tipo ID
-            | VAR ID        {yyerror("Falta el tipo de un parametro");}
-            | VAR tipo      {yyerror("Falta el nombre de un parametro");}
-            ;
-
-param_comun : tipo ID
-            | ID        {yyerror("Falta el tipo de un parametro");}
-            | tipo      {yyerror("Falta el nombre de un parametro");}
-            ;
-
-tipo	: UINT
+tipo_id	: UINT
 		| DOUBLE
 		;
+			
+bloque_sentencias	: tipo_sentencia fin_sentencia
+					| tipo_sentencia fin_sentencia bloque_sentencias
+					;
+					
+tipo_sentencia	: sentencia_decl
+				| sentencia_ejec
+				;
+				
+fin_sentencia	: {yyerror("Falta ';' al final de la sentencia.");}
+				| ';'
+				;
+			
+sentencia_decl	: nombre_proc params_proc ni_proc cuerpo_proc
+				| tipo_id lista_variables
+				;
+				
+nombre_proc	: PROC ID
+			| PROC {yyerror("Falta el identificador del procedimiento.");}
+			;
+			
+params_proc	: '(' lista_params_decl ')'
+			| '(' ')'
+			| '(' lista_params_decl {yyerror("Falta el parentesis de cierre para los parametros.");}
+			| '(' {yyerror("Falta el parentesis de cierre para los parametros.");}
+			;
+			
+lista_params_decl	: param
+					| param separador_variables lista_params_decl
+					;
 
-lista_variables : ID
-				| ID ',' lista_variables
-				| error                     {yyerror("Lista de variables mal definida");}
+separador_variables	: {yyerror("Falta una ',' para separar dos parametros.");}
+					| ','
+					;
+					
+param	: VAR tipo_id ID
+		| tipo_id ID
+		;
+			
+ni_proc	: NI '=' CTE_UINT
+		;
+		
+cuerpo_proc	: '{' bloque_sentencias '}'
+			| '{' '}' {yyerror("Cuerpo del procedimiento vacio.");}
+			;
+			
+lista_variables	: ID
+				| ID ',' lista_variables 
 				;
 
-sentencia_ejecutable	: invocacion
-                        | asignacion
-						| sentencia_loop
-						| sentencia_if
-						| print
-						;
-
-bloque_sentencias_ejec  : sentencia_ejecutable ';'
-                        | sentencia_ejecutable ';' bloque_sentencias_ejec
-                        ;
-
-bloque_estruct_ctrl : sentencia_ejecutable ';'
-                    | '{' bloque_sentencias_ejec '}'
-                    ;
-
-invocacion	: ID params_invocacion
+sentencia_ejec	: invocacion
+				| asignacion
+				| loop
+				| if
+				| print
+				;
+				
+invocacion	: ID '(' ')'
+			| ID '(' lista_params_inv ')'
 			;
-
-params_invocacion   : '(' ')'
-                    | '(' lista_variables ')'
-                    | '('                       {yyerror("Falta parentesis de cierre");}
-                    | '(' lista_variables       {yyerror("Falta parentesis de cierre");}
-                    ;
-
+			
+lista_params_inv	: ID
+					| ID separador_variables ID
+					| ID separador_variables ID separador_variables ID
+					| ID separador_variables ID separador_variables ID separador_variables lista_params_inv {yyerror("Un procedimiento no puede tener mas de 3 parametros.");}
+					;
+					
 asignacion	: ID '=' expresion
-            | ID '='                {yyerror("Falta expresion para la asignacion");}
 			;
-
+			
 expresion	: expresion '+' termino
 			| expresion '-' termino
 	        | termino
@@ -119,38 +104,25 @@ factor 	: ID
 		| CTE_DOUBLE
 		| '-' factor    {checkCambioSigno();}
 		;
+		
+loop	: cuerpo_loop cuerpo_until
+		;
+		
+cuerpo_loop	: LOOP bloque_estruct_ctrl
+			;
+		
+bloque_estruct_ctrl	: sentencia_ejec fin_sentencia
+					| '{' bloque_sentencias_ejec '}'
+					| '{' '}' {yyerror("Bloque de sentencias vacio.");}
+					;
 
-sentencia_loop	: cuerpo_loop cuerpo_until
-				;
+bloque_sentencias_ejec	: sentencia_ejec fin_sentencia
+						| sentencia_ejec fin_sentencia bloque_sentencias_ejec
+						;
+			
+cuerpo_until	: UNTIL condicion
 
-cuerpo_loop : LOOP bloque_estruct_ctrl
-            | LOOP                      {yyerror("Cuerpo LOOP vacio");}
-            ;
-
-cuerpo_until    : UNTIL condicion
-                ;
-
-sentencia_if    : encabezado_if rama_then rama_else END_IF
-                | encabezado_if rama_then END_IF
-                | encabezado_if rama_then rama_else         {yyerror("Falta palabra clave END_IF");}
-                | encabezado_if rama_then                   {yyerror("Falta palabra clave END_IF");}
-                ;
-
-encabezado_if   : IF condicion
-                | condicion     {yyerror("Falta palabra clave IF");}
-                ;
-
-rama_then   : THEN bloque_estruct_ctrl
-            | THEN                      {yyerror("Cuerpo THEN vacio");}
-            | bloque_estruct_ctrl       {yyerror("Falta palabra clave THEN");}
-            ;
-
-rama_else   : ELSE bloque_estruct_ctrl
-            | ELSE                      {yyerror("Cuerpo ELSE vacio");}
-            ;
-
-condicion 	: '(' ')'                                   {yyerror("Condicion vacia");}
-            | '(' expresion comparador expresion ')'
+condicion	: '(' expresion comparador expresion ')'
 			;
 			
 comparador 	: COMP_MAYOR_IGUAL
@@ -160,18 +132,30 @@ comparador 	: COMP_MAYOR_IGUAL
 			| COMP_IGUAL
 			| COMP_DISTINTO
 			;
-
+			
+if	: encabezado_if rama_then rama_else END_IF
+	| encabezado_if rama_then END_IF
+	;
+	
+encabezado_if	: IF condicion
+				;
+				
+rama_then	: THEN bloque_estruct_ctrl
+			;
+			
+rama_else	: ELSE bloque_estruct_ctrl
+			;
+			
 print	: OUT '(' imprimible ')'
 		;
-
-imprimible  : CADENA
-            | CTE_UINT
-            | CTE_DOUBLE
-            | ID
-            ;
+		
+imprimible	: CADENA
+			| CTE_UINT
+			| CTE_DOUBLE
+			| ID
+			;
 
 %%
-
     private AnalizadorLexico aLexico;
     private TablaSimbolos tablaS;
 
@@ -216,9 +200,32 @@ imprimible  : CADENA
             TablaNotificaciones.agregarError("Error en la linea " + aLexico.getLineaActual() + ": No se permiten UINT negativos");
 
     }
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			
+
