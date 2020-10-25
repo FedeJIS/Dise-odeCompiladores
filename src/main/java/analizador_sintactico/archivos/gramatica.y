@@ -137,10 +137,13 @@ cuerpo_loop	: bloque_estruct_ctrl
 bloque_estruct_ctrl	: sentencia_ejec fin_sentencia
 					| '{' bloque_sentencias_ejec '}'
 					| '{' '}' {yyerror("Bloque de sentencias vacio.");}
+					| sentencia_decl fin_sentencia {yyerror("No se permiten sentencias declarativas dentro de un bloque de estructura de control.");}
 					;
 
 bloque_sentencias_ejec	: sentencia_ejec fin_sentencia
 						| sentencia_ejec fin_sentencia bloque_sentencias_ejec
+					    | sentencia_decl fin_sentencia {yyerror("No se permiten sentencias declarativas dentro de un bloque de estructura de control.");}
+					    | sentencia_decl fin_sentencia bloque_sentencias_ejec {yyerror("No se permiten sentencias declarativas dentro de un bloque de estructura de control.");}
 						;
 
 cuerpo_until	: UNTIL condicion {puntoControlUntil();}
