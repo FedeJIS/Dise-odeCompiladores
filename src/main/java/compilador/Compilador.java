@@ -21,7 +21,10 @@ public class Compilador {
 
         parser.run();
 
-        if (imprimirPolaca) parser.printPolaca();
+        if (imprimirPolaca) {
+            parser.printPolaca();
+            parser.printPolacaProcs();
+        }
         if (imprimirOtros) finCompilacion();
     }
 

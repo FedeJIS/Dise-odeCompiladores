@@ -1,19 +1,31 @@
-package generacion_assembler;
+package generacion_c_intermedio;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class Polaca {
+    public static final int PC_THEN = 0;
+    public static final int PC_ELSE = 1;
+    public static final int PC_FIN_COND = 2;
+
     private final List<String> listaPasos = new ArrayList<>();
     private final List<Integer> pilaIncompletos = new ArrayList<>();
 
     private final String simboloPasoIncompleto = "@";
 
+    @Override
+    public String toString() {
+        return "{" +
+                listaPasos.toString() +
+                '}';
+    }
+
     public void print() {
         System.out.println("###POLACA###");
         for (int i = 0; i < listaPasos.size(); i++)
             System.out.print("("+i+","+ listaPasos.get(i)+");");
+        System.out.println();
     }
 
     public void agregarPasos(String... pasos){

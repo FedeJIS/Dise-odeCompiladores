@@ -2,11 +2,12 @@
 package analizador_sintactico;
 
 import analizador_lexico.AnalizadorLexico;
+import generacion_c_intermedio.MultiPolaca;
+import generacion_c_intermedio.PilaAmbitos;
+import generacion_c_intermedio.Polaca;
 import util.TablaNotificaciones;
 import util.tabla_simbolos.Celda;
 import util.tabla_simbolos.TablaSimbolos;
-import generacion_assembler.Polaca;
-import util.CodigoFuente;
 %}
 
 %token ID, COMP_MENOR_IGUAL, COMP_MAYOR_IGUAL, COMP_DISTINTO, COMP_IGUAL, UINT, DOUBLE, CADENA, IF , THEN, ELSE, END_IF,  LOOP, UNTIL, OUT , PROC , VAR,  NI, CTE_UINT, CTE_DOUBLE
@@ -30,15 +31,15 @@ tipo_sentencia	: sentencia_decl
 				| sentencia_ejec
 				;
 
-fin_sentencia	: {yyerror("Falta ';' al final de la sentencia");}
+fin_sentencia	:       {yyerror("Falta ';' al final de la sentencia");}
 				| ';'
 				;
 			
-sentencia_decl	: nombre_proc params_proc ni_proc cuerpo_proc
+sentencia_decl	: nombre_proc params_proc ni_proc cuerpo_proc {pilaAmbitos.eliminarUltimo();}
 				| tipo_id lista_variables
 				;
 				
-nombre_proc	: PROC ID
+nombre_proc	: PROC ID {pilaAmbitos.agregarAmbito($2.sval); /*Guardo el nombre del procedimiento en caso de necesitarlo.*/}
 			| PROC {yyerror("Falta el identificador del procedimiento.");}
 			;
 			
@@ -54,7 +55,7 @@ lista_params_decl	: param
 					| param separador_variables param separador_variables param separador_variables lista_params_decl {yyerror("Un procedimiento no puede tener mas de 3 parametros.");}
 					;
 
-separador_variables	: {yyerror("Falta una ',' para separar dos parametros.");}
+separador_variables	:       {yyerror("Falta una ',' para separar dos parametros.");}
 					| ','
 					;
 
@@ -103,24 +104,24 @@ lista_params_inv	: ID
 					| ID separador_variables ID separador_variables ID separador_variables lista_params_inv {yyerror("Un procedimiento no puede tener mas de 3 parametros.");}
                     ;
 
-asignacion	: ID '=' expresion {agregarPasosPolaca($1.sval,"=");}
+asignacion	: ID '=' expresion {agregarPasosRepr($1.sval,"=");}
             | ID '=' error {yyerror("El lado izquierdo de la asignacio no es valido.");}
             ;
 			
-expresion	: expresion '+' termino {agregarPasosPolaca("+");}
-			| expresion '-' termino {agregarPasosPolaca("-");}
+expresion	: expresion '+' termino {agregarPasosRepr("+");}
+			| expresion '-' termino {agregarPasosRepr("-");}
 	        | termino
 			;
     		
-termino	: termino '*' factor {agregarPasosPolaca("*");}
-		| termino '/' factor {agregarPasosPolaca("/");}
+termino	: termino '*' factor {agregarPasosRepr("*");}
+		| termino '/' factor {agregarPasosRepr("/");}
 		| factor
      	;	
 		
-factor 	: ID {agregarPasosPolaca($1.sval);}
-		| CTE_UINT {agregarPasosPolaca($1.sval);}
-		| CTE_DOUBLE {agregarPasosPolaca($1.sval);}
-		| '-' factor    {checkCambioSigno(); agregarPasosPolaca("-");}
+factor 	: ID {agregarPasosRepr($1.sval);}
+		| CTE_UINT {agregarPasosRepr($1.sval);}
+		| CTE_DOUBLE {agregarPasosRepr($1.sval);}
+		| '-' factor    {checkCambioSigno(); agregarPasosRepr("-");}
 		;
 		
 loop	: encab_loop cuerpo_loop cuerpo_until
@@ -146,7 +147,7 @@ cuerpo_until	: UNTIL condicion {puntoControlUntil();}
                 | UNTIL {yyerror("Falta la condicion de corte del LOOP.");}
                 ;
 
-condicion	: '(' expresion comparador expresion ')' {agregarPasosPolaca($3.sval);}
+condicion	: '(' expresion comparador expresion ')' {agregarPasosRepr($3.sval);}
             | '(' expresion comparador expresion {yyerror("Falta parentesis de cierre de la condicion.");}
             | '(' comparador expresion ')' {yyerror("Falta expresion en el lado izquierdo de la condicion.");}
             | '(' expresion comparador ')' {yyerror("Falta expresion en el lado derecho de la condicion.");}
@@ -177,7 +178,7 @@ rama_else	: ELSE bloque_estruct_ctrl {puntoControlFinCondicional();}
             | ELSE {yyerror("Falta el bloque de sentencias ejecutables de la rama ELSE.");}
 			;
 			
-print	: OUT '(' imprimible ')'
+print	: OUT '(' imprimible ')' {agregarPasosRepr($3.sval,"OUT");}
         | OUT '(' imprimible {yyerror("Falta parentesis de cierre de la sentencia OUT.");}
         | OUT '(' error ')' {yyerror("El contenido de la sentencia OUT no es valido.");}
 		;
@@ -191,7 +192,8 @@ imprimible	: CADENA
 %%
     private final AnalizadorLexico aLexico;
     private final TablaSimbolos tablaS;
-    private final Polaca polaca = new Polaca();
+    private final Polaca polacaProgram = new Polaca();
+    private final MultiPolaca polacaProcedimientos = new MultiPolaca();
 
     /**
      * Create a parser, setting the debug to true or false.
@@ -235,30 +237,49 @@ imprimible	: CADENA
 
     }
 
-    private void agregarPasosPolaca(String... pasos){
-        polaca.agregarPasos(pasos);
+    private final PilaAmbitos pilaAmbitos = new PilaAmbitos();
+
+    private void agregarPasosRepr(String... pasos){
+        if (pilaAmbitos.getAmbitoActual().equals("PROGRAM"))
+            polacaProgram.agregarPasos(pasos);
+        else polacaProcedimientos.agregarPasos(pilaAmbitos.getAmbitosConcatenados(), pasos);
     }
 
     private void puntoControlThen(){
-        polaca.puntoControlThen();
+        String ambitoActual = pilaAmbitos.getAmbitosConcatenados();
+        if (ambitoActual.equals("PROGRAM"))
+            polacaProgram.puntoControlThen();
+        else polacaProcedimientos.ejecutarPuntoControl(ambitoActual,Polaca.PC_THEN);
     }
 
     private void puntoControlElse(){
-        polaca.puntoControlElse();
+        String ambitoActual = pilaAmbitos.getAmbitosConcatenados();
+        if (ambitoActual.equals("PROGRAM"))
+            polacaProgram.puntoControlElse();
+        else polacaProcedimientos.ejecutarPuntoControl(ambitoActual,Polaca.PC_ELSE);
     }
 
     private void puntoControlFinCondicional(){
-        polaca.puntoControlFinCondicional();
+        String ambitoActual = pilaAmbitos.getAmbitosConcatenados();
+        if (ambitoActual.equals("PROGRAM"))
+            polacaProgram.puntoControlFinCondicional();
+        else polacaProcedimientos.ejecutarPuntoControl(ambitoActual,Polaca.PC_FIN_COND);
     }
 
     private void puntoControlLoop(){
-        polaca.puntoControlLoop();
+        if (pilaAmbitos.getAmbitoActual().equals("PROGRAM"))
+            polacaProgram.puntoControlLoop();
     }
 
     private void puntoControlUntil(){
-        polaca.puntoControlUntil();
+        if (pilaAmbitos.getAmbitoActual().equals("PROGRAM"))
+            polacaProgram.puntoControlUntil();
     }
 
     public void printPolaca() {
-        polaca.print();
+        polacaProgram.print();
+    }
+
+    public void printPolacaProcs() {
+        polacaProcedimientos.print();
     }

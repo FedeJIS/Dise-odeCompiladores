@@ -21,12 +21,13 @@
 package analizador_sintactico;
 
 import analizador_lexico.AnalizadorLexico;
+import generacion_c_intermedio.MultiPolaca;
+import generacion_c_intermedio.PilaAmbitos;
+import generacion_c_intermedio.Polaca;
 import util.TablaNotificaciones;
 import util.tabla_simbolos.Celda;
 import util.tabla_simbolos.TablaSimbolos;
-import generacion_assembler.Polaca;
-import util.CodigoFuente;
-//#line 27 "Parser.java"
+//#line 28 "Parser.java"
 
 
 
@@ -519,11 +520,12 @@ final static String yyrule[] = {
 "imprimible : ID",
 };
 
-//#line 191 "archivos/gramatica.y"
+//#line 192 "archivos/gramatica.y"
 
     private final AnalizadorLexico aLexico;
     private final TablaSimbolos tablaS;
-    private final Polaca polaca = new Polaca();
+    private final Polaca polacaProgram = new Polaca();
+    private final MultiPolaca polacaProcedimientos = new MultiPolaca();
 
     /**
      * Create a parser, setting the debug to true or false.
@@ -567,34 +569,53 @@ final static String yyrule[] = {
 
     }
 
-    private void agregarPasosPolaca(String... pasos){
-        polaca.agregarPasos(pasos);
+    private final PilaAmbitos pilaAmbitos = new PilaAmbitos();
+
+    private void agregarPasosRepr(String... pasos){
+        if (pilaAmbitos.getAmbitoActual().equals("PROGRAM"))
+            polacaProgram.agregarPasos(pasos);
+        else polacaProcedimientos.agregarPasos(pilaAmbitos.getAmbitosConcatenados(), pasos);
     }
 
     private void puntoControlThen(){
-        polaca.puntoControlThen();
+        String ambitoActual = pilaAmbitos.getAmbitosConcatenados();
+        if (ambitoActual.equals("PROGRAM"))
+            polacaProgram.puntoControlThen();
+        else polacaProcedimientos.ejecutarPuntoControl(ambitoActual,Polaca.PC_THEN);
     }
 
     private void puntoControlElse(){
-        polaca.puntoControlElse();
+        String ambitoActual = pilaAmbitos.getAmbitosConcatenados();
+        if (ambitoActual.equals("PROGRAM"))
+            polacaProgram.puntoControlElse();
+        else polacaProcedimientos.ejecutarPuntoControl(ambitoActual,Polaca.PC_ELSE);
     }
 
     private void puntoControlFinCondicional(){
-        polaca.puntoControlFinCondicional();
+        String ambitoActual = pilaAmbitos.getAmbitosConcatenados();
+        if (ambitoActual.equals("PROGRAM"))
+            polacaProgram.puntoControlFinCondicional();
+        else polacaProcedimientos.ejecutarPuntoControl(ambitoActual,Polaca.PC_FIN_COND);
     }
 
     private void puntoControlLoop(){
-        polaca.puntoControlLoop();
+        if (pilaAmbitos.getAmbitoActual().equals("PROGRAM"))
+            polacaProgram.puntoControlLoop();
     }
 
     private void puntoControlUntil(){
-        polaca.puntoControlUntil();
+        if (pilaAmbitos.getAmbitoActual().equals("PROGRAM"))
+            polacaProgram.puntoControlUntil();
     }
 
     public void printPolaca() {
-        polaca.print();
+        polacaProgram.print();
     }
-//#line 526 "Parser.java"
+
+    public void printPolacaProcs() {
+        polacaProcedimientos.print();
+    }
+//#line 547 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -749,178 +770,190 @@ boolean doaction;
       {
 //########## USER-SUPPLIED ACTIONS ##########
 case 8:
-//#line 33 "archivos/gramatica.y"
+//#line 34 "archivos/gramatica.y"
 {yyerror("Falta ';' al final de la sentencia");}
 break;
-case 13:
+case 10:
+//#line 38 "archivos/gramatica.y"
+{pilaAmbitos.eliminarUltimo();}
+break;
+case 12:
 //#line 42 "archivos/gramatica.y"
+{pilaAmbitos.agregarAmbito(val_peek(0).sval); /*Guardo el nombre del procedimiento en caso de necesitarlo.*/}
+break;
+case 13:
+//#line 43 "archivos/gramatica.y"
 {yyerror("Falta el identificador del procedimiento.");}
 break;
 case 16:
-//#line 47 "archivos/gramatica.y"
-{yyerror("Falta el parentesis de cierre para los parametros.");}
-break;
-case 17:
 //#line 48 "archivos/gramatica.y"
 {yyerror("Falta el parentesis de cierre para los parametros.");}
 break;
+case 17:
+//#line 49 "archivos/gramatica.y"
+{yyerror("Falta el parentesis de cierre para los parametros.");}
+break;
 case 21:
-//#line 54 "archivos/gramatica.y"
+//#line 55 "archivos/gramatica.y"
 {yyerror("Un procedimiento no puede tener mas de 3 parametros.");}
 break;
 case 22:
-//#line 57 "archivos/gramatica.y"
+//#line 58 "archivos/gramatica.y"
 {yyerror("Falta una ',' para separar dos parametros.");}
 break;
 case 27:
-//#line 66 "archivos/gramatica.y"
+//#line 67 "archivos/gramatica.y"
 {yyerror("Falta el tipo de un parametro.");}
 break;
 case 28:
-//#line 67 "archivos/gramatica.y"
+//#line 68 "archivos/gramatica.y"
 {yyerror("Falta el identificador de un parametro.");}
 break;
 case 30:
-//#line 71 "archivos/gramatica.y"
+//#line 72 "archivos/gramatica.y"
 {yyerror("Falta el identificador de un parametro.");}
 break;
 case 32:
-//#line 75 "archivos/gramatica.y"
-{yyerror("Formato de declaracion de NI invalido. El formato correcto es 'NI = CTE_UINT'.");}
-break;
-case 33:
 //#line 76 "archivos/gramatica.y"
 {yyerror("Formato de declaracion de NI invalido. El formato correcto es 'NI = CTE_UINT'.");}
 break;
-case 34:
+case 33:
 //#line 77 "archivos/gramatica.y"
 {yyerror("Formato de declaracion de NI invalido. El formato correcto es 'NI = CTE_UINT'.");}
 break;
-case 35:
+case 34:
 //#line 78 "archivos/gramatica.y"
 {yyerror("Formato de declaracion de NI invalido. El formato correcto es 'NI = CTE_UINT'.");}
 break;
+case 35:
+//#line 79 "archivos/gramatica.y"
+{yyerror("Formato de declaracion de NI invalido. El formato correcto es 'NI = CTE_UINT'.");}
+break;
 case 37:
-//#line 82 "archivos/gramatica.y"
+//#line 83 "archivos/gramatica.y"
 {yyerror("Cuerpo del procedimiento vacio.");}
 break;
 case 50:
-//#line 103 "archivos/gramatica.y"
+//#line 104 "archivos/gramatica.y"
 {yyerror("Un procedimiento no puede tener mas de 3 parametros.");}
 break;
 case 51:
-//#line 106 "archivos/gramatica.y"
-{agregarPasosPolaca(val_peek(2).sval,"=");}
+//#line 107 "archivos/gramatica.y"
+{agregarPasosRepr(val_peek(2).sval,"=");}
 break;
 case 52:
-//#line 107 "archivos/gramatica.y"
+//#line 108 "archivos/gramatica.y"
 {yyerror("El lado izquierdo de la asignacio no es valido.");}
 break;
 case 53:
-//#line 110 "archivos/gramatica.y"
-{agregarPasosPolaca("+");}
+//#line 111 "archivos/gramatica.y"
+{agregarPasosRepr("+");}
 break;
 case 54:
-//#line 111 "archivos/gramatica.y"
-{agregarPasosPolaca("-");}
+//#line 112 "archivos/gramatica.y"
+{agregarPasosRepr("-");}
 break;
 case 56:
-//#line 115 "archivos/gramatica.y"
-{agregarPasosPolaca("*");}
+//#line 116 "archivos/gramatica.y"
+{agregarPasosRepr("*");}
 break;
 case 57:
-//#line 116 "archivos/gramatica.y"
-{agregarPasosPolaca("/");}
+//#line 117 "archivos/gramatica.y"
+{agregarPasosRepr("/");}
 break;
 case 59:
-//#line 120 "archivos/gramatica.y"
-{agregarPasosPolaca(val_peek(0).sval);}
+//#line 121 "archivos/gramatica.y"
+{agregarPasosRepr(val_peek(0).sval);}
 break;
 case 60:
-//#line 121 "archivos/gramatica.y"
-{agregarPasosPolaca(val_peek(0).sval);}
+//#line 122 "archivos/gramatica.y"
+{agregarPasosRepr(val_peek(0).sval);}
 break;
 case 61:
-//#line 122 "archivos/gramatica.y"
-{agregarPasosPolaca(val_peek(0).sval);}
+//#line 123 "archivos/gramatica.y"
+{agregarPasosRepr(val_peek(0).sval);}
 break;
 case 62:
-//#line 123 "archivos/gramatica.y"
-{checkCambioSigno(); agregarPasosPolaca("-");}
+//#line 124 "archivos/gramatica.y"
+{checkCambioSigno(); agregarPasosRepr("-");}
 break;
 case 64:
-//#line 129 "archivos/gramatica.y"
+//#line 130 "archivos/gramatica.y"
 {puntoControlLoop();}
 break;
 case 66:
-//#line 133 "archivos/gramatica.y"
+//#line 134 "archivos/gramatica.y"
 {yyerror("Falta el bloque de sentencias ejecutables del LOOP.");}
 break;
 case 69:
-//#line 138 "archivos/gramatica.y"
+//#line 139 "archivos/gramatica.y"
 {yyerror("Bloque de sentencias vacio.");}
 break;
 case 72:
-//#line 145 "archivos/gramatica.y"
+//#line 146 "archivos/gramatica.y"
 {puntoControlUntil();}
 break;
 case 73:
-//#line 146 "archivos/gramatica.y"
+//#line 147 "archivos/gramatica.y"
 {yyerror("Falta la condicion de corte del LOOP.");}
 break;
 case 74:
-//#line 149 "archivos/gramatica.y"
-{agregarPasosPolaca(val_peek(2).sval);}
+//#line 150 "archivos/gramatica.y"
+{agregarPasosRepr(val_peek(2).sval);}
 break;
 case 75:
-//#line 150 "archivos/gramatica.y"
+//#line 151 "archivos/gramatica.y"
 {yyerror("Falta parentesis de cierre de la condicion.");}
 break;
 case 76:
-//#line 151 "archivos/gramatica.y"
+//#line 152 "archivos/gramatica.y"
 {yyerror("Falta expresion en el lado izquierdo de la condicion.");}
 break;
 case 77:
-//#line 152 "archivos/gramatica.y"
+//#line 153 "archivos/gramatica.y"
 {yyerror("Falta expresion en el lado derecho de la condicion.");}
 break;
 case 78:
-//#line 153 "archivos/gramatica.y"
+//#line 154 "archivos/gramatica.y"
 {yyerror("Error en la condicion.");}
 break;
 case 87:
-//#line 168 "archivos/gramatica.y"
+//#line 169 "archivos/gramatica.y"
 {puntoControlThen();}
 break;
 case 88:
-//#line 169 "archivos/gramatica.y"
+//#line 170 "archivos/gramatica.y"
 {yyerror("Falta la condicion del IF.");}
 break;
 case 89:
-//#line 172 "archivos/gramatica.y"
+//#line 173 "archivos/gramatica.y"
 {puntoControlElse();}
 break;
 case 90:
-//#line 173 "archivos/gramatica.y"
+//#line 174 "archivos/gramatica.y"
 {yyerror("Falta el bloque de sentencias ejecutables de la rama THEN.");}
 break;
 case 91:
-//#line 176 "archivos/gramatica.y"
+//#line 177 "archivos/gramatica.y"
 {puntoControlFinCondicional();}
 break;
 case 92:
-//#line 177 "archivos/gramatica.y"
+//#line 178 "archivos/gramatica.y"
 {yyerror("Falta el bloque de sentencias ejecutables de la rama ELSE.");}
 break;
-case 94:
+case 93:
 //#line 181 "archivos/gramatica.y"
+{agregarPasosRepr(val_peek(1).sval,"OUT");}
+break;
+case 94:
+//#line 182 "archivos/gramatica.y"
 {yyerror("Falta parentesis de cierre de la sentencia OUT.");}
 break;
 case 95:
-//#line 182 "archivos/gramatica.y"
+//#line 183 "archivos/gramatica.y"
 {yyerror("El contenido de la sentencia OUT no es valido.");}
 break;
-//#line 847 "Parser.java"
+//#line 880 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####
