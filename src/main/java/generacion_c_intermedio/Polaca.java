@@ -8,6 +8,8 @@ public class Polaca {
     public static final int PC_THEN = 0;
     public static final int PC_ELSE = 1;
     public static final int PC_FIN_COND = 2;
+    public static final int PC_LOOP = 3;
+    public static final int PC_UNTIL = 4;
 
     private final List<String> listaPasos = new ArrayList<>();
     private final List<Integer> pilaIncompletos = new ArrayList<>();
@@ -16,9 +18,11 @@ public class Polaca {
 
     @Override
     public String toString() {
-        return "{" +
-                listaPasos.toString() +
-                '}';
+        StringBuilder builder = new StringBuilder("[");
+        for (int i = 0; i < listaPasos.size(); i++)
+            builder.append("(").append(i).append(",").append(listaPasos.get(i)).append(");");
+
+        return builder.append("]").toString();
     }
 
     public void print() {

@@ -161,9 +161,9 @@ comparador 	: COMP_MAYOR_IGUAL
 			| COMP_IGUAL
 			| COMP_DISTINTO
 			;
-			
+
 if	: encabezado_if rama_then rama_else END_IF
-	| encabezado_if rama_then END_IF
+	| encabezado_if rama_then_prima END_IF
 	;
 
 encabezado_if	: IF condicion {puntoControlThen();}
@@ -173,6 +173,10 @@ encabezado_if	: IF condicion {puntoControlThen();}
 rama_then	: THEN bloque_estruct_ctrl {puntoControlElse();}
             | THEN {yyerror("Falta el bloque de sentencias ejecutables de la rama THEN.");}
 			;
+
+rama_then_prima : THEN bloque_estruct_ctrl {puntoControlFinCondicional();}
+                | THEN {yyerror("Falta el bloque de sentencias ejecutables de la rama THEN.");}
+                ;
 			
 rama_else	: ELSE bloque_estruct_ctrl {puntoControlFinCondicional();}
             | ELSE {yyerror("Falta el bloque de sentencias ejecutables de la rama ELSE.");}
@@ -240,40 +244,39 @@ imprimible	: CADENA
     private final PilaAmbitos pilaAmbitos = new PilaAmbitos();
 
     private void agregarPasosRepr(String... pasos){
-        if (pilaAmbitos.getAmbitoActual().equals("PROGRAM"))
+        if (pilaAmbitos.inAmbitoGlobal())
             polacaProgram.agregarPasos(pasos);
         else polacaProcedimientos.agregarPasos(pilaAmbitos.getAmbitosConcatenados(), pasos);
     }
 
     private void puntoControlThen(){
-        String ambitoActual = pilaAmbitos.getAmbitosConcatenados();
-        if (ambitoActual.equals("PROGRAM"))
+        if (pilaAmbitos.inAmbitoGlobal())
             polacaProgram.puntoControlThen();
-        else polacaProcedimientos.ejecutarPuntoControl(ambitoActual,Polaca.PC_THEN);
+        else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_THEN);
     }
 
     private void puntoControlElse(){
-        String ambitoActual = pilaAmbitos.getAmbitosConcatenados();
-        if (ambitoActual.equals("PROGRAM"))
+        if (pilaAmbitos.inAmbitoGlobal())
             polacaProgram.puntoControlElse();
-        else polacaProcedimientos.ejecutarPuntoControl(ambitoActual,Polaca.PC_ELSE);
+        else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_ELSE);
     }
 
     private void puntoControlFinCondicional(){
-        String ambitoActual = pilaAmbitos.getAmbitosConcatenados();
-        if (ambitoActual.equals("PROGRAM"))
+        if (pilaAmbitos.inAmbitoGlobal())
             polacaProgram.puntoControlFinCondicional();
-        else polacaProcedimientos.ejecutarPuntoControl(ambitoActual,Polaca.PC_FIN_COND);
+        else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_FIN_COND);
     }
 
     private void puntoControlLoop(){
-        if (pilaAmbitos.getAmbitoActual().equals("PROGRAM"))
+        if (pilaAmbitos.inAmbitoGlobal())
             polacaProgram.puntoControlLoop();
+        else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_LOOP);
     }
 
     private void puntoControlUntil(){
-        if (pilaAmbitos.getAmbitoActual().equals("PROGRAM"))
+        if (pilaAmbitos.inAmbitoGlobal())
             polacaProgram.puntoControlUntil();
+        else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_UNTIL);
     }
 
     public void printPolaca() {

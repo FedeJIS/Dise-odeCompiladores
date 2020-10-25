@@ -6,25 +6,22 @@ import java.util.List;
 public class PilaAmbitos {
     private final List<String> ambitos = new ArrayList<>();
 
-    private String ambitoActual;
+    private final String ambitoGlobal = "PROGRAM";
 
     public PilaAmbitos(){
-        ambitoActual = "PROGRAM";
-        ambitos.add(ambitoActual);
+        ambitos.add(ambitoGlobal);
     }
 
-    public String getAmbitoActual(){
-        return ambitoActual;
+    public boolean inAmbitoGlobal(){
+        return getAmbitosConcatenados().equals(ambitoGlobal);
     }
 
     public void agregarAmbito(String nuevoAmbito){
         ambitos.add(nuevoAmbito);
-        ambitoActual = nuevoAmbito;
     }
 
     public void eliminarUltimo(){
         ambitos.remove(ambitos.size()-1); //Saco el ultimo ambito almacenado.
-        ambitoActual = ambitos.get(ambitos.size()-1); //Actualizo el ambito actual.
     }
 
     public String getAmbitosConcatenados(){
