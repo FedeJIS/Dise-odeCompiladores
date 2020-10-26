@@ -3,7 +3,7 @@ import compilador.Compilador;
 public class Test {
 
     public static void main(String[] args) {
-        Compilador.compilar(testVariableRedecl(),false,true);
+        Compilador.compilar(testVariableNoDecl(),false,true);
     }
 
     /**
@@ -66,6 +66,9 @@ public class Test {
                 ;
     }
 
+    /**
+     * FUNCIONA
+     */
     private static String testVariableRedecl(){
         return
                 "UINT a; \n" +
@@ -74,6 +77,22 @@ public class Test {
                     "UINT a;\n" +
                 "};\n" +
                 "y = 5_ui;"
+                ;
+    }
+
+    private static String testVariableNoDecl(){
+        return
+//                "UINT a ; \n" +
+//                "PROC x(VAR UINT b, DOUBLE c, UINT d) NI = 5_ui {\n" +
+////                    "x = 3_ui;\n" +
+//                    "a = 5.0d1;\n" +
+//                "};"
+                "PROC x() NI = 1_ui{\n" +
+                    "OUT(5_ui);\n" +
+                "};" +
+                "PROC y() NI = 1_ui{\n" +
+                    "x();\n" +
+                "};"
                 ;
     }
 }

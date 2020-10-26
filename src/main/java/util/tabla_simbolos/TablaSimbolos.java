@@ -10,8 +10,16 @@ public class TablaSimbolos {
         tablaSimb = new Hashtable<>();
     }
 
-    public boolean contieneLexema(String lexema) {
-        return tablaSimb.containsKey(lexema);
+    private String generaLexemaAmbito(String lexema, String ambito){
+        return ambito+"::"+lexema; //Name mangling.
+    }
+
+    public boolean contieneLexema(String lexema, String ambito) {
+        return tablaSimb.containsKey(generaLexemaAmbito(lexema,ambito));
+    }
+
+    public boolean isEntradaProc(String lexema, String ambito){
+        return tablaSimb.get(ambito+"::"+lexema).getUso().equals("Procedimiento");
     }
 
     public void setTipoEntrada(String lexema, String tipo){
@@ -35,13 +43,26 @@ public class TablaSimbolos {
         entrada.setDeclarada(declarada);
     }
 
-    public boolean entradaDeclarada(String lexema, String ambito){
+    public boolean isEntradaDeclarada(String lexema, String ambito){
         String nLexema = ambito + "::" + lexema; //Name mangling.
-
-        System.out.println("TS//"+nLexema);
 
         return tablaSimb.get(nLexema) != null
             && tablaSimb.get(nLexema).isDeclarada();
+    }
+
+    public void setMaxInvoc(String lexema, int nMax){
+        Celda entrada = tablaSimb.get(lexema);
+        entrada.setMaxInvoc(nMax);
+    }
+
+    public boolean maxInvocAlcanzadas(String lexema, String ambito){
+        Celda entrada = tablaSimb.get(generaLexemaAmbito(lexema,ambito));
+        return entrada.maxInvocAlcanzadas();
+    }
+
+    public void incrementaNInvoc(String lexema, String ambito){
+        Celda entrada = tablaSimb.get(generaLexemaAmbito(lexema,ambito));
+        entrada.incrementaNInvoc();
     }
 
     /**

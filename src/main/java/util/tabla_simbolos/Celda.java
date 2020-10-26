@@ -1,12 +1,11 @@
 package util.tabla_simbolos;
 
-import util.TablaNotificaciones;
-
 public class Celda {
     private final int token;
     private String lexema;
     private String tipo;
     private String uso;
+    private int nInvoc, maxInvoc;
     private boolean declarada;
     private int referencias;
 
@@ -37,6 +36,10 @@ public class Celda {
         this.tipo = tipo;
     }
 
+    public String getUso() {
+        return uso;
+    }
+
     public void setUso(String uso) {
         this.uso = uso;
     }
@@ -46,13 +49,19 @@ public class Celda {
     }
 
     public void setDeclarada(boolean declarada) {
-//        if (this.declarada){ //Hay una redeclaracion.
-//            int finAmbito = lexema.lastIndexOf("::");
-//            String ambito = lexema.substring(0,finAmbito);
-//            String id = lexema.substring(finAmbito+1);
-//            TablaNotificaciones.agregarError("El identificador '" + id+"' ya se encuentra declarado en el ambito '"+ambito+"'.");
-//        }
         this.declarada = declarada;
+    }
+
+    public void incrementaNInvoc(){
+        nInvoc++;
+    }
+
+    public void setMaxInvoc(int maxInvoc) {
+        this.maxInvoc = maxInvoc;
+    }
+
+    public boolean maxInvocAlcanzadas(){
+        return nInvoc == maxInvoc;
     }
 
     public void actualizarReferencias(int i) {
@@ -71,6 +80,7 @@ public class Celda {
                 ", tipo='" + tipo + '\'' +
                 ", uso='" + uso + '\'' +
                 ", declarada='" + declarada + '\'' +
+                ", nInvoc=" + nInvoc +
                 ", referencias=" + referencias +
                 '}';
     }

@@ -527,137 +527,200 @@ final static String yyrule[] = {
 "imprimible : ID",
 };
 
-//#line 202 "archivos/gramatica.y"
+//#line 214 "archivos/gramatica.y"
 
-        private final AnalizadorLexico aLexico;
-        private final TablaSimbolos tablaS;
-        private final Polaca polacaProgram = new Polaca();
-        private final MultiPolaca polacaProcedimientos = new MultiPolaca();
-        private final PilaAmbitos pilaAmbitos = new PilaAmbitos();
+            private final AnalizadorLexico aLexico;
+            private final TablaSimbolos tablaS;
+            private final Polaca polacaProgram = new Polaca();
+            private final MultiPolaca polacaProcedimientos = new MultiPolaca();
 
-        private String ultimoTipoLeido;
+            private final PilaAmbitos pilaAmbitos = new PilaAmbitos();
 
-        /**
-         * Create a parser, setting the debug to true or false.
-         *
-         * @param debugMe true for debugging, false for no debug.
-         */
-        public Parser(boolean debugMe, AnalizadorLexico aLexico, TablaSimbolos tablaS) {
-            yydebug = debugMe;
-            this.aLexico = aLexico;
-            this.tablaS = tablaS;
-        }
+            private String ultimoTipoLeido, nombreProc;
 
-        private int yylex() {
-            int token = aLexico.produceToken();
-            yylval = new ParserVal(aLexico.ultimoLexemaGenerado);
-            return token;
-        }
+            private int maxInvocProc;
 
-        private void yyout(String mensaje) {
-            System.out.println(mensaje);
-        }
+            /**
+             * Create a parser, setting the debug to true or false.
+             *
+             * @param debugMe true for debugging, false for no debug.
+             */
+            public Parser(boolean debugMe, AnalizadorLexico aLexico, TablaSimbolos tablaS) {
+                yydebug = debugMe;
+                this.aLexico = aLexico;
+                this.tablaS = tablaS;
+            }
 
-        private void yyerror(String mensajeError) {
-            TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": " + mensajeError);
-        }
+            private int yylex() {
+                int token = aLexico.produceToken();
+                yylval = new ParserVal(aLexico.ultimoLexemaGenerado);
+                return token;
+            }
 
-        private void checkCambioSigno() {
-            String lexemaSignoNoC = yylval.sval; //Obtengo el lexema del factor.
-            Celda celdaOriginal = tablaS.getEntrada(lexemaSignoNoC); //La sentencia va aca si o si, porque mas adelante ya no existe la entrada en la TS.
+            private void yyout(String mensaje) {
+                System.out.println(mensaje);
+            }
 
-            if (celdaOriginal.getTipo().equals("DOUBLE")) {
-                tablaS.quitarReferencia(lexemaSignoNoC); //El lexema esta en la TS si o si. refs--.
-                if (tablaS.entradaSinReferencias(lexemaSignoNoC)) tablaS.eliminarEntrada(lexemaSignoNoC);
+            private void yyerror(String mensajeError) {
+                TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": " + mensajeError);
+            }
 
-                String lexemaSignoC = String.valueOf(Double.parseDouble(lexemaSignoNoC) * -1); //Cambio el signo del factor.
-                if (!tablaS.contieneLexema(lexemaSignoC)) {
+            private void checkCambioSigno() {
+                String lexemaSignoNoC = yylval.sval; //Obtengo el lexema del factor.
+                Celda celdaOriginal = tablaS.getEntrada(lexemaSignoNoC); //La sentencia va aca si o si, porque mas adelante ya no existe la entrada en la TS.
+
+                if (celdaOriginal.getTipo().equals("DOUBLE")) {
+                    tablaS.quitarReferencia(lexemaSignoNoC); //El lexema esta en la TS si o si. refs--.
+                    if (tablaS.entradaSinReferencias(lexemaSignoNoC)) tablaS.eliminarEntrada(lexemaSignoNoC);
+
+                    String lexemaSignoC = String.valueOf(Double.parseDouble(lexemaSignoNoC) * -1); //Cambio el signo del factor.
                     tablaS.agregarEntrada(celdaOriginal.getToken(), lexemaSignoC, celdaOriginal.getTipo());
+
+                } else
+                    TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": No se permiten UINT negativos");
+
+            }
+
+            private boolean isEntradaRedeclarada(String lexema){
+                StringBuilder builderAmbito = new StringBuilder(pilaAmbitos.getAmbitosConcatenados());
+
+                while (!builderAmbito.toString().isEmpty()) {
+                    if (tablaS.isEntradaDeclarada(lexema, builderAmbito.toString())) return true;
+
+                    if (!builderAmbito.toString().equals("PROGRAM")) //Chequea no estar en el mayor ambito.
+                        builderAmbito.delete(builderAmbito.lastIndexOf(":"),builderAmbito.length());
+                    else builderAmbito.delete(0,builderAmbito.length());
                 }
-            } else
-                TablaNotificaciones.agregarError("Error en la linea " + aLexico.getLineaActual() + ": No se permiten UINT negativos");
 
-        }
-
-        private void checkEntradaNoDeclarada(String lexema){
-            StringBuilder builder = new StringBuilder(pilaAmbitos.getAmbitosConcatenados());
-
-
-        }
-
-        private boolean entradaRedeclarada(String lexema){
-            StringBuilder builder = new StringBuilder(pilaAmbitos.getAmbitosConcatenados());
-
-            System.out.println(lexema);
-            while (!builder.toString().isEmpty()) {
-                System.out.println("antes:"+builder.toString());
-                if (tablaS.entradaDeclarada(lexema, builder.toString())) return true;
-
-                if (!builder.toString().equals("PROGRAM")) //Chequea no estar en el mayor ambito.
-                    builder.delete(builder.lastIndexOf(":"),builder.length());
-                else builder.delete(0,builder.length());
-                System.out.println("dsp:"+builder.toString());
+                return false;
             }
 
-            return false;
-        }
+            private void checkDeclaracionId(String usoId, String lexema){
+                String ambito = getAmbitoId(lexema);
 
-        private void declaracionId(String usoId, String lexema){
-            if (entradaRedeclarada(lexema))
-                TablaNotificaciones.agregarError("Linea "+aLexico.getLineaActual()+": La variable '"+lexema+"' ya se encuentra declarada.");
-            else {
-                tablaS.setTipoEntrada(lexema,ultimoTipoLeido);
-                tablaS.setUsoEntrada(lexema,usoId);
-                tablaS.setDeclaracionEntrada(lexema,true);
-                tablaS.setAmbitoEntrada(lexema, pilaAmbitos.getAmbitosConcatenados()); //Actualizo el lexema en la TS.
+                if (!ambito.isEmpty() //La TS no contiene el lexema recibido en ningun ambito.
+                        && tablaS.isEntradaDeclarada(lexema,ambito))//Existe el lexema en la TS y tiene el flag de declaracion activado.
+                    TablaNotificaciones.agregarError("Linea "+aLexico.getLineaActual()+": La variable '"+lexema+"' ya se encuentra declarada.");
+                else {
+                    tablaS.setTipoEntrada(lexema,ultimoTipoLeido);
+                    tablaS.setUsoEntrada(lexema,usoId);
+                    tablaS.setDeclaracionEntrada(lexema,true);
+                    tablaS.setAmbitoEntrada(lexema, pilaAmbitos.getAmbitosConcatenados()); //Actualizo el lexema en la TS.
+                }
             }
-        }
 
-        private void agregarPasosRepr(String... pasos){
-            if (pilaAmbitos.inAmbitoGlobal())
-                polacaProgram.agregarPasos(pasos);
-            else polacaProcedimientos.agregarPasos(pilaAmbitos.getAmbitosConcatenados(), pasos);
-        }
+            private void checkAsignacion(String lexema){
+                StringBuilder builderAmbito = new StringBuilder(pilaAmbitos.getAmbitosConcatenados());
 
-        private void puntoControlThen(){
-            if (pilaAmbitos.inAmbitoGlobal())
-                polacaProgram.puntoControlThen();
-            else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_THEN);
-        }
+                boolean variableDeclarada = false;
+                while (!builderAmbito.toString().isEmpty()) {
+                    variableDeclarada = tablaS.isEntradaDeclarada(lexema, builderAmbito.toString());
+                    if (variableDeclarada && tablaS.isEntradaProc(lexema,builderAmbito.toString())) //Pero es un procedimiento.
+                        TablaNotificaciones.agregarError("Linea "+aLexico.getLineaActual()+": Un procedimiento no puede no puede formar parte de una asignacion.");
 
-        private void puntoControlElse(){
-            if (pilaAmbitos.inAmbitoGlobal())
-                polacaProgram.puntoControlElse();
-            else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_ELSE);
-        }
+                    if (!builderAmbito.toString().equals("PROGRAM")) //Chequea no estar en el mayor ambito.
+                        builderAmbito.delete(builderAmbito.lastIndexOf(":"),builderAmbito.length());
+                    else builderAmbito.delete(0,builderAmbito.length());
+                }
 
-        private void puntoControlFinCondicional(){
-            if (pilaAmbitos.inAmbitoGlobal())
-                polacaProgram.puntoControlFinCondicional();
-            else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_FIN_COND);
-        }
+                if (!variableDeclarada)
+                    TablaNotificaciones.agregarError("Linea "+aLexico.getLineaActual()+": La variable '"+lexema+"' no se encuentra declarada.");
+            }
 
-        private void puntoControlLoop(){
-            if (pilaAmbitos.inAmbitoGlobal())
-                polacaProgram.puntoControlLoop();
-            else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_LOOP);
-        }
+            private void checkDeclaracionProc(String lexema){
+                if (isEntradaRedeclarada(lexema))
+                    TablaNotificaciones.agregarError("Linea "+aLexico.getLineaActual()+": El procedimiento '"+lexema+"' ya se encuentra declarado.");
+                else {
+                    tablaS.setTipoEntrada(lexema,"VOID");
+                    tablaS.setUsoEntrada(lexema,"Procedimiento");
+                    tablaS.setDeclaracionEntrada(lexema,true);
+                    tablaS.setAmbitoEntrada(lexema, pilaAmbitos.getAmbitosConcatenados()); //Actualizo el lexema en la TS.
 
-        private void puntoControlUntil(){
-            if (pilaAmbitos.inAmbitoGlobal())
-                polacaProgram.puntoControlUntil();
-            else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_UNTIL);
-        }
+                    nombreProc = pilaAmbitos.getAmbitosConcatenados()+"::"+lexema;
+                }
+            }
 
-        public void printPolaca() {
-            polacaProgram.print();
-        }
+            private void setNIProc(){
+                if (!TablaNotificaciones.hayErrores()) { //Solo se ejecuta si no se genero un error al chequear el nombre del proc.
+                    tablaS.setMaxInvoc(nombreProc, maxInvocProc);
+                }
+            }
 
-        public void printPolacaProcs() {
-            polacaProcedimientos.print();
-        }
+            private String getAmbitoId(String lexema){
+                StringBuilder builderAmbito = new StringBuilder(pilaAmbitos.getAmbitosConcatenados());
 
-//#line 580 "Parser.java"
+                while (!builderAmbito.toString().isEmpty()) {
+                    //Busca el id en el ambito actual.
+                    if (tablaS.contieneLexema(lexema,builderAmbito.toString()))
+                        return builderAmbito.toString();
+
+                    //"Baja" un nivel en la pila de ambitos.
+                    if (!builderAmbito.toString().equals("PROGRAM")) //Chequea no estar en el ambito global.
+                        builderAmbito.delete(builderAmbito.lastIndexOf(":"),builderAmbito.length());
+                    else builderAmbito.delete(0,builderAmbito.length());
+                }
+                return ""; //La variable no esta declarada.
+            }
+
+            private void checkInvocacionProc(String lexema){
+                String ambito = getAmbitoId(lexema);
+
+                if (ambito.isEmpty())
+                    TablaNotificaciones.agregarError("Linea "+aLexico.getLineaActual()+": El procedimiento '"+lexema+"' no se encuentra declarado.");
+
+                else if (tablaS.maxInvocAlcanzadas(lexema,ambito))
+                        TablaNotificaciones.agregarError("Linea "+aLexico.getLineaActual()+": El procedimiento '"+lexema+"' ya alcanzo su numero maximo de invocaciones.");
+                    else {
+                        tablaS.incrementaNInvoc(lexema,ambito);
+                        //Generar codigo
+                }
+
+            }
+
+            private void agregarPasosRepr(String... pasos){
+                if (pilaAmbitos.inAmbitoGlobal())
+                    polacaProgram.agregarPasos(pasos);
+                else polacaProcedimientos.agregarPasos(pilaAmbitos.getAmbitosConcatenados(), pasos);
+            }
+
+            private void puntoControlThen(){
+                if (pilaAmbitos.inAmbitoGlobal())
+                    polacaProgram.puntoControlThen();
+                else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_THEN);
+            }
+
+            private void puntoControlElse(){
+                if (pilaAmbitos.inAmbitoGlobal())
+                    polacaProgram.puntoControlElse();
+                else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_ELSE);
+            }
+
+            private void puntoControlFinCondicional(){
+                if (pilaAmbitos.inAmbitoGlobal())
+                    polacaProgram.puntoControlFinCondicional();
+                else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_FIN_COND);
+            }
+
+            private void puntoControlLoop(){
+                if (pilaAmbitos.inAmbitoGlobal())
+                    polacaProgram.puntoControlLoop();
+                else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_LOOP);
+            }
+
+            private void puntoControlUntil(){
+                if (pilaAmbitos.inAmbitoGlobal())
+                    polacaProgram.puntoControlUntil();
+                else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_UNTIL);
+            }
+
+            public void printPolaca() {
+                polacaProgram.print();
+            }
+
+            public void printPolacaProcs() {
+                polacaProcedimientos.print();
+            }
+//#line 652 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -825,225 +888,252 @@ case 8:
 break;
 case 10:
 //#line 38 "archivos/gramatica.y"
-{pilaAmbitos.eliminarUltimo();}
+{
+                                                                setNIProc();
+                                                                pilaAmbitos.eliminarUltimo();
+                                                                }
 break;
 case 12:
-//#line 42 "archivos/gramatica.y"
-{declaracionId("Variable",val_peek(0).sval);}
+//#line 45 "archivos/gramatica.y"
+{checkDeclaracionId("Variable",val_peek(0).sval);}
 break;
 case 13:
-//#line 43 "archivos/gramatica.y"
-{declaracionId("Variable",val_peek(2).sval);}
+//#line 46 "archivos/gramatica.y"
+{checkDeclaracionId("Variable",val_peek(2).sval);}
 break;
 case 14:
-//#line 46 "archivos/gramatica.y"
+//#line 49 "archivos/gramatica.y"
 {
-                        pilaAmbitos.agregarAmbito(val_peek(0).sval); /*Guardo el nombre del procedimiento en caso de necesitarlo.
-*/
-                        tablaS.setUsoEntrada(val_peek(0).sval,"Procedimiento");
+                        checkDeclaracionProc(val_peek(0).sval);
+                        pilaAmbitos.agregarAmbito(val_peek(0).sval); /*Guardo el nombre del procedimiento en caso de necesitarlo.*/
                         }
 break;
 case 15:
-//#line 50 "archivos/gramatica.y"
+//#line 53 "archivos/gramatica.y"
 {yyerror("Falta el identificador del procedimiento.");}
 break;
 case 18:
-//#line 55 "archivos/gramatica.y"
+//#line 58 "archivos/gramatica.y"
 {yyerror("Falta el parentesis de cierre para los parametros.");}
 break;
 case 19:
-//#line 56 "archivos/gramatica.y"
+//#line 59 "archivos/gramatica.y"
 {yyerror("Falta el parentesis de cierre para los parametros.");}
 break;
 case 23:
-//#line 62 "archivos/gramatica.y"
+//#line 65 "archivos/gramatica.y"
 {yyerror("Un procedimiento no puede tener mas de 3 parametros.");}
 break;
 case 24:
-//#line 65 "archivos/gramatica.y"
+//#line 68 "archivos/gramatica.y"
 {yyerror("Falta una ',' para separar dos parametros.");}
 break;
 case 28:
-//#line 73 "archivos/gramatica.y"
-{declaracionId("ParamCVR",val_peek(0).sval);}
+//#line 76 "archivos/gramatica.y"
+{checkDeclaracionId("ParamCVR",val_peek(0).sval);}
 break;
 case 29:
-//#line 74 "archivos/gramatica.y"
+//#line 77 "archivos/gramatica.y"
 {yyerror("Falta el tipo de un parametro.");}
 break;
 case 30:
-//#line 75 "archivos/gramatica.y"
+//#line 78 "archivos/gramatica.y"
 {yyerror("Falta el identificador de un parametro.");}
 break;
 case 31:
-//#line 78 "archivos/gramatica.y"
-{declaracionId("ParamCV",val_peek(0).sval);}
+//#line 81 "archivos/gramatica.y"
+{checkDeclaracionId("ParamCV",val_peek(0).sval);}
 break;
 case 32:
-//#line 79 "archivos/gramatica.y"
+//#line 82 "archivos/gramatica.y"
 {yyerror("Falta el identificador de un parametro.");}
 break;
+case 33:
+//#line 85 "archivos/gramatica.y"
+{maxInvocProc = Integer.parseInt(val_peek(0).sval);}
+break;
 case 34:
-//#line 83 "archivos/gramatica.y"
+//#line 86 "archivos/gramatica.y"
 {yyerror("Falta el numero de invocaciones del procedimiento.");}
 break;
 case 35:
-//#line 84 "archivos/gramatica.y"
+//#line 87 "archivos/gramatica.y"
 {yyerror("Falta la palabra clave 'NI' en el encabezado del procedimiento.");}
 break;
 case 36:
-//#line 85 "archivos/gramatica.y"
+//#line 88 "archivos/gramatica.y"
 {yyerror("Formato de declaracion de NI invalido. El formato correcto es 'NI = CTE_UINT'.");}
 break;
 case 37:
-//#line 86 "archivos/gramatica.y"
+//#line 89 "archivos/gramatica.y"
 {yyerror("Formato de declaracion de NI invalido. El formato correcto es 'NI = CTE_UINT'.");}
 break;
 case 39:
-//#line 90 "archivos/gramatica.y"
+//#line 93 "archivos/gramatica.y"
 {yyerror("Cuerpo del procedimiento vacio.");}
 break;
+case 45:
+//#line 103 "archivos/gramatica.y"
+{checkInvocacionProc(val_peek(2).sval);}
+break;
+case 46:
+//#line 104 "archivos/gramatica.y"
+{checkInvocacionProc(val_peek(3).sval);}
+break;
 case 50:
-//#line 107 "archivos/gramatica.y"
+//#line 110 "archivos/gramatica.y"
 {yyerror("Un procedimiento no puede tener mas de 3 parametros.");}
 break;
 case 51:
-//#line 110 "archivos/gramatica.y"
-{agregarPasosRepr(val_peek(2).sval,"=");}
+//#line 113 "archivos/gramatica.y"
+{
+                                checkAsignacion(val_peek(2).sval);
+                                agregarPasosRepr(val_peek(2).sval,"=");
+                                }
 break;
 case 52:
-//#line 111 "archivos/gramatica.y"
-{yyerror("El lado izquierdo de la asignacio no es valido.");}
+//#line 117 "archivos/gramatica.y"
+{
+                            checkAsignacion(val_peek(2).sval);
+                            yyerror("El lado derecho de la asignacio no es valido.");
+                            }
 break;
 case 53:
-//#line 114 "archivos/gramatica.y"
+//#line 123 "archivos/gramatica.y"
 {agregarPasosRepr("+");}
 break;
 case 54:
-//#line 115 "archivos/gramatica.y"
+//#line 124 "archivos/gramatica.y"
 {agregarPasosRepr("-");}
 break;
 case 56:
-//#line 119 "archivos/gramatica.y"
+//#line 128 "archivos/gramatica.y"
 {agregarPasosRepr("*");}
 break;
 case 57:
-//#line 120 "archivos/gramatica.y"
+//#line 129 "archivos/gramatica.y"
 {agregarPasosRepr("/");}
 break;
 case 59:
-//#line 124 "archivos/gramatica.y"
-{agregarPasosRepr(val_peek(0).sval);}
+//#line 133 "archivos/gramatica.y"
+{
+                checkAsignacion(val_peek(0).sval);
+                agregarPasosRepr(val_peek(0).sval);
+                }
 break;
 case 60:
-//#line 125 "archivos/gramatica.y"
+//#line 137 "archivos/gramatica.y"
 {agregarPasosRepr(val_peek(0).sval);}
 break;
 case 61:
-//#line 126 "archivos/gramatica.y"
+//#line 138 "archivos/gramatica.y"
 {agregarPasosRepr(val_peek(0).sval);}
 break;
 case 62:
-//#line 127 "archivos/gramatica.y"
+//#line 139 "archivos/gramatica.y"
 {checkCambioSigno(); agregarPasosRepr("-");}
 break;
 case 64:
-//#line 133 "archivos/gramatica.y"
+//#line 145 "archivos/gramatica.y"
 {puntoControlLoop();}
 break;
 case 66:
-//#line 137 "archivos/gramatica.y"
+//#line 149 "archivos/gramatica.y"
 {yyerror("Falta el bloque de sentencias ejecutables del LOOP.");}
 break;
 case 69:
-//#line 142 "archivos/gramatica.y"
+//#line 154 "archivos/gramatica.y"
 {yyerror("Bloque de sentencias vacio.");}
 break;
 case 70:
-//#line 143 "archivos/gramatica.y"
+//#line 155 "archivos/gramatica.y"
 {yyerror("No se permiten sentencias declarativas dentro de un bloque de estructura de control.");}
 break;
 case 73:
-//#line 148 "archivos/gramatica.y"
+//#line 160 "archivos/gramatica.y"
 {yyerror("No se permiten sentencias declarativas dentro de un bloque de estructura de control.");}
 break;
 case 74:
-//#line 149 "archivos/gramatica.y"
+//#line 161 "archivos/gramatica.y"
 {yyerror("No se permiten sentencias declarativas dentro de un bloque de estructura de control.");}
 break;
 case 75:
-//#line 152 "archivos/gramatica.y"
+//#line 164 "archivos/gramatica.y"
 {puntoControlUntil();}
 break;
 case 76:
-//#line 153 "archivos/gramatica.y"
+//#line 165 "archivos/gramatica.y"
 {yyerror("Falta la condicion de corte del LOOP.");}
 break;
 case 77:
-//#line 156 "archivos/gramatica.y"
+//#line 168 "archivos/gramatica.y"
 {agregarPasosRepr(val_peek(2).sval);}
 break;
 case 78:
-//#line 157 "archivos/gramatica.y"
+//#line 169 "archivos/gramatica.y"
 {yyerror("Falta parentesis de cierre de la condicion.");}
 break;
 case 79:
-//#line 158 "archivos/gramatica.y"
+//#line 170 "archivos/gramatica.y"
 {yyerror("Falta expresion en el lado izquierdo de la condicion.");}
 break;
 case 80:
-//#line 159 "archivos/gramatica.y"
+//#line 171 "archivos/gramatica.y"
 {yyerror("Falta expresion en el lado derecho de la condicion.");}
 break;
 case 81:
-//#line 160 "archivos/gramatica.y"
+//#line 172 "archivos/gramatica.y"
 {yyerror("Error en la condicion.");}
 break;
 case 90:
-//#line 175 "archivos/gramatica.y"
+//#line 187 "archivos/gramatica.y"
 {puntoControlThen();}
 break;
 case 91:
-//#line 176 "archivos/gramatica.y"
+//#line 188 "archivos/gramatica.y"
 {yyerror("Falta la condicion del IF.");}
 break;
 case 92:
-//#line 179 "archivos/gramatica.y"
+//#line 191 "archivos/gramatica.y"
 {puntoControlElse();}
 break;
 case 93:
-//#line 180 "archivos/gramatica.y"
+//#line 192 "archivos/gramatica.y"
 {yyerror("Falta el bloque de sentencias ejecutables de la rama THEN.");}
 break;
 case 94:
-//#line 183 "archivos/gramatica.y"
+//#line 195 "archivos/gramatica.y"
 {puntoControlFinCondicional();}
 break;
 case 95:
-//#line 184 "archivos/gramatica.y"
+//#line 196 "archivos/gramatica.y"
 {yyerror("Falta el bloque de sentencias ejecutables de la rama THEN.");}
 break;
 case 96:
-//#line 187 "archivos/gramatica.y"
+//#line 199 "archivos/gramatica.y"
 {puntoControlFinCondicional();}
 break;
 case 97:
-//#line 188 "archivos/gramatica.y"
+//#line 200 "archivos/gramatica.y"
 {yyerror("Falta el bloque de sentencias ejecutables de la rama ELSE.");}
 break;
 case 98:
-//#line 191 "archivos/gramatica.y"
+//#line 203 "archivos/gramatica.y"
 {agregarPasosRepr(val_peek(1).sval,"OUT");}
 break;
 case 99:
-//#line 192 "archivos/gramatica.y"
+//#line 204 "archivos/gramatica.y"
 {yyerror("Falta parentesis de cierre de la sentencia OUT.");}
 break;
 case 100:
-//#line 193 "archivos/gramatica.y"
+//#line 205 "archivos/gramatica.y"
 {yyerror("El contenido de la sentencia OUT no es valido.");}
 break;
-//#line 960 "Parser.java"
+case 104:
+//#line 211 "archivos/gramatica.y"
+{}
+break;
+//#line 1060 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####
