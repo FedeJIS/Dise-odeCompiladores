@@ -28,6 +28,7 @@ public class GeneraTokenUINT extends AccionSemantica {
         int numero = Integer.parseInt(numeroString);
         if (numeroEnRango(numero)) {
             tablaS.agregarEntrada(token, numeroString, "UINT");
+            tablaS.setDeclaracionEntrada(numeroString,true);
             maquinaEstados.setVariablesSintactico(token, numeroString);
         } else {
             TablaNotificaciones.agregarError("Linea "+maquinaEstados.getLineaActual()+": El numero UINT '" + numeroString + "' esta fuera de rango.");

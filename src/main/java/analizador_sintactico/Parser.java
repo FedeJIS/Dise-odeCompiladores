@@ -188,9 +188,9 @@ public final static short CTE_DOUBLE=276;
 public final static short YYERRCODE=256;
 final static short yylhs[] = {                           -1,
     0,    2,    2,    1,    1,    3,    3,    4,    4,    5,
-    5,    7,    7,    8,    8,    8,    8,   12,   12,   12,
-   12,   14,   14,   13,   13,   15,   15,   15,   16,   16,
-    9,    9,    9,    9,    9,   10,   10,   11,   11,    6,
+    5,   11,   11,    7,    7,    8,    8,    8,    8,   12,
+   12,   12,   12,   14,   14,   13,   13,   15,   15,   15,
+   16,   16,    9,    9,    9,    9,    9,   10,   10,    6,
     6,    6,    6,    6,   17,   17,   22,   22,   22,   22,
    18,   18,   23,   23,   23,   24,   24,   24,   25,   25,
    25,   25,   19,   26,   27,   27,   29,   29,   29,   29,
@@ -201,9 +201,9 @@ final static short yylhs[] = {                           -1,
 };
 final static short yylen[] = {                            2,
     1,    1,    1,    2,    3,    1,    1,    0,    1,    4,
-    2,    2,    1,    3,    2,    2,    1,    1,    3,    5,
-    7,    0,    1,    1,    1,    3,    2,    2,    2,    1,
-    3,    2,    2,    2,    1,    3,    2,    1,    3,    1,
+    2,    1,    3,    2,    1,    3,    2,    2,    1,    1,
+    3,    5,    7,    0,    1,    1,    1,    3,    2,    2,
+    2,    1,    3,    2,    2,    2,    1,    3,    2,    1,
     1,    1,    1,    1,    3,    4,    1,    3,    5,    7,
     3,    3,    3,    3,    1,    3,    3,    1,    1,    1,
     1,    2,    3,    1,    1,    0,    2,    3,    2,    2,
@@ -215,19 +215,19 @@ final static short yylen[] = {                            2,
 final static short yydefred[] = {                         0,
     0,    2,    3,    0,   64,    0,    0,    0,    1,    0,
     0,    6,    7,    0,   40,   41,   42,   43,   44,    0,
-    0,    0,    0,    0,   90,    0,   12,    0,   11,    9,
+    0,    0,    0,    0,   90,    0,   14,    0,   11,    9,
     0,    0,    0,    0,    0,    0,    0,   65,    0,    0,
     0,    0,   45,    0,   52,   59,   60,   61,    0,    0,
     0,   58,    0,   83,   82,   87,   86,   84,   85,    0,
     0,    0,  104,  101,  102,  103,    0,    0,    5,    0,
-   15,    0,    0,    0,   24,   25,   35,    0,    0,    0,
+   17,    0,    0,    0,   26,   27,   37,    0,    0,    0,
    69,    0,    0,    0,   70,   67,    0,   63,    0,    0,
-    0,   89,   23,    0,   46,   62,    0,    0,    0,    0,
-   81,    0,    0,  100,   98,   39,   27,    0,   29,   14,
-    0,   34,    0,   33,    0,   10,    0,    0,   68,   75,
+    0,   89,   25,    0,   46,   62,    0,    0,    0,    0,
+   81,    0,    0,  100,   98,   13,   29,    0,   31,   16,
+    0,   36,    0,   35,    0,   10,    0,    0,   68,   75,
    96,   88,    0,    0,    0,   56,   57,   80,    0,   79,
-   26,    0,   31,   37,    0,   74,   72,    0,   77,    0,
-   36,    0,    0,    0,    0,   50,   21,
+   28,    0,   33,   39,    0,   74,   72,    0,   77,    0,
+   38,    0,    0,    0,    0,   50,   23,
 };
 final static short yydgoto[] = {                          8,
     9,   10,   11,   31,   12,   13,   14,   33,   80,  116,
@@ -280,31 +280,31 @@ static short yytable[];
 static { yytable();}
 static void yytable(){
 yytable = new short[]{                        128,
-   55,   43,   47,   49,   30,    4,   28,   30,   48,   28,
+   55,   43,   47,   49,   32,    4,   30,   32,   48,   30,
    71,   72,   34,   69,   35,   60,   89,  132,   49,   27,
-   53,   22,   28,   96,   30,   49,   28,   79,   82,  113,
+   53,   22,   28,   96,   32,   49,   30,   79,   82,  113,
    81,   30,  107,   35,   99,   39,   36,    2,    3,  100,
    54,   55,   23,   55,   24,   55,  143,   85,   86,  108,
    83,   97,  103,   98,   26,   36,   78,    2,    3,   55,
    55,   53,   55,   53,   49,   53,   32,  121,   70,  111,
-   93,   95,   38,  126,  127,    8,    8,   68,    8,   53,
+   93,   95,   12,  126,  127,    8,    8,   68,    8,   53,
    53,   54,   53,   54,   35,   54,   87,  130,   51,   97,
    72,   98,   90,  129,  117,  118,   92,  135,   93,   54,
    54,  139,   54,   97,   99,   98,   36,   92,   94,   62,
    63,   82,   82,  136,  137,   78,   95,   64,  138,   72,
    76,  124,  125,  101,   72,   55,  104,  140,   65,   66,
-    4,   38,  105,   83,   83,   17,  109,  144,  145,    8,
-  110,   16,  114,  119,  115,   53,    1,   51,  122,  123,
-  131,    2,    3,  133,    4,  141,  142,   42,    5,   13,
+    4,   12,  105,   83,   83,   19,  109,  144,  145,    8,
+  110,   18,  114,  119,  115,   53,    1,   51,  122,  123,
+  131,    2,    3,  133,    4,  141,  142,   42,    5,   15,
     6,    7,    1,   99,   91,   54,   66,    2,    3,   97,
-    4,   32,   73,  106,    5,   71,    6,    7,  146,   76,
-  147,   78,  120,  102,   18,    0,    0,    0,    0,    0,
-    0,    0,   19,    1,    0,    0,    0,   38,    2,    3,
-   20,    4,    0,    0,   18,    5,    0,    6,    7,    0,
-    0,    0,   19,   51,    0,   46,    0,   42,   22,   30,
-   20,   28,   77,    0,   22,   30,   30,   28,   28,   99,
-   46,    2,    3,   47,   48,   49,   30,   30,   28,   28,
-   78,   22,   70,  112,    0,   76,    0,    0,   47,   48,
+    4,   34,   73,  106,    5,   71,    6,    7,  146,   76,
+  147,   78,  120,  102,   20,    0,    0,    0,    0,    0,
+    0,    0,   21,    1,    0,    0,    0,   12,    2,    3,
+   22,    4,    0,    0,   20,    5,    0,    6,    7,    0,
+    0,    0,   21,   51,    0,   46,    0,   42,   24,   32,
+   22,   30,   77,    0,   24,   32,   32,   30,   30,   99,
+   46,    2,    3,   47,   48,   49,   32,   32,   30,   30,
+   78,   24,   70,  112,    0,   76,    0,    0,   47,   48,
    58,    0,   59,    0,    0,    0,    0,   55,   55,   55,
    55,   55,   55,   55,    8,   55,   55,   55,   55,   55,
    55,   55,   55,    0,    0,   45,   46,   53,   53,   53,
@@ -312,18 +312,18 @@ yytable = new short[]{                        128,
    53,   53,   53,    0,   47,   48,    0,   54,   54,   54,
    54,   54,   54,   54,    0,   54,   54,   54,   54,   54,
    54,   54,   54,   78,   97,    0,   98,    0,   78,   78,
-    0,   78,   78,   78,   78,   78,   78,   78,   78,   38,
-   17,   58,  134,   59,   38,   38,   16,   38,    0,   38,
-   38,   38,   38,   38,   38,   51,    0,    0,   17,    8,
-   51,   51,    0,   51,   16,   51,   51,   51,   51,   51,
+    0,   78,   78,   78,   78,   78,   78,   78,   78,   12,
+   19,   58,  134,   59,   12,   12,   18,   12,    0,   12,
+   12,   12,   12,   12,   12,   51,    0,    0,   19,    8,
+   51,   51,    0,   51,   18,   51,   51,   51,   51,   51,
    51,   99,    0,    0,    0,    0,   99,   99,    0,   99,
     0,   99,   99,   99,   99,   99,   99,   76,    0,    0,
     0,    0,   76,   76,    0,   76,    0,   76,   76,   76,
-   76,   76,   76,    0,    0,    0,    8,    0,    0,   18,
-    0,    8,    8,    0,    8,   22,   22,   19,    8,    0,
-    8,    8,    0,   22,   22,   20,   22,   18,    0,    0,
-    0,   22,   22,    0,   22,   19,    0,    0,    0,    0,
-    0,    0,   22,   20,    0,    0,    0,    0,    0,    0,
+   76,   76,   76,    0,    0,    0,    8,    0,    0,   20,
+    0,    8,    8,    0,    8,   24,   24,   21,    8,    0,
+    8,    8,    0,   24,   24,   22,   24,   20,    0,    0,
+    0,   24,   24,    0,   24,   21,    0,    0,    0,    0,
+    0,    0,   24,   22,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,   53,   46,   54,   55,
    56,   57,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    1,   47,   48,    0,    0,    2,
@@ -432,6 +432,8 @@ final static String yyrule[] = {
 "fin_sentencia : ';'",
 "sentencia_decl : nombre_proc params_proc ni_proc cuerpo_proc",
 "sentencia_decl : tipo_id lista_variables",
+"lista_variables : ID",
+"lista_variables : ID ',' lista_variables",
 "nombre_proc : PROC ID",
 "nombre_proc : PROC",
 "params_proc : '(' lista_params_decl ')'",
@@ -458,8 +460,6 @@ final static String yyrule[] = {
 "ni_proc : error",
 "cuerpo_proc : '{' bloque_sentencias '}'",
 "cuerpo_proc : '{' '}'",
-"lista_variables : ID",
-"lista_variables : ID ',' lista_variables",
 "sentencia_ejec : invocacion",
 "sentencia_ejec : asignacion",
 "sentencia_ejec : loop",
@@ -527,101 +527,137 @@ final static String yyrule[] = {
 "imprimible : ID",
 };
 
-//#line 199 "archivos/gramatica.y"
+//#line 202 "archivos/gramatica.y"
 
-    private final AnalizadorLexico aLexico;
-    private final TablaSimbolos tablaS;
-    private final Polaca polacaProgram = new Polaca();
-    private final MultiPolaca polacaProcedimientos = new MultiPolaca();
+        private final AnalizadorLexico aLexico;
+        private final TablaSimbolos tablaS;
+        private final Polaca polacaProgram = new Polaca();
+        private final MultiPolaca polacaProcedimientos = new MultiPolaca();
+        private final PilaAmbitos pilaAmbitos = new PilaAmbitos();
 
-    /**
-     * Create a parser, setting the debug to true or false.
-     *
-     * @param debugMe true for debugging, false for no debug.
-     */
-    public Parser(boolean debugMe, AnalizadorLexico aLexico, TablaSimbolos tablaS) {
-        yydebug = debugMe;
-        this.aLexico = aLexico;
-        this.tablaS = tablaS;
-    }
+        private String ultimoTipoLeido;
 
-    private int yylex() {
-        int token = aLexico.produceToken();
-        yylval = new ParserVal(aLexico.ultimoLexemaGenerado);
-        return token;
-    }
+        /**
+         * Create a parser, setting the debug to true or false.
+         *
+         * @param debugMe true for debugging, false for no debug.
+         */
+        public Parser(boolean debugMe, AnalizadorLexico aLexico, TablaSimbolos tablaS) {
+            yydebug = debugMe;
+            this.aLexico = aLexico;
+            this.tablaS = tablaS;
+        }
 
-    private void yyout(String mensaje) {
-        System.out.println(mensaje);
-    }
+        private int yylex() {
+            int token = aLexico.produceToken();
+            yylval = new ParserVal(aLexico.ultimoLexemaGenerado);
+            return token;
+        }
 
-    private void yyerror(String mensajeError) {
-        TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": " + mensajeError);
-    }
+        private void yyout(String mensaje) {
+            System.out.println(mensaje);
+        }
 
-    private void checkCambioSigno() {
-        String lexemaSignoNoC = yylval.sval; //Obtengo el lexema del factor.
-        Celda celdaOriginal = tablaS.getValor(lexemaSignoNoC); //La sentencia va aca si o si, porque mas adelante ya no existe la entrada en la TS.
+        private void yyerror(String mensajeError) {
+            TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": " + mensajeError);
+        }
 
-        if (celdaOriginal.getTipo().equals("DOUBLE")) {
-            tablaS.quitarReferencia(lexemaSignoNoC); //El lexema esta en la TS si o si. refs--.
-            if (tablaS.entradaSinReferencias(lexemaSignoNoC)) tablaS.eliminarEntrada(lexemaSignoNoC);
+        private void checkCambioSigno() {
+            String lexemaSignoNoC = yylval.sval; //Obtengo el lexema del factor.
+            Celda celdaOriginal = tablaS.getEntrada(lexemaSignoNoC); //La sentencia va aca si o si, porque mas adelante ya no existe la entrada en la TS.
 
-            String lexemaSignoC = String.valueOf(Double.parseDouble(lexemaSignoNoC) * -1); //Cambio el signo del factor.
-            if (!tablaS.contieneLexema(lexemaSignoC)) {
-                tablaS.agregarEntrada(celdaOriginal.getToken(), lexemaSignoC, celdaOriginal.getTipo());
+            if (celdaOriginal.getTipo().equals("DOUBLE")) {
+                tablaS.quitarReferencia(lexemaSignoNoC); //El lexema esta en la TS si o si. refs--.
+                if (tablaS.entradaSinReferencias(lexemaSignoNoC)) tablaS.eliminarEntrada(lexemaSignoNoC);
+
+                String lexemaSignoC = String.valueOf(Double.parseDouble(lexemaSignoNoC) * -1); //Cambio el signo del factor.
+                if (!tablaS.contieneLexema(lexemaSignoC)) {
+                    tablaS.agregarEntrada(celdaOriginal.getToken(), lexemaSignoC, celdaOriginal.getTipo());
+                }
+            } else
+                TablaNotificaciones.agregarError("Error en la linea " + aLexico.getLineaActual() + ": No se permiten UINT negativos");
+
+        }
+
+        private void checkEntradaNoDeclarada(String lexema){
+            StringBuilder builder = new StringBuilder(pilaAmbitos.getAmbitosConcatenados());
+
+
+        }
+
+        private boolean entradaRedeclarada(String lexema){
+            StringBuilder builder = new StringBuilder(pilaAmbitos.getAmbitosConcatenados());
+
+            System.out.println(lexema);
+            while (!builder.toString().isEmpty()) {
+                System.out.println("antes:"+builder.toString());
+                if (tablaS.entradaDeclarada(lexema, builder.toString())) return true;
+
+                if (!builder.toString().equals("PROGRAM")) //Chequea no estar en el mayor ambito.
+                    builder.delete(builder.lastIndexOf(":"),builder.length());
+                else builder.delete(0,builder.length());
+                System.out.println("dsp:"+builder.toString());
             }
-        } else
-            TablaNotificaciones.agregarError("Error en la linea " + aLexico.getLineaActual() + ": No se permiten UINT negativos");
 
-    }
+            return false;
+        }
 
-    private final PilaAmbitos pilaAmbitos = new PilaAmbitos();
+        private void declaracionId(String usoId, String lexema){
+            if (entradaRedeclarada(lexema))
+                TablaNotificaciones.agregarError("Linea "+aLexico.getLineaActual()+": La variable '"+lexema+"' ya se encuentra declarada.");
+            else {
+                tablaS.setTipoEntrada(lexema,ultimoTipoLeido);
+                tablaS.setUsoEntrada(lexema,usoId);
+                tablaS.setDeclaracionEntrada(lexema,true);
+                tablaS.setAmbitoEntrada(lexema, pilaAmbitos.getAmbitosConcatenados()); //Actualizo el lexema en la TS.
+            }
+        }
 
-    private void agregarPasosRepr(String... pasos){
-        if (pilaAmbitos.inAmbitoGlobal())
-            polacaProgram.agregarPasos(pasos);
-        else polacaProcedimientos.agregarPasos(pilaAmbitos.getAmbitosConcatenados(), pasos);
-    }
+        private void agregarPasosRepr(String... pasos){
+            if (pilaAmbitos.inAmbitoGlobal())
+                polacaProgram.agregarPasos(pasos);
+            else polacaProcedimientos.agregarPasos(pilaAmbitos.getAmbitosConcatenados(), pasos);
+        }
 
-    private void puntoControlThen(){
-        if (pilaAmbitos.inAmbitoGlobal())
-            polacaProgram.puntoControlThen();
-        else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_THEN);
-    }
+        private void puntoControlThen(){
+            if (pilaAmbitos.inAmbitoGlobal())
+                polacaProgram.puntoControlThen();
+            else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_THEN);
+        }
 
-    private void puntoControlElse(){
-        if (pilaAmbitos.inAmbitoGlobal())
-            polacaProgram.puntoControlElse();
-        else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_ELSE);
-    }
+        private void puntoControlElse(){
+            if (pilaAmbitos.inAmbitoGlobal())
+                polacaProgram.puntoControlElse();
+            else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_ELSE);
+        }
 
-    private void puntoControlFinCondicional(){
-        if (pilaAmbitos.inAmbitoGlobal())
-            polacaProgram.puntoControlFinCondicional();
-        else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_FIN_COND);
-    }
+        private void puntoControlFinCondicional(){
+            if (pilaAmbitos.inAmbitoGlobal())
+                polacaProgram.puntoControlFinCondicional();
+            else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_FIN_COND);
+        }
 
-    private void puntoControlLoop(){
-        if (pilaAmbitos.inAmbitoGlobal())
-            polacaProgram.puntoControlLoop();
-        else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_LOOP);
-    }
+        private void puntoControlLoop(){
+            if (pilaAmbitos.inAmbitoGlobal())
+                polacaProgram.puntoControlLoop();
+            else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_LOOP);
+        }
 
-    private void puntoControlUntil(){
-        if (pilaAmbitos.inAmbitoGlobal())
-            polacaProgram.puntoControlUntil();
-        else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_UNTIL);
-    }
+        private void puntoControlUntil(){
+            if (pilaAmbitos.inAmbitoGlobal())
+                polacaProgram.puntoControlUntil();
+            else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_UNTIL);
+        }
 
-    public void printPolaca() {
-        polacaProgram.print();
-    }
+        public void printPolaca() {
+            polacaProgram.print();
+        }
 
-    public void printPolacaProcs() {
-        polacaProcedimientos.print();
-    }
-//#line 553 "Parser.java"
+        public void printPolacaProcs() {
+            polacaProcedimientos.print();
+        }
+
+//#line 580 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -775,6 +811,14 @@ boolean doaction;
     switch(yyn)
       {
 //########## USER-SUPPLIED ACTIONS ##########
+case 2:
+//#line 22 "archivos/gramatica.y"
+{ultimoTipoLeido = "UINT";}
+break;
+case 3:
+//#line 23 "archivos/gramatica.y"
+{ultimoTipoLeido = "DOUBLE";}
+break;
 case 8:
 //#line 34 "archivos/gramatica.y"
 {yyerror("Falta ';' al final de la sentencia");}
@@ -785,201 +829,221 @@ case 10:
 break;
 case 12:
 //#line 42 "archivos/gramatica.y"
-{pilaAmbitos.agregarAmbito(val_peek(0).sval); /*Guardo el nombre del procedimiento en caso de necesitarlo.*/}
+{declaracionId("Variable",val_peek(0).sval);}
 break;
 case 13:
 //#line 43 "archivos/gramatica.y"
+{declaracionId("Variable",val_peek(2).sval);}
+break;
+case 14:
+//#line 46 "archivos/gramatica.y"
+{
+                        pilaAmbitos.agregarAmbito(val_peek(0).sval); /*Guardo el nombre del procedimiento en caso de necesitarlo.
+*/
+                        tablaS.setUsoEntrada(val_peek(0).sval,"Procedimiento");
+                        }
+break;
+case 15:
+//#line 50 "archivos/gramatica.y"
 {yyerror("Falta el identificador del procedimiento.");}
 break;
-case 16:
-//#line 48 "archivos/gramatica.y"
-{yyerror("Falta el parentesis de cierre para los parametros.");}
-break;
-case 17:
-//#line 49 "archivos/gramatica.y"
-{yyerror("Falta el parentesis de cierre para los parametros.");}
-break;
-case 21:
+case 18:
 //#line 55 "archivos/gramatica.y"
+{yyerror("Falta el parentesis de cierre para los parametros.");}
+break;
+case 19:
+//#line 56 "archivos/gramatica.y"
+{yyerror("Falta el parentesis de cierre para los parametros.");}
+break;
+case 23:
+//#line 62 "archivos/gramatica.y"
 {yyerror("Un procedimiento no puede tener mas de 3 parametros.");}
 break;
-case 22:
-//#line 58 "archivos/gramatica.y"
+case 24:
+//#line 65 "archivos/gramatica.y"
 {yyerror("Falta una ',' para separar dos parametros.");}
 break;
-case 27:
-//#line 67 "archivos/gramatica.y"
+case 28:
+//#line 73 "archivos/gramatica.y"
+{declaracionId("ParamCVR",val_peek(0).sval);}
+break;
+case 29:
+//#line 74 "archivos/gramatica.y"
 {yyerror("Falta el tipo de un parametro.");}
 break;
-case 28:
-//#line 68 "archivos/gramatica.y"
+case 30:
+//#line 75 "archivos/gramatica.y"
 {yyerror("Falta el identificador de un parametro.");}
 break;
-case 30:
-//#line 72 "archivos/gramatica.y"
-{yyerror("Falta el identificador de un parametro.");}
+case 31:
+//#line 78 "archivos/gramatica.y"
+{declaracionId("ParamCV",val_peek(0).sval);}
 break;
 case 32:
-//#line 76 "archivos/gramatica.y"
-{yyerror("Formato de declaracion de NI invalido. El formato correcto es 'NI = CTE_UINT'.");}
-break;
-case 33:
-//#line 77 "archivos/gramatica.y"
-{yyerror("Formato de declaracion de NI invalido. El formato correcto es 'NI = CTE_UINT'.");}
+//#line 79 "archivos/gramatica.y"
+{yyerror("Falta el identificador de un parametro.");}
 break;
 case 34:
-//#line 78 "archivos/gramatica.y"
-{yyerror("Formato de declaracion de NI invalido. El formato correcto es 'NI = CTE_UINT'.");}
+//#line 83 "archivos/gramatica.y"
+{yyerror("Falta el numero de invocaciones del procedimiento.");}
 break;
 case 35:
-//#line 79 "archivos/gramatica.y"
+//#line 84 "archivos/gramatica.y"
+{yyerror("Falta la palabra clave 'NI' en el encabezado del procedimiento.");}
+break;
+case 36:
+//#line 85 "archivos/gramatica.y"
 {yyerror("Formato de declaracion de NI invalido. El formato correcto es 'NI = CTE_UINT'.");}
 break;
 case 37:
-//#line 83 "archivos/gramatica.y"
+//#line 86 "archivos/gramatica.y"
+{yyerror("Formato de declaracion de NI invalido. El formato correcto es 'NI = CTE_UINT'.");}
+break;
+case 39:
+//#line 90 "archivos/gramatica.y"
 {yyerror("Cuerpo del procedimiento vacio.");}
 break;
 case 50:
-//#line 104 "archivos/gramatica.y"
+//#line 107 "archivos/gramatica.y"
 {yyerror("Un procedimiento no puede tener mas de 3 parametros.");}
 break;
 case 51:
-//#line 107 "archivos/gramatica.y"
+//#line 110 "archivos/gramatica.y"
 {agregarPasosRepr(val_peek(2).sval,"=");}
 break;
 case 52:
-//#line 108 "archivos/gramatica.y"
+//#line 111 "archivos/gramatica.y"
 {yyerror("El lado izquierdo de la asignacio no es valido.");}
 break;
 case 53:
-//#line 111 "archivos/gramatica.y"
+//#line 114 "archivos/gramatica.y"
 {agregarPasosRepr("+");}
 break;
 case 54:
-//#line 112 "archivos/gramatica.y"
+//#line 115 "archivos/gramatica.y"
 {agregarPasosRepr("-");}
 break;
 case 56:
-//#line 116 "archivos/gramatica.y"
+//#line 119 "archivos/gramatica.y"
 {agregarPasosRepr("*");}
 break;
 case 57:
-//#line 117 "archivos/gramatica.y"
+//#line 120 "archivos/gramatica.y"
 {agregarPasosRepr("/");}
 break;
 case 59:
-//#line 121 "archivos/gramatica.y"
+//#line 124 "archivos/gramatica.y"
 {agregarPasosRepr(val_peek(0).sval);}
 break;
 case 60:
-//#line 122 "archivos/gramatica.y"
+//#line 125 "archivos/gramatica.y"
 {agregarPasosRepr(val_peek(0).sval);}
 break;
 case 61:
-//#line 123 "archivos/gramatica.y"
+//#line 126 "archivos/gramatica.y"
 {agregarPasosRepr(val_peek(0).sval);}
 break;
 case 62:
-//#line 124 "archivos/gramatica.y"
+//#line 127 "archivos/gramatica.y"
 {checkCambioSigno(); agregarPasosRepr("-");}
 break;
 case 64:
-//#line 130 "archivos/gramatica.y"
+//#line 133 "archivos/gramatica.y"
 {puntoControlLoop();}
 break;
 case 66:
-//#line 134 "archivos/gramatica.y"
+//#line 137 "archivos/gramatica.y"
 {yyerror("Falta el bloque de sentencias ejecutables del LOOP.");}
 break;
 case 69:
-//#line 139 "archivos/gramatica.y"
+//#line 142 "archivos/gramatica.y"
 {yyerror("Bloque de sentencias vacio.");}
 break;
 case 70:
-//#line 140 "archivos/gramatica.y"
+//#line 143 "archivos/gramatica.y"
 {yyerror("No se permiten sentencias declarativas dentro de un bloque de estructura de control.");}
 break;
 case 73:
-//#line 145 "archivos/gramatica.y"
+//#line 148 "archivos/gramatica.y"
 {yyerror("No se permiten sentencias declarativas dentro de un bloque de estructura de control.");}
 break;
 case 74:
-//#line 146 "archivos/gramatica.y"
+//#line 149 "archivos/gramatica.y"
 {yyerror("No se permiten sentencias declarativas dentro de un bloque de estructura de control.");}
 break;
 case 75:
-//#line 149 "archivos/gramatica.y"
+//#line 152 "archivos/gramatica.y"
 {puntoControlUntil();}
 break;
 case 76:
-//#line 150 "archivos/gramatica.y"
+//#line 153 "archivos/gramatica.y"
 {yyerror("Falta la condicion de corte del LOOP.");}
 break;
 case 77:
-//#line 153 "archivos/gramatica.y"
+//#line 156 "archivos/gramatica.y"
 {agregarPasosRepr(val_peek(2).sval);}
 break;
 case 78:
-//#line 154 "archivos/gramatica.y"
+//#line 157 "archivos/gramatica.y"
 {yyerror("Falta parentesis de cierre de la condicion.");}
 break;
 case 79:
-//#line 155 "archivos/gramatica.y"
+//#line 158 "archivos/gramatica.y"
 {yyerror("Falta expresion en el lado izquierdo de la condicion.");}
 break;
 case 80:
-//#line 156 "archivos/gramatica.y"
+//#line 159 "archivos/gramatica.y"
 {yyerror("Falta expresion en el lado derecho de la condicion.");}
 break;
 case 81:
-//#line 157 "archivos/gramatica.y"
+//#line 160 "archivos/gramatica.y"
 {yyerror("Error en la condicion.");}
 break;
 case 90:
-//#line 172 "archivos/gramatica.y"
+//#line 175 "archivos/gramatica.y"
 {puntoControlThen();}
 break;
 case 91:
-//#line 173 "archivos/gramatica.y"
+//#line 176 "archivos/gramatica.y"
 {yyerror("Falta la condicion del IF.");}
 break;
 case 92:
-//#line 176 "archivos/gramatica.y"
+//#line 179 "archivos/gramatica.y"
 {puntoControlElse();}
 break;
 case 93:
-//#line 177 "archivos/gramatica.y"
+//#line 180 "archivos/gramatica.y"
 {yyerror("Falta el bloque de sentencias ejecutables de la rama THEN.");}
 break;
 case 94:
-//#line 180 "archivos/gramatica.y"
+//#line 183 "archivos/gramatica.y"
 {puntoControlFinCondicional();}
 break;
 case 95:
-//#line 181 "archivos/gramatica.y"
+//#line 184 "archivos/gramatica.y"
 {yyerror("Falta el bloque de sentencias ejecutables de la rama THEN.");}
 break;
 case 96:
-//#line 184 "archivos/gramatica.y"
+//#line 187 "archivos/gramatica.y"
 {puntoControlFinCondicional();}
 break;
 case 97:
-//#line 185 "archivos/gramatica.y"
+//#line 188 "archivos/gramatica.y"
 {yyerror("Falta el bloque de sentencias ejecutables de la rama ELSE.");}
 break;
 case 98:
-//#line 188 "archivos/gramatica.y"
+//#line 191 "archivos/gramatica.y"
 {agregarPasosRepr(val_peek(1).sval,"OUT");}
 break;
 case 99:
-//#line 189 "archivos/gramatica.y"
+//#line 192 "archivos/gramatica.y"
 {yyerror("Falta parentesis de cierre de la sentencia OUT.");}
 break;
 case 100:
-//#line 190 "archivos/gramatica.y"
+//#line 193 "archivos/gramatica.y"
 {yyerror("El contenido de la sentencia OUT no es valido.");}
 break;
-//#line 906 "Parser.java"
+//#line 960 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

@@ -14,6 +14,36 @@ public class TablaSimbolos {
         return tablaSimb.containsKey(lexema);
     }
 
+    public void setTipoEntrada(String lexema, String tipo){
+        Celda entrada = tablaSimb.get(lexema);
+        entrada.setTipo(tipo);
+    }
+
+    public void setUsoEntrada(String lexema, String uso){
+        Celda entrada = tablaSimb.get(lexema);
+        entrada.setUso(uso);
+    }
+
+    public void setAmbitoEntrada(String lexema, String ambito){
+        Celda entrada = tablaSimb.remove(lexema);
+        entrada.setAmbito(ambito);
+        tablaSimb.put(entrada.getLexema(),entrada);
+    }
+
+    public void setDeclaracionEntrada(String lexema, boolean declarada){
+        Celda entrada = tablaSimb.get(lexema);
+        entrada.setDeclarada(declarada);
+    }
+
+    public boolean entradaDeclarada(String lexema, String ambito){
+        String nLexema = ambito + "::" + lexema; //Name mangling.
+
+        System.out.println("TS//"+nLexema);
+
+        return tablaSimb.get(nLexema) != null
+            && tablaSimb.get(nLexema).isDeclarada();
+    }
+
     /**
      * Agrega una celda (token,lexema,tipo). En caso de existir previamente, incrementa en uno las referencias a la
      * celda.
@@ -21,7 +51,7 @@ public class TablaSimbolos {
     public void agregarEntrada(int token, String lexema, String tipo) {
         Celda celda;
 
-        if (tablaSimb.containsKey(lexema)) celda = getValor(lexema); //Si el lexema existe extraigo la celda para actualizar las referencias
+        if (tablaSimb.containsKey(lexema)) celda = getEntrada(lexema); //Si el lexema existe extraigo la celda para actualizar las referencias
         else {//Si no existe creo una nueva y la inserto.
             celda = new Celda(token, lexema, tipo);
             tablaSimb.put(lexema, celda);
@@ -44,7 +74,7 @@ public class TablaSimbolos {
      *
      * @return Celda asociada al lexema.
      */
-    public Celda getValor(String lexema) {
+    public Celda getEntrada(String lexema) {
         Celda celda = tablaSimb.get(lexema);
 
         if (celda == null) //Agrege la excepcion por si llega a fallar el get, que no ande el null dando vueltas.
@@ -61,7 +91,7 @@ public class TablaSimbolos {
     }
 
     public boolean entradaSinReferencias(String lexema) {
-        return getValor(lexema).sinReferencias();
+        return getEntrada(lexema).sinReferencias();
     }
 
     public void quitarReferencia(String lexema) {

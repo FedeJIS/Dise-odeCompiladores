@@ -3,7 +3,7 @@ import compilador.Compilador;
 public class Test {
 
     public static void main(String[] args) {
-        Compilador.compilar(testDeclarativaDentroEjecutable(),true,true);
+        Compilador.compilar(testVariableRedecl(),false,true);
     }
 
     /**
@@ -51,5 +51,29 @@ public class Test {
             "} END_IF;\n" //16
 
             ;
+    }
+
+    /**
+     * FUNCIONA.
+     */
+    private static String testCargaDatosTS(){
+        return
+                "PROC x(VAR UINT v1, DOUBLE v2, UINT v3) NI = 5_ui {\n" +
+                    "UINT b;\n" +
+                    "b = 5_ui;\n" +
+                "};\n" +
+                "y = 5_ui;"
+                ;
+    }
+
+    private static String testVariableRedecl(){
+        return
+                "UINT a; \n" +
+                "PROC x(VAR UINT v4, DOUBLE v2, UINT v3) NI = 5_ui {\n" +
+                    "UINT v4;\n" +
+                    "UINT a;\n" +
+                "};\n" +
+                "y = 5_ui;"
+                ;
     }
 }

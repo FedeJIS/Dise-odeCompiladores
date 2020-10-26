@@ -41,6 +41,7 @@ public class GeneraTokenDouble extends AccionSemantica {
                 double doubleNormalizado = baseNumDouble * Math.pow(10, exp);
 
                 tablaS.agregarEntrada(token, String.valueOf(doubleNormalizado), "DOUBLE");
+                tablaS.setDeclaracionEntrada(String.valueOf(doubleNormalizado),true);
                 maquinaEstados.setVariablesSintactico(token, String.valueOf(doubleNormalizado));
             }
         }

@@ -17,43 +17,43 @@
   10  sentencia_decl : nombre_proc params_proc ni_proc cuerpo_proc
   11                 | tipo_id lista_variables
 
-  12  nombre_proc : PROC ID
-  13              | PROC
+  12  lista_variables : ID
+  13                  | ID ',' lista_variables
 
-  14  params_proc : '(' lista_params_decl ')'
-  15              | '(' ')'
-  16              | '(' lista_params_decl
-  17              | '('
+  14  nombre_proc : PROC ID
+  15              | PROC
 
-  18  lista_params_decl : param
-  19                    | param separador_variables param
-  20                    | param separador_variables param separador_variables param
-  21                    | param separador_variables param separador_variables param separador_variables lista_params_decl
+  16  params_proc : '(' lista_params_decl ')'
+  17              | '(' ')'
+  18              | '(' lista_params_decl
+  19              | '('
 
-  22  separador_variables :
-  23                      | ','
+  20  lista_params_decl : param
+  21                    | param separador_variables param
+  22                    | param separador_variables param separador_variables param
+  23                    | param separador_variables param separador_variables param separador_variables lista_params_decl
 
-  24  param : param_var
-  25        | param_comun
+  24  separador_variables :
+  25                      | ','
 
-  26  param_var : VAR tipo_id ID
-  27            | VAR ID
-  28            | VAR tipo_id
+  26  param : param_var
+  27        | param_comun
 
-  29  param_comun : tipo_id ID
-  30              | tipo_id
+  28  param_var : VAR tipo_id ID
+  29            | VAR ID
+  30            | VAR tipo_id
 
-  31  ni_proc : NI '=' CTE_UINT
-  32          | NI '='
-  33          | '=' CTE_UINT
-  34          | NI CTE_UINT
-  35          | error
+  31  param_comun : tipo_id ID
+  32              | tipo_id
 
-  36  cuerpo_proc : '{' bloque_sentencias '}'
-  37              | '{' '}'
+  33  ni_proc : NI '=' CTE_UINT
+  34          | NI '='
+  35          | '=' CTE_UINT
+  36          | NI CTE_UINT
+  37          | error
 
-  38  lista_variables : ID
-  39                  | ID ',' lista_variables
+  38  cuerpo_proc : '{' bloque_sentencias '}'
+  39              | '{' '}'
 
   40  sentencia_ejec : invocacion
   41                 | asignacion
@@ -219,11 +219,11 @@ state 6
 
 
 state 7
-	nombre_proc : PROC . ID  (12)
-	nombre_proc : PROC .  (13)
+	nombre_proc : PROC . ID  (14)
+	nombre_proc : PROC .  (15)
 
 	ID  shift 27
-	'('  reduce 13
+	'('  reduce 15
 
 
 state 8
@@ -432,29 +432,29 @@ state 26
 
 
 state 27
-	nombre_proc : PROC ID .  (12)
+	nombre_proc : PROC ID .  (14)
 
-	.  reduce 12
+	.  reduce 14
 
 
 state 28
-	lista_variables : ID .  (38)
-	lista_variables : ID . ',' lista_variables  (39)
+	lista_variables : ID .  (12)
+	lista_variables : ID . ',' lista_variables  (13)
 
 	','  shift 68
-	$end  reduce 38
-	ID  reduce 38
-	UINT  reduce 38
-	DOUBLE  reduce 38
-	IF  reduce 38
-	ELSE  reduce 38
-	END_IF  reduce 38
-	LOOP  reduce 38
-	UNTIL  reduce 38
-	OUT  reduce 38
-	PROC  reduce 38
-	';'  reduce 38
-	'}'  reduce 38
+	$end  reduce 12
+	ID  reduce 12
+	UINT  reduce 12
+	DOUBLE  reduce 12
+	IF  reduce 12
+	ELSE  reduce 12
+	END_IF  reduce 12
+	LOOP  reduce 12
+	UNTIL  reduce 12
+	OUT  reduce 12
+	PROC  reduce 12
+	';'  reduce 12
+	'}'  reduce 12
 
 
 state 29
@@ -499,18 +499,18 @@ state 31
 
 
 state 32
-	params_proc : '(' . lista_params_decl ')'  (14)
-	params_proc : '(' . ')'  (15)
-	params_proc : '(' . lista_params_decl  (16)
-	params_proc : '(' .  (17)
+	params_proc : '(' . lista_params_decl ')'  (16)
+	params_proc : '(' . ')'  (17)
+	params_proc : '(' . lista_params_decl  (18)
+	params_proc : '(' .  (19)
 
 	UINT  shift 2
 	DOUBLE  shift 3
 	VAR  shift 70
 	')'  shift 71
-	error  reduce 17
-	NI  reduce 17
-	'='  reduce 17
+	error  reduce 19
+	NI  reduce 19
+	'='  reduce 19
 
 	tipo_id  goto 72
 	lista_params_decl  goto 73
@@ -649,10 +649,10 @@ state 42
 	lista_params_inv : ID . separador_variables ID  (48)
 	lista_params_inv : ID . separador_variables ID separador_variables ID  (49)
 	lista_params_inv : ID . separador_variables ID separador_variables ID separador_variables lista_params_inv  (50)
-	separador_variables : .  (22)
+	separador_variables : .  (24)
 
 	','  shift 93
-	ID  reduce 22
+	ID  reduce 24
 	')'  reduce 47
 
 	separador_variables  goto 94
@@ -896,7 +896,7 @@ state 67
 
 
 state 68
-	lista_variables : ID ',' . lista_variables  (39)
+	lista_variables : ID ',' . lista_variables  (13)
 
 	ID  shift 28
 	.  error
@@ -911,9 +911,9 @@ state 69
 
 
 state 70
-	param_var : VAR . tipo_id ID  (26)
-	param_var : VAR . ID  (27)
-	param_var : VAR . tipo_id  (28)
+	param_var : VAR . tipo_id ID  (28)
+	param_var : VAR . ID  (29)
+	param_var : VAR . tipo_id  (30)
 
 	ID  shift 107
 	UINT  shift 2
@@ -924,77 +924,77 @@ state 70
 
 
 state 71
-	params_proc : '(' ')' .  (15)
+	params_proc : '(' ')' .  (17)
 
-	.  reduce 15
+	.  reduce 17
 
 
 state 72
-	param_comun : tipo_id . ID  (29)
-	param_comun : tipo_id .  (30)
+	param_comun : tipo_id . ID  (31)
+	param_comun : tipo_id .  (32)
 
 	ID  shift 109
-	error  reduce 30
-	UINT  reduce 30
-	DOUBLE  reduce 30
-	VAR  reduce 30
-	NI  reduce 30
-	')'  reduce 30
-	','  reduce 30
-	'='  reduce 30
+	error  reduce 32
+	UINT  reduce 32
+	DOUBLE  reduce 32
+	VAR  reduce 32
+	NI  reduce 32
+	','  reduce 32
+	')'  reduce 32
+	'='  reduce 32
 
 
 state 73
-	params_proc : '(' lista_params_decl . ')'  (14)
-	params_proc : '(' lista_params_decl .  (16)
+	params_proc : '(' lista_params_decl . ')'  (16)
+	params_proc : '(' lista_params_decl .  (18)
 
 	')'  shift 110
-	error  reduce 16
-	NI  reduce 16
-	'='  reduce 16
+	error  reduce 18
+	NI  reduce 18
+	'='  reduce 18
 
 
 state 74
-	lista_params_decl : param .  (18)
-	lista_params_decl : param . separador_variables param  (19)
-	lista_params_decl : param . separador_variables param separador_variables param  (20)
-	lista_params_decl : param . separador_variables param separador_variables param separador_variables lista_params_decl  (21)
-	separador_variables : .  (22)
+	lista_params_decl : param .  (20)
+	lista_params_decl : param . separador_variables param  (21)
+	lista_params_decl : param . separador_variables param separador_variables param  (22)
+	lista_params_decl : param . separador_variables param separador_variables param separador_variables lista_params_decl  (23)
+	separador_variables : .  (24)
 
 	','  shift 93
-	error  reduce 18
-	UINT  reduce 22
-	DOUBLE  reduce 22
-	VAR  reduce 22
-	NI  reduce 18
-	')'  reduce 18
-	'='  reduce 18
+	error  reduce 20
+	UINT  reduce 24
+	DOUBLE  reduce 24
+	VAR  reduce 24
+	NI  reduce 20
+	')'  reduce 20
+	'='  reduce 20
 
 	separador_variables  goto 111
 
 
 state 75
-	param : param_var .  (24)
+	param : param_var .  (26)
 
-	.  reduce 24
+	.  reduce 26
 
 
 state 76
-	param : param_comun .  (25)
+	param : param_comun .  (27)
 
-	.  reduce 25
+	.  reduce 27
 
 
 state 77
-	ni_proc : error .  (35)
+	ni_proc : error .  (37)
 
-	.  reduce 35
+	.  reduce 37
 
 
 state 78
-	ni_proc : NI . '=' CTE_UINT  (31)
-	ni_proc : NI . '='  (32)
-	ni_proc : NI . CTE_UINT  (34)
+	ni_proc : NI . '=' CTE_UINT  (33)
+	ni_proc : NI . '='  (34)
+	ni_proc : NI . CTE_UINT  (36)
 
 	CTE_UINT  shift 112
 	'='  shift 113
@@ -1002,7 +1002,7 @@ state 78
 
 
 state 79
-	ni_proc : '=' . CTE_UINT  (33)
+	ni_proc : '=' . CTE_UINT  (35)
 
 	CTE_UINT  shift 114
 	.  error
@@ -1156,9 +1156,9 @@ state 92
 
 
 state 93
-	separador_variables : ',' .  (23)
+	separador_variables : ',' .  (25)
 
-	.  reduce 23
+	.  reduce 25
 
 
 state 94
@@ -1279,48 +1279,48 @@ state 105
 
 
 state 106
-	lista_variables : ID ',' lista_variables .  (39)
+	lista_variables : ID ',' lista_variables .  (13)
 
-	.  reduce 39
+	.  reduce 13
 
 
 state 107
-	param_var : VAR ID .  (27)
-
-	.  reduce 27
-
-
-state 108
-	param_var : VAR tipo_id . ID  (26)
-	param_var : VAR tipo_id .  (28)
-
-	ID  shift 131
-	error  reduce 28
-	UINT  reduce 28
-	DOUBLE  reduce 28
-	VAR  reduce 28
-	NI  reduce 28
-	')'  reduce 28
-	','  reduce 28
-	'='  reduce 28
-
-
-state 109
-	param_comun : tipo_id ID .  (29)
+	param_var : VAR ID .  (29)
 
 	.  reduce 29
 
 
-state 110
-	params_proc : '(' lista_params_decl ')' .  (14)
+state 108
+	param_var : VAR tipo_id . ID  (28)
+	param_var : VAR tipo_id .  (30)
 
-	.  reduce 14
+	ID  shift 131
+	error  reduce 30
+	UINT  reduce 30
+	DOUBLE  reduce 30
+	VAR  reduce 30
+	NI  reduce 30
+	','  reduce 30
+	')'  reduce 30
+	'='  reduce 30
+
+
+state 109
+	param_comun : tipo_id ID .  (31)
+
+	.  reduce 31
+
+
+state 110
+	params_proc : '(' lista_params_decl ')' .  (16)
+
+	.  reduce 16
 
 
 state 111
-	lista_params_decl : param separador_variables . param  (19)
-	lista_params_decl : param separador_variables . param separador_variables param  (20)
-	lista_params_decl : param separador_variables . param separador_variables param separador_variables lista_params_decl  (21)
+	lista_params_decl : param separador_variables . param  (21)
+	lista_params_decl : param separador_variables . param separador_variables param  (22)
+	lista_params_decl : param separador_variables . param separador_variables param separador_variables lista_params_decl  (23)
 
 	UINT  shift 2
 	DOUBLE  shift 3
@@ -1334,28 +1334,28 @@ state 111
 
 
 state 112
-	ni_proc : NI CTE_UINT .  (34)
+	ni_proc : NI CTE_UINT .  (36)
 
-	.  reduce 34
+	.  reduce 36
 
 
 state 113
-	ni_proc : NI '=' . CTE_UINT  (31)
-	ni_proc : NI '=' .  (32)
+	ni_proc : NI '=' . CTE_UINT  (33)
+	ni_proc : NI '=' .  (34)
 
 	CTE_UINT  shift 133
-	'{'  reduce 32
+	'{'  reduce 34
 
 
 state 114
-	ni_proc : '=' CTE_UINT .  (33)
+	ni_proc : '=' CTE_UINT .  (35)
 
-	.  reduce 33
+	.  reduce 35
 
 
 state 115
-	cuerpo_proc : '{' . bloque_sentencias '}'  (36)
-	cuerpo_proc : '{' . '}'  (37)
+	cuerpo_proc : '{' . bloque_sentencias '}'  (38)
+	cuerpo_proc : '{' . '}'  (39)
 
 	ID  shift 1
 	UINT  shift 2
@@ -1470,10 +1470,10 @@ state 123
 	lista_params_inv : ID separador_variables ID .  (48)
 	lista_params_inv : ID separador_variables ID . separador_variables ID  (49)
 	lista_params_inv : ID separador_variables ID . separador_variables ID separador_variables lista_params_inv  (50)
-	separador_variables : .  (22)
+	separador_variables : .  (24)
 
 	','  shift 93
-	ID  reduce 22
+	ID  reduce 24
 	')'  reduce 48
 
 	separador_variables  goto 138
@@ -1593,43 +1593,43 @@ state 130
 
 
 state 131
-	param_var : VAR tipo_id ID .  (26)
+	param_var : VAR tipo_id ID .  (28)
 
-	.  reduce 26
+	.  reduce 28
 
 
 state 132
-	lista_params_decl : param separador_variables param .  (19)
-	lista_params_decl : param separador_variables param . separador_variables param  (20)
-	lista_params_decl : param separador_variables param . separador_variables param separador_variables lista_params_decl  (21)
-	separador_variables : .  (22)
+	lista_params_decl : param separador_variables param .  (21)
+	lista_params_decl : param separador_variables param . separador_variables param  (22)
+	lista_params_decl : param separador_variables param . separador_variables param separador_variables lista_params_decl  (23)
+	separador_variables : .  (24)
 
 	','  shift 93
-	error  reduce 19
-	UINT  reduce 22
-	DOUBLE  reduce 22
-	VAR  reduce 22
-	NI  reduce 19
-	')'  reduce 19
-	'='  reduce 19
+	error  reduce 21
+	UINT  reduce 24
+	DOUBLE  reduce 24
+	VAR  reduce 24
+	NI  reduce 21
+	')'  reduce 21
+	'='  reduce 21
 
 	separador_variables  goto 140
 
 
 state 133
-	ni_proc : NI '=' CTE_UINT .  (31)
+	ni_proc : NI '=' CTE_UINT .  (33)
 
-	.  reduce 31
+	.  reduce 33
 
 
 state 134
-	cuerpo_proc : '{' '}' .  (37)
+	cuerpo_proc : '{' '}' .  (39)
 
-	.  reduce 37
+	.  reduce 39
 
 
 state 135
-	cuerpo_proc : '{' bloque_sentencias . '}'  (36)
+	cuerpo_proc : '{' bloque_sentencias . '}'  (38)
 
 	'}'  shift 141
 	.  error
@@ -1662,8 +1662,8 @@ state 139
 
 
 state 140
-	lista_params_decl : param separador_variables param separador_variables . param  (20)
-	lista_params_decl : param separador_variables param separador_variables . param separador_variables lista_params_decl  (21)
+	lista_params_decl : param separador_variables param separador_variables . param  (22)
+	lista_params_decl : param separador_variables param separador_variables . param separador_variables lista_params_decl  (23)
 
 	UINT  shift 2
 	DOUBLE  shift 3
@@ -1677,36 +1677,36 @@ state 140
 
 
 state 141
-	cuerpo_proc : '{' bloque_sentencias '}' .  (36)
+	cuerpo_proc : '{' bloque_sentencias '}' .  (38)
 
-	.  reduce 36
+	.  reduce 38
 
 
 state 142
 	lista_params_inv : ID separador_variables ID separador_variables ID .  (49)
 	lista_params_inv : ID separador_variables ID separador_variables ID . separador_variables lista_params_inv  (50)
-	separador_variables : .  (22)
+	separador_variables : .  (24)
 
 	','  shift 93
-	ID  reduce 22
+	ID  reduce 24
 	')'  reduce 49
 
 	separador_variables  goto 144
 
 
 state 143
-	lista_params_decl : param separador_variables param separador_variables param .  (20)
-	lista_params_decl : param separador_variables param separador_variables param . separador_variables lista_params_decl  (21)
-	separador_variables : .  (22)
+	lista_params_decl : param separador_variables param separador_variables param .  (22)
+	lista_params_decl : param separador_variables param separador_variables param . separador_variables lista_params_decl  (23)
+	separador_variables : .  (24)
 
 	','  shift 93
-	error  reduce 20
-	UINT  reduce 22
-	DOUBLE  reduce 22
-	VAR  reduce 22
-	NI  reduce 20
-	')'  reduce 20
-	'='  reduce 20
+	error  reduce 22
+	UINT  reduce 24
+	DOUBLE  reduce 24
+	VAR  reduce 24
+	NI  reduce 22
+	')'  reduce 22
+	'='  reduce 22
 
 	separador_variables  goto 145
 
@@ -1721,7 +1721,7 @@ state 144
 
 
 state 145
-	lista_params_decl : param separador_variables param separador_variables param separador_variables . lista_params_decl  (21)
+	lista_params_decl : param separador_variables param separador_variables param separador_variables . lista_params_decl  (23)
 
 	UINT  shift 2
 	DOUBLE  shift 3
@@ -1742,9 +1742,9 @@ state 146
 
 
 state 147
-	lista_params_decl : param separador_variables param separador_variables param separador_variables lista_params_decl .  (21)
+	lista_params_decl : param separador_variables param separador_variables param separador_variables lista_params_decl .  (23)
 
-	.  reduce 21
+	.  reduce 23
 
 
 35 terminals, 39 nonterminals

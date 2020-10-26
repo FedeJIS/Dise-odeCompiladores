@@ -19,8 +19,8 @@ import util.tabla_simbolos.TablaSimbolos;
 programa	: bloque_sentencias
 			;
 			
-tipo_id	: UINT
-		| DOUBLE
+tipo_id	: UINT {ultimoTipoLeido = "UINT";}
+		| DOUBLE {ultimoTipoLeido = "DOUBLE";}
 		;
 			
 bloque_sentencias	: tipo_sentencia fin_sentencia
@@ -38,8 +38,15 @@ fin_sentencia	:       {yyerror("Falta ';' al final de la sentencia");}
 sentencia_decl	: nombre_proc params_proc ni_proc cuerpo_proc {pilaAmbitos.eliminarUltimo();}
 				| tipo_id lista_variables
 				;
+
+lista_variables	: ID {declaracionId("Variable",$1.sval);}
+				| ID ',' lista_variables {declaracionId("Variable",$1.sval);}
+				;
 				
-nombre_proc	: PROC ID {pilaAmbitos.agregarAmbito($2.sval); /*Guardo el nombre del procedimiento en caso de necesitarlo.*/}
+nombre_proc	: PROC ID {
+                        pilaAmbitos.agregarAmbito($2.sval); //Guardo el nombre del procedimiento en caso de necesitarlo.
+                        tablaS.setUsoEntrada($2.sval,"Procedimiento");
+                        }
 			| PROC {yyerror("Falta el identificador del procedimiento.");}
 			;
 			
@@ -63,18 +70,18 @@ param   : param_var
         | param_comun
         ;
 					
-param_var	: VAR tipo_id ID
+param_var	: VAR tipo_id ID {declaracionId("ParamCVR",$3.sval);}
             | VAR ID {yyerror("Falta el tipo de un parametro.");}
             | VAR tipo_id {yyerror("Falta el identificador de un parametro.");}
 		    ;
 
-param_comun : tipo_id ID
+param_comun : tipo_id ID {declaracionId("ParamCV",$2.sval);}
 		    | tipo_id {yyerror("Falta el identificador de un parametro.");}
 		    ;
 
 ni_proc	: NI '=' CTE_UINT
-        | NI '=' {yyerror("Formato de declaracion de NI invalido. El formato correcto es 'NI = CTE_UINT'.");}
-        | '=' CTE_UINT {yyerror("Formato de declaracion de NI invalido. El formato correcto es 'NI = CTE_UINT'.");}
+        | NI '=' {yyerror("Falta el numero de invocaciones del procedimiento.");}
+        | '=' CTE_UINT {yyerror("Falta la palabra clave 'NI' en el encabezado del procedimiento.");}
         | NI CTE_UINT {yyerror("Formato de declaracion de NI invalido. El formato correcto es 'NI = CTE_UINT'.");}
         | error {yyerror("Formato de declaracion de NI invalido. El formato correcto es 'NI = CTE_UINT'.");}
 		;
@@ -82,10 +89,6 @@ ni_proc	: NI '=' CTE_UINT
 cuerpo_proc	: '{' bloque_sentencias '}'
 			| '{' '}' {yyerror("Cuerpo del procedimiento vacio.");}
 			;
-			
-lista_variables	: ID
-				| ID ',' lista_variables
-				;
 
 sentencia_ejec	: invocacion
 				| asignacion
@@ -193,99 +196,126 @@ print	: OUT '(' imprimible ')' {agregarPasosRepr($3.sval,"OUT");}
 imprimible	: CADENA
 			| CTE_UINT
 			| CTE_DOUBLE
-			| ID
+			| ID {}
 			;
 
 %%
-    private final AnalizadorLexico aLexico;
-    private final TablaSimbolos tablaS;
-    private final Polaca polacaProgram = new Polaca();
-    private final MultiPolaca polacaProcedimientos = new MultiPolaca();
+        private final AnalizadorLexico aLexico;
+        private final TablaSimbolos tablaS;
+        private final Polaca polacaProgram = new Polaca();
+        private final MultiPolaca polacaProcedimientos = new MultiPolaca();
+        private final PilaAmbitos pilaAmbitos = new PilaAmbitos();
 
-    /**
-     * Create a parser, setting the debug to true or false.
-     *
-     * @param debugMe true for debugging, false for no debug.
-     */
-    public Parser(boolean debugMe, AnalizadorLexico aLexico, TablaSimbolos tablaS) {
-        yydebug = debugMe;
-        this.aLexico = aLexico;
-        this.tablaS = tablaS;
-    }
+        private String ultimoTipoLeido;
 
-    private int yylex() {
-        int token = aLexico.produceToken();
-        yylval = new ParserVal(aLexico.ultimoLexemaGenerado);
-        return token;
-    }
+        /**
+         * Create a parser, setting the debug to true or false.
+         *
+         * @param debugMe true for debugging, false for no debug.
+         */
+        public Parser(boolean debugMe, AnalizadorLexico aLexico, TablaSimbolos tablaS) {
+            yydebug = debugMe;
+            this.aLexico = aLexico;
+            this.tablaS = tablaS;
+        }
 
-    private void yyout(String mensaje) {
-        System.out.println(mensaje);
-    }
+        private int yylex() {
+            int token = aLexico.produceToken();
+            yylval = new ParserVal(aLexico.ultimoLexemaGenerado);
+            return token;
+        }
 
-    private void yyerror(String mensajeError) {
-        TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": " + mensajeError);
-    }
+        private void yyout(String mensaje) {
+            System.out.println(mensaje);
+        }
 
-    private void checkCambioSigno() {
-        String lexemaSignoNoC = yylval.sval; //Obtengo el lexema del factor.
-        Celda celdaOriginal = tablaS.getValor(lexemaSignoNoC); //La sentencia va aca si o si, porque mas adelante ya no existe la entrada en la TS.
+        private void yyerror(String mensajeError) {
+            TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": " + mensajeError);
+        }
 
-        if (celdaOriginal.getTipo().equals("DOUBLE")) {
-            tablaS.quitarReferencia(lexemaSignoNoC); //El lexema esta en la TS si o si. refs--.
-            if (tablaS.entradaSinReferencias(lexemaSignoNoC)) tablaS.eliminarEntrada(lexemaSignoNoC);
+        private void checkCambioSigno() {
+            String lexemaSignoNoC = yylval.sval; //Obtengo el lexema del factor.
+            Celda celdaOriginal = tablaS.getEntrada(lexemaSignoNoC); //La sentencia va aca si o si, porque mas adelante ya no existe la entrada en la TS.
 
-            String lexemaSignoC = String.valueOf(Double.parseDouble(lexemaSignoNoC) * -1); //Cambio el signo del factor.
-            if (!tablaS.contieneLexema(lexemaSignoC)) {
-                tablaS.agregarEntrada(celdaOriginal.getToken(), lexemaSignoC, celdaOriginal.getTipo());
+            if (celdaOriginal.getTipo().equals("DOUBLE")) {
+                tablaS.quitarReferencia(lexemaSignoNoC); //El lexema esta en la TS si o si. refs--.
+                if (tablaS.entradaSinReferencias(lexemaSignoNoC)) tablaS.eliminarEntrada(lexemaSignoNoC);
+
+                String lexemaSignoC = String.valueOf(Double.parseDouble(lexemaSignoNoC) * -1); //Cambio el signo del factor.
+                if (!tablaS.contieneLexema(lexemaSignoC)) {
+                    tablaS.agregarEntrada(celdaOriginal.getToken(), lexemaSignoC, celdaOriginal.getTipo());
+                }
+            } else
+                TablaNotificaciones.agregarError("Error en la linea " + aLexico.getLineaActual() + ": No se permiten UINT negativos");
+
+        }
+
+        private boolean entradaRedeclarada(String lexema){
+            StringBuilder builder = new StringBuilder(pilaAmbitos.getAmbitosConcatenados());
+
+            while (!builder.toString().equals("PROGRAM")) {
+                if (tablaS.entradaDeclarada(lexema, builder.toString())) {
+                    System.out.println("true");
+                    return true;
+                }
+                System.out.println("Dsp:"+builder.toString());
             }
-        } else
-            TablaNotificaciones.agregarError("Error en la linea " + aLexico.getLineaActual() + ": No se permiten UINT negativos");
 
-    }
+            return false;
+        }
 
-    private final PilaAmbitos pilaAmbitos = new PilaAmbitos();
+        private void declaracionId(String usoId, String lexema){
+            if (entradaRedeclarada(lexema))
+                TablaNotificaciones.agregarError("Linea "+aLexico.getLineaActual()+": La variable '"+lexema+"' ya se encuentra declarada.");
+            else {
+                tablaS.setTipoEntrada(lexema,ultimoTipoLeido);
+                tablaS.setUsoEntrada(lexema,usoId);
+                tablaS.setDeclaracionEntrada(lexema,true);
+                tablaS.setAmbitoEntrada(lexema, pilaAmbitos.getAmbitosConcatenados()); //Actualizo el lexema en la TS.
+            }
+        }
 
-    private void agregarPasosRepr(String... pasos){
-        if (pilaAmbitos.inAmbitoGlobal())
-            polacaProgram.agregarPasos(pasos);
-        else polacaProcedimientos.agregarPasos(pilaAmbitos.getAmbitosConcatenados(), pasos);
-    }
+        private void agregarPasosRepr(String... pasos){
+            if (pilaAmbitos.inAmbitoGlobal())
+                polacaProgram.agregarPasos(pasos);
+            else polacaProcedimientos.agregarPasos(pilaAmbitos.getAmbitosConcatenados(), pasos);
+        }
 
-    private void puntoControlThen(){
-        if (pilaAmbitos.inAmbitoGlobal())
-            polacaProgram.puntoControlThen();
-        else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_THEN);
-    }
+        private void puntoControlThen(){
+            if (pilaAmbitos.inAmbitoGlobal())
+                polacaProgram.puntoControlThen();
+            else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_THEN);
+        }
 
-    private void puntoControlElse(){
-        if (pilaAmbitos.inAmbitoGlobal())
-            polacaProgram.puntoControlElse();
-        else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_ELSE);
-    }
+        private void puntoControlElse(){
+            if (pilaAmbitos.inAmbitoGlobal())
+                polacaProgram.puntoControlElse();
+            else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_ELSE);
+        }
 
-    private void puntoControlFinCondicional(){
-        if (pilaAmbitos.inAmbitoGlobal())
-            polacaProgram.puntoControlFinCondicional();
-        else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_FIN_COND);
-    }
+        private void puntoControlFinCondicional(){
+            if (pilaAmbitos.inAmbitoGlobal())
+                polacaProgram.puntoControlFinCondicional();
+            else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_FIN_COND);
+        }
 
-    private void puntoControlLoop(){
-        if (pilaAmbitos.inAmbitoGlobal())
-            polacaProgram.puntoControlLoop();
-        else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_LOOP);
-    }
+        private void puntoControlLoop(){
+            if (pilaAmbitos.inAmbitoGlobal())
+                polacaProgram.puntoControlLoop();
+            else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_LOOP);
+        }
 
-    private void puntoControlUntil(){
-        if (pilaAmbitos.inAmbitoGlobal())
-            polacaProgram.puntoControlUntil();
-        else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_UNTIL);
-    }
+        private void puntoControlUntil(){
+            if (pilaAmbitos.inAmbitoGlobal())
+                polacaProgram.puntoControlUntil();
+            else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_UNTIL);
+        }
 
-    public void printPolaca() {
-        polacaProgram.print();
-    }
+        public void printPolaca() {
+            polacaProgram.print();
+        }
 
-    public void printPolacaProcs() {
-        polacaProcedimientos.print();
-    }
+        public void printPolacaProcs() {
+            polacaProcedimientos.print();
+        }
+
