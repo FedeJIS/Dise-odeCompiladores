@@ -27,9 +27,5 @@ public class GeneraTokenTS extends AccionSemantica {
         String lexema = getString();
         tablaS.agregarEntrada(token, lexema, "");
         maquinaEstados.setVariablesSintactico(token, lexema);
-
-        if (TablaPalabrasR.esReservada(lexema.toUpperCase())) //Si el lexema coincide con una PR, genera un warning para notificar.
-            TablaNotificaciones.agregarWarning("Linea: "+maquinaEstados.getLineaActual()+": " +
-                    "El identificador '" + lexema + "' coincide con una palabra reservada.");
     }
 }

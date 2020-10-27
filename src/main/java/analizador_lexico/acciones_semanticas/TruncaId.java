@@ -19,7 +19,7 @@ public class TruncaId extends AccionSemantica {
     public void ejecutar() {
         if (LIMITE_STRING < longString()) {
             truncaString(LIMITE_STRING);
-            TablaNotificaciones.agregarWarning("Warning en la linea " + aLexico.getLineaActual() + ": Identificador truncado por superar limite de caracteres.");
+            TablaNotificaciones.agregarWarning("Linea " + aLexico.getLineaActual() + ": Identificador truncado por superar limite de caracteres.");
         }
     }
 }

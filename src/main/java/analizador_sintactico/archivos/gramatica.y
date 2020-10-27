@@ -200,15 +200,15 @@ rama_else	: ELSE bloque_estruct_ctrl {puntoControlFinCondicional();}
             | ELSE {yyerror("Falta el bloque de sentencias ejecutables de la rama ELSE.");}
 			;
 			
-print	: OUT '(' imprimible ')' {agregarPasosRepr($3.sval,"OUT");}
+print	: OUT '(' imprimible ')' {agregarPasosRepr($3.sval,tipoImpresion);}
         | OUT '(' imprimible {yyerror("Falta parentesis de cierre de la sentencia OUT.");}
         | OUT '(' error ')' {yyerror("El contenido de la sentencia OUT no es valido.");}
 		;
 		
-imprimible	: CADENA
-			| CTE_UINT
-			| CTE_DOUBLE
-			| ID {}
+imprimible	: CADENA {tipoImpresion = "OUT_CAD";}
+			| CTE_UINT {tipoImpresion = "OUT_UINT";}
+			| CTE_DOUBLE {tipoImpresion = "OUT_DOU";}
+			| ID {if (idImpresionValido($1.sval)) tipoImpresion = "OUT_"+tablaS.getTipo($1.sval,getAmbitoId($1.sval));}
 			;
 
 %%
@@ -232,8 +232,8 @@ private int lineaNI; //Guarda la linea donde se detecto el NI del proc.
 private boolean nombreIdValido = false;
 
 private String ultimoTipoLeido; //Almacena temporalmente el ultimo tipo leido.
+private String tipoImpresion; //Almacena temporalmente el tipo de dato que debe imprimirse.
 
-private int nInvocProc;
 private int maxInvocProc; //Almacena temporalmente el maximo de invocaciones para un procedimiento.
 
 private int yylex() {
@@ -341,6 +341,21 @@ private void checkInvocacionProc(String lexema) {
         //Generar codigo
     }
 
+}
+
+private boolean idImpresionValido(String lexema){
+    String ambito = getAmbitoId(lexema);
+
+    if (ambito.isEmpty()) { //La TS no contiene el lexema recibido en ningun ambito.
+        TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": El identificador '"+lexema+"' no esta declarado.");
+        return false; //Es necesario cortar aca para que 'ambito' no cause problemas por estar vacio.
+    }
+    //Existe el lexema en la TS y tiene el flag de declaracion desactivado.
+    if (!tablaS.isEntradaDeclarada(lexema, ambito)) {
+        TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": El identificador '" + lexema + "' no esta declarado.");
+        return false;
+    }
+    return true;
 }
 
 private void agregarPasosRepr(String... pasos) {

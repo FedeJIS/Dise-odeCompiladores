@@ -529,6 +529,7 @@ final static String yyrule[] = {
 
 //#line 214 "archivos/gramatica.y"
 
+
 public Parser(AnalizadorLexico aLexico, TablaSimbolos tablaS) {
     this.aLexico = aLexico;
     this.tablaS = tablaS;
@@ -548,8 +549,8 @@ private int lineaNI; //Guarda la linea donde se detecto el NI del proc.
 private boolean nombreIdValido = false;
 
 private String ultimoTipoLeido; //Almacena temporalmente el ultimo tipo leido.
+private String tipoImpresion; //Almacena temporalmente el tipo de dato que debe imprimirse.
 
-private int nInvocProc;
 private int maxInvocProc; //Almacena temporalmente el maximo de invocaciones para un procedimiento.
 
 private int yylex() {
@@ -659,6 +660,21 @@ private void checkInvocacionProc(String lexema) {
 
 }
 
+private boolean idImpresionValido(String lexema){
+    String ambito = getAmbitoId(lexema);
+
+    if (ambito.isEmpty()) { //La TS no contiene el lexema recibido en ningun ambito.
+        TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": El identificador '"+lexema+"' no esta declarado.");
+        return false; //Es necesario cortar aca para que 'ambito' no cause problemas por estar vacio.
+    }
+    //Existe el lexema en la TS y tiene el flag de declaracion desactivado.
+    if (!tablaS.isEntradaDeclarada(lexema, ambito)) {
+        TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": El identificador '" + lexema + "' no esta declarado.");
+        return false;
+    }
+    return true;
+}
+
 private void agregarPasosRepr(String... pasos) {
     if (pilaAmbitos.inAmbitoGlobal())
         polacaProgram.agregarPasos(pasos);
@@ -702,7 +718,7 @@ public void printPolaca() {
 public void printPolacaProcs() {
     polacaProcedimientos.print();
 }
-//#line 642 "Parser.java"
+//#line 650 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -887,8 +903,7 @@ case 14:
 //#line 49 "archivos/gramatica.y"
 {
                         checkDeclaracionProc(val_peek(0).sval);
-                        pilaAmbitos.agregarAmbito(val_peek(0).sval); /*Guardo el nombre del procedimiento en caso de necesitarlo.
-*/
+                        pilaAmbitos.agregarAmbito(val_peek(0).sval); /*Guardo el nombre del procedimiento en caso de necesitarlo.*/
                         }
 break;
 case 15:
@@ -1102,7 +1117,7 @@ case 97:
 break;
 case 98:
 //#line 203 "archivos/gramatica.y"
-{agregarPasosRepr(val_peek(1).sval,"OUT");}
+{agregarPasosRepr(val_peek(1).sval,tipoImpresion);}
 break;
 case 99:
 //#line 204 "archivos/gramatica.y"
@@ -1112,11 +1127,23 @@ case 100:
 //#line 205 "archivos/gramatica.y"
 {yyerror("El contenido de la sentencia OUT no es valido.");}
 break;
+case 101:
+//#line 208 "archivos/gramatica.y"
+{tipoImpresion = "OUT_CAD";}
+break;
+case 102:
+//#line 209 "archivos/gramatica.y"
+{tipoImpresion = "OUT_UINT";}
+break;
+case 103:
+//#line 210 "archivos/gramatica.y"
+{tipoImpresion = "OUT_DOU";}
+break;
 case 104:
 //#line 211 "archivos/gramatica.y"
-{}
+{if (idImpresionValido(val_peek(0).sval)) tipoImpresion = "OUT_"+tablaS.getTipo(val_peek(0).sval,getAmbitoId(val_peek(0).sval));}
 break;
-//#line 1050 "Parser.java"
+//#line 1070 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

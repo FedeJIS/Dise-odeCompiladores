@@ -3,7 +3,7 @@ import compilador.Compilador;
 public class Test {
 
     public static void main(String[] args) {
-        Compilador.compilar(testVariableNoDecl(),false,true);
+        Compilador.compilar("UINT x;OUT(5_ui);OUT(5.0d1);OUT(\"HOLA\");OUT(x);",true,true);
     }
 
     /**

@@ -20,6 +20,11 @@ public class TablaSimbolos {
         return tablaSimb.containsKey(generaLexemaAmbito(lexema,ambito));
     }
 
+    public String getTipo(String lexema, String ambito){
+        Celda entrada = tablaSimb.get(generaLexemaAmbito(lexema,ambito));
+        return entrada.getTipo();
+    }
+
     public boolean isEntradaProc(String lexema, String ambito){
         return tablaSimb.get(generaLexemaAmbito(lexema,ambito)).getUso().equals(USO_ENTRADA_PROC);
     }
