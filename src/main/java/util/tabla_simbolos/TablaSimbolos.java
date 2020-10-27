@@ -6,6 +6,8 @@ import java.util.Map;
 public class TablaSimbolos {
     private final Map<String, Celda> tablaSimb;
 
+    public static final String USO_ENTRADA_PROC = "Proc";
+
     public TablaSimbolos() {
         tablaSimb = new Hashtable<>();
     }
@@ -19,7 +21,7 @@ public class TablaSimbolos {
     }
 
     public boolean isEntradaProc(String lexema, String ambito){
-        return tablaSimb.get(ambito+"::"+lexema).getUso().equals("Procedimiento");
+        return tablaSimb.get(generaLexemaAmbito(lexema,ambito)).getUso().equals(USO_ENTRADA_PROC);
     }
 
     public void setTipoEntrada(String lexema, String tipo){
@@ -44,10 +46,8 @@ public class TablaSimbolos {
     }
 
     public boolean isEntradaDeclarada(String lexema, String ambito){
-        String nLexema = ambito + "::" + lexema; //Name mangling.
-
-        return tablaSimb.get(nLexema) != null
-            && tablaSimb.get(nLexema).isDeclarada();
+        return tablaSimb.get(generaLexemaAmbito(lexema,ambito)) != null
+            && tablaSimb.get(generaLexemaAmbito(lexema, ambito)).isDeclarada();
     }
 
     public void setMaxInvoc(String lexema, int nMax){

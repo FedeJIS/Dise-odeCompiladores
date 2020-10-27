@@ -529,198 +529,180 @@ final static String yyrule[] = {
 
 //#line 214 "archivos/gramatica.y"
 
-            private final AnalizadorLexico aLexico;
-            private final TablaSimbolos tablaS;
-            private final Polaca polacaProgram = new Polaca();
-            private final MultiPolaca polacaProcedimientos = new MultiPolaca();
+public Parser(AnalizadorLexico aLexico, TablaSimbolos tablaS) {
+    this.aLexico = aLexico;
+    this.tablaS = tablaS;
+    this.pilaAmbitos = new PilaAmbitos();
+    this.polacaProgram = new Polaca();
+    this.polacaProcedimientos = new MultiPolaca();
+}
 
-            private final PilaAmbitos pilaAmbitos = new PilaAmbitos();
+private final AnalizadorLexico aLexico;
+private final TablaSimbolos tablaS;
+private final PilaAmbitos pilaAmbitos;
+private final Polaca polacaProgram;
+private final MultiPolaca polacaProcedimientos;
 
-            private String ultimoTipoLeido, nombreProc;
+private String nombreProc; //Almacena temporalmente el nombre de un procedimiento.
+private int lineaNI; //Guarda la linea donde se detecto el NI del proc.
+private boolean nombreIdValido = false;
 
-            private int maxInvocProc;
+private String ultimoTipoLeido; //Almacena temporalmente el ultimo tipo leido.
 
-            /**
-             * Create a parser, setting the debug to true or false.
-             *
-             * @param debugMe true for debugging, false for no debug.
-             */
-            public Parser(boolean debugMe, AnalizadorLexico aLexico, TablaSimbolos tablaS) {
-                yydebug = debugMe;
-                this.aLexico = aLexico;
-                this.tablaS = tablaS;
-            }
+private int nInvocProc;
+private int maxInvocProc; //Almacena temporalmente el maximo de invocaciones para un procedimiento.
 
-            private int yylex() {
-                int token = aLexico.produceToken();
-                yylval = new ParserVal(aLexico.ultimoLexemaGenerado);
-                return token;
-            }
+private int yylex() {
+    int token = aLexico.produceToken();
+    yylval = new ParserVal(aLexico.ultimoLexemaGenerado);
+    return token;
+}
 
-            private void yyout(String mensaje) {
-                System.out.println(mensaje);
-            }
+private void yyout(String mensaje) {
+    System.out.println(mensaje);
+}
 
-            private void yyerror(String mensajeError) {
-                TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": " + mensajeError);
-            }
+private void yyerror(String mensajeError) {
+    TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": " + mensajeError);
+}
 
-            private void checkCambioSigno() {
-                String lexemaSignoNoC = yylval.sval; //Obtengo el lexema del factor.
-                Celda celdaOriginal = tablaS.getEntrada(lexemaSignoNoC); //La sentencia va aca si o si, porque mas adelante ya no existe la entrada en la TS.
+private void checkCambioSigno() {
+    String lexemaSignoNoC = yylval.sval; //Obtengo el lexema del factor.
+    Celda celdaOriginal = tablaS.getEntrada(lexemaSignoNoC); //La sentencia va aca si o si, porque mas adelante ya no existe la entrada en la TS.
 
-                if (celdaOriginal.getTipo().equals("DOUBLE")) {
-                    tablaS.quitarReferencia(lexemaSignoNoC); //El lexema esta en la TS si o si. refs--.
-                    if (tablaS.entradaSinReferencias(lexemaSignoNoC)) tablaS.eliminarEntrada(lexemaSignoNoC);
+    if (celdaOriginal.getTipo().equals("DOUBLE")) {
+        tablaS.quitarReferencia(lexemaSignoNoC); //El lexema esta en la TS si o si. refs--.
+        if (tablaS.entradaSinReferencias(lexemaSignoNoC)) tablaS.eliminarEntrada(lexemaSignoNoC);
 
-                    String lexemaSignoC = String.valueOf(Double.parseDouble(lexemaSignoNoC) * -1); //Cambio el signo del factor.
-                    tablaS.agregarEntrada(celdaOriginal.getToken(), lexemaSignoC, celdaOriginal.getTipo());
+        String lexemaSignoC = String.valueOf(Double.parseDouble(lexemaSignoNoC) * -1); //Cambio el signo del factor.
+        tablaS.agregarEntrada(celdaOriginal.getToken(), lexemaSignoC, celdaOriginal.getTipo());
 
-                } else
-                    TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": No se permiten UINT negativos");
+    } else
+        TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": No se permiten UINT negativos");
+}
 
-            }
+private String getAmbitoId(String lexema) {
+    StringBuilder builderAmbito = new StringBuilder(pilaAmbitos.getAmbitosConcatenados());
 
-            private boolean isEntradaRedeclarada(String lexema){
-                StringBuilder builderAmbito = new StringBuilder(pilaAmbitos.getAmbitosConcatenados());
+    while (!builderAmbito.toString().isEmpty()) {
+        //Busca el id en el ambito actual.
+        if (tablaS.contieneLexema(lexema, builderAmbito.toString()))
+            return builderAmbito.toString();
 
-                while (!builderAmbito.toString().isEmpty()) {
-                    if (tablaS.isEntradaDeclarada(lexema, builderAmbito.toString())) return true;
+        //"Baja" un nivel en la pila de ambitos.
+        if (!builderAmbito.toString().equals("PROGRAM")) //Chequea no estar en el ambito global.
+            builderAmbito.delete(builderAmbito.lastIndexOf(":"), builderAmbito.length());
+        else builderAmbito.delete(0, builderAmbito.length());
+    }
+    return ""; //La variable no esta declarada.
+}
 
-                    if (!builderAmbito.toString().equals("PROGRAM")) //Chequea no estar en el mayor ambito.
-                        builderAmbito.delete(builderAmbito.lastIndexOf(":"),builderAmbito.length());
-                    else builderAmbito.delete(0,builderAmbito.length());
-                }
+private void checkDeclaracionId(String uso, String lexema, String tipo) {
+    String ambito = getAmbitoId(lexema);
 
-                return false;
-            }
+    if (!ambito.isEmpty() //La TS contiene el lexema recibido.
+            && tablaS.isEntradaDeclarada(lexema, ambito))//Existe el lexema en la TS y tiene el flag de declaracion activado.
+        TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": El identificador '" + lexema + "' ya se encuentra declarado.");
+    else {
+        tablaS.setTipoEntrada(lexema, tipo);
+        tablaS.setUsoEntrada(lexema, uso);
+        tablaS.setDeclaracionEntrada(lexema, true);
+        tablaS.setAmbitoEntrada(lexema, pilaAmbitos.getAmbitosConcatenados()); //Actualizo el lexema en la TS.
 
-            private void checkDeclaracionId(String usoId, String lexema){
-                String ambito = getAmbitoId(lexema);
+        nombreIdValido = true;
+    }
+}
 
-                if (!ambito.isEmpty() //La TS no contiene el lexema recibido en ningun ambito.
-                        && tablaS.isEntradaDeclarada(lexema,ambito))//Existe el lexema en la TS y tiene el flag de declaracion activado.
-                    TablaNotificaciones.agregarError("Linea "+aLexico.getLineaActual()+": La variable '"+lexema+"' ya se encuentra declarada.");
-                else {
-                    tablaS.setTipoEntrada(lexema,ultimoTipoLeido);
-                    tablaS.setUsoEntrada(lexema,usoId);
-                    tablaS.setDeclaracionEntrada(lexema,true);
-                    tablaS.setAmbitoEntrada(lexema, pilaAmbitos.getAmbitosConcatenados()); //Actualizo el lexema en la TS.
-                }
-            }
+private void checkDeclaracionProc(String lexema) {
+    checkDeclaracionId(TablaSimbolos.USO_ENTRADA_PROC,lexema,"VOID");
+    nombreProc = pilaAmbitos.getAmbitosConcatenados() + "::" + lexema;
+    lineaNI = aLexico.getLineaActual();
+}
 
-            private void checkAsignacion(String lexema){
-                StringBuilder builderAmbito = new StringBuilder(pilaAmbitos.getAmbitosConcatenados());
+private void checkAsignacion(String lexema) {
+    String ambito = getAmbitoId(lexema);
 
-                boolean variableDeclarada = false;
-                while (!builderAmbito.toString().isEmpty()) {
-                    variableDeclarada = tablaS.isEntradaDeclarada(lexema, builderAmbito.toString());
-                    if (variableDeclarada && tablaS.isEntradaProc(lexema,builderAmbito.toString())) //Pero es un procedimiento.
-                        TablaNotificaciones.agregarError("Linea "+aLexico.getLineaActual()+": Un procedimiento no puede no puede formar parte de una asignacion.");
+    if (ambito.isEmpty()) { //La TS no contiene el lexema recibido en ningun ambito.
+        TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": El identificador '"+lexema+"' no esta declarado.");
+        return; //Es necesario cortar aca para que 'ambito' no cause problemas por estar vacio.
+    }
+    //Existe el lexema en la TS y tiene el flag de declaracion desactivado.
+    if (!tablaS.isEntradaDeclarada(lexema, ambito))
+        TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": El identificador '" + lexema + "' no esta declarado.");
+    if (tablaS.isEntradaProc(lexema, ambito)) { //Esta declarado pero es un procedimiento.
+        TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": Un procedimiento no puede estar a la izquierda una asignacion.");
+    }
+}
 
-                    if (!builderAmbito.toString().equals("PROGRAM")) //Chequea no estar en el mayor ambito.
-                        builderAmbito.delete(builderAmbito.lastIndexOf(":"),builderAmbito.length());
-                    else builderAmbito.delete(0,builderAmbito.length());
-                }
+private void checkNIProc(){
+    if (maxInvocProc < 1 || maxInvocProc > 4){
+        TablaNotificaciones.agregarError("Linea " + lineaNI + ": El numero de invocaciones de " +
+                "un procedimiento debe estar en el rango [1,4].");
+    }
+    else {
+        tablaS.setMaxInvoc(nombreProc, maxInvocProc);
+        nombreIdValido = false; //Reinicia el valor.
+    }
+}
 
-                if (!variableDeclarada)
-                    TablaNotificaciones.agregarError("Linea "+aLexico.getLineaActual()+": La variable '"+lexema+"' no se encuentra declarada.");
-            }
+private void checkInvocacionProc(String lexema) {
+    String ambito = getAmbitoId(lexema);
 
-            private void checkDeclaracionProc(String lexema){
-                if (isEntradaRedeclarada(lexema))
-                    TablaNotificaciones.agregarError("Linea "+aLexico.getLineaActual()+": El procedimiento '"+lexema+"' ya se encuentra declarado.");
-                else {
-                    tablaS.setTipoEntrada(lexema,"VOID");
-                    tablaS.setUsoEntrada(lexema,"Procedimiento");
-                    tablaS.setDeclaracionEntrada(lexema,true);
-                    tablaS.setAmbitoEntrada(lexema, pilaAmbitos.getAmbitosConcatenados()); //Actualizo el lexema en la TS.
+    if (ambito.isEmpty())
+        TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": El procedimiento '" + lexema + "' no esta declarado.");
+    else if (tablaS.maxInvocAlcanzadas(lexema, ambito))
+        TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": El procedimiento '" + lexema + "' ya alcanzo su numero maximo de invocaciones.");
+    else {
+        tablaS.incrementaNInvoc(lexema, ambito);
+        //Generar codigo
+    }
 
-                    nombreProc = pilaAmbitos.getAmbitosConcatenados()+"::"+lexema;
-                }
-            }
+}
 
-            private void setNIProc(){
-                if (!TablaNotificaciones.hayErrores()) { //Solo se ejecuta si no se genero un error al chequear el nombre del proc.
-                    tablaS.setMaxInvoc(nombreProc, maxInvocProc);
-                }
-            }
+private void agregarPasosRepr(String... pasos) {
+    if (pilaAmbitos.inAmbitoGlobal())
+        polacaProgram.agregarPasos(pasos);
+    else polacaProcedimientos.agregarPasos(pilaAmbitos.getAmbitosConcatenados(), pasos);
+}
 
-            private String getAmbitoId(String lexema){
-                StringBuilder builderAmbito = new StringBuilder(pilaAmbitos.getAmbitosConcatenados());
+private void puntoControlThen() {
+    if (pilaAmbitos.inAmbitoGlobal())
+        polacaProgram.puntoControlThen();
+    else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(), Polaca.PC_THEN);
+}
 
-                while (!builderAmbito.toString().isEmpty()) {
-                    //Busca el id en el ambito actual.
-                    if (tablaS.contieneLexema(lexema,builderAmbito.toString()))
-                        return builderAmbito.toString();
+private void puntoControlElse() {
+    if (pilaAmbitos.inAmbitoGlobal())
+        polacaProgram.puntoControlElse();
+    else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(), Polaca.PC_ELSE);
+}
 
-                    //"Baja" un nivel en la pila de ambitos.
-                    if (!builderAmbito.toString().equals("PROGRAM")) //Chequea no estar en el ambito global.
-                        builderAmbito.delete(builderAmbito.lastIndexOf(":"),builderAmbito.length());
-                    else builderAmbito.delete(0,builderAmbito.length());
-                }
-                return ""; //La variable no esta declarada.
-            }
+private void puntoControlFinCondicional() {
+    if (pilaAmbitos.inAmbitoGlobal())
+        polacaProgram.puntoControlFinCondicional();
+    else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(), Polaca.PC_FIN_COND);
+}
 
-            private void checkInvocacionProc(String lexema){
-                String ambito = getAmbitoId(lexema);
+private void puntoControlLoop() {
+    if (pilaAmbitos.inAmbitoGlobal())
+        polacaProgram.puntoControlLoop();
+    else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(), Polaca.PC_LOOP);
+}
 
-                if (ambito.isEmpty())
-                    TablaNotificaciones.agregarError("Linea "+aLexico.getLineaActual()+": El procedimiento '"+lexema+"' no se encuentra declarado.");
+private void puntoControlUntil() {
+    if (pilaAmbitos.inAmbitoGlobal())
+        polacaProgram.puntoControlUntil();
+    else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(), Polaca.PC_UNTIL);
+}
 
-                else if (tablaS.maxInvocAlcanzadas(lexema,ambito))
-                        TablaNotificaciones.agregarError("Linea "+aLexico.getLineaActual()+": El procedimiento '"+lexema+"' ya alcanzo su numero maximo de invocaciones.");
-                    else {
-                        tablaS.incrementaNInvoc(lexema,ambito);
-                        //Generar codigo
-                }
+public void printPolaca() {
+    polacaProgram.print();
+}
 
-            }
-
-            private void agregarPasosRepr(String... pasos){
-                if (pilaAmbitos.inAmbitoGlobal())
-                    polacaProgram.agregarPasos(pasos);
-                else polacaProcedimientos.agregarPasos(pilaAmbitos.getAmbitosConcatenados(), pasos);
-            }
-
-            private void puntoControlThen(){
-                if (pilaAmbitos.inAmbitoGlobal())
-                    polacaProgram.puntoControlThen();
-                else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_THEN);
-            }
-
-            private void puntoControlElse(){
-                if (pilaAmbitos.inAmbitoGlobal())
-                    polacaProgram.puntoControlElse();
-                else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_ELSE);
-            }
-
-            private void puntoControlFinCondicional(){
-                if (pilaAmbitos.inAmbitoGlobal())
-                    polacaProgram.puntoControlFinCondicional();
-                else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_FIN_COND);
-            }
-
-            private void puntoControlLoop(){
-                if (pilaAmbitos.inAmbitoGlobal())
-                    polacaProgram.puntoControlLoop();
-                else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_LOOP);
-            }
-
-            private void puntoControlUntil(){
-                if (pilaAmbitos.inAmbitoGlobal())
-                    polacaProgram.puntoControlUntil();
-                else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(),Polaca.PC_UNTIL);
-            }
-
-            public void printPolaca() {
-                polacaProgram.print();
-            }
-
-            public void printPolacaProcs() {
-                polacaProcedimientos.print();
-            }
-//#line 652 "Parser.java"
+public void printPolacaProcs() {
+    polacaProcedimientos.print();
+}
+//#line 642 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -889,23 +871,24 @@ break;
 case 10:
 //#line 38 "archivos/gramatica.y"
 {
-                                                                setNIProc();
+                                                                if (nombreIdValido) checkNIProc();
                                                                 pilaAmbitos.eliminarUltimo();
                                                                 }
 break;
 case 12:
 //#line 45 "archivos/gramatica.y"
-{checkDeclaracionId("Variable",val_peek(0).sval);}
+{checkDeclaracionId("Variable",val_peek(0).sval,ultimoTipoLeido);}
 break;
 case 13:
 //#line 46 "archivos/gramatica.y"
-{checkDeclaracionId("Variable",val_peek(2).sval);}
+{checkDeclaracionId("Variable",val_peek(2).sval,ultimoTipoLeido);}
 break;
 case 14:
 //#line 49 "archivos/gramatica.y"
 {
                         checkDeclaracionProc(val_peek(0).sval);
-                        pilaAmbitos.agregarAmbito(val_peek(0).sval); /*Guardo el nombre del procedimiento en caso de necesitarlo.*/
+                        pilaAmbitos.agregarAmbito(val_peek(0).sval); /*Guardo el nombre del procedimiento en caso de necesitarlo.
+*/
                         }
 break;
 case 15:
@@ -930,7 +913,7 @@ case 24:
 break;
 case 28:
 //#line 76 "archivos/gramatica.y"
-{checkDeclaracionId("ParamCVR",val_peek(0).sval);}
+{checkDeclaracionId("ParamCVR",val_peek(0).sval,ultimoTipoLeido);}
 break;
 case 29:
 //#line 77 "archivos/gramatica.y"
@@ -942,7 +925,7 @@ case 30:
 break;
 case 31:
 //#line 81 "archivos/gramatica.y"
-{checkDeclaracionId("ParamCV",val_peek(0).sval);}
+{checkDeclaracionId("ParamCV",val_peek(0).sval,ultimoTipoLeido);}
 break;
 case 32:
 //#line 82 "archivos/gramatica.y"
@@ -1133,7 +1116,7 @@ case 104:
 //#line 211 "archivos/gramatica.y"
 {}
 break;
-//#line 1060 "Parser.java"
+//#line 1050 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####
