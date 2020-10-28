@@ -26,6 +26,7 @@ public class GeneraTokenTS extends AccionSemantica {
     public void ejecutar() {
         String lexema = getString();
         tablaS.agregarEntrada(token, lexema, "");
+        tablaS.setUsoEntrada(lexema,"-");
         maquinaEstados.setVariablesSintactico(token, lexema);
     }
 }

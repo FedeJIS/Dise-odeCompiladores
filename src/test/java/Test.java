@@ -3,7 +3,11 @@ import compilador.Compilador;
 public class Test {
 
     public static void main(String[] args) {
-        Compilador.compilar("UINT x;OUT(5_ui);OUT(5.0d1);OUT(\"HOLA\");OUT(x);",true,true);
+        Compilador.compilar("PROC x(UINT a) NI = 1_ui {OUT(a);};\n" +
+                                        "PROC y(UINT a, DOUBLE b, VAR UINT c) NI = 1_ui {OUT(a);};\n" +
+                                        "PROC z(UINT a, DOUBLE b, VAR UINT c, UINT d) NI = 1_ui {OUT(a);};",
+
+                true,true);
     }
 
     /**

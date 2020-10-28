@@ -24,10 +24,6 @@ public class PilaAmbitos {
         ambitos.remove(ambitos.size()-1); //Saco el ultimo ambito almacenado.
     }
 
-    public String getUltimoAmbito(){
-        return ambitos.get(ambitos.size()-1);
-    }
-
     public String getAmbitosConcatenados(){
         StringBuilder builder = new StringBuilder();
         for (String ambito : ambitos){

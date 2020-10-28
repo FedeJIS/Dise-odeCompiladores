@@ -1,6 +1,7 @@
 package util.tabla_simbolos;
 
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 public class TablaSimbolos {
@@ -12,35 +13,44 @@ public class TablaSimbolos {
         tablaSimb = new Hashtable<>();
     }
 
-    private String generaLexemaAmbito(String lexema, String ambito){
-        return ambito+"::"+lexema; //Name mangling.
+    public String toString() {
+        if (tablaSimb.isEmpty()) return "Tabla de simbolos vacia.";
+        StringBuilder builder = new StringBuilder();
+        for (Celda c : tablaSimb.values())
+            builder.append(c.toString()).append('\n');
+        return builder.toString();
     }
 
-    public boolean contieneLexema(String lexema, String ambito) {
-        return tablaSimb.containsKey(generaLexemaAmbito(lexema,ambito));
+    public boolean contieneLexema(String lexema) {
+        return tablaSimb.containsKey(lexema);
     }
 
-    public String getTipo(String lexema, String ambito){
-        Celda entrada = tablaSimb.get(generaLexemaAmbito(lexema,ambito));
+    public String getTipo(String lexema){
+        Celda entrada = tablaSimb.get(lexema);
         return entrada.getTipo();
     }
 
-    public boolean isEntradaProc(String lexema, String ambito){
-        return tablaSimb.get(generaLexemaAmbito(lexema,ambito)).getUso().equals(USO_ENTRADA_PROC);
+    public boolean isEntradaProc(String lexema){
+        Celda entrada = tablaSimb.get(lexema);
+        if (entrada == null) throw new IllegalStateException("Lexema no encontrado en la TS");
+        return entrada.isProc();
     }
 
     public void setTipoEntrada(String lexema, String tipo){
         Celda entrada = tablaSimb.get(lexema);
+        if (entrada == null) throw new IllegalStateException("Lexema no encontrado en la TS");
         entrada.setTipo(tipo);
     }
 
     public void setUsoEntrada(String lexema, String uso){
         Celda entrada = tablaSimb.get(lexema);
+        if (entrada == null) throw new IllegalStateException("Lexema no encontrado en la TS");
         entrada.setUso(uso);
     }
 
     public void setAmbitoEntrada(String lexema, String ambito){
         Celda entrada = tablaSimb.remove(lexema);
+        if (entrada == null) throw new IllegalStateException("Lexema no encontrado en la TS");
         entrada.setAmbito(ambito);
         tablaSimb.put(entrada.getLexema(),entrada);
     }
@@ -50,24 +60,33 @@ public class TablaSimbolos {
         entrada.setDeclarada(declarada);
     }
 
-    public boolean isEntradaDeclarada(String lexema, String ambito){
-        return tablaSimb.get(generaLexemaAmbito(lexema,ambito)) != null
-            && tablaSimb.get(generaLexemaAmbito(lexema, ambito)).isDeclarada();
+    public boolean isEntradaDeclarada(String lexema){
+        return tablaSimb.get(lexema) != null
+            && tablaSimb.get(lexema).isDeclarada();
     }
 
     public void setMaxInvoc(String lexema, int nMax){
         Celda entrada = tablaSimb.get(lexema);
+        if (entrada == null) throw new IllegalStateException("Lexema no encontrado en la TS");
         entrada.setMaxInvoc(nMax);
     }
 
-    public boolean maxInvocAlcanzadas(String lexema, String ambito){
-        Celda entrada = tablaSimb.get(generaLexemaAmbito(lexema,ambito));
+    public boolean maxInvocAlcanzadas(String lexema){
+        Celda entrada = tablaSimb.get(lexema);
+        if (entrada == null) throw new IllegalStateException("Lexema no encontrado en la TS");
         return entrada.maxInvocAlcanzadas();
     }
 
-    public void incrementaNInvoc(String lexema, String ambito){
-        Celda entrada = tablaSimb.get(generaLexemaAmbito(lexema,ambito));
+    public void incrementaNInvoc(String lexema){
+        Celda entrada = tablaSimb.get(lexema);
+        if (entrada == null) throw new IllegalStateException("Lexema no encontrado en la TS");
         entrada.incrementaNInvoc();
+    }
+
+    public void setTipoParamsProc(String lexema, List<String> tipoParams){
+        Celda entrada = tablaSimb.get(lexema);
+        if (entrada == null) throw new IllegalStateException("Lexema no encontrado en la TS");
+        entrada.setTipoParams(tipoParams);
     }
 
     /**
@@ -106,14 +125,6 @@ public class TablaSimbolos {
         if (celda == null) //Agrege la excepcion por si llega a fallar el get, que no ande el null dando vueltas.
             throw new IllegalStateException("El lexema '" + lexema + "' no se encontro en la tabla de simbolos.");
         return celda;
-    }
-
-    public String toString() {
-        if (tablaSimb.isEmpty()) return "Tabla de simbolos vacia.";
-        StringBuilder builder = new StringBuilder();
-        for (Celda c : tablaSimb.values())
-            builder.append(c.toString()).append('\n');
-        return builder.toString();
     }
 
     public boolean entradaSinReferencias(String lexema) {

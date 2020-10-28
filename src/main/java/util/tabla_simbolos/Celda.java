@@ -1,13 +1,27 @@
 package util.tabla_simbolos;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class Celda {
+    /**
+     * Atributos comunes.
+     */
     private final int token;
     private String lexema;
     private String tipo;
-    private String uso;
-    private int nInvoc, maxInvoc;
+    private String uso = "-";
     private boolean declarada;
     private int referencias;
+
+    public static final String USO_PROC = "Proc";
+
+    /**
+     * Atributos de procedimientos.
+     */
+    private int nInvoc, maxInvoc;
+    private List<String> tipoParams;
 
     public Celda(int token, String lexema, String tipo) {
         this.token = token;
@@ -16,8 +30,22 @@ public class Celda {
         this.referencias = 0;
     }
 
+    @Override
+    public String toString() {
+        String baseCelda =
+                "{" +
+                "lex='" + lexema + '\'' +
+                ", tipo='" + tipo + '\'' +
+                ", uso='" + uso + '\'' +
+                ", decl='" + declarada + '\'' +
+                ", nRefs=" + referencias;
+        if (uso.equals(USO_PROC) && tipoParams!=null)
+            return baseCelda + ", nInvoc=" + nInvoc + ", params=" + tipoParams.toString() + '}';
+        return baseCelda + '}';
+    }
+
     public void setAmbito(String ambito){
-        lexema = ambito+"::"+lexema;
+        lexema = ambito+":"+lexema;
     }
 
     public String getLexema() {
@@ -36,8 +64,8 @@ public class Celda {
         this.tipo = tipo;
     }
 
-    public String getUso() {
-        return uso;
+    public boolean isProc(){
+        return uso.equals(USO_PROC);
     }
 
     public void setUso(String uso) {
@@ -52,6 +80,14 @@ public class Celda {
         this.declarada = declarada;
     }
 
+    public void actualizarReferencias(int i) {
+        referencias += i;
+    }
+
+    public boolean sinReferencias() {
+        return referencias == 0;
+    }
+
     public void incrementaNInvoc(){
         nInvoc++;
     }
@@ -64,24 +100,7 @@ public class Celda {
         return nInvoc == maxInvoc;
     }
 
-    public void actualizarReferencias(int i) {
-        referencias += i;
-    }
-
-    public boolean sinReferencias() {
-        return referencias == 0;
-    }
-
-    @Override
-    public String toString() {
-        return "{" +
-                "token=" + token +
-                ", lexema='" + lexema + '\'' +
-                ", tipo='" + tipo + '\'' +
-                ", uso='" + uso + '\'' +
-                ", declarada='" + declarada + '\'' +
-                ", nInvoc=" + nInvoc +
-                ", referencias=" + referencias +
-                '}';
+    public void setTipoParams(List<String> tipoParams){
+        this.tipoParams = new ArrayList<>(tipoParams);
     }
 }

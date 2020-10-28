@@ -8,6 +8,9 @@ import generacion_c_intermedio.Polaca;
 import util.TablaNotificaciones;
 import util.tabla_simbolos.Celda;
 import util.tabla_simbolos.TablaSimbolos;
+
+import java.util.ArrayList;
+import java.util.List;
 %}
 
 %token ID, COMP_MENOR_IGUAL, COMP_MAYOR_IGUAL, COMP_DISTINTO, COMP_IGUAL, UINT, DOUBLE, CADENA, IF , THEN, ELSE, END_IF,  LOOP, UNTIL, OUT , PROC , VAR,  NI, CTE_UINT, CTE_DOUBLE
@@ -36,18 +39,20 @@ fin_sentencia	:       {yyerror("Falta ';' al final de la sentencia");}
 				;
 			
 sentencia_decl	: nombre_proc params_proc ni_proc cuerpo_proc {
-                                                                if (nombreIdValido) checkNIProc();
+                                                                if (nombreIdValido) {
+                                                                    declaraProc();
+                                                                }
                                                                 pilaAmbitos.eliminarUltimo();
                                                                 }
 				| tipo_id lista_variables
 				;
 
-lista_variables	: ID {checkDeclaracionId("Variable",$1.sval,ultimoTipoLeido);}
-				| ID ',' lista_variables {checkDeclaracionId("Variable",$1.sval,ultimoTipoLeido);}
+lista_variables	: ID {declaraId("Variable",$1.sval,ultimoTipoLeido);}
+				| ID ',' lista_variables {declaraId("Variable",$1.sval,ultimoTipoLeido);}
 				;
 				
 nombre_proc	: PROC ID {
-                        checkDeclaracionProc($2.sval);
+                        declaraIdProc($2.sval);
                         pilaAmbitos.agregarAmbito($2.sval); //Guardo el nombre del procedimiento en caso de necesitarlo.
                         }
 			| PROC {yyerror("Falta el identificador del procedimiento.");}
@@ -73,12 +78,18 @@ param   : param_var
         | param_comun
         ;
 					
-param_var	: VAR tipo_id ID {checkDeclaracionId("ParamCVR",$3.sval,ultimoTipoLeido);}
+param_var	: VAR tipo_id ID {
+                                listaTipoParams.add(ultimoTipoLeido);
+                                declaraId("ParamCVR",$3.sval,ultimoTipoLeido);
+                                }
             | VAR ID {yyerror("Falta el tipo de un parametro.");}
             | VAR tipo_id {yyerror("Falta el identificador de un parametro.");}
 		    ;
 
-param_comun : tipo_id ID {checkDeclaracionId("ParamCV",$2.sval,ultimoTipoLeido);}
+param_comun : tipo_id ID {
+                            listaTipoParams.add(ultimoTipoLeido);
+                            declaraId("ParamCV",$2.sval,ultimoTipoLeido);
+                            }
 		    | tipo_id {yyerror("Falta el identificador de un parametro.");}
 		    ;
 
@@ -100,22 +111,29 @@ sentencia_ejec	: invocacion
 				| print
 				;
 
-invocacion	: ID '(' ')' {checkInvocacionProc($1.sval);}
-			| ID '(' lista_params_inv ')' {checkInvocacionProc($1.sval);}
+invocacion	: ID '(' ')' {
+                            guardaParamsInvoc();
+                            invocaProc($1.sval);
+                            }
+			| ID '(' lista_params_inv ')' {invocaProc($1.sval);}
 			;
 			
-lista_params_inv	: ID
-					| ID separador_variables ID
-					| ID separador_variables ID separador_variables ID
-					| ID separador_variables ID separador_variables ID separador_variables lista_params_inv {yyerror("Un procedimiento no puede tener mas de 3 parametros.");}
+lista_params_inv	: ID {guardaParamsInvoc($1.sval);}
+					| ID separador_variables ID {guardaParamsInvoc($1.sval, $3.sval);}
+					| ID separador_variables ID separador_variables ID {guardaParamsInvoc($1.sval, $3.sval, $5.sval);}
+					| ID separador_variables ID separador_variables ID separador_variables lista_params_inv
+                                                    {
+                                                    guardaParamsInvoc($1.sval, $3.sval, $5.sval);
+                                                    yyerror("Un procedimiento no puede tener mas de 3 parametros.");
+                                                    }
                     ;
 
 asignacion	: ID '=' expresion {
-                                checkAsignacion($1.sval);
+                                checkValidezAsign($1.sval);
                                 agregarPasosRepr($1.sval,"=");
                                 }
             | ID '=' error {
-                            checkAsignacion($1.sval);
+                            checkValidezAsign($1.sval);
                             yyerror("El lado derecho de la asignacio no es valido.");
                             }
             ;
@@ -131,7 +149,7 @@ termino	: termino '*' factor {agregarPasosRepr("*");}
      	;	
 		
 factor 	: ID {
-                checkAsignacion($1.sval);
+                checkValidezFactor($1.sval);
                 agregarPasosRepr($1.sval);
                 }
 		| CTE_UINT {agregarPasosRepr($1.sval);}
@@ -208,11 +226,10 @@ print	: OUT '(' imprimible ')' {agregarPasosRepr($3.sval,tipoImpresion);}
 imprimible	: CADENA {tipoImpresion = "OUT_CAD";}
 			| CTE_UINT {tipoImpresion = "OUT_UINT";}
 			| CTE_DOUBLE {tipoImpresion = "OUT_DOU";}
-			| ID {if (idImpresionValido($1.sval)) tipoImpresion = "OUT_"+tablaS.getTipo($1.sval,getAmbitoId($1.sval));}
+			| ID {if (isIdDeclarado($1.sval)) tipoImpresion = "OUT_"+tablaS.getTipo(getAmbitoId($1.sval)+":"+$1.sval);}
 			;
 
 %%
-
 public Parser(AnalizadorLexico aLexico, TablaSimbolos tablaS) {
     this.aLexico = aLexico;
     this.tablaS = tablaS;
@@ -235,6 +252,8 @@ private String ultimoTipoLeido; //Almacena temporalmente el ultimo tipo leido.
 private String tipoImpresion; //Almacena temporalmente el tipo de dato que debe imprimirse.
 
 private int maxInvocProc; //Almacena temporalmente el maximo de invocaciones para un procedimiento.
+private List<String> listaTipoParams = new ArrayList<>();
+private String tipoParam1, tipoParam2, tipoParam3;
 
 private int yylex() {
     int token = aLexico.produceToken();
@@ -264,13 +283,13 @@ private void checkCambioSigno() {
     } else
         TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": No se permiten UINT negativos");
 }
-
 private String getAmbitoId(String lexema) {
     StringBuilder builderAmbito = new StringBuilder(pilaAmbitos.getAmbitosConcatenados());
 
+    String aux;
     while (!builderAmbito.toString().isEmpty()) {
         //Busca el id en el ambito actual.
-        if (tablaS.contieneLexema(lexema, builderAmbito.toString()))
+        if (tablaS.contieneLexema(builderAmbito.toString()+":"+lexema))
             return builderAmbito.toString();
 
         //"Baja" un nivel en la pila de ambitos.
@@ -281,11 +300,13 @@ private String getAmbitoId(String lexema) {
     return ""; //La variable no esta declarada.
 }
 
-private void checkDeclaracionId(String uso, String lexema, String tipo) {
+//---DECLARACION VARIABLES Y PARAMS---
+
+private void declaraId(String uso, String lexema, String tipo) {
     String ambito = getAmbitoId(lexema);
 
     if (!ambito.isEmpty() //La TS contiene el lexema recibido.
-            && tablaS.isEntradaDeclarada(lexema, ambito))//Existe el lexema en la TS y tiene el flag de declaracion activado.
+            && tablaS.isEntradaDeclarada(ambito+":"+lexema))//Tiene el flag de declaracion activado.
         TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": El identificador '" + lexema + "' ya se encuentra declarado.");
     else {
         tablaS.setTipoEntrada(lexema, tipo);
@@ -297,107 +318,145 @@ private void checkDeclaracionId(String uso, String lexema, String tipo) {
     }
 }
 
-private void checkDeclaracionProc(String lexema) {
-    checkDeclaracionId(TablaSimbolos.USO_ENTRADA_PROC,lexema,"VOID");
-    nombreProc = pilaAmbitos.getAmbitosConcatenados() + "::" + lexema;
+//---DECLARACION PROCS---
+
+private void declaraIdProc(String lexema) {
+    declaraId(TablaSimbolos.USO_ENTRADA_PROC,lexema,"-");
+    nombreProc = pilaAmbitos.getAmbitosConcatenados()+":"+lexema;
     lineaNI = aLexico.getLineaActual();
 }
 
-private void checkAsignacion(String lexema) {
-    String ambito = getAmbitoId(lexema);
-
-    if (ambito.isEmpty()) { //La TS no contiene el lexema recibido en ningun ambito.
-        TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": El identificador '"+lexema+"' no esta declarado.");
-        return; //Es necesario cortar aca para que 'ambito' no cause problemas por estar vacio.
-    }
-    //Existe el lexema en la TS y tiene el flag de declaracion desactivado.
-    if (!tablaS.isEntradaDeclarada(lexema, ambito))
-        TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": El identificador '" + lexema + "' no esta declarado.");
-    if (tablaS.isEntradaProc(lexema, ambito)) { //Esta declarado pero es un procedimiento.
-        TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": Un procedimiento no puede estar a la izquierda una asignacion.");
-    }
-}
-
-private void checkNIProc(){
+private void declaraProc(){
     if (maxInvocProc < 1 || maxInvocProc > 4){
         TablaNotificaciones.agregarError("Linea " + lineaNI + ": El numero de invocaciones de " +
                 "un procedimiento debe estar en el rango [1,4].");
     }
     else {
         tablaS.setMaxInvoc(nombreProc, maxInvocProc);
+
+        int nParams = listaTipoParams.size();
+        if (nParams > 3) nParams = 3; //Se queda con los primeros 3 params y descarta el resto.
+        tablaS.setTipoParamsProc(nombreProc, listaTipoParams.subList(0,nParams)); //A esta altura ya se verificaron los ids correspondientes a cada
+                                                                            // parametro. Solo resta asociarlos con el lexema del proc.
+        listaTipoParams.clear();
         nombreIdValido = false; //Reinicia el valor.
     }
 }
 
-private void checkInvocacionProc(String lexema) {
+//---ASIGN---
+
+private void checkValidezAsign(String lexema) {
     String ambito = getAmbitoId(lexema);
 
-    if (ambito.isEmpty())
-        TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": El procedimiento '" + lexema + "' no esta declarado.");
-    else if (tablaS.maxInvocAlcanzadas(lexema, ambito))
-        TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": El procedimiento '" + lexema + "' ya alcanzo su numero maximo de invocaciones.");
-    else {
-        tablaS.incrementaNInvoc(lexema, ambito);
-        //Generar codigo
+    if (ambito.isEmpty()) { //La TS no contiene el lexema recibido en ningun ambito.
+        TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": El identificador '"+lexema+"' no esta declarado.");
+        return; //Es necesario cortar aca para que 'ambito' no cause problemas por estar vacio.
     }
 
+    String nLexema = ambito+":"+lexema;
+    if (!tablaS.isEntradaDeclarada(nLexema)) //Existe el lexema en la TS y tiene el flag de declaracion desactivado.
+        TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": El identificador '" + lexema + "' no esta declarado.");
+    if (tablaS.isEntradaProc(nLexema)) { //Esta declarado pero es un procedimiento.
+        TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": Un procedimiento no puede estar a la izquierda una asignacion.");
+    }
 }
 
-private boolean idImpresionValido(String lexema){
+private void checkValidezFactor(String lexema){
+    String ambito = getAmbitoId(lexema);
+
+    if (ambito.isEmpty()) { //La TS no contiene el lexema recibido en ningun ambito.
+        TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": El identificador '"+lexema+"' no esta declarado.");
+        return; //Es necesario cortar aca para que 'ambito' no cause problemas por estar vacio.
+    }
+
+    String nLexema = ambito+":"+lexema;
+    if (!tablaS.isEntradaDeclarada(nLexema)) //Existe el lexema en la TS y tiene el flag de declaracion desactivado.
+        TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": El identificador '" + lexema + "' no esta declarado.");
+    if (tablaS.isEntradaProc(nLexema)) { //Esta declarado pero es un procedimiento.
+        TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": Un procedimiento no puede estar a la derecha una asignacion.");
+    }
+}
+
+//---INVOCACION PROCS---
+
+private void invocaProc(String lexema) {
+    String ambito = getAmbitoId(lexema);
+
+    if (ambito.isEmpty()) {
+        TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": El procedimiento '" + lexema + "' no esta declarado.");
+        return; //Es necesario cortar aca para que 'ambito' no cause problemas por estar vacio.
+    }
+    String nLexema = ambito+":"+lexema;
+    if (tablaS.maxInvocAlcanzadas(nLexema))
+        TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": El procedimiento '" + lexema + "' ya alcanzo su numero maximo de invocaciones.");
+    else {
+        tablaS.incrementaNInvoc(nLexema);
+        //Generar codigo
+    }
+}
+
+    private void guardaParamsInvoc(String... valores){}
+
+//---OUT---
+
+private boolean isIdDeclarado(String lexema){
     String ambito = getAmbitoId(lexema);
 
     if (ambito.isEmpty()) { //La TS no contiene el lexema recibido en ningun ambito.
         TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": El identificador '"+lexema+"' no esta declarado.");
         return false; //Es necesario cortar aca para que 'ambito' no cause problemas por estar vacio.
     }
-    //Existe el lexema en la TS y tiene el flag de declaracion desactivado.
-    if (!tablaS.isEntradaDeclarada(lexema, ambito)) {
+
+    if (!tablaS.isEntradaDeclarada(ambito+":"+lexema)) { //Existe el lexema en la TS y tiene el flag de declaracion desactivado.
         TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": El identificador '" + lexema + "' no esta declarado.");
         return false;
     }
     return true;
 }
 
-private void agregarPasosRepr(String... pasos) {
-    if (pilaAmbitos.inAmbitoGlobal())
-        polacaProgram.agregarPasos(pasos);
-    else polacaProcedimientos.agregarPasos(pilaAmbitos.getAmbitosConcatenados(), pasos);
-}
+//---POLACA---
 
-private void puntoControlThen() {
-    if (pilaAmbitos.inAmbitoGlobal())
-        polacaProgram.puntoControlThen();
-    else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(), Polaca.PC_THEN);
-}
+    private void agregarPasosRepr(String... pasos) {
+        if (pilaAmbitos.inAmbitoGlobal())
+            polacaProgram.agregarPasos(pasos);
+        else polacaProcedimientos.agregarPasos(pilaAmbitos.getAmbitosConcatenados(), pasos);
+    }
 
-private void puntoControlElse() {
-    if (pilaAmbitos.inAmbitoGlobal())
-        polacaProgram.puntoControlElse();
-    else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(), Polaca.PC_ELSE);
-}
+    private void puntoControlThen() {
+        if (pilaAmbitos.inAmbitoGlobal())
+            polacaProgram.puntoControlThen();
+        else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(), Polaca.PC_THEN);
+    }
 
-private void puntoControlFinCondicional() {
-    if (pilaAmbitos.inAmbitoGlobal())
-        polacaProgram.puntoControlFinCondicional();
-    else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(), Polaca.PC_FIN_COND);
-}
+    private void puntoControlElse() {
+        if (pilaAmbitos.inAmbitoGlobal())
+            polacaProgram.puntoControlElse();
+        else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(), Polaca.PC_ELSE);
+    }
 
-private void puntoControlLoop() {
-    if (pilaAmbitos.inAmbitoGlobal())
-        polacaProgram.puntoControlLoop();
-    else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(), Polaca.PC_LOOP);
-}
+    private void puntoControlFinCondicional() {
+        if (pilaAmbitos.inAmbitoGlobal())
+            polacaProgram.puntoControlFinCondicional();
+        else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(), Polaca.PC_FIN_COND);
+    }
 
-private void puntoControlUntil() {
-    if (pilaAmbitos.inAmbitoGlobal())
-        polacaProgram.puntoControlUntil();
-    else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(), Polaca.PC_UNTIL);
-}
+    private void puntoControlLoop() {
+        if (pilaAmbitos.inAmbitoGlobal())
+            polacaProgram.puntoControlLoop();
+        else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(), Polaca.PC_LOOP);
+    }
 
-public void printPolaca() {
-    polacaProgram.print();
-}
+    private void puntoControlUntil() {
+        if (pilaAmbitos.inAmbitoGlobal())
+            polacaProgram.puntoControlUntil();
+        else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(), Polaca.PC_UNTIL);
+    }
 
-public void printPolacaProcs() {
-    polacaProcedimientos.print();
-}
+    public void printPolaca() {
+        polacaProgram.print();
+    }
+
+    public void printPolacaProcs() {
+        polacaProcedimientos.print();
+    }
+

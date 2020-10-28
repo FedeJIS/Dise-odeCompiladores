@@ -42,6 +42,7 @@ public class GeneraTokenDouble extends AccionSemantica {
 
                 tablaS.agregarEntrada(token, String.valueOf(doubleNormalizado), "DOUBLE");
                 tablaS.setDeclaracionEntrada(String.valueOf(doubleNormalizado),true);
+                tablaS.setUsoEntrada(String.valueOf(doubleNormalizado),"CTE");
                 maquinaEstados.setVariablesSintactico(token, String.valueOf(doubleNormalizado));
             }
         }
