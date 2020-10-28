@@ -29,7 +29,6 @@ import util.tabla_simbolos.Celda;
 import util.tabla_simbolos.TablaSimbolos;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 //#line 31 "Parser.java"
 
@@ -794,8 +793,7 @@ private boolean isIdDeclarado(String lexema){
     public void printPolacaProcs() {
         polacaProcedimientos.print();
     }
-
-//#line 694 "Parser.java"
+//#line 725 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -982,8 +980,7 @@ case 14:
 //#line 54 "archivos/gramatica.y"
 {
                         declaraIdProc(val_peek(0).sval);
-                        pilaAmbitos.agregarAmbito(val_peek(0).sval); /*Guardo el nombre del procedimiento en caso de necesitarlo.
-*/
+                        pilaAmbitos.agregarAmbito(val_peek(0).sval); /*Guardo el nombre del procedimiento en caso de necesitarlo.*/
                         }
 break;
 case 15:
@@ -1247,7 +1244,7 @@ case 104:
 //#line 229 "archivos/gramatica.y"
 {if (isIdDeclarado(val_peek(0).sval)) tipoImpresion = "OUT_"+tablaS.getTipo(getAmbitoId(val_peek(0).sval)+":"+val_peek(0).sval);}
 break;
-//#line 1140 "Parser.java"
+//#line 1171 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####
