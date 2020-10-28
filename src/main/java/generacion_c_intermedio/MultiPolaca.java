@@ -1,10 +1,17 @@
 package generacion_c_intermedio;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MultiPolaca {
     private final Map<String, Polaca> polacaProcedimientos = new HashMap<>();
+
+    public void print() {
+        System.out.println("###POLACA PROCS###");
+        for (String ambito : polacaProcedimientos.keySet())
+            System.out.println(ambito + polacaProcedimientos.get(ambito).toString());
+    }
 
     public Polaca inicPolacaVacia(String ambito){
         if (polacaProcedimientos.containsKey(ambito))
@@ -15,17 +22,15 @@ public class MultiPolaca {
         return nuevaPolaca;
     }
 
-    public void agregarPasos(String ambito, String... pasos){
-        Polaca polacaProc = polacaProcedimientos.getOrDefault(ambito,new Polaca());
+    public void agregarPasos(String proc, String... pasos){
+        Polaca polacaProc = polacaProcedimientos.getOrDefault(proc,new Polaca());
 
         polacaProc.agregarPasos(pasos);
-        polacaProcedimientos.put(ambito,polacaProc);
+        polacaProcedimientos.put(proc,polacaProc);
     }
 
-    public void print() {
-        System.out.println("###POLACA PROCS###");
-        for (String ambito : polacaProcedimientos.keySet())
-            System.out.println(ambito + polacaProcedimientos.get(ambito).toString());
+    public List<String> getListaPasos(String proc){
+        return polacaProcedimientos.get(proc).getListaPasos();
     }
 
     public void ejecutarPuntoControl(String ambitoActual, int puntoControl) {

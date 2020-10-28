@@ -38,6 +38,10 @@ public class Polaca {
         if (!TablaNotificaciones.hayErrores()) listaPasos.addAll(Arrays.asList(pasos));
     }
 
+    public List<String> getListaPasos(){
+        return new ArrayList<>(listaPasos);
+    }
+
     public void puntoControlThen(){
         if (!TablaNotificaciones.hayErrores()) {
             listaPasos.add(simboloPasoIncompleto); //Agrego el BF con destino incompleto.

@@ -3,25 +3,22 @@ import compilador.Compilador;
 public class Test {
 
     public static void main(String[] args) {
-        Compilador.compilar("PROC x(UINT a) NI = 1_ui {OUT(a);};\n" +
+        Compilador.compilar("PROC x(VAR DOUBLE a) NI = 1_ui {OUT(a);};\n" +
                                         "DOUBLE o,p,q,s;\n" +
                                         "o = 5.0d1;\n" +
                                         "x(o);\n" +
+                                        "o = 1.0d10;" //+
 
-                                        "PROC y(UINT a, DOUBLE b, UINT c) NI = 1_ui {OUT(a);};\n" +
-                                        "p = 5.0d1;\n" +
-                                        "q = 5.0d1;\n" +
-                                        "y(o,p,q);\n" +
-
-                                        "s = 5.0d1;\n" +
-                                        "PROC z(UINT a, DOUBLE b, UINT c, UINT d) NI = 1_ui {OUT(a);};\n" +
-                                        "z(o,p,q,s);"
+//                                        "PROC y(UINT a, DOUBLE b, UINT c) NI = 1_ui {OUT(a);};\n" +
+//                                        "p = 5.0d1;\n" +
+//                                        "q = 5.0d1;\n" +
+//                                        "y(o,p,q);\n" +
+//
+//                                        "s = 5.0d1;\n" +
+//                                        "PROC z(UINT a, DOUBLE b, UINT c, UINT d) NI = 1_ui {OUT(a);};\n" +
+//                                        "z(o,p,q,s);"
 
                 ,true,true);
-
-        String otro = "PROC x(UINT a) NI = 1_ui {OUT(a);};\n" +
-                "PROC y(UINT a, DOUBLE b, VAR UINT c) NI = 1_ui {OUT(a);};\n" +
-                "PROC z(UINT a, DOUBLE b, VAR UINT c, UINT d) NI = 1_ui {OUT(a);};";
     }
 
     /**

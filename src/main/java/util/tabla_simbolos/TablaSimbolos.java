@@ -74,6 +74,12 @@ public class TablaSimbolos {
         return entrada.isProc();
     }
 
+    public boolean isEntradaParamCVR(String lexema){
+        Celda entrada = tablaSimb.get(lexema);
+        if (entrada == null) throw new IllegalStateException("Lexema no encontrado en la TS");
+        return entrada.isParamCVR();
+    }
+
     public void setTipoEntrada(String lexema, String tipo){
         Celda entrada = tablaSimb.get(lexema);
         if (entrada == null) throw new IllegalStateException("Lexema no encontrado en la TS");
@@ -121,10 +127,10 @@ public class TablaSimbolos {
         entrada.incrementaNInvoc();
     }
 
-    public void setTipoParamsProc(String lexema, List<String> tipoParams){
+    public void setParamsProc(String lexema, List<String> paramsProc){
         Celda entrada = tablaSimb.get(lexema);
         if (entrada == null) throw new IllegalStateException("Lexema no encontrado en la TS");
-        entrada.setTipoParamsDecl(tipoParams);
+        entrada.setParamsDecl(paramsProc);
     }
 
     public int getNParams(String lexema){
@@ -133,10 +139,26 @@ public class TablaSimbolos {
         return entrada.getNParams();
     }
 
+    public String getParam(String lexema, int i){
+        Celda entrada = tablaSimb.get(lexema);
+        if (entrada == null) throw new IllegalStateException("Lexema no encontrado en la TS");
+
+        String lexemaParam = entrada.getParam(i);
+        Celda entradaParam = tablaSimb.get(lexemaParam);
+        if (entradaParam == null) throw new IllegalStateException("Lexema del parametro no encontrado en la TS");
+
+        return entradaParam.getLexema();
+    }
+
     public String getTipoParam(String lexema, int i){
         Celda entrada = tablaSimb.get(lexema);
         if (entrada == null) throw new IllegalStateException("Lexema no encontrado en la TS");
-        return entrada.getTipoParam(i);
+
+        String lexemaParam = entrada.getParam(i);
+        Celda entradaParam = tablaSimb.get(lexemaParam);
+        if (entradaParam == null) throw new IllegalStateException("Lexema del parametro no encontrado en la TS");
+
+        return entradaParam.getTipo();
     }
 
     public boolean entradaSinReferencias(String lexema) {

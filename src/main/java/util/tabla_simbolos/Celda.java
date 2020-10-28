@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Celda {
+    public static final String USO_PROC = "Proc";
+    private static final String USO_PARAM_CVR = "ParamCVR";
+
     /**
      * Atributos comunes.
      */
@@ -14,13 +17,11 @@ public class Celda {
     private boolean declarada;
     private int referencias;
 
-    public static final String USO_PROC = "Proc";
-
     /**
      * Atributos de procedimientos.
      */
     private int nInvoc, maxInvoc;
-    private List<String> tipoParamsDecl;
+    private List<String> paramsDecl;
 
     public Celda(int token, String lexema, String tipo) {
         this.token = token;
@@ -38,8 +39,8 @@ public class Celda {
                 ", uso='" + uso + '\'' +
                 ", decl='" + declarada + '\'' +
                 ", nRefs=" + referencias;
-        if (uso.equals(USO_PROC) && tipoParamsDecl !=null)
-            return baseCelda + ", nInvoc=" + nInvoc + ", params=" + tipoParamsDecl.toString() + '}';
+        if (uso.equals(USO_PROC) && paramsDecl != null)
+            return baseCelda + ", nInvoc=" + nInvoc + ", params=" + paramsDecl.toString() + '}';
         return baseCelda + '}';
     }
 
@@ -66,6 +67,8 @@ public class Celda {
     public boolean isProc(){
         return uso.equals(USO_PROC);
     }
+
+    public boolean isParamCVR() {return uso.equals(USO_PARAM_CVR);}
 
     public void setUso(String uso) {
         this.uso = uso;
@@ -99,15 +102,15 @@ public class Celda {
         return nInvoc == maxInvoc;
     }
 
-    public void setTipoParamsDecl(List<String> tipoParamsDecl){
-        this.tipoParamsDecl = new ArrayList<>(tipoParamsDecl);
+    public void setParamsDecl(List<String> paramsDecl){
+        this.paramsDecl = new ArrayList<>(paramsDecl);
     }
 
     public int getNParams(){
-        return tipoParamsDecl.size();
+        return paramsDecl.size();
     }
 
-    public String getTipoParam(int i){
-        return tipoParamsDecl.get(i);
+    public String getParam(int i){
+        return paramsDecl.get(i);
     }
 }
