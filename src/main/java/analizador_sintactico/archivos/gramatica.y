@@ -252,7 +252,7 @@ private String ultimoTipoLeido; //Almacena temporalmente el ultimo tipo leido.
 private String tipoImpresion; //Almacena temporalmente el tipo de dato que debe imprimirse.
 
 private int maxInvocProc; //Almacena temporalmente el maximo de invocaciones para un procedimiento.
-private List<String> listaTipoParams = new ArrayList<>();
+private final List<String> listaTipoParams = new ArrayList<>();
 private String tipoParam1, tipoParam2, tipoParam3;
 
 private int yylex() {

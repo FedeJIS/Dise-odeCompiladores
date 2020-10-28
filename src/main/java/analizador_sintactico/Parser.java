@@ -29,6 +29,7 @@ import util.tabla_simbolos.Celda;
 import util.tabla_simbolos.TablaSimbolos;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 //#line 31 "Parser.java"
 
@@ -554,8 +555,7 @@ private String ultimoTipoLeido; //Almacena temporalmente el ultimo tipo leido.
 private String tipoImpresion; //Almacena temporalmente el tipo de dato que debe imprimirse.
 
 private int maxInvocProc; //Almacena temporalmente el maximo de invocaciones para un procedimiento.
-private List<String> listaTipoParams = new ArrayList<>();
-private String tipoParam1, tipoParam2, tipoParam3;
+private final List<String> listaTipoParams = new ArrayList<>();
 
 private int yylex() {
     int token = aLexico.produceToken();
@@ -683,21 +683,54 @@ private void checkValidezFactor(String lexema){
 
 private void invocaProc(String lexema) {
     String ambito = getAmbitoId(lexema);
+    boolean invocValida = true;
 
     if (ambito.isEmpty()) {
         TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": El procedimiento '" + lexema + "' no esta declarado.");
         return; //Es necesario cortar aca para que 'ambito' no cause problemas por estar vacio.
     }
     String nLexema = ambito+":"+lexema;
-    if (tablaS.maxInvocAlcanzadas(nLexema))
+    if (tablaS.maxInvocAlcanzadas(nLexema)) {
         TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": El procedimiento '" + lexema + "' ya alcanzo su numero maximo de invocaciones.");
-    else {
-        tablaS.incrementaNInvoc(nLexema);
-        //Generar codigo
+        invocValida = false;
+    } else tablaS.incrementaNInvoc(nLexema);
+
+    int nParamsDecl = tablaS.getNParams(nLexema);
+    if (nParamsDecl != listaTipoParams.size()){
+        TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": Se esperaban "+nParamsDecl+" parametros, pero se encontraron "+listaTipoParams.size()+".");
+        invocValida = false;
     }
+
+    if (nParamsDecl != 0 && listaTipoParams.size() >= nParamsDecl) //El '>=' permite analizar los primeros parametros, aunque se tengan mas de los declarados.
+        invocValida = tipoParamsValidos(nLexema,nParamsDecl);
+
+    if (invocValida)
+        System.out.println("generar codigo");
+
+    listaTipoParams.clear();
+
 }
 
-    private void guardaParamsInvoc(String... valores){}
+private boolean tipoParamsValidos(String lexema, int nParamsDecl){
+    boolean invocValida = true;
+    for (int i = 0; i < nParamsDecl; i++){
+        String tipoParamInvoc = listaTipoParams.get(i);
+        String tipoParamDecl = tablaS.getTipoParam(lexema,i);
+        if (!tipoParamInvoc.equals(tipoParamDecl)){
+            TablaNotificaciones.agregarError(
+                    "Linea " + aLexico.getLineaActual() + ": En la posicion "+(i+1)+" se esperaba un "+tipoParamDecl+
+                            ", pero se encontro un "+tipoParamInvoc+".");
+            invocValida = false;
+        }
+    }
+    return invocValida;
+}
+
+private void guardaParamsInvoc(String... lexemaParams){
+    for (String lexemaParam : lexemaParams){
+        listaTipoParams.add(tablaS.getTipo(getAmbitoId(lexemaParam)+":"+lexemaParam));
+    }
+}
 
 //---OUT---
 
@@ -949,7 +982,8 @@ case 14:
 //#line 54 "archivos/gramatica.y"
 {
                         declaraIdProc(val_peek(0).sval);
-                        pilaAmbitos.agregarAmbito(val_peek(0).sval); /*Guardo el nombre del procedimiento en caso de necesitarlo.*/
+                        pilaAmbitos.agregarAmbito(val_peek(0).sval); /*Guardo el nombre del procedimiento en caso de necesitarlo.
+*/
                         }
 break;
 case 15:

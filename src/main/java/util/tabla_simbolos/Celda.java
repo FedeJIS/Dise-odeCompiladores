@@ -1,7 +1,6 @@
 package util.tabla_simbolos;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Celda {
@@ -21,7 +20,7 @@ public class Celda {
      * Atributos de procedimientos.
      */
     private int nInvoc, maxInvoc;
-    private List<String> tipoParams;
+    private List<String> tipoParamsDecl;
 
     public Celda(int token, String lexema, String tipo) {
         this.token = token;
@@ -39,8 +38,8 @@ public class Celda {
                 ", uso='" + uso + '\'' +
                 ", decl='" + declarada + '\'' +
                 ", nRefs=" + referencias;
-        if (uso.equals(USO_PROC) && tipoParams!=null)
-            return baseCelda + ", nInvoc=" + nInvoc + ", params=" + tipoParams.toString() + '}';
+        if (uso.equals(USO_PROC) && tipoParamsDecl !=null)
+            return baseCelda + ", nInvoc=" + nInvoc + ", params=" + tipoParamsDecl.toString() + '}';
         return baseCelda + '}';
     }
 
@@ -100,7 +99,15 @@ public class Celda {
         return nInvoc == maxInvoc;
     }
 
-    public void setTipoParams(List<String> tipoParams){
-        this.tipoParams = new ArrayList<>(tipoParams);
+    public void setTipoParamsDecl(List<String> tipoParamsDecl){
+        this.tipoParamsDecl = new ArrayList<>(tipoParamsDecl);
+    }
+
+    public int getNParams(){
+        return tipoParamsDecl.size();
+    }
+
+    public String getTipoParam(int i){
+        return tipoParamsDecl.get(i);
     }
 }

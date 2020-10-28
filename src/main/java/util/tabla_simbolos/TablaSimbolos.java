@@ -21,6 +21,44 @@ public class TablaSimbolos {
         return builder.toString();
     }
 
+    /**
+     * Agrega una celda (token,lexema,tipo). En caso de existir previamente, incrementa en uno las referencias a la
+     * celda.
+     */
+    public void agregarEntrada(int token, String lexema, String tipo) {
+        Celda celda;
+
+        if (tablaSimb.containsKey(lexema)) celda = getEntrada(lexema); //Si el lexema existe extraigo la celda para actualizar las referencias
+        else {//Si no existe creo una nueva y la inserto.
+            celda = new Celda(token, lexema, tipo);
+            tablaSimb.put(lexema, celda);
+        }
+        celda.actualizarReferencias(1);
+    }
+
+    public void eliminarEntrada(String lexema) {
+        Celda celda = tablaSimb.get(lexema);
+        if (celda == null)
+            throw new IllegalStateException("El lexema '" + lexema + "' no se encontro en la tabla de simbolos.");
+        if (!celda.sinReferencias()) //No deja eliminar celdas con referencias.
+            throw new IllegalStateException("La entrada asociada al lexema '" + lexema + "' no puede ser eliminada porque" +
+                    "aun esta siendo referenciada.");
+        tablaSimb.remove(lexema);
+    }
+
+    /**
+     * Dado un lexema, devuelve la celda en la tabla de simbolos.
+     *
+     * @return Celda asociada al lexema.
+     */
+    public Celda getEntrada(String lexema) {
+        Celda celda = tablaSimb.get(lexema);
+
+        if (celda == null) //Agrege la excepcion por si llega a fallar el get, que no ande el null dando vueltas.
+            throw new IllegalStateException("El lexema '" + lexema + "' no se encontro en la tabla de simbolos.");
+        return celda;
+    }
+
     public boolean contieneLexema(String lexema) {
         return tablaSimb.containsKey(lexema);
     }
@@ -86,45 +124,19 @@ public class TablaSimbolos {
     public void setTipoParamsProc(String lexema, List<String> tipoParams){
         Celda entrada = tablaSimb.get(lexema);
         if (entrada == null) throw new IllegalStateException("Lexema no encontrado en la TS");
-        entrada.setTipoParams(tipoParams);
+        entrada.setTipoParamsDecl(tipoParams);
     }
 
-    /**
-     * Agrega una celda (token,lexema,tipo). En caso de existir previamente, incrementa en uno las referencias a la
-     * celda.
-     */
-    public void agregarEntrada(int token, String lexema, String tipo) {
-        Celda celda;
-
-        if (tablaSimb.containsKey(lexema)) celda = getEntrada(lexema); //Si el lexema existe extraigo la celda para actualizar las referencias
-        else {//Si no existe creo una nueva y la inserto.
-            celda = new Celda(token, lexema, tipo);
-            tablaSimb.put(lexema, celda);
-        }
-        celda.actualizarReferencias(1);
+    public int getNParams(String lexema){
+        Celda entrada = tablaSimb.get(lexema);
+        if (entrada == null) throw new IllegalStateException("Lexema no encontrado en la TS");
+        return entrada.getNParams();
     }
 
-    public void eliminarEntrada(String lexema) {
-        Celda celda = tablaSimb.get(lexema);
-        if (celda == null)
-            throw new IllegalStateException("El lexema '" + lexema + "' no se encontro en la tabla de simbolos.");
-        if (!celda.sinReferencias()) //No deja eliminar celdas con referencias.
-            throw new IllegalStateException("La entrada asociada al lexema '" + lexema + "' no puede ser eliminada porque" +
-                    "aun esta siendo referenciada.");
-        tablaSimb.remove(lexema);
-    }
-
-    /**
-     * Dado un lexema, devuelve la celda en la tabla de simbolos.
-     *
-     * @return Celda asociada al lexema.
-     */
-    public Celda getEntrada(String lexema) {
-        Celda celda = tablaSimb.get(lexema);
-
-        if (celda == null) //Agrege la excepcion por si llega a fallar el get, que no ande el null dando vueltas.
-            throw new IllegalStateException("El lexema '" + lexema + "' no se encontro en la tabla de simbolos.");
-        return celda;
+    public String getTipoParam(String lexema, int i){
+        Celda entrada = tablaSimb.get(lexema);
+        if (entrada == null) throw new IllegalStateException("Lexema no encontrado en la TS");
+        return entrada.getTipoParam(i);
     }
 
     public boolean entradaSinReferencias(String lexema) {
