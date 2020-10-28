@@ -703,17 +703,23 @@ final static String yyrule[] = {
         for (int i = 0; i < nParamsDecl; i++) { //Pasa el valor de los parametros reales a los formales.
             paramDecl = tablaS.getParam(lexemaProc, i);
             paramInvoc = listaParams.get(i);
-            agregarPasosRepr(paramDecl,paramInvoc,"="); //paramDecl = paramInvoc.
+            agregarPasosRepr(paramInvoc,paramDecl,"="); //paramDecl = paramInvoc.
         }
 
-        for (String paso : polacaProcedimientos.getListaPasos(lexemaProc)) //Obtiene el codigo intermedio de la funcion.
+        int posPreInvocacion = polacaProgram.longitud();
+        int posActual = posPreInvocacion;
+        for (String paso : polacaProcedimientos.getListaPasos(lexemaProc)){ //Obtiene el codigo intermedio de la funcion.
             agregarPasosRepr(paso);
+            if (paso.equals(Polaca.PASO_BF) || paso.equals(Polaca.PASO_BI)) //Hay que ajustar el paso a donde hay que saltar.
+                polacaProgram.ajustaPaso(posActual, posPreInvocacion);
+            posActual++;
+        }
 
         for (int i = 0; i < nParamsDecl ; i++){ //Pasa el valor de los param formales a los reales (En caso de param CVR).
             paramDecl = tablaS.getParam(lexemaProc,i);
             if (tablaS.isEntradaParamCVR(paramDecl)){
                 paramInvoc = listaParams.get(i);
-                agregarPasosRepr(paramInvoc,paramDecl,"="); //paramInvoc = paramDecl.
+                agregarPasosRepr(paramDecl,paramInvoc,"="); //paramInvoc = paramDecl.
             }
         }
     }
@@ -813,13 +819,9 @@ final static String yyrule[] = {
     }
 
     public void printPolaca() {
-        polacaProgram.print();
+        System.out.println(polacaProgram.toString());
     }
-
-    public void printPolacaProcs() {
-        polacaProcedimientos.print();
-    }
-//#line 743 "Parser.java"
+//#line 753 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1006,8 +1008,7 @@ case 14:
 //#line 54 "archivos/gramatica.y"
 {
                         declaraIdProc(val_peek(0).sval);
-                        pilaAmbitos.agregarAmbito(val_peek(0).sval); /*Guardo el nombre del procedimiento en caso de necesitarlo.
-*/
+                        pilaAmbitos.agregarAmbito(val_peek(0).sval); /*Guardo el nombre del procedimiento en caso de necesitarlo.*/
                         }
 break;
 case 15:
@@ -1265,7 +1266,7 @@ case 104:
 //#line 223 "archivos/gramatica.y"
 {if (isIdDeclarado(val_peek(0).sval)) tipoImpresion = "OUT_"+tablaS.getTipo(getAmbitoId(val_peek(0).sval)+":"+val_peek(0).sval);}
 break;
-//#line 1183 "Parser.java"
+//#line 1193 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

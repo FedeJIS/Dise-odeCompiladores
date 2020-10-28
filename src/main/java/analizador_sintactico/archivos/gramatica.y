@@ -395,11 +395,25 @@ imprimible	: CADENA {tipoImpresion = "OUT_CAD";}
         for (int i = 0; i < nParamsDecl; i++) { //Pasa el valor de los parametros reales a los formales.
             paramDecl = tablaS.getParam(lexemaProc, i);
             paramInvoc = listaParams.get(i);
-            agregarPasosRepr(paramDecl,paramInvoc,"="); //paramDecl = paramInvoc.
+            agregarPasosRepr(paramInvoc,paramDecl,"="); //paramDecl = paramInvoc.
         }
-        //Pasar valores de param real a param formal.
-        //Generar codigo funcion.
-        //Pasar valores de param formal a real (si tiene VAR).
+
+        int posPreInvocacion = polacaProgram.longitud();
+        int posActual = posPreInvocacion;
+        for (String paso : polacaProcedimientos.getListaPasos(lexemaProc)){ //Obtiene el codigo intermedio de la funcion.
+            agregarPasosRepr(paso);
+            if (paso.equals(Polaca.PASO_BF) || paso.equals(Polaca.PASO_BI)) //Hay que ajustar el paso a donde hay que saltar.
+                polacaProgram.ajustaPaso(posActual, posPreInvocacion);
+            posActual++;
+        }
+
+        for (int i = 0; i < nParamsDecl ; i++){ //Pasa el valor de los param formales a los reales (En caso de param CVR).
+            paramDecl = tablaS.getParam(lexemaProc,i);
+            if (tablaS.isEntradaParamCVR(paramDecl)){
+                paramInvoc = listaParams.get(i);
+                agregarPasosRepr(paramDecl,paramInvoc,"="); //paramInvoc = paramDecl.
+            }
+        }
     }
 
     //---ASIGN---
@@ -497,9 +511,5 @@ imprimible	: CADENA {tipoImpresion = "OUT_CAD";}
     }
 
     public void printPolaca() {
-        polacaProgram.print();
-    }
-
-    public void printPolacaProcs() {
-        polacaProcedimientos.print();
+        System.out.println(polacaProgram.toString());
     }

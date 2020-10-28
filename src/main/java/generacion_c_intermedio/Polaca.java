@@ -13,6 +13,8 @@ public class Polaca {
     public static final int PC_LOOP = 3;
     public static final int PC_UNTIL = 4;
 
+    public static final String PASO_BI = "BI", PASO_BF = "BF";
+
     private final List<String> listaPasos = new ArrayList<>();
     private final List<Integer> pilaIncompletos = new ArrayList<>();
 
@@ -20,22 +22,24 @@ public class Polaca {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder("[");
+        StringBuilder builder = new StringBuilder();
         for (int i = 0; i < listaPasos.size(); i++)
-            builder.append("(").append(i).append(",").append(listaPasos.get(i)).append(");");
+            builder.append('(').append(i).append(';').append(listaPasos.get(i)).append(')').append('\n');
 
-        return builder.append("]").toString();
+        return builder.toString();
     }
 
-    public void print() {
-        System.out.println("###POLACA###");
-        for (int i = 0; i < listaPasos.size(); i++)
-            System.out.print("("+i+","+ listaPasos.get(i)+");");
-        System.out.println();
+    public int longitud(){
+        return listaPasos.size();
     }
 
     public void agregarPasos(String... pasos){
         if (!TablaNotificaciones.hayErrores()) listaPasos.addAll(Arrays.asList(pasos));
+    }
+
+    public void ajustaPaso(int paso, int offset){
+        int valorSalto = Integer.parseInt(listaPasos.get(paso-1)); //El paso a ajustar es el anterior al que me encuentro.
+        listaPasos.set(paso-1, String.valueOf(valorSalto + offset));
     }
 
     public List<String> getListaPasos(){
