@@ -7,6 +7,14 @@ import java.util.Map;
 public class MultiPolaca {
     private final Map<String, Polaca> polacaProcedimientos = new HashMap<>();
 
+    @Override
+    public String toString() {
+        StringBuilder multiPolacaBuilder = new StringBuilder();
+        for (String ambito : polacaProcedimientos.keySet())
+            multiPolacaBuilder.append(ambito).append('\n').append(polacaProcedimientos.get(ambito).toString()).append('\n');
+        return multiPolacaBuilder.toString();
+    }
+
     public void print() {
         System.out.println("###POLACA PROCS###");
         for (String ambito : polacaProcedimientos.keySet())

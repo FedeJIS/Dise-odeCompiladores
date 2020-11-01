@@ -14,6 +14,7 @@ public class Polaca {
     public static final int PC_UNTIL = 4;
 
     public static final String PASO_BI = "BI", PASO_BF = "BF";
+    public static final String PASO_INVOC = "INVOC";
 
     private final List<String> listaPasos = new ArrayList<>();
     private final List<Integer> pilaIncompletos = new ArrayList<>();

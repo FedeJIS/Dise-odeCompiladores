@@ -2,28 +2,55 @@ package compilador;
 
 import analizador_lexico.AnalizadorLexico;
 import analizador_sintactico.Parser;
-import util.CodigoFuente;
-import util.ReprTokens;
-import util.TablaNotificaciones;
-import util.TablaPalabrasR;
+import generacion_c_intermedio.MultiPolaca;
+import generacion_c_intermedio.Polaca;
+import util.*;
 import util.tabla_simbolos.TablaSimbolos;
 
 public class Compilador {
     private static final TablaSimbolos tablaS = new TablaSimbolos();
+    private static Polaca polacaProgram;
+    private static MultiPolaca polacaProcs;
 
     public static void compilar(String lineasCFuente, boolean imprimirPolaca, boolean imprimirOtros){
         inicTablaPR();
         inicValorStringTokens();
 
         CodigoFuente cFuente = new CodigoFuente(lineasCFuente);
-        TablaNotificaciones.setCodigoFuente(cFuente);
         AnalizadorLexico aLexico = new AnalizadorLexico(cFuente, tablaS);
         Parser parser = new Parser(aLexico,tablaS);
 
         parser.run();
 
-        if (imprimirPolaca) parser.printPolaca();
+        polacaProgram = parser.getPolacaProgram();
+        polacaProcs = parser.getPolacaProcs();
+
+        if (imprimirPolaca) {
+            System.out.println("###POLACA PROGRAM###\n"+polacaProgram.toString());
+            System.out.println("###POLACA PROCEDIMIENTOS###\n"+polacaProcs.toString());
+        }
         if (imprimirOtros) finCompilacion();
+    }
+
+    public static void compilar(String pathSrc, String basePathDest){
+        //Compilacion
+        compilar(FileProcessor.getLineasFuente(pathSrc),false,false);
+
+        //Guardado de resultados
+        String resultados =
+                "###TABLA SIMBOLOS###\n" + tablaS.toString() +
+                "--------------------------------------------\n" +
+                TablaNotificaciones.getResultados() + '\n' +
+                "--------------------------------------------\n" +
+                "###POLACA PROGRAM###\n" + polacaProgram.toString() +
+                "--------------------------------------------\n" +
+                "###POLACA PROCEDIMENTOS###\n" + polacaProcs.toString()
+                ;
+        FileProcessor.escribirArchivo(basePathDest+"_salidas.txt",resultados);
+
+        //Clear de estructuras estaticas
+        tablaS.clear();
+
     }
 
     private static void inicTablaPR() {

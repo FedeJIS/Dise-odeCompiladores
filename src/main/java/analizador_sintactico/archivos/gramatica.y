@@ -233,6 +233,7 @@ imprimible	: CADENA {tipoImpresion = "OUT_CAD";}
 
 %%
 
+
   private final AnalizadorLexico aLexico;
   private final TablaSimbolos tablaS;
   private final PilaAmbitos pilaAmbitos;
@@ -404,14 +405,16 @@ imprimible	: CADENA {tipoImpresion = "OUT_CAD";}
       agregarPasosRepr(paramInvoc, paramDecl, "="); //paramDecl = paramInvoc.
     }
 
-    int posPreInvocacion = polacaProgram.longitud();
-    int posActual = posPreInvocacion;
-    for (String paso : polacaProcedimientos.getListaPasos(lexemaProc)) { //Obtiene el codigo intermedio de la funcion.
-      agregarPasosRepr(paso);
-      if (paso.equals(Polaca.PASO_BF) || paso.equals(Polaca.PASO_BI)) //Hay que ajustar el paso a donde hay que saltar.
-        polacaProgram.ajustaPaso(posActual, posPreInvocacion);
-      posActual++;
-    }
+    agregarPasosRepr(lexemaProc,Polaca.PASO_INVOC);
+
+//    int posPreInvocacion = polacaProgram.longitud();
+//    int posActual = posPreInvocacion;
+//    for (String paso : polacaProcedimientos.getListaPasos(lexemaProc)) { //Obtiene el codigo intermedio de la funcion.
+//      agregarPasosRepr(paso);
+//      if (paso.equals(Polaca.PASO_BF) || paso.equals(Polaca.PASO_BI)) //Hay que ajustar el paso a donde hay que saltar.
+//        polacaProgram.ajustaPaso(posActual, posPreInvocacion);
+//      posActual++;
+//    }
 
     for (int i = 0; i < nParamsDecl; i++) { //Pasa el valor de los param formales a los reales (En caso de param CVR).
       paramDecl = tablaS.getParam(lexemaProc, i);
@@ -453,9 +456,8 @@ imprimible	: CADENA {tipoImpresion = "OUT_CAD";}
     String nLexema = ambito + ":" + lexema;
     if (!tablaS.isEntradaDeclarada(nLexema)) //Existe el lexema en la TS y tiene el flag de declaracion desactivado.
       TablaNotificaciones.agregarError(aLexico.getLineaActual(), "El identificador '" + lexema + "' no esta declarado.");
-    if (tablaS.isEntradaProc(nLexema)) { //Esta declarado pero es un procedimiento.
-      TablaNotificaciones.agregarError(aLexico.getLineaActual(), "Un procedimiento no puede estar a la derecha una asignacion.");
-    }
+
+    agregarPasosRepr(nLexema);
   }
 
   //---OUT---
@@ -521,6 +523,11 @@ imprimible	: CADENA {tipoImpresion = "OUT_CAD";}
     else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(), Polaca.PC_UNTIL);
   }
 
-  public void printPolaca() {
-    System.out.println(polacaProgram.toString());
+  public Polaca getPolacaProgram(){
+    return polacaProgram;
   }
+
+  public MultiPolaca getPolacaProcs(){
+    return polacaProcedimientos;
+  }
+

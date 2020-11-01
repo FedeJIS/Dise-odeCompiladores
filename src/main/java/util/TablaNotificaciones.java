@@ -6,14 +6,17 @@ import java.util.List;
 public class TablaNotificaciones {
     private static final List<String> errores = new ArrayList<>();
     private static final List<String> warnings = new ArrayList<>();
-    private static CodigoFuente codigoFuente;
-
-    public static void setCodigoFuente(CodigoFuente codigoFuente) {
-        TablaNotificaciones.codigoFuente = codigoFuente;
-    }
 
     public static void agregarError(int linea, String error) {
         errores.add("Linea "+linea+": "+error);
+    }
+
+    public static String getResultados(){
+        return
+                "###ERRORES###" + '\n' +
+                getErrores() + '\n' +
+                "###WARNINGS###" + '\n' +
+                getWarnings();
     }
 
     public static String getErrores(){

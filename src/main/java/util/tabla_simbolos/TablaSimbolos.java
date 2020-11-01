@@ -21,6 +21,10 @@ public class TablaSimbolos {
         return builder.toString();
     }
 
+    public void clear() {
+        tablaSimb.clear();
+    }
+
     /**
      * Agrega una celda (token,lexema,tipo). En caso de existir previamente, incrementa en uno las referencias a la
      * celda.

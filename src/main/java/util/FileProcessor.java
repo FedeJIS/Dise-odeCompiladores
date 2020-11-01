@@ -41,32 +41,29 @@ public class FileProcessor {
     }
 
     /**
-     * Escribe un "linea" en el fichero de la ruta "path".
+     * Escribe un "texto" en el fichero de la ruta "nombre".
      *
-     * @param path          ruta del archivo
-     * @param linea         string a escribir
-     * @param existeArchivo si es false, lo crea. Si es true, agrega la linea al final.
+     * @param nombre          ruta del archivo
+     * @param texto         string a escribir
      */
-    public static void escribirArchivo(String path, String linea, boolean existeArchivo) throws FileNotFoundException{
+    public static void escribirArchivo(String nombre, String texto){
         FileWriter fichero = null;
         PrintWriter pw;
         try {
             //Apertura y escritura del archivo
-            fichero = new FileWriter(path, existeArchivo);
+            fichero = new FileWriter(nombre, false);
             pw = new PrintWriter(fichero);
-            pw.println(linea);
+            pw.println(texto);
 
-        } catch (FileNotFoundException fileNotFoundException) {
-            throw fileNotFoundException;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException ioEx){
+            System.out.println(ioEx.getMessage());
         } finally {
             try {
                 //Cierre del archivo
                 if (null != fichero)
                     fichero.close();
-            } catch (Exception e2) {
-                e2.printStackTrace();
+            } catch (IOException ioEx) {
+                System.out.println(ioEx.getMessage());
             }
         }
     }
