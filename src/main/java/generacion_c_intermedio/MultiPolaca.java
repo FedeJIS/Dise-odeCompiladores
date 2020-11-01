@@ -22,6 +22,13 @@ public class MultiPolaca {
         return nuevaPolaca;
     }
 
+    public void quitarUltimoPaso(String proc) {
+        Polaca polacaProc = polacaProcedimientos.get(proc);
+        if (polacaProc == null) throw new IllegalStateException("No existe polaca para el procedimiento '"+proc+"'.");
+
+        polacaProc.quitarUltimoPaso();
+    }
+
     public void agregarPasos(String proc, String... pasos){
         Polaca polacaProc = polacaProcedimientos.getOrDefault(proc,new Polaca());
 

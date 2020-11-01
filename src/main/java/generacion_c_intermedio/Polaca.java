@@ -33,6 +33,11 @@ public class Polaca {
         return listaPasos.size();
     }
 
+    public void quitarUltimoPaso() {
+        if (listaPasos.size() != 0)
+            listaPasos.remove(listaPasos.size()-1);
+    }
+
     public void agregarPasos(String... pasos){
         if (!TablaNotificaciones.hayErrores()) listaPasos.addAll(Arrays.asList(pasos));
     }
