@@ -16,7 +16,7 @@ public class CheckSaltoLinea extends AccionSemantica {
     @Override
     public void ejecutar() {
         if (codigoFuente.simboloAnterior() != '-') //Se lee un salto de linea, pero falta el '-' que lo antecede.
-            TablaNotificaciones.agregarWarning("Linea "+maquinaEstados.getLineaActual()+": Falta un '-' antes del salto de linea.");
+            TablaNotificaciones.agregarWarning(maquinaEstados.getLineaActual(),"Falta un '-' antes del salto de linea.");
         else //En caso de que este el '-', hay que sacarlo. RESTRICCION DE LA CATEDRA.
             quitaChar();
     }

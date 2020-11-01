@@ -34,7 +34,7 @@ tipo_sentencia	: sentencia_decl
 				| sentencia_ejec
 				;
 
-fin_sentencia	:       {yyerror("Falta ';' al final de la sentencia");}
+fin_sentencia	:       {TablaNotificaciones.agregarError(aLexico.getLineaActual()-1,"Falta ';' al final de la sentencia.");}
 				| ';'
 				;
 			
@@ -117,6 +117,8 @@ invocacion	: ID '(' ')' {
                             }
 			| ID '(' lista_params_inv ')' {invocaProc($1.sval);}
 			;
+
+
 			
 lista_params_inv	: ID {guardaParamsInvoc($1.sval);}
 					| ID separador_variables ID {guardaParamsInvoc($1.sval, $3.sval);}
@@ -133,6 +135,7 @@ asignacion	: ID '=' expresion {checkValidezAsign($1.sval);}
                             checkValidezAsign($1.sval);
                             yyerror("El lado derecho de la asignacio no es valido.");
                             }
+            | ID {yyerror("Un identificador en solitario no es una sentencia valida.");}
             ;
 			
 expresion	: expresion '+' termino {agregarPasosRepr("+");}
@@ -245,12 +248,8 @@ imprimible	: CADENA {tipoImpresion = "OUT_CAD";}
         return token;
     }
 
-    private void yyout(String mensaje) {
-        System.out.println(mensaje);
-    }
-
     private void yyerror(String mensajeError) {
-        TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": " + mensajeError);
+        TablaNotificaciones.agregarError(aLexico.getLineaActual(),mensajeError);
     }
 
     private void checkCambioSigno() {
@@ -265,7 +264,7 @@ imprimible	: CADENA {tipoImpresion = "OUT_CAD";}
             tablaS.agregarEntrada(celdaOriginal.getToken(), lexemaSignoC, celdaOriginal.getTipo());
 
         } else
-            TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": No se permiten UINT negativos");
+            TablaNotificaciones.agregarError(aLexico.getLineaActual(),"No se permiten UINT negativos");
     }
 
     private String getAmbitoId(String lexema) {
@@ -296,7 +295,7 @@ imprimible	: CADENA {tipoImpresion = "OUT_CAD";}
 
         if (!ambito.isEmpty() //La TS contiene el lexema recibido.
                 && tablaS.isEntradaDeclarada(ambito+":"+lexema))//Tiene el flag de declaracion activado.
-            TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": El identificador '" + lexema + "' ya se encuentra declarado.");
+            TablaNotificaciones.agregarError(aLexico.getLineaActual(),"El identificador '" + lexema + "' ya se encuentra declarado.");
         else {
             tablaS.setTipoEntrada(lexema, tipo);
             tablaS.setUsoEntrada(lexema, uso);
@@ -325,8 +324,8 @@ imprimible	: CADENA {tipoImpresion = "OUT_CAD";}
 
     private void declaraProc(){
         if (maxInvocProc < 1 || maxInvocProc > 4)
-            TablaNotificaciones.agregarError("Linea " + lineaNI + ": El numero de invocaciones de " +
-                    "un procedimiento debe estar en el rango [1,4].");
+            TablaNotificaciones.agregarError(lineaNI,
+                    "El numero de invocaciones de un procedimiento debe estar en el rango [1,4].");
         else {
             tablaS.setMaxInvoc(nombreProc, maxInvocProc);
 
@@ -352,9 +351,8 @@ imprimible	: CADENA {tipoImpresion = "OUT_CAD";}
             String tipoParamInvoc = tablaS.getTipo(listaParams.get(i));
             String tipoParamDecl = tablaS.getTipoParam(lexema,i);
             if (!tipoParamInvoc.equals(tipoParamDecl)){
-                TablaNotificaciones.agregarError(
-                        "Linea " + aLexico.getLineaActual() + ": En la posicion "+(i+1)+" se esperaba un "+tipoParamDecl+
-                                ", pero se encontro un "+tipoParamInvoc+".");
+                TablaNotificaciones.agregarError(aLexico.getLineaActual(),
+                        "En la posicion "+(i+1)+" se esperaba un "+tipoParamDecl+", pero se encontro un "+tipoParamInvoc+".");
                 invocValida = false;
             }
         }
@@ -366,18 +364,18 @@ imprimible	: CADENA {tipoImpresion = "OUT_CAD";}
         boolean invocValida = true;
 
         if (ambito.isEmpty()) {
-            TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": El procedimiento '" + lexema + "' no esta declarado.");
+            TablaNotificaciones.agregarError(aLexico.getLineaActual(),"El procedimiento '" + lexema + "' no esta declarado.");
             return; //Es necesario cortar aca para que 'ambito' no cause problemas por estar vacio.
         }
         String nLexema = ambito+":"+lexema;
         if (tablaS.maxInvocAlcanzadas(nLexema)) {
-            TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": El procedimiento '" + lexema + "' ya alcanzo su numero maximo de invocaciones.");
+            TablaNotificaciones.agregarError(aLexico.getLineaActual(),"El procedimiento '" + lexema + "' ya alcanzo su numero maximo de invocaciones.");
             invocValida = false;
         } else tablaS.incrementaNInvoc(nLexema);
 
         int nParamsDecl = tablaS.getNParams(nLexema);
         if (nParamsDecl != listaParams.size()){
-            TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": Se esperaban "+nParamsDecl+" parametros, pero se encontraron "+ listaParams.size()+".");
+            TablaNotificaciones.agregarError(aLexico.getLineaActual(),"Se esperaban "+nParamsDecl+" parametros, pero se encontraron "+ listaParams.size()+".");
             invocValida = false;
         }
 
@@ -422,15 +420,15 @@ imprimible	: CADENA {tipoImpresion = "OUT_CAD";}
         String ambito = getAmbitoId(lexema);
 
         if (ambito.isEmpty()) { //La TS no contiene el lexema recibido en ningun ambito.
-            TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": El identificador '"+lexema+"' no esta declarado.");
+            TablaNotificaciones.agregarError(aLexico.getLineaActual(),"El identificador '"+lexema+"' no esta declarado.");
             return; //Es necesario cortar aca para que 'ambito' no cause problemas por estar vacio.
         }
 
         String nLexema = ambito+":"+lexema;
         if (!tablaS.isEntradaDeclarada(nLexema)) //Existe el lexema en la TS y tiene el flag de declaracion desactivado.
-            TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": El identificador '" + lexema + "' no esta declarado.");
+            TablaNotificaciones.agregarError(aLexico.getLineaActual(),"El identificador '" + lexema + "' no esta declarado.");
         if (tablaS.isEntradaProc(nLexema)) { //Esta declarado pero es un procedimiento.
-            TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": Un procedimiento no puede estar a la izquierda una asignacion.");
+            TablaNotificaciones.agregarError(aLexico.getLineaActual(),"Un procedimiento no puede estar a la izquierda una asignacion.");
         }
 
         agregarPasosRepr(nLexema,"=");
@@ -440,33 +438,34 @@ imprimible	: CADENA {tipoImpresion = "OUT_CAD";}
         String ambito = getAmbitoId(lexema);
 
         if (ambito.isEmpty()) { //La TS no contiene el lexema recibido en ningun ambito.
-            TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": El identificador '"+lexema+"' no esta declarado.");
+            TablaNotificaciones.agregarError(aLexico.getLineaActual(),"El identificador '"+lexema+"' no esta declarado.");
             return; //Es necesario cortar aca para que 'ambito' no cause problemas por estar vacio.
         }
 
         String nLexema = ambito+":"+lexema;
         if (!tablaS.isEntradaDeclarada(nLexema)) //Existe el lexema en la TS y tiene el flag de declaracion desactivado.
-            TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": El identificador '" + lexema + "' no esta declarado.");
+            TablaNotificaciones.agregarError(aLexico.getLineaActual(),"El identificador '" + lexema + "' no esta declarado.");
         if (tablaS.isEntradaProc(nLexema)) { //Esta declarado pero es un procedimiento.
-            TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": Un procedimiento no puede estar a la derecha una asignacion.");
+            TablaNotificaciones.agregarError(aLexico.getLineaActual(),"Un procedimiento no puede estar a la derecha una asignacion.");
         }
 
         agregarPasosRepr(nLexema);
     }
 
     //---OUT---
+
     private String tipoImpresion; //Almacena temporalmente el tipo de dato que debe imprimirse.
 
     private boolean isIdDeclarado(String lexema){
         String ambito = getAmbitoId(lexema);
 
         if (ambito.isEmpty()) { //La TS no contiene el lexema recibido en ningun ambito.
-            TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": El identificador '"+lexema+"' no esta declarado.");
+            TablaNotificaciones.agregarError(aLexico.getLineaActual(),"El identificador '"+lexema+"' no esta declarado.");
             return false; //Es necesario cortar aca para que 'ambito' no cause problemas por estar vacio.
         }
 
         if (!tablaS.isEntradaDeclarada(ambito+":"+lexema)) { //Existe el lexema en la TS y tiene el flag de declaracion desactivado.
-            TablaNotificaciones.agregarError("Linea " + aLexico.getLineaActual() + ": El identificador '" + lexema + "' no esta declarado.");
+            TablaNotificaciones.agregarError(aLexico.getLineaActual(),"El identificador '" + lexema + "' no esta declarado.");
             return false;
         }
         return true;
@@ -513,3 +512,5 @@ imprimible	: CADENA {tipoImpresion = "OUT_CAD";}
     public void printPolaca() {
         System.out.println(polacaProgram.toString());
     }
+
+

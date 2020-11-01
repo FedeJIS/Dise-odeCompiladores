@@ -6,9 +6,14 @@ import java.util.List;
 public class TablaNotificaciones {
     private static final List<String> errores = new ArrayList<>();
     private static final List<String> warnings = new ArrayList<>();
+    private static CodigoFuente codigoFuente;
 
-    public static void agregarError(String error) {
-        errores.add(error);
+    public static void setCodigoFuente(CodigoFuente codigoFuente) {
+        TablaNotificaciones.codigoFuente = codigoFuente;
+    }
+
+    public static void agregarError(int linea, String error) {
+        errores.add("Linea "+linea+": "+error);
     }
 
     public static String getErrores(){
@@ -22,8 +27,8 @@ public class TablaNotificaciones {
         return errores.size() > 0;
     }
 
-    public static void agregarWarning(String warning) {
-        warnings.add(warning);
+    public static void agregarWarning(int linea,String warning) {
+        warnings.add("Linea"+linea+": "+warning);
     }
 
     public static String getWarnings(){

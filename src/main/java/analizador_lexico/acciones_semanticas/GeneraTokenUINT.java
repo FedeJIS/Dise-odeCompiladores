@@ -32,7 +32,7 @@ public class GeneraTokenUINT extends AccionSemantica {
             tablaS.setUsoEntrada(numeroString,"CTE");
             maquinaEstados.setVariablesSintactico(token, numeroString);
         } else {
-            TablaNotificaciones.agregarError("Linea "+maquinaEstados.getLineaActual()+": El numero UINT '" + numeroString + "' esta fuera de rango.");
+            TablaNotificaciones.agregarError(maquinaEstados.getLineaActual(),"El numero UINT '" + numeroString + "' esta fuera de rango.");
             maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token.
         }
     }

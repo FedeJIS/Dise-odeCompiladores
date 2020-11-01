@@ -3,16 +3,19 @@ import compilador.Compilador;
 public class Test {
 
     public static void main(String[] args) {
-        Compilador.compilar("PROC x(VAR DOUBLE a) NI = 1_ui {\n" +
-                                            "IF (a < 5_ui) THEN OUT(a);\n" +
-                                            "ELSE OUT(5_ui);" +
-                                            "END_IF;" +
-                                        "};\n" +
-                                        "DOUBLE o,p,q,s;\n" +
-                                        "o = 5.0d0;\n" +
-                                        "x(o);\n" +
-                                        "o = 1.0d0;\n" +
-                                        "IF (o == 1.0d0) THEN OUT(o);END_IF;" //+
+        Compilador.compilar(
+                "OUT(\"a\")\n" +
+                            "OUT(\"a\")"
+//                "PROC x(VAR DOUBLE a) NI = 1_ui {\n" +
+//                                            "IF (a < 5_ui) THEN OUT(a);\n" +
+//                                            "ELSE OUT(5_ui);" +
+//                                            "END_IF;" +
+//                                        "};\n" +
+//                                        "DOUBLE o,p,q,s;\n" +
+//                                        "o = 5.0d0;\n" +
+//                                        "x(o);\n" +
+//                                        "o = 1.0d0;\n" +
+//                                        "IF (o == 1.0d0) THEN OUT(o);END_IF;" //+
 
 //                                        "PROC y(UINT a, DOUBLE b, UINT c) NI = 1_ui {OUT(a);};\n" +
 //                                        "p = 5.0d1;\n" +

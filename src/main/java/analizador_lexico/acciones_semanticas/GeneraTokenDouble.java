@@ -33,7 +33,7 @@ public class GeneraTokenDouble extends AccionSemantica {
             if (expString.isEmpty() //No se cargo el exponente.
                     || expString.equals("-") //Se cargo solo un '-' para el exponente.
                     || expString.equals("+")) //Se cargo solo un '+' para el exponente.
-                TablaNotificaciones.agregarWarning("Linea "+maquinaEstados.getLineaActual()+": Falto el exponente del numero DOUBLE. El exponente es 0 por defecto");
+                TablaNotificaciones.agregarWarning(maquinaEstados.getLineaActual(),"Falto el exponente del numero DOUBLE. El exponente es 0 por defecto");
             else exp = Integer.parseInt(expString);
 
             double baseNumDouble = getBaseNumDouble();
@@ -53,13 +53,13 @@ public class GeneraTokenDouble extends AccionSemantica {
         if (expFueraRango(expNumDouble)) {
             maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token.
             doubleValido = false;
-            TablaNotificaciones.agregarError("Linea "+maquinaEstados.getLineaActual()+": El exponente '" + expNumDouble + "' esta fuera de rango.");
+            TablaNotificaciones.agregarError(maquinaEstados.getLineaActual(),"El exponente '" + expNumDouble + "' esta fuera de rango.");
         }
 
         if (doubleFueraRango(baseNumDouble, expNumDouble)) {
             maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token.
             doubleValido = false;
-            TablaNotificaciones.agregarError("Linea "+maquinaEstados.getLineaActual()+": El numero DOUBLE '" + baseNumDouble * Math.pow(10, expNumDouble) + "' esta fuera de rango.");
+            TablaNotificaciones.agregarError(maquinaEstados.getLineaActual(),"El numero DOUBLE '" + baseNumDouble * Math.pow(10, expNumDouble) + "' esta fuera de rango.");
         }
 
         return doubleValido;

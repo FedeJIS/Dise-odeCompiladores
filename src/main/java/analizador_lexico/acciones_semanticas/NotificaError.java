@@ -22,11 +22,11 @@ public class NotificaError extends AccionSemantica {
      */
     @Override
     public void ejecutar() {
-        String error = "Linea "+aLexico.getLineaActual()+": ";
+        String error = "";
         if (simboloNoReconocido)
             error += "Simbolo '" + cFuente.simboloActual() + "' no reconocido.";
         else error += mensaje;
 
-        TablaNotificaciones.agregarError(error);
+        TablaNotificaciones.agregarError(aLexico.getLineaActual(),error);
     }
 }

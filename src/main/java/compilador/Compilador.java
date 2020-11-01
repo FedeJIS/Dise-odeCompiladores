@@ -16,6 +16,7 @@ public class Compilador {
         inicValorStringTokens();
 
         CodigoFuente cFuente = new CodigoFuente(lineasCFuente);
+        TablaNotificaciones.setCodigoFuente(cFuente);
         AnalizadorLexico aLexico = new AnalizadorLexico(cFuente, tablaS);
         Parser parser = new Parser(aLexico,tablaS);
 

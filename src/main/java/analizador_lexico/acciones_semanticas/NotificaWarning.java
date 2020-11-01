@@ -17,7 +17,6 @@ public class NotificaWarning extends AccionSemantica {
      */
     @Override
     public void ejecutar() {
-        String warning = "Linea "+aLexico.getLineaActual()+": " + mensaje;
-        TablaNotificaciones.agregarWarning(warning);
+        TablaNotificaciones.agregarWarning(aLexico.getLineaActual(),mensaje);
     }
 }
