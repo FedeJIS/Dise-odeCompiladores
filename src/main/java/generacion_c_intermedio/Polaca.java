@@ -64,34 +64,37 @@ public class Polaca {
 
     public void puntoControlElse() {
         if (!TablaNotificaciones.hayErrores()) {
-            int posPasoIncompleto = pilaIncompletos.get(pilaIncompletos.size()-1); //Desapilo el incompleto en el tope de la pila.
+            int posPasoIncompleto = pilaIncompletos.remove(pilaIncompletos.size()-1); //Desapilo el incompleto en el tope de la pila.
             listaPasos.add(simboloPasoIncompleto); //Agrego el paso BI con destino incompleto.
             pilaIncompletos.add(listaPasos.size() - 1); //Apilo el paso actual, ya que esta incompleto.
             listaPasos.add("BI"); //Agrego el operador unario BI = Bifurcacion incondicional.
 
             int pasoActual = listaPasos.size() - 1; //Actualizo el paso actual.
             listaPasos.set(posPasoIncompleto, String.valueOf(pasoActual + 1)); //La BF tiene que caer en el siguiente a la pos actual.
+            listaPasos.add("L"+listaPasos.size()); //Agrego label para ser usado en generacion assembler.
         }
     }
 
     public void puntoControlFinCondicional() {
         if (!TablaNotificaciones.hayErrores()) {
-            int posPasoIncompleto = pilaIncompletos.get(pilaIncompletos.size() - 1); //Desapilo el incompleto en el tope de la pila.
+            int posPasoIncompleto = pilaIncompletos.remove(pilaIncompletos.size() - 1); //Desapilo el incompleto en el tope de la pila.
             int posActual = listaPasos.size() - 1;
             listaPasos.set(posPasoIncompleto, String.valueOf(posActual + 1)); //La BI tiene que caer en el siguiente a la pos actual.
+            listaPasos.add("L"+listaPasos.size()); //Agrego label para ser usado en generacion assembler.
         }
     }
 
     public void puntoControlLoop() {
-        if (!TablaNotificaciones.hayErrores())
-            pilaIncompletos.add(listaPasos.size()); //Apilo el inicio del LOOP (posicion actual).  No hay que agregarle
+        if (!TablaNotificaciones.hayErrores()) {
+            listaPasos.add("L"+(listaPasos.size()));
+            pilaIncompletos.add(listaPasos.size()-1); //Apilo el inicio del LOOP (posicion actual).  No hay que agregarle
                                                     // un offset porque no se agrego ningun paso a la polaca.
-
+        }
     }
 
     public void puntoControlUntil() {
         if (!TablaNotificaciones.hayErrores()) {
-            int posPasoIncompleto = pilaIncompletos.get(pilaIncompletos.size() - 1); //Desapilo el incompleto en el tope de la pila.
+            int posPasoIncompleto = pilaIncompletos.remove(pilaIncompletos.size() - 1); //Desapilo el incompleto en el tope de la pila.
             listaPasos.add(String.valueOf(posPasoIncompleto));
             listaPasos.add("BF"); //Se va al inicio del LOOP en caso de que la condicion sea falsa.
         }

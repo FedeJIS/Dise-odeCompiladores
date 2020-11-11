@@ -718,15 +718,6 @@ final static String yyrule[] = {
 
     agregarPasosRepr(lexemaProc,Polaca.PASO_INVOC);
 
-//    int posPreInvocacion = polacaProgram.longitud();
-//    int posActual = posPreInvocacion;
-//    for (String paso : polacaProcedimientos.getListaPasos(lexemaProc)) { //Obtiene el codigo intermedio de la funcion.
-//      agregarPasosRepr(paso);
-//      if (paso.equals(Polaca.PASO_BF) || paso.equals(Polaca.PASO_BI)) //Hay que ajustar el paso a donde hay que saltar.
-//        polacaProgram.ajustaPaso(posActual, posPreInvocacion);
-//      posActual++;
-//    }
-
     for (int i = 0; i < nParamsDecl; i++) { //Pasa el valor de los param formales a los reales (En caso de param CVR).
       paramDecl = tablaS.getParam(lexemaProc, i);
       if (tablaS.isEntradaParamCVR(paramDecl)) {
