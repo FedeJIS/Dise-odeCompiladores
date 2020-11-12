@@ -1,0 +1,7 @@
+PROC lala(DOUBLE a, DOUBLE b) NI = 2_ui {
+	OUT(5_ui);
+};
+
+DOUBLE a,b,c;
+lala(a);
+lala(a,b,c);

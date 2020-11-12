@@ -1,0 +1,4 @@
+DOUBLE a,b,c;
+LOOP OUT(a);
+UNTIL (a - c == b * c);
+OUT(c);

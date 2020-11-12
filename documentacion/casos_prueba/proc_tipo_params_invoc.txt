@@ -1,0 +1,10 @@
+PROC lala(DOUBLE a, DOUBLE b) NI = 4_ui {
+	OUT(5_ui);
+};
+
+UINT a,b;
+DOUBLE c,d;
+
+lala(a,b);
+lala(a,c);
+lala(c,b);

@@ -1,0 +1,6 @@
+UINT a,b,c;
+IF (a + 1_ui > b - 2_ui) THEN
+	OUT(a);
+ELSE OUT(b);
+END_IF;
+OUT(c);

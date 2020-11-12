@@ -1,0 +1,6 @@
+PROC x () NI = 2_ui{
+	UINT y;
+	OUT(y);
+};
+
+x = 5_ui;

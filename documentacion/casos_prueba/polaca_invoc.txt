@@ -1,0 +1,4 @@
+PROC x() NI = 1_ui{
+	OUT(5_ui);
+};
+x();

@@ -1,5 +1,6 @@
 package generacion_c_intermedio;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,8 +45,12 @@ public class MultiPolaca {
         polacaProcedimientos.put(proc,polacaProc);
     }
 
-    public List<String> getListaPasos(String proc){
-        return polacaProcedimientos.get(proc).getListaPasos();
+    public Collection<String> getNombreProcs(){
+        return polacaProcedimientos.keySet();
+    }
+
+    public Polaca getPolaca(String proc){
+        return polacaProcedimientos.get(proc);
     }
 
     public void ejecutarPuntoControl(String ambitoActual, int puntoControl) {

@@ -1,0 +1,6 @@
+UINT a;
+OUT(a);
+PROC a(DOUBLE a) NI = 1_ui {
+	OUT(a);
+};
+DOUBLE a;
