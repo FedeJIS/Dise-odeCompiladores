@@ -48,9 +48,31 @@ public class Compilador {
                 ;
         FileProcessor.escribirArchivo(basePathDest+"_salidas.txt",resultados);
 
+        FileProcessor.escribirArchivo(basePathDest+"_asm.asm",getAsm());
+
         //Clear de estructuras estaticas
         tablaS.clear();
 
+    }
+
+    private static String getAsm() {
+        String asmProcs = "";
+        String asmProgram = "";
+        return ".386\n" +
+                ".model flat, stdcall\n" +
+                "option casemap :none\n" +
+                "include \\masm32\\include\\windows.inc\n" +
+                "include \\masm32\\include\\kernel32.inc\n" +
+                "include \\masm32\\include\\user32.inc\n" +
+                "includelib \\masm32\\lib\\kernel32.lib\n" +
+                "includelib \\masm32\\lib\\user32.lib\n" +
+                ".DATA\n" +
+                asmProcs + "\n" +
+                ".CODE\n" +
+                asmProcs + "\n" +
+                "START:\n" +
+                asmProgram + "\n" +
+                "END START\n";
     }
 
     private static void inicTablaPR() {
