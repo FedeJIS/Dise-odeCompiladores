@@ -172,4 +172,10 @@ public class TablaSimbolos {
     public void quitarReferencia(String lexema) {
         tablaSimb.get(lexema).actualizarReferencias(-1); //refs--
     }
+
+    public boolean esCte(String lexema) {
+        Celda entrada = tablaSimb.get(lexema);
+        if (entrada == null) throw new IllegalStateException("Lexema del parametro no encontrado en la TS");
+        return entrada.esCte();
+    }
 }

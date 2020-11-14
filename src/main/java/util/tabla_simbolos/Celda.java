@@ -8,6 +8,7 @@ import java.util.List;
 public class Celda {
     public static final String USO_PROC = "Proc";
     private static final String USO_PARAM_CVR = "ParamCVR";
+    private static final String USO_CTE = "CTE";
 
     /**
      * Atributos comunes.
@@ -115,5 +116,9 @@ public class Celda {
 
     public String getParam(int i){
         return paramsDecl.get(i);
+    }
+
+    public boolean esCte() {
+        return uso.equals(USO_CTE);
     }
 }
