@@ -1,5 +1,7 @@
 package util.tabla_simbolos;
 
+import generacion_c_intermedio.Polaca;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +42,7 @@ public class Celda {
                 ", decl='" + declarada + '\'' +
                 ", nRefs=" + referencias;
         if (uso.equals(USO_PROC) && paramsDecl != null)
-            return baseCelda + ", nInvoc=" + nInvoc + ", params=" + paramsDecl.toString() + '}';
+            return baseCelda + ", actNI=" + nInvoc + ", maxNI="+maxInvoc+", params=" + paramsDecl.toString() + '}';
         return baseCelda + '}';
     }
 
@@ -72,6 +74,7 @@ public class Celda {
 
     public void setUso(String uso) {
         this.uso = uso;
+        if (uso.equals(TablaSimbolos.USO_ENTRADA_PROC)) this.paramsDecl = new ArrayList<>();
     }
 
     public boolean isDeclarada(){

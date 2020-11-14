@@ -11,6 +11,8 @@ import util.tabla_simbolos.TablaSimbolos;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 %}
 
 %token ID, COMP_MENOR_IGUAL, COMP_MAYOR_IGUAL, COMP_DISTINTO, COMP_IGUAL, UINT, DOUBLE, CADENA, IF , THEN, ELSE, END_IF,  LOOP, UNTIL, OUT , PROC , VAR,  NI, CTE_UINT, CTE_DOUBLE
@@ -79,7 +81,7 @@ param   : param_var
         ;
 					
 param_var	: VAR tipo_id ID {
-                                listaParams.add(pilaAmbitos.getAmbitosConcatenados()+":"+$3.sval);
+                                //mapaListaParametros.put(pilaAmbitos.getAmbitosConcatenados(), pilaAmbitos.getAmbitosConcatenados()+":"+$3.sval);
                                 declaraId("ParamCVR",$3.sval,ultimoTipoLeido);
                                 }
             | VAR ID {yyerror("Falta el tipo de un parametro.");}
@@ -87,13 +89,13 @@ param_var	: VAR tipo_id ID {
 		    ;
 
 param_comun : tipo_id ID {
-                            listaParams.add(pilaAmbitos.getAmbitosConcatenados()+":"+$2.sval);
+                            //mapaListaParametros.put(pilaAmbitos.getAmbitosConcatenados(), pilaAmbitos.getAmbitosConcatenados()+":"+$2.sval);
                             declaraId("ParamCV",$2.sval,ultimoTipoLeido);
                             }
 		    | tipo_id {yyerror("Falta el identificador de un parametro.");}
 		    ;
 
-ni_proc	: NI '=' CTE_UINT {maxInvocProc = Integer.parseInt($3.sval);}
+ni_proc	: NI '=' CTE_UINT {pilaMaxInvocProc.add(Integer.parseInt($3.sval));}
         | NI '=' {yyerror("Falta el numero de invocaciones del procedimiento.");}
         | '=' CTE_UINT {yyerror("Falta la palabra clave 'NI' en el encabezado del procedimiento.");}
         | NI CTE_UINT {yyerror("Formato de declaracion de NI invalido. El formato correcto es 'NI = CTE_UINT'.");}
@@ -232,9 +234,7 @@ imprimible	: CADENA {tipoImpresion = "OUT_CAD";}
 			;
 
 %%
-
-
-  private final AnalizadorLexico aLexico;
+private final AnalizadorLexico aLexico;
   private final TablaSimbolos tablaS;
   private final PilaAmbitos pilaAmbitos;
   private final Polaca polacaProgram;
@@ -297,21 +297,26 @@ imprimible	: CADENA {tipoImpresion = "OUT_CAD";}
 
   private String ultimoTipoLeido; //Almacena temporalmente el ultimo tipo leido.
 
-  private boolean nombreIdValido = false;
+  private boolean nombreIdValido = true;
 
   private void declaraId(String uso, String lexema, String tipo) {
     String ambito = getAmbitoId(lexema);
 
     if (!ambito.isEmpty() //La TS contiene el lexema recibido.
-            && tablaS.isEntradaDeclarada(ambito + ":" + lexema))//Tiene el flag de declaracion activado.
+            && tablaS.isEntradaDeclarada(ambito + ":" + lexema)) {//Tiene el flag de declaracion activado.
       TablaNotificaciones.agregarError(aLexico.getLineaActual(), "El identificador '" + lexema + "' ya se encuentra declarado.");
+      pilaNombreProc.remove(pilaNombreProc.size()-1);
+    }
     else {
-      tablaS.setTipoEntrada(lexema, tipo);
-      tablaS.setUsoEntrada(lexema, uso);
-      tablaS.setDeclaracionEntrada(lexema, true);
-      tablaS.setAmbitoEntrada(lexema, pilaAmbitos.getAmbitosConcatenados()); //Actualizo el lexema en la TS.
+    tablaS.setTipoEntrada(lexema, tipo);
+    tablaS.setUsoEntrada(lexema, uso);
+    tablaS.setDeclaracionEntrada(lexema, true);
+    tablaS.setAmbitoEntrada(lexema, pilaAmbitos.getAmbitosConcatenados()); //Actualizo el lexema en la TS.
 
-      nombreIdValido = true;
+    if (uso.equals("ParamCVR") || uso.equals("ParamCV"))
+      agregaParamDecl(nombreProc,ambito+":"+lexema);
+
+    nombreIdValido = true;
     }
   }
 
@@ -319,35 +324,58 @@ imprimible	: CADENA {tipoImpresion = "OUT_CAD";}
 
   private String nombreProc; //Almacena temporalmente el nombre de un procedimiento.
 
+  private final List<Integer> pilaMaxInvocProc = new ArrayList<>();
+
+  private final List<String> pilaNombreProc = new ArrayList<>();
+
   private int maxInvocProc; //Almacena temporalmente el maximo de invocaciones para un procedimiento.
 
-  private final List<String> listaParams = new ArrayList<>();
+  private final Map<String, List<String>> mapaListaParametros = new HashMap<>();
 
   private int lineaNI; //Guarda la linea donde se declaro el proc.
 
   private void declaraIdProc(String lexema) {
     declaraId(TablaSimbolos.USO_ENTRADA_PROC, lexema, "-");
-    nombreProc = pilaAmbitos.getAmbitosConcatenados() + ":" + lexema;
+    pilaNombreProc.add(pilaAmbitos.getAmbitosConcatenados() + ":" + lexema);
+    mapaListaParametros.put(pilaAmbitos.getAmbitosConcatenados() + ":" + lexema, new ArrayList<>());
     lineaNI = aLexico.getLineaActual();
+    mapaListaParametros.put(nombreProc,new ArrayList<>());
+  }
+
+  private void agregaParamDecl(String nombreProc, String nombreParam){
+    List<String> paramsProc = mapaListaParametros.get(nombreProc);
+    paramsProc.add(nombreParam);
   }
 
   private void declaraProc() {
+    //Este metodo se invoca al cierre de la declaracion de un procedimiento.
+    //Por lo tanto, saco el tope de la pila de nombres y de max invocs.
+    int maxInvocProc = pilaMaxInvocProc.remove(pilaMaxInvocProc.size()-1);
+    String nombreProc = pilaNombreProc.remove(pilaNombreProc.size()-1);
+
+    System.out.println(nombreProc+": "+maxInvocProc+"//667parser");
+    System.out.println(pilaMaxInvocProc);
+    System.out.println(pilaNombreProc);
+
     if (maxInvocProc < 1 || maxInvocProc > 4)
       TablaNotificaciones.agregarError(lineaNI,
               "El numero de invocaciones de un procedimiento debe estar en el rango [1,4].");
     else {
       tablaS.setMaxInvoc(nombreProc, maxInvocProc);
 
+      List<String> listaParams = mapaListaParametros.remove(nombreProc);
       int nParams = listaParams.size();
       if (nParams > 3) nParams = 3; //Se queda con los primeros 3 params y descarta el resto.
       tablaS.setParamsProc(nombreProc, listaParams.subList(0, nParams)); //A esta altura ya se verificaron los ids correspondientes a cada
-      // parametro. Solo resta asociarlos con el lexema del proc.
+                                                                        // parametro. Solo resta asociarlos con el lexema del proc.
       listaParams.clear();
-      nombreIdValido = false; //Reinicia el valor.
+      nombreIdValido = true; //Reinicia el valor.
     }
   }
 
   //---INVOCACION PROCS---
+
+  private final List<String> listaParams = new ArrayList<>();
 
   private void guardaParamsInvoc(String... lexemaParams) {
     for (String lexemaParam : lexemaParams)
@@ -407,15 +435,6 @@ imprimible	: CADENA {tipoImpresion = "OUT_CAD";}
 
     agregarPasosRepr(lexemaProc,Polaca.PASO_INVOC);
 
-//    int posPreInvocacion = polacaProgram.longitud();
-//    int posActual = posPreInvocacion;
-//    for (String paso : polacaProcedimientos.getListaPasos(lexemaProc)) { //Obtiene el codigo intermedio de la funcion.
-//      agregarPasosRepr(paso);
-//      if (paso.equals(Polaca.PASO_BF) || paso.equals(Polaca.PASO_BI)) //Hay que ajustar el paso a donde hay que saltar.
-//        polacaProgram.ajustaPaso(posActual, posPreInvocacion);
-//      posActual++;
-//    }
-
     for (int i = 0; i < nParamsDecl; i++) { //Pasa el valor de los param formales a los reales (En caso de param CVR).
       paramDecl = tablaS.getParam(lexemaProc, i);
       if (tablaS.isEntradaParamCVR(paramDecl)) {
@@ -438,9 +457,9 @@ imprimible	: CADENA {tipoImpresion = "OUT_CAD";}
     String nLexema = ambito + ":" + lexema;
     if (!tablaS.isEntradaDeclarada(nLexema)) //Existe el lexema en la TS y tiene el flag de declaracion desactivado.
       TablaNotificaciones.agregarError(aLexico.getLineaActual(), "El identificador '" + lexema + "' no esta declarado.");
-    if (tablaS.isEntradaProc(nLexema)) { //Esta declarado pero es un procedimiento.
+
+    if (tablaS.isEntradaProc(nLexema)) //Esta declarado pero es un procedimiento.
       TablaNotificaciones.agregarError(aLexico.getLineaActual(), "Un procedimiento no puede estar a la izquierda una asignacion.");
-    }
 
     agregarPasosRepr(nLexema, "=");
   }
@@ -530,4 +549,3 @@ imprimible	: CADENA {tipoImpresion = "OUT_CAD";}
   public MultiPolaca getPolacaProcs(){
     return polacaProcedimientos;
   }
-
