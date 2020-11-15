@@ -385,39 +385,43 @@ public class GeneradorAssembler {
             if (tablaS.getTipo(divd).equals("DOUBLE")) return generaInstrAritmDouble("/", divd, divs);
             else {
                 asm.addAll(liberaRegistro(AX)); //Se encarga de liberar AX, y guardar su contenido previo si corresponde.
-                asm.add("MOV AX, _" + divd); //Muevo divd a AX.
+                asm.add("MOV AX, " + getPrefijo(divd) + divd); //Muevo divd a AX.
                 actualizaReg(AX,true, -1); //Ocupo AX.
 
                 asm.addAll(liberaRegistro(DX)); //Se encarga de liberar DX, y guardar su contenido previo si corresponde.
                 asm.add("MOV DX, 0"); //Seteo DX en 0.
                 actualizaReg(DX,true, -1); //Ocupo DX.
 
-                asm.add("MOV @aux"+variableAux+", "+divs); //Muevo divs a memoria pq el divs no puede ser un inmediato.
-                asm.add("DIV @aux"+variableAux); //Hago la division.
-                variableAux++;
+                if (tablaS.esCte(divs)) {
+                    asm.add("MOV @aux" + variableAux + ", " + divs); //Muevo divs a memoria pq el divs no puede ser un inmediato.
+                    asm.add("DIV @aux" + variableAux); //Hago la division.
+                    variableAux++;
+                } else asm.add("DIV _"+divs); //Hago la division.
             }
 
         //Reg & Variable. Reg destino tiene que ser AX.
         if (esRegistro(divd) && !esRegistro(divs) && tiposOperandosValidos(divd,true,divs,false)) {
             if (!divd.equals("AX")) { //Tengo que mover el divd a AX.
                 asm.addAll(liberaRegistro(AX)); //Se encarga de liberar AX, y guardar su contenido previo si corresponde.
-                asm.add("MOV AX, _" + divd); //Muevo divd a AX.
+                asm.add("MOV AX, " + divd); //Muevo divd a AX.
                 actualizaReg(AX, true, -1); //Ocupo AX.
             }
             asm.addAll(liberaRegistro(DX));
             asm.add("MOV DX, 0"); //Seteo DX en 0.
             actualizaReg(DX, true, -1); //Ocupo DX.
 
-            asm.add("MOV @aux" + variableAux + ", " + divs); //Muevo divs a memoria pq el divs no puede ser un inmediato.
-            asm.add("DIV @aux" + variableAux); //Hago la division.
-            variableAux++;
+            if (tablaS.esCte(divs)) {
+                asm.add("MOV @aux" + variableAux + ", " + divs); //Muevo divs a memoria pq el divs no puede ser un inmediato.
+                asm.add("DIV @aux" + variableAux); //Hago la division.
+                variableAux++;
+            } else asm.add("DIV _"+divs); //Hago la division.
         }
 
         //Reg & Reg. Reg destino tiene que ser AX.
         if (esRegistro(divd) && esRegistro(divs) && tiposOperandosValidos(divd,true,divs,true)){
             if (!divd.equals("AX")) { //Tengo que mover el divd a AX.
                 asm.addAll(liberaRegistro(AX)); //Se encarga de liberar AX, y guardar su contenido previo si corresponde.
-                asm.add("MOV AX, _" + divd); //Muevo divd a AX.
+                asm.add("MOV AX, " + divd); //Muevo divd a AX.
                 actualizaReg(AX, true, -1); //Ocupo AX.
             }
 
@@ -432,7 +436,7 @@ public class GeneradorAssembler {
         if (!esRegistro(divd) && esRegistro(divs) && tiposOperandosValidos(divd,false,divs,true))
             if (!divd.equals("AX")) { //Tengo que mover el divd a AX.
                 asm.addAll(liberaRegistro(AX)); //Se encarga de liberar AX, y guardar su contenido previo si corresponde.
-                asm.add("MOV AX, _" + divd); //Muevo divd a AX.
+                asm.add("MOV AX, " + getPrefijo(divd) + divd); //Muevo divd a AX.
                 actualizaReg(AX, true, -1); //Ocupo AX.
             }
             else {
