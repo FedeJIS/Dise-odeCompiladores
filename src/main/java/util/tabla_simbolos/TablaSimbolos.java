@@ -147,9 +147,9 @@ public class TablaSimbolos {
         Celda entrada = tablaSimb.get(lexema);
         if (entrada == null) throw new IllegalStateException("Lexema no encontrado en la TS");
 
-        String lexemaParam = entrada.getParam(i);
+        String lexemaParam = lexema+entrada.getParam(i);
         Celda entradaParam = tablaSimb.get(lexemaParam);
-        if (entradaParam == null) throw new IllegalStateException("Lexema del parametro no encontrado en la TS");
+        if (entradaParam == null) throw new IllegalStateException("Lexema del parametro '"+lexemaParam+"'no encontrado en la TS");
 
         return entradaParam.getLexema();
     }
@@ -158,9 +158,9 @@ public class TablaSimbolos {
         Celda entrada = tablaSimb.get(lexema);
         if (entrada == null) throw new IllegalStateException("Lexema no encontrado en la TS");
 
-        String lexemaParam = entrada.getParam(i);
+        String lexemaParam = lexema+entrada.getParam(i);
         Celda entradaParam = tablaSimb.get(lexemaParam);
-        if (entradaParam == null) throw new IllegalStateException("Lexema del parametro no encontrado en la TS");
+        if (entradaParam == null) throw new IllegalStateException("Lexema del parametro '"+lexemaParam+"'no encontrado en la TS");
 
         return entradaParam.getTipo();
     }

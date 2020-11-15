@@ -687,6 +687,7 @@ private final AnalizadorLexico aLexico;
   }
 
   private boolean tipoParamsValidos(String lexema, int nParamsDecl) {
+    System.out.println(lexema);
     boolean invocValida = true;
     for (int i = 0; i < nParamsDecl; i++) {
       String tipoParamInvoc = tablaS.getTipo(listaParams.get(i));
