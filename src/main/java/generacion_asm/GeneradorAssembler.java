@@ -338,27 +338,30 @@ public class GeneradorAssembler {
             if (tablaS.getTipo(src).equals("DOUBLE")) return generaInstrAritmDouble("-", dest, src);
             else {
                 int reg = getRegistroLibre(); //Obtengo reg libre.
-                asm.add("MOV " + getNombreRegistro(reg) + ", _" + dest);
-                asm.add("SUB " + getNombreRegistro(reg) + ", _" + src);
+                asm.add("MOV " + getNombreRegistro(reg) + ", " + getPrefijo(dest) + dest);
+                asm.add("SUB " + getNombreRegistro(reg) + ", " + getPrefijo(dest) + src);
 
                 pilaOps.add(getNombreRegistro(reg));
                 actualizaReg(reg, true, pilaOps.size()-1);
             }
 
         //Reg & Variable
-        if (esRegistro(dest) && !esRegistro(src) && tiposOperandosValidos(dest,true,src,false))
-            asm.add("SUB "+ dest + ", _" + src); //dest es el registro.
+        if (esRegistro(dest) && !esRegistro(src) && tiposOperandosValidos(dest,true,src,false)) {
+            asm.add("SUB " + dest + ", " + getPrefijo(src) + src); //dest es el registro.
+            pilaOps.add(dest);
+        }
 
         //Reg & Reg
         if (esRegistro(dest) && esRegistro(src) && tiposOperandosValidos(dest,true,src,true)) {
             asm.add("SUB " + dest + ", " + src);
+            pilaOps.add(dest);
             liberarReg(src);
         }
 
         //Variable & Reg. No puedo restar sobre src porque la op es conmut.
         if (!esRegistro(dest) && esRegistro(src) && tiposOperandosValidos(dest,false,src,true)){
             int reg = getRegistroLibre();
-            asm.add("MOV "+getNombreRegistro(reg)+", _"+dest); //Muevo dest a registro libre.
+            asm.add("MOV "+getNombreRegistro(reg)+", " + getPrefijo(dest) + dest); //Muevo dest a registro libre.
             asm.add("SUB "+getNombreRegistro(reg)+", "+src); //Resto sobre el nuevo reg.
 
             pilaOps.add(getNombreRegistro(reg));
