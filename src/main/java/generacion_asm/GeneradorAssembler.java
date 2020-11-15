@@ -79,13 +79,15 @@ public class GeneradorAssembler {
 
     public static List<String> generarAsm(Polaca polaca){
         List<String> asm = new ArrayList<>();
-        String labelSalto = "";
+        String labelJump = "";
         String tipoComp = "";
         for (String paso : polaca.getListaPasos()){
             System.out.println("Antes:" + paso+"  "+pilaOps);
-            switch (paso){
+
+            if (paso.charAt(0) == 'L') asm.add(paso+":"); //Agrego el label.
+            else switch (paso){
                 case "INVOC":
-                    asm.add("CALL _" + labelSalto); //labelSalto es el label del proc invocado.
+                    asm.add("CALL _" + labelJump); //labelJump es el label del proc invocado.
                     break;
                 case "*":
                     asm.addAll(genInstrAritmMult(pilaOps.remove(pilaOps.size()-1), pilaOps.remove(pilaOps.size()-1)));
@@ -111,20 +113,28 @@ public class GeneradorAssembler {
                     break;
                 }
                 case "BI":
+                    asm.add("JMP L"+pilaOps.remove(pilaOps.size()-1));
+                    break;
                 case "BF":
-                    asm.addAll(genInstrSalto(paso,labelSalto,tipoComp));
+                    asm.addAll(genInstrSalto(paso,pilaOps.remove(pilaOps.size()-1),tipoComp));
+                    break;
+                case "OUT_UINT":
+                    asm.add("OUT_UINT "+pilaOps.remove(pilaOps.size()-1));
+                    break;
+                case "OUT_DOU":
+                    asm.add("OUT_DOU"+pilaOps.remove(pilaOps.size()-1));
+                    break;
+                case "OUT_CAD":
+                    asm.add("OUT_CAD"+pilaOps.remove(pilaOps.size()-1));
                     break;
 
-                default: { //TODO Los labels caerian aca, hay que corregir eso.
-                    pilaOps.add(paso);
+                default:
                     if (esRegistro(paso))
                         registros.get(getIdRegistro(paso)).setRef(pilaOps.size() - 1);
+                    pilaOps.add(paso);
                     break;
-                }
             }
-            System.out.println("Dsp:" + paso+"  "+pilaOps);
-            System.out.println();
-            labelSalto = paso;
+            System.out.println("Dsp:" + paso+"  "+pilaOps+"\n");
         }
         return asm;
     }
@@ -134,17 +144,28 @@ public class GeneradorAssembler {
     private static List<String> genInstrSalto(String tipoJump, String labelJump, String tipoComp) {
         List<String> asm = new ArrayList<>();
 
-        if (tipoJump.equals("BI")) asm.add("JMP L"+labelJump);
-
         if (tipoJump.equals("BF"))
             switch (tipoComp){
-                case "<": asm.add("JAE L"+labelJump); //Opuesto de '<' = '>='.
-                case "<=": asm.add("JA L"+labelJump); //Opuesto de '<=' = '>'.
-                case ">": asm.add("JBE L"+labelJump); //Opuesto de '>' = '<='.
-                case ">=": asm.add("JB L"+labelJump); //Opuesto de '>=' = '<'.
-                case "==": asm.add("JNE L"+labelJump); //Opuesto de '==' = '!='.
-                case "!=": asm.add("JE L"+labelJump); //Opuesto de '!=' = '=='.
-                default: throw new IllegalStateException("Simbolo "+tipoComp+" no reconocido como comparador");
+                case "<":
+                    asm.add("JAE L"+labelJump); //Opuesto de '<' = '>='.
+                    break;
+                case "<=":
+                    asm.add("JA L"+labelJump); //Opuesto de '<=' = '>'.
+                    break;
+                case ">":
+                    asm.add("JBE L"+labelJump); //Opuesto de '>' = '<='.
+                    break;
+                case ">=":
+                    asm.add("JB L"+labelJump); //Opuesto de '>=' = '<'.
+                    break;
+                case "==":
+                    asm.add("JNE L"+labelJump); //Opuesto de '==' = '!='.
+                    break;
+                case "!=":
+                    asm.add("JE L"+labelJump); //Opuesto de '!=' = '=='.
+                    break;
+                default:
+                    throw new IllegalStateException("Simbolo "+tipoComp+" no reconocido como comparador");
             }
 
         return asm;
