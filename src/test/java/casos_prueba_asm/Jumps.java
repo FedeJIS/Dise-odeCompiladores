@@ -1,11 +1,14 @@
-package casos_prueba_asm.jumps;
+package casos_prueba_asm;
 
 import compilador.Compilador;
 
 public class Jumps {
     public static void main(String[] args) {
         String lineasCFuente =
-            "IF (5_ui < 1_ui) THEN\n" +
+            "UINT a, b;\n" +
+            "a = 5_ui;\n" +
+            "b = 5_ui;" +
+            "IF (a < b) THEN\n" +
                 "OUT(5_ui);\n" +
             "END_IF;";
 

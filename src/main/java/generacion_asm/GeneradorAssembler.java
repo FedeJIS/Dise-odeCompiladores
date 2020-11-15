@@ -78,6 +78,8 @@ public class GeneradorAssembler {
     }
 
     public static List<String> generarAsm(Polaca polaca){
+        if (TablaNotificaciones.hayErrores())
+            throw new IllegalStateException("El codigo tiene errores, cortando generacion asm.");
         List<String> asm = new ArrayList<>();
         String labelJump = "";
         String tipoComp = "";
@@ -189,11 +191,11 @@ public class GeneradorAssembler {
         //Var & Var. Ambos operandos no pueden estar en memoria, tengo que traer uno a un reg.
         if (!esRegistro(op1) && !esRegistro(op2) && tiposOperandosValidos(op1,false,op2,false)){
             String nuevoOp = getNombreRegistro(getRegistroLibre());
-            asm.add("MOV "+nuevoOp+", "+op2);
+            asm.add("MOV "+nuevoOp+", "+getPrefijo(op2)+op2);
             op2 = nuevoOp;
         }
 
-        asm.add("CMP "+op2+", "+op1);
+        asm.add("CMP "+op2+", "+getPrefijo(op1)+op1);
         return asm;
     }
 
@@ -563,7 +565,7 @@ public class GeneradorAssembler {
     //---OTRAS UTILIDADES---
 
     private static String getPrefijo(String op){
-        if (esRegistro(op) || tablaS.esCte(op)) return "";
+        if (esRegistro(op) || tablaS.esCte(op) || op.charAt(0) == '@') return "";
         return "_";
     }
 
@@ -581,6 +583,6 @@ public class GeneradorAssembler {
 
         //Tipos invalidos.
         TablaNotificaciones.agregarError(0, "Los operandos '" + op1 + "' y '" + op2 + "' no tienen tipos compatibles.");
-        return false;
+        throw new IllegalStateException("El codigo tiene errores, cortando generacion asm.");
     }
 }

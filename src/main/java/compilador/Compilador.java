@@ -30,10 +30,15 @@ public class Compilador {
             System.out.println("###POLACA PROGRAM###\n"+polacaProgram.toString());
             System.out.println("###POLACA PROCEDIMIENTOS###\n"+polacaProcs.toString());
         }
-        if (imprimirOtros) finCompilacion();
 
         GeneradorAssembler.reset(tablaS);
-        System.out.println(getAsm());
+        try {
+            System.out.println(getAsm());
+        } catch (IllegalStateException illStEx){
+            System.out.println("Assembler no generado.");
+        }
+
+        if (imprimirOtros) finCompilacion();
     }
 
     public static void compilar(String pathSrc, String basePathDest){
