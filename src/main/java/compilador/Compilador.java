@@ -66,10 +66,14 @@ public class Compilador {
     }
 
     private static String getAsm() {
-        String asmProcs = "";
+        StringBuilder asmProcsBuilder = new StringBuilder();
+        for (String instrAsm : GeneradorAssembler.generaAsmDeclProc(polacaProcs))
+            asmProcsBuilder.append(instrAsm).append('\n');
+
         StringBuilder asmProgramBuilder = new StringBuilder();
-        for (String instrAsm : GeneradorAssembler.generarAsm(polacaProgram))
+        for (String instrAsm : GeneradorAssembler.generaAsm(polacaProgram))
             asmProgramBuilder.append(instrAsm).append('\n');
+
         return //".386\n" +
 //                ".model flat, stdcall\n" +
 //                "option casemap :none\n" +
@@ -80,8 +84,8 @@ public class Compilador {
 //                "includelib \\masm32\\lib\\user32.lib\n" +
 //                ".DATA\n" +
 //                asmProcs + "\n" +
-//                ".CODE\n" +
-//                asmProcs + "\n" +
+                ".CODE\n" +
+                asmProcsBuilder.toString() + "\n" +
                 "START:\n" +
                 asmProgramBuilder.toString() + "\n" +
                 "END START\n";

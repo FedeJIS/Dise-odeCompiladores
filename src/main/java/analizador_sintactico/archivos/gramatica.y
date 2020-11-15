@@ -314,7 +314,7 @@ private final AnalizadorLexico aLexico;
     tablaS.setAmbitoEntrada(lexema, pilaAmbitos.getAmbitosConcatenados()); //Actualizo el lexema en la TS.
 
     if (uso.equals("ParamCVR") || uso.equals("ParamCV"))
-      agregaParamDecl(nombreProc,ambito+":"+lexema);
+      agregaParamDecl(pilaNombreProc.get(pilaNombreProc.size()-1),ambito+":"+lexema);
 
     nombreIdValido = true;
     }
@@ -322,13 +322,9 @@ private final AnalizadorLexico aLexico;
 
   //---DECLARACION PROCS---
 
-  private String nombreProc; //Almacena temporalmente el nombre de un procedimiento.
-
   private final List<Integer> pilaMaxInvocProc = new ArrayList<>();
 
   private final List<String> pilaNombreProc = new ArrayList<>();
-
-  private int maxInvocProc; //Almacena temporalmente el maximo de invocaciones para un procedimiento.
 
   private final Map<String, List<String>> mapaListaParametros = new HashMap<>();
 
@@ -339,7 +335,7 @@ private final AnalizadorLexico aLexico;
     pilaNombreProc.add(pilaAmbitos.getAmbitosConcatenados() + ":" + lexema);
     mapaListaParametros.put(pilaAmbitos.getAmbitosConcatenados() + ":" + lexema, new ArrayList<>());
     lineaNI = aLexico.getLineaActual();
-    mapaListaParametros.put(nombreProc,new ArrayList<>());
+    mapaListaParametros.put(pilaNombreProc.get(pilaNombreProc.size()-1),new ArrayList<>());
   }
 
   private void agregaParamDecl(String nombreProc, String nombreParam){
@@ -352,10 +348,6 @@ private final AnalizadorLexico aLexico;
     //Por lo tanto, saco el tope de la pila de nombres y de max invocs.
     int maxInvocProc = pilaMaxInvocProc.remove(pilaMaxInvocProc.size()-1);
     String nombreProc = pilaNombreProc.remove(pilaNombreProc.size()-1);
-
-    System.out.println(nombreProc+": "+maxInvocProc+"//667parser");
-    System.out.println(pilaMaxInvocProc);
-    System.out.println(pilaNombreProc);
 
     if (maxInvocProc < 1 || maxInvocProc > 4)
       TablaNotificaciones.agregarError(lineaNI,
@@ -398,6 +390,7 @@ private final AnalizadorLexico aLexico;
 
   private void invocaProc(String lexema) {
     String ambito = getAmbitoId(lexema);
+
     boolean invocValida = true;
 
     if (ambito.isEmpty()) {
@@ -405,6 +398,7 @@ private final AnalizadorLexico aLexico;
       return; //Es necesario cortar aca para que 'ambito' no cause problemas por estar vacio.
     }
     String nLexema = ambito + ":" + lexema;
+
     if (tablaS.maxInvocAlcanzadas(nLexema)) {
       TablaNotificaciones.agregarError(aLexico.getLineaActual(), "El procedimiento '" + lexema + "' ya alcanzo su numero maximo de invocaciones.");
       invocValida = false;
@@ -420,7 +414,7 @@ private final AnalizadorLexico aLexico;
       invocValida = tipoParamsValidos(nLexema, nParamsDecl);
 
     if (invocValida)
-      generaCodigoInvocacion(nombreProc, nParamsDecl);
+      generaCodigoInvocacion(nLexema, nParamsDecl);
 
     listaParams.clear();
   }
@@ -433,6 +427,7 @@ private final AnalizadorLexico aLexico;
       agregarPasosRepr(paramInvoc, paramDecl, "="); //paramDecl = paramInvoc.
     }
 
+    agregarPasosRepr(lexemaProc,lexemaProc);
     agregarPasosRepr(lexemaProc,Polaca.PASO_INVOC);
 
     for (int i = 0; i < nParamsDecl; i++) { //Pasa el valor de los param formales a los reales (En caso de param CVR).

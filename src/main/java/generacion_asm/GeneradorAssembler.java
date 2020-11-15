@@ -66,22 +66,22 @@ public class GeneradorAssembler {
         registros.add(new InfoReg());
     }
 
-    private static List<String> generaAsmDeclProc(MultiPolaca multiPolaca){
+    public static List<String> generaAsmDeclProc(MultiPolaca multiPolaca){
         List<String> asmProcs = new ArrayList<>();
         for (String proc : multiPolaca.getNombreProcs()) {
             asmProcs.add("_" + proc + " PROC");
-            asmProcs.addAll(generarAsm(multiPolaca.getPolaca(proc))); //Obtiene polaca del proc y la pasa a asm.
+            asmProcs.addAll(generaAsm(multiPolaca.getPolaca(proc))); //Obtiene polaca del proc y la pasa a asm.
             asmProcs.add("RET");
             asmProcs.add("_" + proc + " ENDP");
+            pilaOps.clear();
         }
         return asmProcs;
     }
 
-    public static List<String> generarAsm(Polaca polaca){
+    public static List<String> generaAsm(Polaca polaca){
         if (TablaNotificaciones.hayErrores())
             throw new IllegalStateException("El codigo tiene errores, cortando generacion asm.");
         List<String> asm = new ArrayList<>();
-        String labelJump = "";
         String tipoComp = "";
         for (String paso : polaca.getListaPasos()){
             System.out.println("Antes:" + paso+"  "+pilaOps);
@@ -89,7 +89,7 @@ public class GeneradorAssembler {
             if (paso.charAt(0) == 'L') asm.add(paso+":"); //Agrego el label.
             else switch (paso){
                 case "INVOC":
-                    asm.add("CALL _" + labelJump); //labelJump es el label del proc invocado.
+                    asm.add("CALL _" + pilaOps.remove(pilaOps.size()-1));
                     break;
                 case "*":
                     asm.addAll(genInstrAritmMult(pilaOps.remove(pilaOps.size()-1), pilaOps.remove(pilaOps.size()-1)));
