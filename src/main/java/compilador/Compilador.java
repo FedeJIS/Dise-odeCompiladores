@@ -2,6 +2,7 @@ package compilador;
 
 import analizador_lexico.AnalizadorLexico;
 import analizador_sintactico.Parser;
+import generacion_asm.GeneradorAssembler;
 import generacion_c_intermedio.MultiPolaca;
 import generacion_c_intermedio.Polaca;
 import util.*;
@@ -30,6 +31,9 @@ public class Compilador {
             System.out.println("###POLACA PROCEDIMIENTOS###\n"+polacaProcs.toString());
         }
         if (imprimirOtros) finCompilacion();
+
+        GeneradorAssembler.reset(tablaS);
+        System.out.println(getAsm());
     }
 
     public static void compilar(String pathSrc, String basePathDest){
@@ -48,7 +52,8 @@ public class Compilador {
                 ;
         FileProcessor.escribirArchivo(basePathDest+"_salidas.txt",resultados);
 
-        FileProcessor.escribirArchivo(basePathDest+"_asm.asm",getAsm());
+        System.out.println(getAsm());
+//        FileProcessor.escribirArchivo(basePathDest+"_asm.asm",getAsm());
 
         //Clear de estructuras estaticas
         tablaS.clear();
@@ -57,21 +62,23 @@ public class Compilador {
 
     private static String getAsm() {
         String asmProcs = "";
-        String asmProgram = "";
-        return ".386\n" +
-                ".model flat, stdcall\n" +
-                "option casemap :none\n" +
-                "include \\masm32\\include\\windows.inc\n" +
-                "include \\masm32\\include\\kernel32.inc\n" +
-                "include \\masm32\\include\\user32.inc\n" +
-                "includelib \\masm32\\lib\\kernel32.lib\n" +
-                "includelib \\masm32\\lib\\user32.lib\n" +
-                ".DATA\n" +
-                asmProcs + "\n" +
-                ".CODE\n" +
-                asmProcs + "\n" +
+        StringBuilder asmProgramBuilder = new StringBuilder();
+        for (String instrAsm : GeneradorAssembler.generarAsm(polacaProgram))
+            asmProgramBuilder.append(instrAsm).append('\n');
+        return //".386\n" +
+//                ".model flat, stdcall\n" +
+//                "option casemap :none\n" +
+//                "include \\masm32\\include\\windows.inc\n" +
+//                "include \\masm32\\include\\kernel32.inc\n" +
+//                "include \\masm32\\include\\user32.inc\n" +
+//                "includelib \\masm32\\lib\\kernel32.lib\n" +
+//                "includelib \\masm32\\lib\\user32.lib\n" +
+//                ".DATA\n" +
+//                asmProcs + "\n" +
+//                ".CODE\n" +
+//                asmProcs + "\n" +
                 "START:\n" +
-                asmProgram + "\n" +
+                asmProgramBuilder.toString() + "\n" +
                 "END START\n";
     }
 
