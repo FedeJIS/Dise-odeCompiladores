@@ -48,8 +48,6 @@ public class GeneradorAssembler {
 
     private static final List<InfoReg> registros = new ArrayList<>();
 
-    private final List<String> asmProcs = new ArrayList<>();
-
     private static final List<String> pilaOps = new ArrayList<>();
 
     private static TablaSimbolos tablaS;
@@ -79,16 +77,16 @@ public class GeneradorAssembler {
     }
 
     public static List<String> generaAsm(Polaca polaca){
+
         if (TablaNotificaciones.hayErrores())
             throw new IllegalStateException("El codigo tiene errores, cortando generacion asm.");
         List<String> asm = new ArrayList<>();
         String tipoComp = "";
         for (String paso : polaca.getListaPasos()){
-            System.out.println("Antes:" + paso+"  "+pilaOps);
-
             if (paso.charAt(0) == 'L') asm.add(paso+":"); //Agrego el label.
             else switch (paso){
                 case "INVOC":
+//                    if (nombreAnt == pilaOps.remove(pilaOps.size()-1)) asm.add(jump)
                     asm.add("CALL _" + pilaOps.remove(pilaOps.size()-1));
                     break;
                 case "*":
@@ -136,7 +134,6 @@ public class GeneradorAssembler {
                     pilaOps.add(paso);
                     break;
             }
-            System.out.println("Dsp:" + paso+"  "+pilaOps+"\n");
         }
         return asm;
     }
@@ -363,6 +360,9 @@ public class GeneradorAssembler {
                 int reg = getRegistroLibre(); //Obtengo reg libre.
                 asm.add("MOV " + getNombreRegistro(reg) + ", " + getPrefijo(dest) + dest);
                 asm.add("SUB " + getNombreRegistro(reg) + ", " + getPrefijo(dest) + src);
+
+                asm.add("CMP "+getNombreRegistro(reg)+", 0");
+                asm.add("JB L_resta_neg");
 
                 pilaOps.add(getNombreRegistro(reg));
                 actualizaReg(reg, true, pilaOps.size()-1);

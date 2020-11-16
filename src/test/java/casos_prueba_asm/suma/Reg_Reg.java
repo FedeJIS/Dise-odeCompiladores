@@ -6,11 +6,15 @@ public class Reg_Reg {
     public static void main(String[] args) {
         String lineasCFuente =
                 "UINT a, b, c;\n" +
+                "DOUBLE zz;\n" +
+                "zz = -5.0d1;\n" +
+//                "OUT(-5.0d1);\n" +
                 "a = 5_ui;\n" +
                 "b = 6_ui;\n" +
                 "c = 1_ui;\n" +
-                "a = a*b + c*5_ui;";
+                "a = a*b + c*5_ui;\n" +
+                "zz = zz * -5.0d13;";
 
-        Compilador.compilar(lineasCFuente,true,false);
+        Compilador.compilar(lineasCFuente,true,true);
     }
 }

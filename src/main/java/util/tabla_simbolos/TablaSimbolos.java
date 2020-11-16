@@ -178,4 +178,37 @@ public class TablaSimbolos {
         if (entrada == null) throw new IllegalStateException("Lexema del parametro no encontrado en la TS");
         return entrada.esCte();
     }
+
+    public String toAsm(){
+        StringBuilder asmBuilder = new StringBuilder();
+
+        for (String lexema : tablaSimb.keySet()) {
+            Celda celda = tablaSimb.get(lexema);
+
+            if (lexema.startsWith("PROGRAM") && celda.getTipo().equals("UINT")){ //Variable entera.
+                asmBuilder.append(lexema) //Nombre variable.
+                            .append(" DW ") //Tipo.
+                            .append(0) //Valor.
+                            .append('\n');
+            }
+            else if (lexema.startsWith("PROGRAM") && celda.getTipo().equals("DOUBLE")){ //variable double.
+                asmBuilder.append(lexema) //Nombre variable.
+                        .append(" DD ") //Tipo.
+                        .append(0) //Valor.
+                        .append('\n');
+            } else if (celda.esCte() && celda.getTipo().equals("DOUBLE")){ //Cte double
+                String nValor = lexema;
+//                if (lexema.contains("-")) //Es negativo.
+//                    nValor = nValor.replace("-","n");
+//                if (lexema.contains(".")) //Tiene parte decimal.
+//                    nValor = nValor.replace(".","p");
+                asmBuilder.append(nValor) //Nombre variable.
+                        .append(" DD ") //Tipo.
+                        .append(lexema) //Valor.
+                        .append('\n');
+            }
+        }
+
+        return asmBuilder.toString();
+    }
 }

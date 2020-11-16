@@ -9,6 +9,7 @@ public class Procs {
                     "OUT(5_ui);\n" +
                     "PROC y() NI = 2_ui {\n" +
                         "OUT(5_ui);\n" +
+                        "DOUBLE www;\n" +
                     "};" +
                     "PROC z() NI = 2_ui {\n" +
                         "OUT(6_ui);\n" +

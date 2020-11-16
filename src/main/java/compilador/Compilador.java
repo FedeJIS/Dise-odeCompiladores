@@ -82,13 +82,26 @@ public class Compilador {
 //                "include \\masm32\\include\\user32.inc\n" +
 //                "includelib \\masm32\\lib\\kernel32.lib\n" +
 //                "includelib \\masm32\\lib\\user32.lib\n" +
-//                ".DATA\n" +
-//                asmProcs + "\n" +
+                ".DATA\n" +
+                tablaS.toAsm() + "\n" +
+                "@resta_neg DB 'Error: Resultado de resta menor a cero.', 0" + "\n" +
+                "@recursion DB 'Error: Recursiones en procedimientos no permitidas.', 0" + "\n" +
+                "@ejecucion_sin_error DB 'Ejecucion sin errores.', 0" + "\n" +
                 ".CODE\n" +
                 asmProcsBuilder.toString() + "\n" +
                 "START:\n" +
-                asmProgramBuilder.toString() + "\n" +
-                "END START\n";
+                asmProgramBuilder.toString() +
+                "JMP L_final" + '\n' +
+                "L_resta_neg:" + '\n' +
+                "invoke MessageBox, NULL, addr @resta_neg, addr@resta_neg , MB_OK" + '\n' +
+                "JMP L_final" + '\n' +
+                "L_recursion:" + '\n' +
+                "invoke MessageBox, NULL, addr @recursion, addr@recursion , MB_OK" + '\n' +
+                "JMP L_final" + '\n' +
+                "L_final:" + '\n' +
+                "invoke MessageBox, NULL, addr @ejecucion_sin_error, addr@ejecucion_sin_error , MB_OK" + '\n' +
+                "invoke ExitProcess, 0" + '\n' +
+                "END START";
     }
 
     private static void inicTablaPR() {
