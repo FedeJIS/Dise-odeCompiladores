@@ -4,27 +4,12 @@ public class Test {
 
     public static void main(String[] args) {
         Compilador.compilar(
-                "OUT(\"a\")\n" +
-                            "OUT(\"a\")"
-//                "PROC x(VAR DOUBLE a) NI = 1_ui {\n" +
-//                                            "IF (a < 5_ui) THEN OUT(a);\n" +
-//                                            "ELSE OUT(5_ui);" +
-//                                            "END_IF;" +
-//                                        "};\n" +
-//                                        "DOUBLE o,p,q,s;\n" +
-//                                        "o = 5.0d0;\n" +
-//                                        "x(o);\n" +
-//                                        "o = 1.0d0;\n" +
-//                                        "IF (o == 1.0d0) THEN OUT(o);END_IF;" //+
-
-//                                        "PROC y(UINT a, DOUBLE b, UINT c) NI = 1_ui {OUT(a);};\n" +
-//                                        "p = 5.0d1;\n" +
-//                                        "q = 5.0d1;\n" +
-//                                        "y(o,p,q);\n" +
-//
-//                                        "s = 5.0d1;\n" +
-//                                        "PROC z(UINT a, DOUBLE b, UINT c, UINT d) NI = 1_ui {OUT(a);};\n" +
-//                                        "z(o,p,q,s);"
+                "UINT a,b,c;\n" +
+                "IF (a + 1_ui > b - 2_ui) THEN\n" +
+                    "OUT(a);\n" +
+                "ELSE OUT(b);\n" +
+                "END_IF;\n" +
+                "OUT(c);"
 
                 ,true,true);
     }
