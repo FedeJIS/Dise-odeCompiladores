@@ -13,7 +13,7 @@ public class Procs {
                     "};" +
                     "PROC z() NI = 4_ui {\n" +
                         "OUT(6_ui);\n" +
-                        "z(); \n" +
+//                        "z(); \n" +
                     "};\n" +
                     "z();\n" +
                 "};\n" +

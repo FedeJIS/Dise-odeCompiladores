@@ -34,7 +34,7 @@ public class Compilador {
         GeneradorAssembler.reset(tablaS);
         try {
             System.out.println(getAsm());
-            FileProcessor.escribirArchivo("archivos/aritm_procs.asm",getAsm());
+            FileProcessor.escribirArchivo("archivos/procs_valido.asm",getAsm());
         } catch (IllegalStateException illStEx){
             System.out.println("Assembler no generado.");
         }
@@ -58,13 +58,15 @@ public class Compilador {
                 ;
         FileProcessor.escribirArchivo(basePathDest+"_salidas.txt",resultados);
 
-//        System.out.println(getAsm());
-//        FileProcessor.escribirArchivo(basePathDest+"_asm.asm",getAsm());
-        FileProcessor.escribirArchivo("archivos/aritm_double_mult.asm",getAsm());
+        try {
+            FileProcessor.escribirArchivo(basePathDest+"_asm.asm",getAsm());
+            System.out.println("Assembler generado exitosamente.");
+        } catch (IllegalStateException illStEx){
+            System.out.println("Assembler no generado.");
+        }
 
         //Clear de estructuras estaticas
         tablaS.clear();
-
     }
 
     private static String getAsm() {
