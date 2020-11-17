@@ -95,7 +95,10 @@ param_comun : tipo_id ID {
 		    | tipo_id {yyerror("Falta el identificador de un parametro.");}
 		    ;
 
-ni_proc	: NI '=' CTE_UINT {pilaMaxInvocProc.add(Integer.parseInt($3.sval));}
+ni_proc	: NI '=' CTE_UINT {
+                            pilaMaxInvocProc.add(Integer.parseInt($3.sval));
+                            tablaS.setMaxInvoc(nombreProc, maxInvocProc);
+                            }
         | NI '=' {yyerror("Falta el numero de invocaciones del procedimiento.");}
         | '=' CTE_UINT {yyerror("Falta la palabra clave 'NI' en el encabezado del procedimiento.");}
         | NI CTE_UINT {yyerror("Formato de declaracion de NI invalido. El formato correcto es 'NI = CTE_UINT'.");}
@@ -234,7 +237,8 @@ imprimible	: CADENA {tipoImpresion = "OUT_CAD";}
 			;
 
 %%
-private final AnalizadorLexico aLexico;
+
+  private final AnalizadorLexico aLexico;
   private final TablaSimbolos tablaS;
   private final PilaAmbitos pilaAmbitos;
   private final Polaca polacaProgram;
@@ -375,6 +379,7 @@ private final AnalizadorLexico aLexico;
   }
 
   private boolean tipoParamsValidos(String lexema, int nParamsDecl) {
+    System.out.println(lexema);
     boolean invocValida = true;
     for (int i = 0; i < nParamsDecl; i++) {
       String tipoParamInvoc = tablaS.getTipo(listaParams.get(i));
@@ -544,3 +549,4 @@ private final AnalizadorLexico aLexico;
   public MultiPolaca getPolacaProcs(){
     return polacaProcedimientos;
   }
+

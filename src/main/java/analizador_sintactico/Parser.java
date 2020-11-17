@@ -544,9 +544,10 @@ final static String yyrule[] = {
 "imprimible : ID",
 };
 
-//#line 236 "archivos/gramatica.y"
+//#line 239 "archivos/gramatica.y"
 
-private final AnalizadorLexico aLexico;
+
+  private final AnalizadorLexico aLexico;
   private final TablaSimbolos tablaS;
   private final PilaAmbitos pilaAmbitos;
   private final Polaca polacaProgram;
@@ -658,14 +659,14 @@ private final AnalizadorLexico aLexico;
   private void declaraProc() {
     //Este metodo se invoca al cierre de la declaracion de un procedimiento.
     //Por lo tanto, saco el tope de la pila de nombres y de max invocs.
-    int maxInvocProc = pilaMaxInvocProc.remove(pilaMaxInvocProc.size()-1);
+//    int maxInvocProc = pilaMaxInvocProc.remove(pilaMaxInvocProc.size()-1);
     String nombreProc = pilaNombreProc.remove(pilaNombreProc.size()-1);
 
-    if (maxInvocProc < 1 || maxInvocProc > 4)
-      TablaNotificaciones.agregarError(lineaNI,
-              "El numero de invocaciones de un procedimiento debe estar en el rango [1,4].");
-    else {
-      tablaS.setMaxInvoc(nombreProc, maxInvocProc);
+//    if (maxInvocProc < 1 || maxInvocProc > 4)
+//      TablaNotificaciones.agregarError(lineaNI,
+//              "El numero de invocaciones de un procedimiento debe estar en el rango [1,4].");
+    /*else*/ {
+//      tablaS.setMaxInvoc(nombreProc, maxInvocProc);
 
       List<String> listaParams = mapaListaParametros.remove(nombreProc);
       int nParams = listaParams.size();
@@ -857,7 +858,8 @@ private final AnalizadorLexico aLexico;
   public MultiPolaca getPolacaProcs(){
     return polacaProcedimientos;
   }
-//#line 793 "Parser.java"
+
+//#line 791 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1098,225 +1100,231 @@ case 32:
 break;
 case 33:
 //#line 98 "archivos/gramatica.y"
-{pilaMaxInvocProc.add(Integer.parseInt(val_peek(0).sval));}
+{
+                            int maxInvocProc = Integer.parseInt(val_peek(0).sval);
+                            if (maxInvocProc < 1 || maxInvocProc > 4)
+                              TablaNotificaciones.agregarError(lineaNI,
+                                      "El numero de invocaciones de un procedimiento debe estar en el rango [1,4].");
+                            else tablaS.setMaxInvoc(pilaNombreProc.get(pilaNombreProc.size()-1), maxInvocProc);
+                            }
 break;
 case 34:
-//#line 99 "archivos/gramatica.y"
+//#line 102 "archivos/gramatica.y"
 {yyerror("Falta el numero de invocaciones del procedimiento.");}
 break;
 case 35:
-//#line 100 "archivos/gramatica.y"
+//#line 103 "archivos/gramatica.y"
 {yyerror("Falta la palabra clave 'NI' en el encabezado del procedimiento.");}
 break;
 case 36:
-//#line 101 "archivos/gramatica.y"
+//#line 104 "archivos/gramatica.y"
 {yyerror("Formato de declaracion de NI invalido. El formato correcto es 'NI = CTE_UINT'.");}
 break;
 case 37:
-//#line 102 "archivos/gramatica.y"
+//#line 105 "archivos/gramatica.y"
 {yyerror("Formato de declaracion de NI invalido. El formato correcto es 'NI = CTE_UINT'.");}
 break;
 case 39:
-//#line 106 "archivos/gramatica.y"
+//#line 109 "archivos/gramatica.y"
 {yyerror("Cuerpo del procedimiento vacio.");}
 break;
 case 45:
-//#line 116 "archivos/gramatica.y"
+//#line 119 "archivos/gramatica.y"
 {
                             guardaParamsInvoc();
                             invocaProc(val_peek(2).sval);
                             }
 break;
 case 46:
-//#line 120 "archivos/gramatica.y"
+//#line 123 "archivos/gramatica.y"
 {invocaProc(val_peek(3).sval);}
 break;
 case 47:
-//#line 125 "archivos/gramatica.y"
+//#line 128 "archivos/gramatica.y"
 {guardaParamsInvoc(val_peek(0).sval);}
 break;
 case 48:
-//#line 126 "archivos/gramatica.y"
+//#line 129 "archivos/gramatica.y"
 {guardaParamsInvoc(val_peek(2).sval, val_peek(0).sval);}
 break;
 case 49:
-//#line 127 "archivos/gramatica.y"
+//#line 130 "archivos/gramatica.y"
 {guardaParamsInvoc(val_peek(4).sval, val_peek(2).sval, val_peek(0).sval);}
 break;
 case 50:
-//#line 129 "archivos/gramatica.y"
+//#line 132 "archivos/gramatica.y"
 {
                                                     guardaParamsInvoc(val_peek(6).sval, val_peek(4).sval, val_peek(2).sval);
                                                     yyerror("Un procedimiento no puede tener mas de 3 parametros.");
                                                     }
 break;
 case 51:
-//#line 135 "archivos/gramatica.y"
+//#line 138 "archivos/gramatica.y"
 {checkValidezAsign(val_peek(2).sval);}
 break;
 case 52:
-//#line 136 "archivos/gramatica.y"
+//#line 139 "archivos/gramatica.y"
 {
                             checkValidezAsign(val_peek(2).sval);
                             yyerror("El lado derecho de la asignacio no es valido.");
                             }
 break;
 case 53:
-//#line 140 "archivos/gramatica.y"
+//#line 143 "archivos/gramatica.y"
 {
                     checkValidezAsign(val_peek(0).sval);
                     yyerror("Un identificador en solitario no es una sentencia valida.");
                     }
 break;
 case 54:
-//#line 144 "archivos/gramatica.y"
+//#line 147 "archivos/gramatica.y"
 {yyerror("El lado izquierdo de la asignacion no es valido");}
 break;
 case 55:
-//#line 148 "archivos/gramatica.y"
+//#line 151 "archivos/gramatica.y"
 {agregarPasosRepr("+");}
 break;
 case 56:
-//#line 149 "archivos/gramatica.y"
+//#line 152 "archivos/gramatica.y"
 {agregarPasosRepr("-");}
 break;
 case 58:
-//#line 153 "archivos/gramatica.y"
+//#line 156 "archivos/gramatica.y"
 {agregarPasosRepr("*");}
 break;
 case 59:
-//#line 154 "archivos/gramatica.y"
+//#line 157 "archivos/gramatica.y"
 {agregarPasosRepr("/");}
 break;
 case 61:
-//#line 158 "archivos/gramatica.y"
+//#line 161 "archivos/gramatica.y"
 {checkValidezFactor(val_peek(0).sval);}
 break;
 case 62:
-//#line 159 "archivos/gramatica.y"
+//#line 162 "archivos/gramatica.y"
 {agregarPasosRepr(val_peek(0).sval);}
 break;
 case 63:
-//#line 160 "archivos/gramatica.y"
+//#line 163 "archivos/gramatica.y"
 {agregarPasosRepr(val_peek(0).sval);}
 break;
 case 64:
-//#line 161 "archivos/gramatica.y"
+//#line 164 "archivos/gramatica.y"
 {checkCambioSigno();}
 break;
 case 66:
-//#line 167 "archivos/gramatica.y"
+//#line 170 "archivos/gramatica.y"
 {puntoControlLoop();}
 break;
 case 68:
-//#line 171 "archivos/gramatica.y"
+//#line 174 "archivos/gramatica.y"
 {yyerror("Falta el bloque de sentencias ejecutables del LOOP.");}
 break;
 case 71:
-//#line 176 "archivos/gramatica.y"
+//#line 179 "archivos/gramatica.y"
 {yyerror("Bloque de sentencias vacio.");}
 break;
 case 72:
-//#line 177 "archivos/gramatica.y"
+//#line 180 "archivos/gramatica.y"
 {yyerror("No se permiten sentencias declarativas dentro de un bloque de estructura de control.");}
 break;
 case 75:
-//#line 182 "archivos/gramatica.y"
+//#line 185 "archivos/gramatica.y"
 {yyerror("No se permiten sentencias declarativas dentro de un bloque de estructura de control.");}
 break;
 case 76:
-//#line 183 "archivos/gramatica.y"
+//#line 186 "archivos/gramatica.y"
 {yyerror("No se permiten sentencias declarativas dentro de un bloque de estructura de control.");}
 break;
 case 77:
-//#line 186 "archivos/gramatica.y"
+//#line 189 "archivos/gramatica.y"
 {puntoControlUntil();}
 break;
 case 78:
-//#line 187 "archivos/gramatica.y"
+//#line 190 "archivos/gramatica.y"
 {yyerror("Falta la condicion de corte del LOOP.");}
 break;
 case 79:
-//#line 190 "archivos/gramatica.y"
+//#line 193 "archivos/gramatica.y"
 {agregarPasosRepr(val_peek(2).sval);}
 break;
 case 80:
-//#line 191 "archivos/gramatica.y"
+//#line 194 "archivos/gramatica.y"
 {yyerror("Falta parentesis de cierre de la condicion.");}
 break;
 case 81:
-//#line 192 "archivos/gramatica.y"
+//#line 195 "archivos/gramatica.y"
 {yyerror("Falta expresion en el lado izquierdo de la condicion.");}
 break;
 case 82:
-//#line 193 "archivos/gramatica.y"
+//#line 196 "archivos/gramatica.y"
 {yyerror("Falta expresion en el lado derecho de la condicion.");}
 break;
 case 83:
-//#line 194 "archivos/gramatica.y"
+//#line 197 "archivos/gramatica.y"
 {yyerror("Error en la condicion.");}
 break;
 case 92:
-//#line 209 "archivos/gramatica.y"
+//#line 212 "archivos/gramatica.y"
 {puntoControlThen();}
 break;
 case 93:
-//#line 210 "archivos/gramatica.y"
+//#line 213 "archivos/gramatica.y"
 {yyerror("Falta la condicion del IF.");}
 break;
 case 94:
-//#line 213 "archivos/gramatica.y"
+//#line 216 "archivos/gramatica.y"
 {puntoControlElse();}
 break;
 case 95:
-//#line 214 "archivos/gramatica.y"
+//#line 217 "archivos/gramatica.y"
 {yyerror("Falta el bloque de sentencias ejecutables de la rama THEN.");}
 break;
 case 96:
-//#line 217 "archivos/gramatica.y"
+//#line 220 "archivos/gramatica.y"
 {puntoControlFinCondicional();}
 break;
 case 97:
-//#line 218 "archivos/gramatica.y"
+//#line 221 "archivos/gramatica.y"
 {yyerror("Falta el bloque de sentencias ejecutables de la rama THEN.");}
 break;
 case 98:
-//#line 221 "archivos/gramatica.y"
+//#line 224 "archivos/gramatica.y"
 {puntoControlFinCondicional();}
 break;
 case 99:
-//#line 222 "archivos/gramatica.y"
+//#line 225 "archivos/gramatica.y"
 {yyerror("Falta el bloque de sentencias ejecutables de la rama ELSE.");}
 break;
 case 100:
-//#line 225 "archivos/gramatica.y"
+//#line 228 "archivos/gramatica.y"
 {agregarPasosRepr(val_peek(1).sval,tipoImpresion);}
 break;
 case 101:
-//#line 226 "archivos/gramatica.y"
+//#line 229 "archivos/gramatica.y"
 {yyerror("Falta parentesis de cierre de la sentencia OUT.");}
 break;
 case 102:
-//#line 227 "archivos/gramatica.y"
+//#line 230 "archivos/gramatica.y"
 {yyerror("El contenido de la sentencia OUT no es valido.");}
 break;
 case 103:
-//#line 230 "archivos/gramatica.y"
+//#line 233 "archivos/gramatica.y"
 {tipoImpresion = "OUT_CAD";}
 break;
 case 104:
-//#line 231 "archivos/gramatica.y"
+//#line 234 "archivos/gramatica.y"
 {tipoImpresion = "OUT_UINT";}
 break;
 case 105:
-//#line 232 "archivos/gramatica.y"
+//#line 235 "archivos/gramatica.y"
 {tipoImpresion = "OUT_DOU";}
 break;
 case 106:
-//#line 233 "archivos/gramatica.y"
+//#line 236 "archivos/gramatica.y"
 {if (isIdDeclarado(val_peek(0).sval)) tipoImpresion = "OUT_"+tablaS.getTipo(getAmbitoId(val_peek(0).sval)+":"+val_peek(0).sval);}
 break;
-//#line 1244 "Parser.java"
+//#line 1245 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

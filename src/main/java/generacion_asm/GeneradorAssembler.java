@@ -76,6 +76,8 @@ public class GeneradorAssembler {
         return asmProcs;
     }
 
+    private static String procAnterior = "";
+
     public static List<String> generaAsm(Polaca polaca){
 
         if (TablaNotificaciones.hayErrores())
@@ -86,8 +88,18 @@ public class GeneradorAssembler {
             if (paso.charAt(0) == 'L') asm.add(paso+":"); //Agrego el label.
             else switch (paso){
                 case "INVOC":
-//                    if (nombreAnt == pilaOps.remove(pilaOps.size()-1)) asm.add(jump)
-                    asm.add("CALL _" + pilaOps.remove(pilaOps.size()-1));
+                    int aux2 = 0;
+                    String procInvocado = pilaOps.remove(pilaOps.size()-1);
+                    if (procAnterior.equals(procInvocado)) aux2 = 1;
+
+                    //Si aux1 y aux2 son iguales, significa que se esta realizando una invocacion recursiva.
+                    String reg = getNombreRegistro(getRegistroLibre());
+                    asm.add("MOV "+reg+", 1");
+                    asm.add("CMP "+reg+", "+aux2);
+                    asm.add("JE L_recursion");
+                    asm.add("CALL _" + procInvocado);
+
+                    procAnterior = procInvocado;
                     break;
                 case "*":
                     asm.addAll(genInstrAritmMult(pilaOps.remove(pilaOps.size()-1), pilaOps.remove(pilaOps.size()-1)));

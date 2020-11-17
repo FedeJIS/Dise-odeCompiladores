@@ -34,6 +34,7 @@ public class Compilador {
         GeneradorAssembler.reset(tablaS);
         try {
             System.out.println(getAsm());
+            FileProcessor.escribirArchivo("archivos/aritm_procs.asm",getAsm());
         } catch (IllegalStateException illStEx){
             System.out.println("Assembler no generado.");
         }
@@ -57,8 +58,9 @@ public class Compilador {
                 ;
         FileProcessor.escribirArchivo(basePathDest+"_salidas.txt",resultados);
 
-        System.out.println(getAsm());
+//        System.out.println(getAsm());
 //        FileProcessor.escribirArchivo(basePathDest+"_asm.asm",getAsm());
+        FileProcessor.escribirArchivo("archivos/aritm_double_mult.asm",getAsm());
 
         //Clear de estructuras estaticas
         tablaS.clear();
@@ -74,14 +76,14 @@ public class Compilador {
         for (String instrAsm : GeneradorAssembler.generaAsm(polacaProgram))
             asmProgramBuilder.append(instrAsm).append('\n');
 
-        return //".386\n" +
-//                ".model flat, stdcall\n" +
-//                "option casemap :none\n" +
-//                "include \\masm32\\include\\windows.inc\n" +
-//                "include \\masm32\\include\\kernel32.inc\n" +
-//                "include \\masm32\\include\\user32.inc\n" +
-//                "includelib \\masm32\\lib\\kernel32.lib\n" +
-//                "includelib \\masm32\\lib\\user32.lib\n" +
+        return ".386\n" +
+                ".model flat, stdcall\n" +
+                "option casemap :none\n" +
+                "include \\masm32\\include\\windows.inc\n" +
+                "include \\masm32\\include\\kernel32.inc\n" +
+                "include \\masm32\\include\\user32.inc\n" +
+                "includelib \\masm32\\lib\\kernel32.lib\n" +
+                "includelib \\masm32\\lib\\user32.lib\n" +
                 ".DATA\n" +
                 tablaS.toAsm() + "\n" +
                 "@resta_neg DB 'Error: Resultado de resta menor a cero.', 0" + "\n" +

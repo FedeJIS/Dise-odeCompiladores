@@ -11,9 +11,9 @@ public class Procs {
                         "OUT(5_ui);\n" +
                         "DOUBLE www;\n" +
                     "};" +
-                    "PROC z() NI = 2_ui {\n" +
+                    "PROC z() NI = 4_ui {\n" +
                         "OUT(6_ui);\n" +
-                        "y(); \n" +
+                        "z(); \n" +
                     "};\n" +
                     "z();\n" +
                 "};\n" +
