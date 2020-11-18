@@ -7,12 +7,11 @@ include \masm32\include\user32.inc
 includelib \masm32\lib\kernel32.lib
 includelib \masm32\lib\user32.lib
 .DATA
-60.0 DD 60.0
 PROGRAM@c DD 0
 PROGRAM@b DD 0
 PROGRAM@a DD 0
-80.0 DD 80.0
-70.0 DD 70.0
+@aux1 DD 0
+@aux0 DD 0
 
 @resta_neg DB 'Error: Resultado de resta menor a cero.', 0
 @recursion DB 'Error: Recursiones en procedimientos no permitidas.', 0

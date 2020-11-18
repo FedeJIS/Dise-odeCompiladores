@@ -5,10 +5,7 @@ import compilador.Compilador;
 public class Jumps {
     public static void main(String[] args) {
         String lineasCFuente =
-            "UINT a, b;\n" +
-            "a = 5_ui;\n" +
-            "b = 5_ui;" +
-            "IF (a < b) THEN\n" +
+            "IF (5.0d1 < 10.0d1) THEN\n" +
                 "OUT(5_ui);\n" +
             "END_IF;";
 

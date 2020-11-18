@@ -194,9 +194,11 @@ public class GeneradorAssembler {
 
         //Primer operando es un valor inmediato.
         if (!esRegistro(op2) && tablaS.esCte(op2) && tiposOperandosValidos(op1,false,op2,false))
-            if (tablaS.getTipo(op1).equals("DOUBLE")) {
-
-            } else {
+            if (tablaS.getTipo(op2).equals("DOUBLE")) {
+                asm.addAll(genInstrCompDouble(op1, op2));
+                return asm;
+            }
+            else {
                 String nuevoOp = getNombreRegistro(getRegistroLibre());
                 asm.add("MOV " + nuevoOp + ", " + op2);
                 asm.add("CMP " + nuevoOp + ", " + getPrefijo(op1) + op1);
@@ -205,12 +207,47 @@ public class GeneradorAssembler {
         //Var & Var. Ambos operandos no pueden estar en memoria, tengo que traer uno a un reg.
         if (!esRegistro(op1) && !esRegistro(op2) && tiposOperandosValidos(op1,false,op2,false))
             if (tablaS.getTipo(op1).equals("DOUBLE")) {
-
-            } else {
+                asm.addAll(genInstrCompDouble(op1, op2));
+                return asm;
+            }
+            else {
                 String nuevoOp = getNombreRegistro(getRegistroLibre());
                 asm.add("MOV " + nuevoOp + ", " + getPrefijo(op2) + op2);
                 asm.add("CMP " + nuevoOp + ", " + getPrefijo(op1) + op1);
             }
+        return asm;
+    }
+
+    private static List<String> genInstrCompDouble(String op1, String op2){
+        System.out.println("Entra");
+        List<String> asm = new ArrayList<>();
+
+        if (!esRegistro(op1) && tablaS.esCte(op1)){ //Si el op1 es un valor inmediato primero lo cargo en memoria.
+            asm.add("MOV @aux"+variableAux+", "+op1);
+            op1 = "@aux"+variableAux;
+            tablaS.agregarEntrada(Parser.ID,"@aux"+variableAux,"DOUBLE"); //Agreo vaux a TS.
+            variableAux++;
+        }
+
+        if (!esRegistro(op2) && tablaS.esCte(op2)){ //Si el op2 es un valor inmediato primero lo cargo en memoria.
+            asm.add("MOV @aux"+variableAux+", "+op2);
+            op2 = "@aux"+variableAux;
+            tablaS.agregarEntrada(Parser.ID,"@aux"+variableAux,"DOUBLE"); //Agreo vaux a TS.
+            variableAux++;
+        }
+
+        asm.add("FLD "+op1); //Pongo op1 en la pila del coproc.
+        asm.add("FLD "+op2); //Pongo op2 en la pila del coproc.
+        asm.add("FCOM"); //Comparacion.
+
+        asm.add("FSTSW @aux"+variableAux); //Almacena el resultado en memoria.
+        asm.addAll(liberaRegistro(AX));
+        asm.add("MOV AX, @aux"+variableAux); //Muevo a AX el resultado de la comparacion.
+        tablaS.agregarEntrada(Parser.ID,"@aux"+variableAux,"DOUBLE"); //Agreo vaux a TS.
+        variableAux++;
+
+        asm.add("SAHF"); //Almacena en los ocho bits menos significativos del registro de indicadores el valor del registro AH.
+
         return asm;
     }
 
@@ -225,7 +262,7 @@ public class GeneradorAssembler {
         //dest = Variable & src = Reg
         if (!esRegistro(dest) && esRegistro(src) && tiposOperandosValidos(dest, false, src, true)){
             asm.add("MOV "+getPrefijo(dest)+dest+", "+src);
-            liberarReg(src);
+            marcaRegLiberado(src);
         }
 
         //Variable & Variable
@@ -246,12 +283,14 @@ public class GeneradorAssembler {
         if (!esRegistro(op1) && tablaS.esCte(op1)){ //Si el op1 es un valor inmediato primero lo cargo en memoria.
             asm.add("MOV @aux"+variableAux+", "+op1);
             op1 = "@aux"+variableAux;
+            tablaS.agregarEntrada(Parser.ID,"@aux"+variableAux,"DOUBLE"); //Agreo vaux a TS.
             variableAux++;
         }
 
         if (!esRegistro(op2) && tablaS.esCte(op2)){ //Si el op2 es un valor inmediato primero lo cargo en memoria.
             asm.add("MOV @aux"+variableAux+", "+op2);
             op2 = "@aux"+variableAux;
+            tablaS.agregarEntrada(Parser.ID,"@aux"+variableAux,"DOUBLE"); //Agreo vaux a TS.
             variableAux++;
         }
 
@@ -296,7 +335,7 @@ public class GeneradorAssembler {
         if (esRegistro(dest) && esRegistro(src) && tiposOperandosValidos(dest,true,src,true)) {
             asm.add("ADD " + dest + ", " + src);
             pilaOps.add(dest);
-            liberarReg(src);
+            marcaRegLiberado(src);
         }
 
         //Variable & Reg
@@ -396,7 +435,7 @@ public class GeneradorAssembler {
         if (esRegistro(dest) && esRegistro(src) && tiposOperandosValidos(dest,true,src,true)) {
             asm.add("SUB " + dest + ", " + src);
             pilaOps.add(dest);
-            liberarReg(src);
+            marcaRegLiberado(src);
         }
 
         //Variable & Reg. No puedo restar sobre src porque la op es conmut.
@@ -575,7 +614,7 @@ public class GeneradorAssembler {
         return "";
     }
 
-    private static void liberarReg(String reg) {
+    private static void marcaRegLiberado(String reg) {
         registros.get(getIdRegistro(reg)).setOcupado(false);
         registros.get(getIdRegistro(reg)).setRef(-1);
     }

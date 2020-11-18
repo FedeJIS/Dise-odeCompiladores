@@ -31,15 +31,6 @@ public class Compilador {
             System.out.println("###POLACA PROCEDIMIENTOS###\n"+polacaProcs.toString());
         }
 
-        GeneradorAssembler.reset(tablaS);
-
-        try {
-            FileProcessor.escribirArchivo("archivos/proc-recursion.asm",getAsm());
-            System.out.println("Assembler generado exitosamente.");
-        } catch (IllegalStateException illStEx){
-            System.out.println("Assembler no generado.");
-        }
-
         if (imprimirOtros) finCompilacion();
     }
 
@@ -65,12 +56,13 @@ public class Compilador {
                 "--------------------------------------------\n" +
                 "###POLACA PROCEDIMENTOS###\n" + polacaProcs.toString()
                 ;
-//        FileProcessor.escribirArchivo(basePathDest+"_salidas.txt",resultados);
+        FileProcessor.escribirArchivo(basePathDest+"_salidas.txt",resultados);
 
 
 
         //Clear de estructuras estaticas
         tablaS.clear();
+        GeneradorAssembler.reset(tablaS);
     }
 
     private static String getAsm() {
