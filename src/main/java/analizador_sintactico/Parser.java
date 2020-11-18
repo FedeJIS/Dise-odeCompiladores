@@ -595,12 +595,12 @@ final static String yyrule[] = {
 
     while (!builderAmbito.toString().isEmpty()) {
       //Busca el id en el ambito actual.
-      if (tablaS.contieneLexema(builderAmbito.toString() + ":" + lexema))
+      if (tablaS.contieneLexema(builderAmbito.toString() + "@" + lexema))
         return builderAmbito.toString();
 
       //"Baja" un nivel en la pila de ambitos.
       if (!builderAmbito.toString().equals("PROGRAM")) //Chequea no estar en el ambito global.
-        builderAmbito.delete(builderAmbito.lastIndexOf(":"), builderAmbito.length());
+        builderAmbito.delete(builderAmbito.lastIndexOf("@"), builderAmbito.length());
       else builderAmbito.delete(0, builderAmbito.length());
     }
     return ""; //La variable no esta declarada.
@@ -616,7 +616,7 @@ final static String yyrule[] = {
     String ambito = getAmbitoId(lexema);
 
     if (!ambito.isEmpty() //La TS contiene el lexema recibido.
-            && tablaS.isEntradaDeclarada(ambito + ":" + lexema)) {//Tiene el flag de declaracion activado.
+            && tablaS.isEntradaDeclarada(ambito + "@" + lexema)) {//Tiene el flag de declaracion activado.
       TablaNotificaciones.agregarError(aLexico.getLineaActual(), "El identificador '" + lexema + "' ya se encuentra declarado.");
       pilaNombreProc.remove(pilaNombreProc.size()-1);
     }
@@ -627,7 +627,7 @@ final static String yyrule[] = {
     tablaS.setAmbitoEntrada(lexema, pilaAmbitos.getAmbitosConcatenados()); //Actualizo el lexema en la TS.
 
     if (uso.equals("ParamCVR") || uso.equals("ParamCV"))
-      agregaParamDecl(pilaNombreProc.get(pilaNombreProc.size()-1),ambito+":"+lexema);
+      agregaParamDecl(pilaNombreProc.get(pilaNombreProc.size()-1),ambito+"@"+lexema);
 
     nombreIdValido = true;
     }
@@ -645,8 +645,8 @@ final static String yyrule[] = {
 
   private void declaraIdProc(String lexema) {
     declaraId(TablaSimbolos.USO_ENTRADA_PROC, lexema, "-");
-    pilaNombreProc.add(pilaAmbitos.getAmbitosConcatenados() + ":" + lexema);
-    mapaListaParametros.put(pilaAmbitos.getAmbitosConcatenados() + ":" + lexema, new ArrayList<>());
+    pilaNombreProc.add(pilaAmbitos.getAmbitosConcatenados() + "@" + lexema);
+    mapaListaParametros.put(pilaAmbitos.getAmbitosConcatenados() + "@" + lexema, new ArrayList<>());
     lineaNI = aLexico.getLineaActual();
     mapaListaParametros.put(pilaNombreProc.get(pilaNombreProc.size()-1),new ArrayList<>());
   }
@@ -659,23 +659,15 @@ final static String yyrule[] = {
   private void declaraProc() {
     //Este metodo se invoca al cierre de la declaracion de un procedimiento.
     //Por lo tanto, saco el tope de la pila de nombres y de max invocs.
-//    int maxInvocProc = pilaMaxInvocProc.remove(pilaMaxInvocProc.size()-1);
     String nombreProc = pilaNombreProc.remove(pilaNombreProc.size()-1);
 
-//    if (maxInvocProc < 1 || maxInvocProc > 4)
-//      TablaNotificaciones.agregarError(lineaNI,
-//              "El numero de invocaciones de un procedimiento debe estar en el rango [1,4].");
-    /*else*/ {
-//      tablaS.setMaxInvoc(nombreProc, maxInvocProc);
-
-      List<String> listaParams = mapaListaParametros.remove(nombreProc);
-      int nParams = listaParams.size();
-      if (nParams > 3) nParams = 3; //Se queda con los primeros 3 params y descarta el resto.
-      tablaS.setParamsProc(nombreProc, listaParams.subList(0, nParams)); //A esta altura ya se verificaron los ids correspondientes a cada
-                                                                        // parametro. Solo resta asociarlos con el lexema del proc.
-      listaParams.clear();
-      nombreIdValido = true; //Reinicia el valor.
-    }
+    List<String> listaParams = mapaListaParametros.remove(nombreProc);
+    int nParams = listaParams.size();
+    if (nParams > 3) nParams = 3; //Se queda con los primeros 3 params y descarta el resto.
+    tablaS.setParamsProc(nombreProc, listaParams.subList(0, nParams)); //A esta altura ya se verificaron los ids correspondientes a cada
+                                                                      // parametro. Solo resta asociarlos con el lexema del proc.
+    listaParams.clear();
+    nombreIdValido = true; //Reinicia el valor.
   }
 
   //---INVOCACION PROCS---
@@ -684,7 +676,7 @@ final static String yyrule[] = {
 
   private void guardaParamsInvoc(String... lexemaParams) {
     for (String lexemaParam : lexemaParams)
-      listaParams.add(getAmbitoId(lexemaParam) + ":" + lexemaParam);
+      listaParams.add(getAmbitoId(lexemaParam) + "@" + lexemaParam);
   }
 
   private boolean tipoParamsValidos(String lexema, int nParamsDecl) {
@@ -711,7 +703,7 @@ final static String yyrule[] = {
       TablaNotificaciones.agregarError(aLexico.getLineaActual(), "El procedimiento '" + lexema + "' no esta declarado.");
       return; //Es necesario cortar aca para que 'ambito' no cause problemas por estar vacio.
     }
-    String nLexema = ambito + ":" + lexema;
+    String nLexema = ambito + "@" + lexema;
 
     if (tablaS.maxInvocAlcanzadas(nLexema)) {
       TablaNotificaciones.agregarError(aLexico.getLineaActual(), "El procedimiento '" + lexema + "' ya alcanzo su numero maximo de invocaciones.");
@@ -763,7 +755,7 @@ final static String yyrule[] = {
       return; //Es necesario cortar aca para que 'ambito' no cause problemas por estar vacio.
     }
 
-    String nLexema = ambito + ":" + lexema;
+    String nLexema = ambito + "@" + lexema;
     if (!tablaS.isEntradaDeclarada(nLexema)) //Existe el lexema en la TS y tiene el flag de declaracion desactivado.
       TablaNotificaciones.agregarError(aLexico.getLineaActual(), "El identificador '" + lexema + "' no esta declarado.");
 
@@ -781,7 +773,7 @@ final static String yyrule[] = {
       return; //Es necesario cortar aca para que 'ambito' no cause problemas por estar vacio.
     }
 
-    String nLexema = ambito + ":" + lexema;
+    String nLexema = ambito + "@" + lexema;
     if (!tablaS.isEntradaDeclarada(nLexema)) //Existe el lexema en la TS y tiene el flag de declaracion desactivado.
       TablaNotificaciones.agregarError(aLexico.getLineaActual(), "El identificador '" + lexema + "' no esta declarado.");
 
@@ -800,7 +792,7 @@ final static String yyrule[] = {
       return false; //Es necesario cortar aca para que 'ambito' no cause problemas por estar vacio.
     }
 
-    if (!tablaS.isEntradaDeclarada(ambito + ":" + lexema)) { //Existe el lexema en la TS y tiene el flag de declaracion desactivado.
+    if (!tablaS.isEntradaDeclarada(ambito + "@" + lexema)) { //Existe el lexema en la TS y tiene el flag de declaracion desactivado.
       TablaNotificaciones.agregarError(aLexico.getLineaActual(), "El identificador '" + lexema + "' no esta declarado.");
       return false;
     }
@@ -1072,11 +1064,7 @@ case 24:
 break;
 case 28:
 //#line 83 "archivos/gramatica.y"
-{
-                                /*mapaListaParametros.put(pilaAmbitos.getAmbitosConcatenados(), pilaAmbitos.getAmbitosConcatenados()+":"+$3.sval);
-*/
-                                declaraId("ParamCVR",val_peek(0).sval,ultimoTipoLeido);
-                                }
+{declaraId("ParamCVR",val_peek(0).sval,ultimoTipoLeido);}
 break;
 case 29:
 //#line 87 "archivos/gramatica.y"
@@ -1088,11 +1076,7 @@ case 30:
 break;
 case 31:
 //#line 91 "archivos/gramatica.y"
-{
-                            /*mapaListaParametros.put(pilaAmbitos.getAmbitosConcatenados(), pilaAmbitos.getAmbitosConcatenados()+":"+$2.sval);
-*/
-                            declaraId("ParamCV",val_peek(0).sval,ultimoTipoLeido);
-                            }
+{declaraId("ParamCV",val_peek(0).sval,ultimoTipoLeido);}
 break;
 case 32:
 //#line 95 "archivos/gramatica.y"
@@ -1322,7 +1306,7 @@ case 105:
 break;
 case 106:
 //#line 236 "archivos/gramatica.y"
-{if (isIdDeclarado(val_peek(0).sval)) tipoImpresion = "OUT_"+tablaS.getTipo(getAmbitoId(val_peek(0).sval)+":"+val_peek(0).sval);}
+{if (isIdDeclarado(val_peek(0).sval)) tipoImpresion = "OUT_"+tablaS.getTipo(getAmbitoId(val_peek(0).sval)+"@"+val_peek(0).sval);}
 break;
 //#line 1245 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########

@@ -117,7 +117,9 @@ public class GeneradorAssembler {
                     asm.addAll(genInstrAsign());
                     break;
                 case "<":
+                case "<=":
                 case ">":
+                case ">=":
                 case "==":
                 case "!=": {
                     asm.addAll(genInstrComp());
@@ -143,7 +145,7 @@ public class GeneradorAssembler {
                 default:
                     if (esRegistro(paso))
                         registros.get(getIdRegistro(paso)).setRef(pilaOps.size() - 1);
-                    pilaOps.add(paso);
+                    pilaOps.add(paso.replace(":","@"));
                     break;
             }
         }
@@ -191,20 +193,24 @@ public class GeneradorAssembler {
         String op2 = pilaOps.remove(pilaOps.size() - 1);
 
         //Primer operando es un valor inmediato.
-        if (!esRegistro(op2) && tablaS.esCte(op2) && tiposOperandosValidos(op1,false,op2,false)) {
-            String nuevoOp = getNombreRegistro(getRegistroLibre());
-            asm.add("MOV " + nuevoOp + ", " + op2);
-            op2 = nuevoOp;
-        }
+        if (!esRegistro(op2) && tablaS.esCte(op2) && tiposOperandosValidos(op1,false,op2,false))
+            if (tablaS.getTipo(op1).equals("DOUBLE")) {
+
+            } else {
+                String nuevoOp = getNombreRegistro(getRegistroLibre());
+                asm.add("MOV " + nuevoOp + ", " + op2);
+                asm.add("CMP " + nuevoOp + ", " + getPrefijo(op1) + op1);
+            }
 
         //Var & Var. Ambos operandos no pueden estar en memoria, tengo que traer uno a un reg.
-        if (!esRegistro(op1) && !esRegistro(op2) && tiposOperandosValidos(op1,false,op2,false)){
-            String nuevoOp = getNombreRegistro(getRegistroLibre());
-            asm.add("MOV "+nuevoOp+", "+getPrefijo(op2)+op2);
-            op2 = nuevoOp;
-        }
+        if (!esRegistro(op1) && !esRegistro(op2) && tiposOperandosValidos(op1,false,op2,false))
+            if (tablaS.getTipo(op1).equals("DOUBLE")) {
 
-        asm.add("CMP "+op2+", "+getPrefijo(op1)+op1);
+            } else {
+                String nuevoOp = getNombreRegistro(getRegistroLibre());
+                asm.add("MOV " + nuevoOp + ", " + getPrefijo(op2) + op2);
+                asm.add("CMP " + nuevoOp + ", " + getPrefijo(op1) + op1);
+            }
         return asm;
     }
 
@@ -371,7 +377,7 @@ public class GeneradorAssembler {
             else {
                 int reg = getRegistroLibre(); //Obtengo reg libre.
                 asm.add("MOV " + getNombreRegistro(reg) + ", " + getPrefijo(dest) + dest);
-                asm.add("SUB " + getNombreRegistro(reg) + ", " + getPrefijo(dest) + src);
+                asm.add("SUB " + getNombreRegistro(reg) + ", " + getPrefijo(src) + src);
 
                 asm.add("CMP "+getNombreRegistro(reg)+", 0");
                 asm.add("JB L_resta_neg");
@@ -578,6 +584,7 @@ public class GeneradorAssembler {
 
     private static String getPrefijo(String op){
         if (esRegistro(op) || tablaS.esCte(op) || op.charAt(0) == '@') return "";
+
         return "_";
     }
 

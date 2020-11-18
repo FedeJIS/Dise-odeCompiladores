@@ -48,7 +48,7 @@ public class Celda {
     }
 
     public void setAmbito(String ambito){
-        lexema = ambito+":"+lexema;
+        lexema = ambito+"@"+lexema;
     }
 
     public String getLexema() {

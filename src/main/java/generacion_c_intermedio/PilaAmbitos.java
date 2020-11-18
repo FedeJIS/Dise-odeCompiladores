@@ -27,7 +27,7 @@ public class PilaAmbitos {
     public String getAmbitosConcatenados(){
         StringBuilder builder = new StringBuilder();
         for (String ambito : ambitos){
-            builder.append(ambito).append(":");
+            builder.append(ambito).append("@");
         }
         return builder.substring(0,builder.length()-1); //El '-1' elimina el ultimo '.' concatenado.
     }

@@ -286,12 +286,12 @@ imprimible	: CADENA {tipoImpresion = "OUT_CAD";}
 
     while (!builderAmbito.toString().isEmpty()) {
       //Busca el id en el ambito actual.
-      if (tablaS.contieneLexema(builderAmbito.toString() + ":" + lexema))
+      if (tablaS.contieneLexema(builderAmbito.toString() + "@" + lexema))
         return builderAmbito.toString();
 
       //"Baja" un nivel en la pila de ambitos.
       if (!builderAmbito.toString().equals("PROGRAM")) //Chequea no estar en el ambito global.
-        builderAmbito.delete(builderAmbito.lastIndexOf(":"), builderAmbito.length());
+        builderAmbito.delete(builderAmbito.lastIndexOf("@"), builderAmbito.length());
       else builderAmbito.delete(0, builderAmbito.length());
     }
     return ""; //La variable no esta declarada.
@@ -307,7 +307,7 @@ imprimible	: CADENA {tipoImpresion = "OUT_CAD";}
     String ambito = getAmbitoId(lexema);
 
     if (!ambito.isEmpty() //La TS contiene el lexema recibido.
-            && tablaS.isEntradaDeclarada(ambito + ":" + lexema)) {//Tiene el flag de declaracion activado.
+            && tablaS.isEntradaDeclarada(ambito + "@" + lexema)) {//Tiene el flag de declaracion activado.
       TablaNotificaciones.agregarError(aLexico.getLineaActual(), "El identificador '" + lexema + "' ya se encuentra declarado.");
       pilaNombreProc.remove(pilaNombreProc.size()-1);
     }
@@ -318,7 +318,7 @@ imprimible	: CADENA {tipoImpresion = "OUT_CAD";}
     tablaS.setAmbitoEntrada(lexema, pilaAmbitos.getAmbitosConcatenados()); //Actualizo el lexema en la TS.
 
     if (uso.equals("ParamCVR") || uso.equals("ParamCV"))
-      agregaParamDecl(pilaNombreProc.get(pilaNombreProc.size()-1),ambito+":"+lexema);
+      agregaParamDecl(pilaNombreProc.get(pilaNombreProc.size()-1),ambito+"@"+lexema);
 
     nombreIdValido = true;
     }
@@ -336,8 +336,8 @@ imprimible	: CADENA {tipoImpresion = "OUT_CAD";}
 
   private void declaraIdProc(String lexema) {
     declaraId(TablaSimbolos.USO_ENTRADA_PROC, lexema, "-");
-    pilaNombreProc.add(pilaAmbitos.getAmbitosConcatenados() + ":" + lexema);
-    mapaListaParametros.put(pilaAmbitos.getAmbitosConcatenados() + ":" + lexema, new ArrayList<>());
+    pilaNombreProc.add(pilaAmbitos.getAmbitosConcatenados() + "@" + lexema);
+    mapaListaParametros.put(pilaAmbitos.getAmbitosConcatenados() + "@" + lexema, new ArrayList<>());
     lineaNI = aLexico.getLineaActual();
     mapaListaParametros.put(pilaNombreProc.get(pilaNombreProc.size()-1),new ArrayList<>());
   }
@@ -350,23 +350,15 @@ imprimible	: CADENA {tipoImpresion = "OUT_CAD";}
   private void declaraProc() {
     //Este metodo se invoca al cierre de la declaracion de un procedimiento.
     //Por lo tanto, saco el tope de la pila de nombres y de max invocs.
-    int maxInvocProc = pilaMaxInvocProc.remove(pilaMaxInvocProc.size()-1);
     String nombreProc = pilaNombreProc.remove(pilaNombreProc.size()-1);
 
-    if (maxInvocProc < 1 || maxInvocProc > 4)
-      TablaNotificaciones.agregarError(lineaNI,
-              "El numero de invocaciones de un procedimiento debe estar en el rango [1,4].");
-    else {
-      tablaS.setMaxInvoc(nombreProc, maxInvocProc);
-
-      List<String> listaParams = mapaListaParametros.remove(nombreProc);
-      int nParams = listaParams.size();
-      if (nParams > 3) nParams = 3; //Se queda con los primeros 3 params y descarta el resto.
-      tablaS.setParamsProc(nombreProc, listaParams.subList(0, nParams)); //A esta altura ya se verificaron los ids correspondientes a cada
-                                                                        // parametro. Solo resta asociarlos con el lexema del proc.
-      listaParams.clear();
-      nombreIdValido = true; //Reinicia el valor.
-    }
+    List<String> listaParams = mapaListaParametros.remove(nombreProc);
+    int nParams = listaParams.size();
+    if (nParams > 3) nParams = 3; //Se queda con los primeros 3 params y descarta el resto.
+    tablaS.setParamsProc(nombreProc, listaParams.subList(0, nParams)); //A esta altura ya se verificaron los ids correspondientes a cada
+                                                                      // parametro. Solo resta asociarlos con el lexema del proc.
+    listaParams.clear();
+    nombreIdValido = true; //Reinicia el valor.
   }
 
   //---INVOCACION PROCS---
@@ -375,7 +367,7 @@ imprimible	: CADENA {tipoImpresion = "OUT_CAD";}
 
   private void guardaParamsInvoc(String... lexemaParams) {
     for (String lexemaParam : lexemaParams)
-      listaParams.add(getAmbitoId(lexemaParam) + ":" + lexemaParam);
+      listaParams.add(getAmbitoId(lexemaParam) + "@" + lexemaParam);
   }
 
   private boolean tipoParamsValidos(String lexema, int nParamsDecl) {
@@ -402,7 +394,7 @@ imprimible	: CADENA {tipoImpresion = "OUT_CAD";}
       TablaNotificaciones.agregarError(aLexico.getLineaActual(), "El procedimiento '" + lexema + "' no esta declarado.");
       return; //Es necesario cortar aca para que 'ambito' no cause problemas por estar vacio.
     }
-    String nLexema = ambito + ":" + lexema;
+    String nLexema = ambito + "@" + lexema;
 
     if (tablaS.maxInvocAlcanzadas(nLexema)) {
       TablaNotificaciones.agregarError(aLexico.getLineaActual(), "El procedimiento '" + lexema + "' ya alcanzo su numero maximo de invocaciones.");
@@ -454,7 +446,7 @@ imprimible	: CADENA {tipoImpresion = "OUT_CAD";}
       return; //Es necesario cortar aca para que 'ambito' no cause problemas por estar vacio.
     }
 
-    String nLexema = ambito + ":" + lexema;
+    String nLexema = ambito + "@" + lexema;
     if (!tablaS.isEntradaDeclarada(nLexema)) //Existe el lexema en la TS y tiene el flag de declaracion desactivado.
       TablaNotificaciones.agregarError(aLexico.getLineaActual(), "El identificador '" + lexema + "' no esta declarado.");
 
@@ -472,7 +464,7 @@ imprimible	: CADENA {tipoImpresion = "OUT_CAD";}
       return; //Es necesario cortar aca para que 'ambito' no cause problemas por estar vacio.
     }
 
-    String nLexema = ambito + ":" + lexema;
+    String nLexema = ambito + "@" + lexema;
     if (!tablaS.isEntradaDeclarada(nLexema)) //Existe el lexema en la TS y tiene el flag de declaracion desactivado.
       TablaNotificaciones.agregarError(aLexico.getLineaActual(), "El identificador '" + lexema + "' no esta declarado.");
 
@@ -491,7 +483,7 @@ imprimible	: CADENA {tipoImpresion = "OUT_CAD";}
       return false; //Es necesario cortar aca para que 'ambito' no cause problemas por estar vacio.
     }
 
-    if (!tablaS.isEntradaDeclarada(ambito + ":" + lexema)) { //Existe el lexema en la TS y tiene el flag de declaracion desactivado.
+    if (!tablaS.isEntradaDeclarada(ambito + "@" + lexema)) { //Existe el lexema en la TS y tiene el flag de declaracion desactivado.
       TablaNotificaciones.agregarError(aLexico.getLineaActual(), "El identificador '" + lexema + "' no esta declarado.");
       return false;
     }
@@ -549,4 +541,5 @@ imprimible	: CADENA {tipoImpresion = "OUT_CAD";}
   public MultiPolaca getPolacaProcs(){
     return polacaProcedimientos;
   }
+
 

@@ -33,6 +33,13 @@ public class Compilador {
 
         GeneradorAssembler.reset(tablaS);
 
+        try {
+            FileProcessor.escribirArchivo("archivos/proc-recursion.asm",getAsm());
+            System.out.println("Assembler generado exitosamente.");
+        } catch (IllegalStateException illStEx){
+            System.out.println("Assembler no generado.");
+        }
+
         if (imprimirOtros) finCompilacion();
     }
 
@@ -58,7 +65,7 @@ public class Compilador {
                 "--------------------------------------------\n" +
                 "###POLACA PROCEDIMENTOS###\n" + polacaProcs.toString()
                 ;
-        FileProcessor.escribirArchivo(basePathDest+"_salidas.txt",resultados);
+//        FileProcessor.escribirArchivo(basePathDest+"_salidas.txt",resultados);
 
 
 
@@ -94,13 +101,13 @@ public class Compilador {
                 asmProgramBuilder.toString() +
                 "JMP L_final" + '\n' +
                 "L_resta_neg:" + '\n' +
-                "invoke MessageBox, NULL, addr @resta_neg, addr@resta_neg , MB_OK" + '\n' +
+                "invoke MessageBox, NULL, addr @resta_neg, addr @resta_neg , MB_OK" + '\n' +
                 "JMP L_final" + '\n' +
                 "L_recursion:" + '\n' +
-                "invoke MessageBox, NULL, addr @recursion, addr@recursion , MB_OK" + '\n' +
+                "invoke MessageBox, NULL, addr @recursion, addr @recursion , MB_OK" + '\n' +
                 "JMP L_final" + '\n' +
                 "L_final:" + '\n' +
-                "invoke MessageBox, NULL, addr @ejecucion_sin_error, addr@ejecucion_sin_error , MB_OK" + '\n' +
+                "invoke MessageBox, NULL, addr @ejecucion_sin_error, addr @ejecucion_sin_error , MB_OK" + '\n' +
                 "invoke ExitProcess, 0" + '\n' +
                 "END START";
     }

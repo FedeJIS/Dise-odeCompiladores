@@ -8,9 +8,9 @@ includelib \masm32\lib\kernel32.lib
 includelib \masm32\lib\user32.lib
 .DATA
 60.0 DD 60.0
-PROGRAM:c DD 0
-PROGRAM:b DD 0
-PROGRAM:a DD 0
+PROGRAM@c DD 0
+PROGRAM@b DD 0
+PROGRAM@a DD 0
 80.0 DD 80.0
 70.0 DD 70.0
 
@@ -21,29 +21,29 @@ PROGRAM:a DD 0
 
 START:
 MOV BX, 60.0
-MOV _PROGRAM:a, BX
+MOV _PROGRAM@a, BX
 MOV BX, 70.0
-MOV _PROGRAM:b, BX
+MOV _PROGRAM@b, BX
 MOV BX, 80.0
-MOV _PROGRAM:c, BX
-FLD PROGRAM:a
-FLD PROGRAM:b
-FMUL
-FSTP @aux2
-FLD @aux2
-FLD PROGRAM:c
-FMUL
-FSTP @aux3
-MOV BX, @aux3
-MOV _PROGRAM:a, BX
+MOV _PROGRAM@c, BX
+FLD PROGRAM@a
+FLD PROGRAM@b
+FDIV
+FSTP @aux0
+FLD @aux0
+FLD PROGRAM@c
+FDIV
+FSTP @aux1
+MOV BX, @aux1
+MOV _PROGRAM@a, BX
 JMP L_final
 L_resta_neg:
-invoke MessageBox, NULL, addr @resta_neg, addr@resta_neg , MB_OK
+invoke MessageBox, NULL, addr @resta_neg, addr @resta_neg , MB_OK
 JMP L_final
 L_recursion:
-invoke MessageBox, NULL, addr @recursion, addr@recursion , MB_OK
+invoke MessageBox, NULL, addr @recursion, addr @recursion , MB_OK
 JMP L_final
 L_final:
-invoke MessageBox, NULL, addr @ejecucion_sin_error, addr@ejecucion_sin_error , MB_OK
+invoke MessageBox, NULL, addr @ejecucion_sin_error, addr @ejecucion_sin_error , MB_OK
 invoke ExitProcess, 0
 END START
