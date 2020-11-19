@@ -7,11 +7,6 @@ include \masm32\include\user32.inc
 includelib \masm32\lib\kernel32.lib
 includelib \masm32\lib\user32.lib
 .DATA
-PROGRAM@c DD 0
-PROGRAM@b DD 0
-PROGRAM@a DD 0
-@aux1 DD 0
-@aux0 DD 0
 
 @resta_neg DB 'Error: Resultado de resta menor a cero.', 0
 @recursion DB 'Error: Recursiones en procedimientos no permitidas.', 0
@@ -19,22 +14,7 @@ PROGRAM@a DD 0
 .CODE
 
 START:
-MOV BX, 60.0
-MOV _PROGRAM@a, BX
-MOV BX, 70.0
-MOV _PROGRAM@b, BX
-MOV BX, 80.0
-MOV _PROGRAM@c, BX
-FLD PROGRAM@a
-FLD PROGRAM@b
-FMUL
-FSTP @aux0
-FLD @aux0
-FLD PROGRAM@c
-FMUL
-FSTP @aux1
-MOV BX, @aux1
-MOV _PROGRAM@a, BX
+OUT_CAD"CADENA"
 JMP L_final
 L_resta_neg:
 invoke MessageBox, NULL, addr @resta_neg, addr @resta_neg , MB_OK

@@ -80,6 +80,7 @@ public class GeneradorAssembler {
 
     public static List<String> generaAsm(Polaca polaca){
 
+        System.out.println(TablaNotificaciones.getErrores());
         if (TablaNotificaciones.hayErrores())
             throw new IllegalStateException("El codigo tiene errores, cortando generacion asm.");
         List<String> asm = new ArrayList<>();
@@ -133,10 +134,12 @@ public class GeneradorAssembler {
                     asm.addAll(genInstrSalto(paso,pilaOps.remove(pilaOps.size()-1),tipoComp));
                     break;
                 case "OUT_UINT":
-                    asm.add("OUT_UINT "+pilaOps.remove(pilaOps.size()-1));
+                    String op = pilaOps.remove(pilaOps.size()-1);
+                    asm.add("invoke printf, cfm$(\"%. %u\\n\"), "+getPrefijo(op)+op);
                     break;
                 case "OUT_DOU":
-                    asm.add("OUT_DOU"+pilaOps.remove(pilaOps.size()-1));
+                    op = pilaOps.remove(pilaOps.size()-1);
+                    asm.add("invoke printf, cfm$(\"%.20Lf\\n\"), "+getPrefijo(op)+op);
                     break;
                 case "OUT_CAD":
                     asm.add("OUT_CAD"+pilaOps.remove(pilaOps.size()-1));
@@ -219,21 +222,22 @@ public class GeneradorAssembler {
     }
 
     private static List<String> genInstrCompDouble(String op1, String op2){
-        System.out.println("Entra");
         List<String> asm = new ArrayList<>();
 
-        if (!esRegistro(op1) && tablaS.esCte(op1)){ //Si el op1 es un valor inmediato primero lo cargo en memoria.
-            asm.add("MOV @aux"+variableAux+", "+op1);
-            op1 = "@aux"+variableAux;
-            tablaS.agregarEntrada(Parser.ID,"@aux"+variableAux,"DOUBLE"); //Agreo vaux a TS.
-            variableAux++;
+        if (!esRegistro(op1) && tablaS.esCte(op1)){ //Si el op1 es un valor inmediato primero lo cargo desde memoria.
+            op1 = TablaSimbolos.formatDouble(op1);
+//            asm.add("MOV @aux"+variableAux+", "+op1);
+//            op1 = "@aux"+variableAux;
+//            tablaS.agregarEntrada(Parser.ID,"@aux"+variableAux,"DOUBLE"); //Agreo vaux a TS.
+//            variableAux++;
         }
 
-        if (!esRegistro(op2) && tablaS.esCte(op2)){ //Si el op2 es un valor inmediato primero lo cargo en memoria.
-            asm.add("MOV @aux"+variableAux+", "+op2);
-            op2 = "@aux"+variableAux;
-            tablaS.agregarEntrada(Parser.ID,"@aux"+variableAux,"DOUBLE"); //Agreo vaux a TS.
-            variableAux++;
+        if (!esRegistro(op2) && tablaS.esCte(op2)){ //Si el op2 es un valor inmediato primero lo cargo desde memoria.
+            op2 = TablaSimbolos.formatDouble(op2);
+//            asm.add("MOV @aux"+variableAux+", "+op2);
+//            op2 = "@aux"+variableAux;
+//            tablaS.agregarEntrada(Parser.ID,"@aux"+variableAux,"DOUBLE"); //Agreo vaux a TS.
+//            variableAux++;
         }
 
         asm.add("FLD "+op1); //Pongo op1 en la pila del coproc.
@@ -268,8 +272,10 @@ public class GeneradorAssembler {
         //Variable & Variable
         if (!esRegistro(dest) && !esRegistro(src) && tiposOperandosValidos(dest,false,src,false)) {
             if (tablaS.getTipo(dest).equals("DOUBLE")){
-                System.out.println("MOV _"+dest+", "+getPrefijo(src)+src);
-                asm.add("MOV _"+dest+", "+getPrefijo(src)+src);
+                if (tablaS.esCte(src)) src = TablaSimbolos.formatDouble(src);
+                else if (!src.startsWith("@")) src = "_"+src;
+
+                asm.add("MOV _"+dest+", "+src);
                 return asm;
             }
             int idReg = getRegistroLibre();
@@ -285,19 +291,11 @@ public class GeneradorAssembler {
     private static List<String> generaInstrAritmDouble(String operador, String op1, String op2){
         List<String> asm = new ArrayList<>();
 
-        if (!esRegistro(op1) && tablaS.esCte(op1)){ //Si el op1 es un valor inmediato primero lo cargo en memoria.
-            asm.add("MOV @aux"+variableAux+", "+op1);
-            op1 = "@aux"+variableAux;
-            tablaS.agregarEntrada(Parser.ID,"@aux"+variableAux,"DOUBLE"); //Agreo vaux a TS.
-            variableAux++;
-        }
+        //Si el op1 es un valor inmediato primero lo cargo desde memoria.
+        if (!esRegistro(op1) && tablaS.esCte(op1)) op1 = TablaSimbolos.formatDouble(op1);
 
-        if (!esRegistro(op2) && tablaS.esCte(op2)){ //Si el op2 es un valor inmediato primero lo cargo en memoria.
-            asm.add("MOV @aux"+variableAux+", "+op2);
-            op2 = "@aux"+variableAux;
-            tablaS.agregarEntrada(Parser.ID,"@aux"+variableAux,"DOUBLE"); //Agreo vaux a TS.
-            variableAux++;
-        }
+        //Si el op2 es un valor inmediato primero lo cargo desde memoria.
+        if (!esRegistro(op2) && tablaS.esCte(op2)) op2 = TablaSimbolos.formatDouble(op2);
 
         asm.add("FLD "+getPrefijo(op1)+op1); //Pongo op1 en la pila del coproc.
         asm.add("FLD "+getPrefijo(op2)+op2); //Pongo op2 en la pila del coproc.
@@ -627,9 +625,9 @@ public class GeneradorAssembler {
     //---OTRAS UTILIDADES---
 
     private static String getPrefijo(String op){
-        if (esRegistro(op) || tablaS.esCte(op) || op.charAt(0) == '@') return "";
+        if (tablaS.getUso(op).equals("Variable") && !op.startsWith("@")) return "_";
 
-        return "_";
+        return "";
     }
 
     private static boolean tiposOperandosValidos(String op1, boolean esRegOp1, String op2, boolean esRegOp2){

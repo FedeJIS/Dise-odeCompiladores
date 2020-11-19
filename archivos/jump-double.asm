@@ -7,8 +7,8 @@ include \masm32\include\user32.inc
 includelib \masm32\lib\kernel32.lib
 includelib \masm32\lib\user32.lib
 .DATA
-@aux2 DD 0
-@aux1 DD 0
+50p0 DD 50.0
+100p0 DD 100.0
 @aux0 DD 0
 
 @resta_neg DB 'Error: Resultado de resta menor a cero.', 0
@@ -17,16 +17,15 @@ includelib \masm32\lib\user32.lib
 .CODE
 
 START:
-MOV @aux0, 100.0
-MOV @aux1, 50.0
-FLD @aux0
-FLD @aux1
+FLD 100p0
+FLD 50p0
 FCOM
-FSTSW @aux2
-MOV AX, @aux2
+FSTSW @aux0
+MOV AX, @aux0
 SAHF
 JAE L7
-OUT_UINT 5
+invoke printf, cfm$("%. %u
+"), 5
 L7:
 JMP L_final
 L_resta_neg:

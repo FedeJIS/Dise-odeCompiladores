@@ -121,4 +121,8 @@ public class Celda {
     public boolean esCte() {
         return uso.equals(USO_CTE);
     }
+
+    public String getUso() {
+        return uso;
+    }
 }

@@ -199,9 +199,25 @@ public class TablaSimbolos {
                             .append(" DD ") //Tipo.
                             .append(0) //Valor.
                             .append('\n');
+            } else if (celda.esCte() && celda.getTipo().equals("DOUBLE")){
+                asmBuilder.append(formatDouble(lexema))
+                            .append(" DD ") //Tipo.
+                            .append(lexema) //Valor.
+                            .append('\n');
             }
         }
 
         return asmBuilder.toString();
+    }
+
+    public static String formatDouble(String doubleS){
+        String nDouble = doubleS.replace('-','n');
+        return nDouble.replace('.','p');
+    }
+
+    public String getUso(String lexema) {
+        Celda entrada = tablaSimb.get(lexema);
+        if (entrada == null) throw new IllegalStateException("Lexema no encontrado en la TS");
+        return entrada.getUso();
     }
 }

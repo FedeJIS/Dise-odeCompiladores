@@ -32,12 +32,12 @@ public class Compilador {
             System.out.println("###POLACA PROCEDIMIENTOS###\n"+polacaProcs.toString());
         }
 
-        try {
-            FileProcessor.escribirArchivo("archivos/double-div.asm",getAsm());
+//        try {
+            FileProcessor.escribirArchivo("archivos/out-cadena.asm",getAsm());
             System.out.println("Assembler generado exitosamente.");
-        } catch (IllegalStateException illStEx){
-            System.out.println("Assembler no generado.");
-        }
+//        } catch (IllegalStateException illStEx){
+//            System.out.println("Assembler no generado.");
+//        }
 
         if (imprimirOtros) finCompilacion();
     }
