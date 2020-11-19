@@ -7,9 +7,9 @@ include \masm32\include\user32.inc
 includelib \masm32\lib\kernel32.lib
 includelib \masm32\lib\user32.lib
 .DATA
-PROGRAM@c DD 0
-PROGRAM@b DD 0
-PROGRAM@a DD 0
+_PROGRAM@c DD 0
+_PROGRAM@b DD 0
+_PROGRAM@a DD 0
 @aux1 DD 0
 @aux0 DD 0
 
@@ -19,22 +19,18 @@ PROGRAM@a DD 0
 .CODE
 
 START:
-MOV BX, 60.0
-MOV _PROGRAM@a, BX
-MOV BX, 70.0
-MOV _PROGRAM@b, BX
-MOV BX, 80.0
-MOV _PROGRAM@c, BX
-FLD PROGRAM@a
-FLD PROGRAM@b
+MOV _PROGRAM@a, 60.0
+MOV _PROGRAM@b, 70.0
+MOV _PROGRAM@c, 80.0
+FLD _PROGRAM@a
+FLD _PROGRAM@b
 FDIV
 FSTP @aux0
 FLD @aux0
-FLD PROGRAM@c
+FLD _PROGRAM@c
 FDIV
 FSTP @aux1
-MOV BX, @aux1
-MOV _PROGRAM@a, BX
+MOV _PROGRAM@a, @aux1
 JMP L_final
 L_resta_neg:
 invoke MessageBox, NULL, addr @resta_neg, addr @resta_neg , MB_OK

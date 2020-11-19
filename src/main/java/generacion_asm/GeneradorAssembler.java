@@ -267,6 +267,11 @@ public class GeneradorAssembler {
 
         //Variable & Variable
         if (!esRegistro(dest) && !esRegistro(src) && tiposOperandosValidos(dest,false,src,false)) {
+            if (tablaS.getTipo(dest).equals("DOUBLE")){
+                System.out.println("MOV _"+dest+", "+getPrefijo(src)+src);
+                asm.add("MOV _"+dest+", "+getPrefijo(src)+src);
+                return asm;
+            }
             int idReg = getRegistroLibre();
             asm.add("MOV " + getNombreRegistro(idReg) + ", " + getPrefijo(src) + src);
             asm.add("MOV _" + dest + ", " + getNombreRegistro(idReg));
@@ -294,8 +299,8 @@ public class GeneradorAssembler {
             variableAux++;
         }
 
-        asm.add("FLD "+op1); //Pongo op1 en la pila del coproc.
-        asm.add("FLD "+op2); //Pongo op2 en la pila del coproc.
+        asm.add("FLD "+getPrefijo(op1)+op1); //Pongo op1 en la pila del coproc.
+        asm.add("FLD "+getPrefijo(op2)+op2); //Pongo op2 en la pila del coproc.
         asm.add(getInstrAritmDouble(operador)); //Hago op en la pila del coproc.
         asm.add("FSTP @aux"+variableAux); //Muevo resultado a mem.
         pilaOps.add("@aux"+variableAux); //Agrego operando a pila.
