@@ -22,18 +22,22 @@ _PROGRAM@a DD 0
 .CODE
 
 START:
-MOV _PROGRAM@a, 60p0
-MOV _PROGRAM@b, 70p0
-MOV _PROGRAM@c, 80p0
+FLD 60p0
+FSTP_PROGRAM@a
+FLD 70p0
+FSTP_PROGRAM@b
+FLD 80p0
+FSTP_PROGRAM@c
 FLD _PROGRAM@a
 FLD _PROGRAM@b
 FDIV
 FSTP @aux0
 FLD @aux0
-FLD _PROGRAM@c
+FLD 70p0
 FDIV
 FSTP @aux1
-MOV _PROGRAM@a, @aux1
+FLD @aux1
+FSTP_PROGRAM@a
 JMP L_final
 L_resta_neg:
 invoke MessageBox, NULL, addr @resta_neg, addr @resta_neg , MB_OK

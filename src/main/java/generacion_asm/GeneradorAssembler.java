@@ -222,21 +222,11 @@ public class GeneradorAssembler {
     private static List<String> genInstrCompDouble(String op1, String op2){
         List<String> asm = new ArrayList<>();
 
-        if (!esRegistro(op1) && tablaS.esCte(op1)){ //Si el op1 es un valor inmediato primero lo cargo desde memoria.
-            op1 = TablaSimbolos.formatDouble(op1);
-//            asm.add("MOV @aux"+variableAux+", "+op1);
-//            op1 = "@aux"+variableAux;
-//            tablaS.agregarEntrada(Parser.ID,"@aux"+variableAux,"DOUBLE"); //Agreo vaux a TS.
-//            variableAux++;
-        }
+        //Si el op1 es un valor inmediato primero lo cargo desde memoria.
+        if (!esRegistro(op1) && tablaS.esCte(op1)) op1 = TablaSimbolos.formatDouble(op1);
 
-        if (!esRegistro(op2) && tablaS.esCte(op2)){ //Si el op2 es un valor inmediato primero lo cargo desde memoria.
-            op2 = TablaSimbolos.formatDouble(op2);
-//            asm.add("MOV @aux"+variableAux+", "+op2);
-//            op2 = "@aux"+variableAux;
-//            tablaS.agregarEntrada(Parser.ID,"@aux"+variableAux,"DOUBLE"); //Agreo vaux a TS.
-//            variableAux++;
-        }
+        //Si el op2 es un valor inmediato primero lo cargo desde memoria.
+        if (!esRegistro(op2) && tablaS.esCte(op2)) op2 = TablaSimbolos.formatDouble(op2);
 
         asm.add("FLD "+op1); //Pongo op1 en la pila del coproc.
         asm.add("FLD "+op2); //Pongo op2 en la pila del coproc.
@@ -269,11 +259,13 @@ public class GeneradorAssembler {
 
         //Variable & Variable
         if (!esRegistro(dest) && !esRegistro(src) && tiposOperandosValidos(dest,false,src,false)) {
-            if (tablaS.getTipo(dest).equals("DOUBLE")){
+            if (tablaS.getTipo(dest).equals("DOUBLE")){ //Es un double
                 if (tablaS.esCte(src)) src = TablaSimbolos.formatDouble(src);
-                else if (!src.startsWith("@")) src = "_"+src;
+                else src = getPrefijo(src)+src;
 
-                asm.add("MOV _"+dest+", "+src);
+                asm.add("FLD "+src);
+                asm.add("FSTP"+getPrefijo(dest)+dest);
+
                 return asm;
             }
             int idReg = getRegistroLibre();
@@ -291,12 +283,14 @@ public class GeneradorAssembler {
 
         //Si el op1 es un valor inmediato primero lo cargo desde memoria.
         if (!esRegistro(op1) && tablaS.esCte(op1)) op1 = TablaSimbolos.formatDouble(op1);
+        else op1 = getPrefijo(op1)+op1;
 
         //Si el op2 es un valor inmediato primero lo cargo desde memoria.
         if (!esRegistro(op2) && tablaS.esCte(op2)) op2 = TablaSimbolos.formatDouble(op2);
+        else op2 = getPrefijo(op2)+op2;
 
-        asm.add("FLD "+getPrefijo(op1)+op1); //Pongo op1 en la pila del coproc.
-        asm.add("FLD "+getPrefijo(op2)+op2); //Pongo op2 en la pila del coproc.
+        asm.add("FLD "+op1); //Pongo op1 en la pila del coproc.
+        asm.add("FLD "+op2); //Pongo op2 en la pila del coproc.
         asm.add(getInstrAritmDouble(operador)); //Hago op en la pila del coproc.
         asm.add("FSTP @aux"+variableAux); //Muevo resultado a mem.
         pilaOps.add("@aux"+variableAux); //Agrego operando a pila.
@@ -622,8 +616,14 @@ public class GeneradorAssembler {
 
     //---OTRAS UTILIDADES---
 
+    private static String getPrefijoDouble(String op, boolean isCteDouble){
+        if (isCteDouble) return "_";
+        return getPrefijo(op);
+    }
+
     private static String getPrefijo(String op){
-        if (tablaS.getUso(op).equals("Variable") && !op.startsWith("@")) return "_";
+        if ((tablaS.getUso(op).equals("Variable") || tablaS.getUso(op).equals("CTE"))
+                && !op.startsWith("@")) return "_";
 
         return "";
     }
