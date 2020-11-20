@@ -196,11 +196,8 @@ public class GeneradorAssembler {
         asm.add("FLD " + op2); //Pongo op2 en la pila del coproc.
         asm.add("FCOM"); //Comparacion.
 
-        asm.add("FSTSW @aux" + variableAux); //Almacena el resultado en memoria.
         asm.addAll(liberaRegistro(AX));
-        asm.add("MOV AX, @aux" + variableAux); //Muevo a AX el resultado de la comparacion.
-        tablaS.agregarEntrada(Parser.ID, "@aux" + variableAux, "DOUBLE"); //Agreo vaux a TS.
-        variableAux++;
+        asm.add("FSTSW AX"); //Almacena el resultado en memoria.
 
         asm.add("SAHF"); //Almacena en los ocho bits menos significativos del registro de indicadores el valor del registro AH.
 
