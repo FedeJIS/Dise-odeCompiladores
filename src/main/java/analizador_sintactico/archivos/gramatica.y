@@ -96,9 +96,12 @@ param_comun : tipo_id ID {
 		    ;
 
 ni_proc	: NI '=' CTE_UINT {
-                            pilaMaxInvocProc.add(Integer.parseInt($3.sval));
-                            tablaS.setMaxInvoc(nombreProc, maxInvocProc);
-                            }
+                          int maxInvocProc = Integer.parseInt(val_peek(0).sval);
+                          if (maxInvocProc < 1 || maxInvocProc > 4)
+                            TablaNotificaciones.agregarError(lineaNI,
+                                    "El numero de invocaciones de un procedimiento debe estar en el rango [1,4].");
+                          else tablaS.setMaxInvoc(pilaNombreProc.get(pilaNombreProc.size()-1), maxInvocProc);
+                          }
         | NI '=' {yyerror("Falta el numero de invocaciones del procedimiento.");}
         | '=' CTE_UINT {yyerror("Falta la palabra clave 'NI' en el encabezado del procedimiento.");}
         | NI CTE_UINT {yyerror("Formato de declaracion de NI invalido. El formato correcto es 'NI = CTE_UINT'.");}
@@ -225,15 +228,34 @@ rama_else	: ELSE bloque_estruct_ctrl {puntoControlFinCondicional();}
             | ELSE {yyerror("Falta el bloque de sentencias ejecutables de la rama ELSE.");}
 			;
 			
-print	: OUT '(' imprimible ')' {agregarPasosRepr($3.sval,tipoImpresion);}
+print	: OUT '(' imprimible ')' {agregarPasosRepr(tipoImpresion);}
         | OUT '(' imprimible {yyerror("Falta parentesis de cierre de la sentencia OUT.");}
         | OUT '(' error ')' {yyerror("El contenido de la sentencia OUT no es valido.");}
 		;
 		
-imprimible	: CADENA {tipoImpresion = "OUT_CAD";}
-			| CTE_UINT {tipoImpresion = "OUT_UINT";}
-			| CTE_DOUBLE {tipoImpresion = "OUT_DOU";}
-			| ID {if (isIdDeclarado($1.sval)) tipoImpresion = "OUT_"+tablaS.getTipo(getAmbitoId($1.sval)+":"+$1.sval);}
+imprimible	: CADENA {
+                    tipoImpresion = "OUT_CAD";
+                    if (pilaAmbitos.inAmbitoGlobal()) polacaProgram.agregarPasos($1.sval);
+                    else polacaProcedimientos.agregarPasos(pilaAmbitos.getAmbitosConcatenados(),$1.sval);
+                    }
+			| CTE_UINT {
+                    tipoImpresion = "OUT_UINT";
+                    if (pilaAmbitos.inAmbitoGlobal()) polacaProgram.agregarPasos($1.sval);
+                    else polacaProcedimientos.agregarPasos(pilaAmbitos.getAmbitosConcatenados(),$1.sval);
+                    }
+
+			| CTE_DOUBLE {
+                        tipoImpresion = "OUT_DOU";
+                        if (pilaAmbitos.inAmbitoGlobal()) polacaProgram.agregarPasos($1.sval);
+                        else polacaProcedimientos.agregarPasos(pilaAmbitos.getAmbitosConcatenados(),$1.sval);
+                        }
+			| ID {
+                  String nLexema = getAmbitoId(val_peek(0).sval) + "@" + val_peek(0).sval;
+                  tipoImpresion = "OUT_" + tablaS.getTipo(nLexema);
+
+                  if (pilaAmbitos.inAmbitoGlobal()) polacaProgram.agregarPasos(nLexema);
+                  else polacaProcedimientos.agregarPasos(pilaAmbitos.getAmbitosConcatenados(),nLexema);
+			    }
 			;
 
 %%

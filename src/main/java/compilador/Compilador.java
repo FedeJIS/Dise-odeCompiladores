@@ -33,7 +33,7 @@ public class Compilador {
         }
 
 //        try {
-            FileProcessor.escribirArchivo("archivos/out-cadena.asm",getAsm());
+            FileProcessor.escribirArchivo("archivos/out-double.asm",getAsm());
             System.out.println("Assembler generado exitosamente.");
 //        } catch (IllegalStateException illStEx){
 //            System.out.println("Assembler no generado.");

@@ -79,8 +79,6 @@ public class GeneradorAssembler {
     private static String procAnterior = "";
 
     public static List<String> generaAsm(Polaca polaca){
-
-        System.out.println(TablaNotificaciones.getErrores());
         if (TablaNotificaciones.hayErrores())
             throw new IllegalStateException("El codigo tiene errores, cortando generacion asm.");
         List<String> asm = new ArrayList<>();
@@ -135,11 +133,11 @@ public class GeneradorAssembler {
                     break;
                 case "OUT_UINT":
                     String op = pilaOps.remove(pilaOps.size()-1);
-                    asm.add("invoke printf, cfm$(\"%. %u\\n\"), "+getPrefijo(op)+op);
+                    asm.add("invoke MessageBox, NULL, addr "+getPrefijo(op)+op+", addr "+getPrefijo(op)+op+", MB_OK" + '\n');
                     break;
-                case "OUT_DOU":
+                case "OUT_DOUBLE":
                     op = pilaOps.remove(pilaOps.size()-1);
-                    asm.add("invoke printf, cfm$(\"%.20Lf\\n\"), "+getPrefijo(op)+op);
+                    asm.add("invoke MessageBox, NULL, addr "+getPrefijo(op)+op+", addr "+getPrefijo(op)+op+", MB_OK" + '\n');
                     break;
                 case "OUT_CAD":
                     asm.add("OUT_CAD"+pilaOps.remove(pilaOps.size()-1));
