@@ -33,8 +33,8 @@ public class Compilador {
         }
 
 //        try {
-            FileProcessor.escribirArchivo("archivos/double-resta.asm",getAsm());
-            System.out.println("Assembler generado exitosamente.");
+//            FileProcessor.escribirArchivo("archivos/double-div.asm",getAsm());
+//            System.out.println("Assembler generado exitosamente.");
 //        } catch (IllegalStateException illStEx){
 //            System.out.println("Assembler no generado.");
 //        }
@@ -47,12 +47,12 @@ public class Compilador {
         compilar(FileProcessor.getLineasFuente(pathSrc),false,false);
 
         //Generacion asm
-//        try {
-//            FileProcessor.escribirArchivo(basePathDest+"_asm.asm",getAsm());
-//            System.out.println("Assembler generado exitosamente.");
-//        } catch (IllegalStateException illStEx){
-//            System.out.println("Assembler no generado.");
-//        }
+        try {
+            FileProcessor.escribirArchivo(basePathDest+"_asm.asm",getAsm());
+            System.out.println("Assembler generado exitosamente.");
+        } catch (IllegalStateException illStEx){
+            System.out.println("Assembler no generado.");
+        }
 
         //Guardado de resultados
         String resultados =
@@ -64,12 +64,12 @@ public class Compilador {
                 "--------------------------------------------\n" +
                 "###POLACA PROCEDIMENTOS###\n" + polacaProcs.toString()
                 ;
-//        FileProcessor.escribirArchivo(basePathDest+"_salidas.txt",resultados);
+        FileProcessor.escribirArchivo(basePathDest+"_salidas.txt",resultados);
 
 
 
         //Clear de estructuras estaticas
-//        tablaS.clear();
+        tablaS.clear();
     }
 
     private static String getAsm() {

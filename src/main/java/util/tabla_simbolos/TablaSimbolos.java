@@ -200,10 +200,10 @@ public class TablaSimbolos {
                             .append(0) //Valor.
                             .append('\n');
             } else if (celda.esCte() && celda.getTipo().equals("DOUBLE")){
-                asmBuilder.append(formatDouble(lexema))
-                            .append(" DD ") //Tipo.
-                            .append(lexema) //Valor.
-                            .append('\n');
+                asmBuilder.append('_').append(formatDouble(lexema))
+                                        .append(" DD ") //Tipo.
+                                        .append(lexema) //Valor.
+                                        .append('\n');
             }
         }
 

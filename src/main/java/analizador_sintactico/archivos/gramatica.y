@@ -259,7 +259,6 @@ imprimible	: CADENA {
 			;
 
 %%
-
   private final AnalizadorLexico aLexico;
   private final TablaSimbolos tablaS;
   private final PilaAmbitos pilaAmbitos;
@@ -331,18 +330,17 @@ imprimible	: CADENA {
     if (!ambito.isEmpty() //La TS contiene el lexema recibido.
             && tablaS.isEntradaDeclarada(ambito + "@" + lexema)) {//Tiene el flag de declaracion activado.
       TablaNotificaciones.agregarError(aLexico.getLineaActual(), "El identificador '" + lexema + "' ya se encuentra declarado.");
-      pilaNombreProc.remove(pilaNombreProc.size()-1);
-    }
-    else {
-    tablaS.setTipoEntrada(lexema, tipo);
-    tablaS.setUsoEntrada(lexema, uso);
-    tablaS.setDeclaracionEntrada(lexema, true);
-    tablaS.setAmbitoEntrada(lexema, pilaAmbitos.getAmbitosConcatenados()); //Actualizo el lexema en la TS.
+      pilaNombreProc.remove(pilaNombreProc.size() - 1);
+    } else {
+      tablaS.setTipoEntrada(lexema, tipo);
+      tablaS.setUsoEntrada(lexema, uso);
+      tablaS.setDeclaracionEntrada(lexema, true);
+      tablaS.setAmbitoEntrada(lexema, pilaAmbitos.getAmbitosConcatenados()); //Actualizo el lexema en la TS.
 
-    if (uso.equals("ParamCVR") || uso.equals("ParamCV"))
-      agregaParamDecl(pilaNombreProc.get(pilaNombreProc.size()-1),ambito+"@"+lexema);
+      if (uso.equals("ParamCVR") || uso.equals("ParamCV"))
+        agregaParamDecl(pilaNombreProc.get(pilaNombreProc.size() - 1), ambito + "@" + lexema);
 
-    nombreIdValido = true;
+      nombreIdValido = true;
     }
   }
 
@@ -361,10 +359,10 @@ imprimible	: CADENA {
     pilaNombreProc.add(pilaAmbitos.getAmbitosConcatenados() + "@" + lexema);
     mapaListaParametros.put(pilaAmbitos.getAmbitosConcatenados() + "@" + lexema, new ArrayList<>());
     lineaNI = aLexico.getLineaActual();
-    mapaListaParametros.put(pilaNombreProc.get(pilaNombreProc.size()-1),new ArrayList<>());
+    mapaListaParametros.put(pilaNombreProc.get(pilaNombreProc.size() - 1), new ArrayList<>());
   }
 
-  private void agregaParamDecl(String nombreProc, String nombreParam){
+  private void agregaParamDecl(String nombreProc, String nombreParam) {
     List<String> paramsProc = mapaListaParametros.get(nombreProc);
     paramsProc.add(nombreParam);
   }
@@ -372,13 +370,13 @@ imprimible	: CADENA {
   private void declaraProc() {
     //Este metodo se invoca al cierre de la declaracion de un procedimiento.
     //Por lo tanto, saco el tope de la pila de nombres y de max invocs.
-    String nombreProc = pilaNombreProc.remove(pilaNombreProc.size()-1);
+    String nombreProc = pilaNombreProc.remove(pilaNombreProc.size() - 1);
 
     List<String> listaParams = mapaListaParametros.remove(nombreProc);
     int nParams = listaParams.size();
     if (nParams > 3) nParams = 3; //Se queda con los primeros 3 params y descarta el resto.
     tablaS.setParamsProc(nombreProc, listaParams.subList(0, nParams)); //A esta altura ya se verificaron los ids correspondientes a cada
-                                                                      // parametro. Solo resta asociarlos con el lexema del proc.
+    // parametro. Solo resta asociarlos con el lexema del proc.
     listaParams.clear();
     nombreIdValido = true; //Reinicia el valor.
   }
@@ -393,7 +391,6 @@ imprimible	: CADENA {
   }
 
   private boolean tipoParamsValidos(String lexema, int nParamsDecl) {
-    System.out.println(lexema);
     boolean invocValida = true;
     for (int i = 0; i < nParamsDecl; i++) {
       String tipoParamInvoc = tablaS.getTipo(listaParams.get(i));
@@ -446,8 +443,8 @@ imprimible	: CADENA {
       agregarPasosRepr(paramInvoc, paramDecl, "="); //paramDecl = paramInvoc.
     }
 
-    agregarPasosRepr(lexemaProc,lexemaProc);
-    agregarPasosRepr(lexemaProc,Polaca.PASO_INVOC);
+    agregarPasosRepr(lexemaProc, lexemaProc);
+    agregarPasosRepr(lexemaProc, Polaca.PASO_INVOC);
 
     for (int i = 0; i < nParamsDecl; i++) { //Pasa el valor de los param formales a los reales (En caso de param CVR).
       paramDecl = tablaS.getParam(lexemaProc, i);
@@ -556,11 +553,11 @@ imprimible	: CADENA {
     else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(), Polaca.PC_UNTIL);
   }
 
-  public Polaca getPolacaProgram(){
+  public Polaca getPolacaProgram() {
     return polacaProgram;
   }
 
-  public MultiPolaca getPolacaProcs(){
+  public MultiPolaca getPolacaProcs() {
     return polacaProcedimientos;
   }
 

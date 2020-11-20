@@ -8,10 +8,13 @@ public class resta {
                 "DOUBLE a, b, c;\n" +
                 "a = 6.0d1;\n" +
                 "b = 7.0d1;\n" +
-                "c = 8.0d1;\n" +
-                "a = a - b - c;";
+                "c = a - b;\n" +
+                "IF (c == a - b) THEN \n" +
+                    "OUT(\"BIEN\");\n" +
+                "ELSE OUT(\"MAL\");\n" +
+                "END_IF;";
 
-        Compilador.compilar(lineasCFuente,true,false);
+        Compilador.compilar(lineasCFuente,false,false);
 
     }
 }

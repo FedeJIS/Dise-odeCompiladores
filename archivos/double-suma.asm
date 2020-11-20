@@ -7,14 +7,14 @@ include \masm32\include\user32.inc
 includelib \masm32\lib\kernel32.lib
 includelib \masm32\lib\user32.lib
 .DATA
-60p0 DD 60.0
+_60p0 DD 60.0
 _PROGRAM@c DD 0
 _PROGRAM@b DD 0
 _PROGRAM@a DD 0
+@aux2 DD 0
 @aux1 DD 0
 @aux0 DD 0
-80p0 DD 80.0
-70p0 DD 70.0
+_70p0 DD 70.0
 
 @resta_neg DB 'Error: Resultado de resta menor a cero.', 0
 @recursion DB 'Error: Recursiones en procedimientos no permitidas.', 0
@@ -22,22 +22,34 @@ _PROGRAM@a DD 0
 .CODE
 
 START:
-FLD 60p0
-FSTP_PROGRAM@a
-FLD 70p0
-FSTP_PROGRAM@b
-FLD 80p0
-FSTP_PROGRAM@c
+FLD _60p0
+FSTP _PROGRAM@a
+FLD _70p0
+FSTP _PROGRAM@b
 FLD _PROGRAM@a
 FLD _PROGRAM@b
 FADD
 FSTP @aux0
 FLD @aux0
-FLD _PROGRAM@c
+FSTP _PROGRAM@c
+FLD _PROGRAM@a
+FLD _PROGRAM@b
 FADD
 FSTP @aux1
 FLD @aux1
-FSTP_PROGRAM@a
+FLD _PROGRAM@c
+FCOM
+FSTSW @aux2
+MOV AX, @aux2
+SAHF
+JNE L22
+invoke MessageBox, NULL, addr "BIEN", addr "BIEN", MB_OK
+
+JMP L25
+L22:
+invoke MessageBox, NULL, addr "MAL", addr "MAL", MB_OK
+
+L25:
 JMP L_final
 L_resta_neg:
 invoke MessageBox, NULL, addr @resta_neg, addr @resta_neg , MB_OK

@@ -29,9 +29,9 @@ import util.tabla_simbolos.Celda;
 import util.tabla_simbolos.TablaSimbolos;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 //#line 33 "Parser.java"
 
 
@@ -51,13 +51,13 @@ int yychar;             //the current working character
 //###############################################################
 void debug(String msg)
 {
-  if (yydebug)
-    System.out.println(msg);
+//  if (yydebug)
+//    System.out.println(msg);
 }
 
 //########## STATE STACK ##########
 final static int YYSTACKSIZE = 500;  //maximum stack size
-int statestk[] = new int[YYSTACKSIZE]; //state stack
+int[] statestk = new int[YYSTACKSIZE]; //state stack
 int stateptr;
 int stateptrmax;                     //highest index of stackptr
 int statemax;                        //state when highest index reached
@@ -120,7 +120,7 @@ int i;
 String   yytext;//user variable to return contextual strings
 ParserVal yyval; //used to return semantic vals from action routines
 ParserVal yylval;//the 'lval' (result) I got from yylex()
-ParserVal valstk[];
+ParserVal[] valstk;
 int valptr;
 //###############################################################
 // methods: value stack push,pop,drop,peek.
@@ -191,7 +191,7 @@ public final static short NI=274;
 public final static short CTE_UINT=275;
 public final static short CTE_DOUBLE=276;
 public final static short YYERRCODE=256;
-final static short yylhs[] = {                           -1,
+final static short[] yylhs = {                           -1,
     0,    2,    2,    1,    1,    3,    3,    4,    4,    5,
     5,   11,   11,    7,    7,    8,    8,    8,    8,   12,
    12,   12,   12,   14,   14,   13,   13,   15,   15,   15,
@@ -204,7 +204,7 @@ final static short yylhs[] = {                           -1,
    20,   33,   33,   34,   34,   36,   36,   35,   35,   21,
    21,   21,   37,   37,   37,   37,
 };
-final static short yylen[] = {                            2,
+final static short[] yylen = {                            2,
     1,    1,    1,    2,    3,    1,    1,    0,    1,    4,
     2,    1,    3,    2,    1,    3,    2,    2,    1,    1,
     3,    5,    7,    0,    1,    1,    1,    3,    2,    2,
@@ -217,7 +217,7 @@ final static short yylen[] = {                            2,
     3,    2,    1,    2,    1,    2,    1,    2,    1,    4,
     3,    4,    1,    1,    1,    1,
 };
-final static short yydefred[] = {                         0,
+final static short[] yydefred = {                         0,
     0,    0,    2,    3,    0,   66,    0,    0,    0,    1,
     0,    0,    6,    7,    0,   40,   41,   42,   43,   44,
     0,    0,    0,    0,    0,    0,   92,    0,   14,    0,
@@ -234,13 +234,13 @@ final static short yydefred[] = {                         0,
    82,    0,   81,   28,    0,   33,   39,    0,   76,   74,
     0,   79,    0,   38,    0,    0,    0,    0,   50,   23,
 };
-final static short yydgoto[] = {                          9,
+final static short[] yydgoto = {                          9,
    10,   11,   12,   33,   13,   14,   15,   35,   83,  119,
    31,   76,   77,  102,   78,   79,   16,   17,   18,   19,
    20,   53,   48,   49,   50,   21,   39,   91,   40,   87,
    27,   64,   22,   42,   94,   43,   70,
 };
-final static short yysindex[] = {                      -151,
+final static short[] yysindex = {                      -151,
   -49,  -11,    0,    0,   -2,    0,   13, -235,    0,    0,
  -202,    9,    0,    0,   19,    0,    0,    0,    0,    0,
   -98, -178,  -26,  -37,  152,  307,    0, -185,    0,   50,
@@ -257,7 +257,7 @@ final static short yysindex[] = {                      -151,
     0,   99,    0,    0,   69,    0,    0,   60,    0,    0,
   -73,    0, -228,    0,   69,   69,  -70, -228,    0,    0,
 };
-final static short yyrindex[] = {                         0,
+final static short[] yyrindex = {                         0,
     0,   75,    0,    0,  -78,    0,    0,  150,    0,    0,
     0,  191,    0,    0,    0,    0,    0,    0,    0,    0,
   -81,    0,    0,    0,    0,    0,    0,    0,    0,   92,
@@ -274,14 +274,14 @@ final static short yyrindex[] = {                         0,
     0,   58,    0,    0,  224,    0,    0,    0,    0,    0,
     0,    0,    0,    0,  -15,  278,    0,    0,    0,    0,
 };
-final static short yygindex[] = {                         0,
+final static short[] yygindex = {                         0,
   -16,  -19,    0,   11,   15,   57,    0,    0,    0,    0,
   123,   47,  -96,   -7,    0,    0,    0,    0,    0,    0,
     0,   55,    5,   78,  -23,    0,    0,    0,  -28,   59,
   113,  143,    0,    0,    0,    0,    0,
 };
 final static int YYTABLESIZE=583;
-static short yytable[];
+static short[] yytable;
 static { yytable();}
 static void yytable(){
 yytable = new short[]{                         32,
@@ -346,7 +346,7 @@ yytable = new short[]{                         32,
     0,   45,   46,
 };
 }
-static short yycheck[];
+static short[] yycheck;
 static { yycheck(); }
 static void yycheck() {
 yycheck = new short[] {                         41,
@@ -413,7 +413,7 @@ yycheck = new short[] {                         41,
 }
 final static short YYFINAL=9;
 final static short YYMAXTOKEN=276;
-final static String yyname[] = {
+final static String[] yyname = {
 "end-of-file",null,null,null,null,null,null,null,null,null,null,null,null,null,
 null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,
 null,null,null,null,null,null,null,null,null,null,"'('","')'","'*'","'+'","','",
@@ -434,7 +434,7 @@ null,null,null,null,null,null,null,"ID","COMP_MENOR_IGUAL","COMP_MAYOR_IGUAL",
 "COMP_DISTINTO","COMP_IGUAL","UINT","DOUBLE","CADENA","IF","THEN","ELSE",
 "END_IF","LOOP","UNTIL","OUT","PROC","VAR","NI","CTE_UINT","CTE_DOUBLE",
 };
-final static String yyrule[] = {
+final static String[] yyrule = {
 "$accept : programa",
 "programa : bloque_sentencias",
 "tipo_id : UINT",
@@ -618,18 +618,17 @@ final static String yyrule[] = {
     if (!ambito.isEmpty() //La TS contiene el lexema recibido.
             && tablaS.isEntradaDeclarada(ambito + "@" + lexema)) {//Tiene el flag de declaracion activado.
       TablaNotificaciones.agregarError(aLexico.getLineaActual(), "El identificador '" + lexema + "' ya se encuentra declarado.");
-      pilaNombreProc.remove(pilaNombreProc.size()-1);
-    }
-    else {
-    tablaS.setTipoEntrada(lexema, tipo);
-    tablaS.setUsoEntrada(lexema, uso);
-    tablaS.setDeclaracionEntrada(lexema, true);
-    tablaS.setAmbitoEntrada(lexema, pilaAmbitos.getAmbitosConcatenados()); //Actualizo el lexema en la TS.
+      pilaNombreProc.remove(pilaNombreProc.size() - 1);
+    } else {
+      tablaS.setTipoEntrada(lexema, tipo);
+      tablaS.setUsoEntrada(lexema, uso);
+      tablaS.setDeclaracionEntrada(lexema, true);
+      tablaS.setAmbitoEntrada(lexema, pilaAmbitos.getAmbitosConcatenados()); //Actualizo el lexema en la TS.
 
-    if (uso.equals("ParamCVR") || uso.equals("ParamCV"))
-      agregaParamDecl(pilaNombreProc.get(pilaNombreProc.size()-1),ambito+"@"+lexema);
+      if (uso.equals("ParamCVR") || uso.equals("ParamCV"))
+        agregaParamDecl(pilaNombreProc.get(pilaNombreProc.size() - 1), ambito + "@" + lexema);
 
-    nombreIdValido = true;
+      nombreIdValido = true;
     }
   }
 
@@ -648,10 +647,10 @@ final static String yyrule[] = {
     pilaNombreProc.add(pilaAmbitos.getAmbitosConcatenados() + "@" + lexema);
     mapaListaParametros.put(pilaAmbitos.getAmbitosConcatenados() + "@" + lexema, new ArrayList<>());
     lineaNI = aLexico.getLineaActual();
-    mapaListaParametros.put(pilaNombreProc.get(pilaNombreProc.size()-1),new ArrayList<>());
+    mapaListaParametros.put(pilaNombreProc.get(pilaNombreProc.size() - 1), new ArrayList<>());
   }
 
-  private void agregaParamDecl(String nombreProc, String nombreParam){
+  private void agregaParamDecl(String nombreProc, String nombreParam) {
     List<String> paramsProc = mapaListaParametros.get(nombreProc);
     paramsProc.add(nombreParam);
   }
@@ -659,13 +658,13 @@ final static String yyrule[] = {
   private void declaraProc() {
     //Este metodo se invoca al cierre de la declaracion de un procedimiento.
     //Por lo tanto, saco el tope de la pila de nombres y de max invocs.
-    String nombreProc = pilaNombreProc.remove(pilaNombreProc.size()-1);
+    String nombreProc = pilaNombreProc.remove(pilaNombreProc.size() - 1);
 
     List<String> listaParams = mapaListaParametros.remove(nombreProc);
     int nParams = listaParams.size();
     if (nParams > 3) nParams = 3; //Se queda con los primeros 3 params y descarta el resto.
     tablaS.setParamsProc(nombreProc, listaParams.subList(0, nParams)); //A esta altura ya se verificaron los ids correspondientes a cada
-                                                                      // parametro. Solo resta asociarlos con el lexema del proc.
+    // parametro. Solo resta asociarlos con el lexema del proc.
     listaParams.clear();
     nombreIdValido = true; //Reinicia el valor.
   }
@@ -732,8 +731,8 @@ final static String yyrule[] = {
       agregarPasosRepr(paramInvoc, paramDecl, "="); //paramDecl = paramInvoc.
     }
 
-    agregarPasosRepr(lexemaProc,lexemaProc);
-    agregarPasosRepr(lexemaProc,Polaca.PASO_INVOC);
+    agregarPasosRepr(lexemaProc, lexemaProc);
+    agregarPasosRepr(lexemaProc, Polaca.PASO_INVOC);
 
     for (int i = 0; i < nParamsDecl; i++) { //Pasa el valor de los param formales a los reales (En caso de param CVR).
       paramDecl = tablaS.getParam(lexemaProc, i);
@@ -842,16 +841,16 @@ final static String yyrule[] = {
     else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitosConcatenados(), Polaca.PC_UNTIL);
   }
 
-  public Polaca getPolacaProgram(){
+  public Polaca getPolacaProgram() {
     return polacaProgram;
   }
 
-  public MultiPolaca getPolacaProcs(){
+  public MultiPolaca getPolacaProcs() {
     return polacaProcedimientos;
   }
 
 
-//#line 784 "Parser.java"
+  //#line 784 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
