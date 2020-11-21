@@ -213,7 +213,7 @@ public class TablaSimbolos {
             else if (lexema.startsWith("\"") && lexema.endsWith("\"")){
                 asmBuilder.append("_CAD_")
                         .append(lexema, 1, lexema.length() - 1)
-                        .append(" DW ")
+                        .append(" DB ")
                         .append("'").append(lexema, 1, lexema.length() - 1).append("'") //Cadena.
                         .append(", 0")
                         .append('\n');

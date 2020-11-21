@@ -345,7 +345,7 @@ public class GeneradorAssembler {
 
         //Reg & Variable. Reg destino tiene que ser AX.
         if (esRegistro(dest) && !esRegistro(src) && tiposOperandosValidos(dest, true, src, false))
-            if (dest.equals("AX")) asm.add("MUL AX, " + getPrefijo(src) + src);
+            if (dest.equals("AX")) asm.add("MUL " + getPrefijo(src) + src);
             else { //Tengo que mover el dest a AX.
                 asm.addAll(liberaRegistro(AX));
                 asm.add("MOV AX, " + dest);
@@ -356,7 +356,7 @@ public class GeneradorAssembler {
 
         //Reg & Reg. Reg destino tiene que ser AX.
         if (esRegistro(dest) && esRegistro(src) && tiposOperandosValidos(dest, true, src, true))
-            if (dest.equals("AX")) asm.add("MUL AX, " + src);
+            if (dest.equals("AX")) asm.add("MUL " + src);
             else {
                 asm.addAll(liberaRegistro(AX));
                 asm.add("MOV AX, " + dest);
