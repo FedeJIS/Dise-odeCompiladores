@@ -198,14 +198,14 @@ public class TablaSimbolos {
             else if ((lexema.startsWith("PROGRAM") || lexema.startsWith("@"))
                     && celda.getTipo().equals("DOUBLE")){
                 asmBuilder.append(lexema) //Nombre variable.
-                            .append(" DD ") //Tipo.
+                            .append(" DQ ") //Tipo.
                             .append(0) //Valor.
                             .append('\n');
             }
             //Constante double
             else if (celda.esCte() && celda.getTipo().equals("DOUBLE")){
                 asmBuilder.append('_').append(formatDouble(lexema))
-                                        .append(" DD ") //Tipo.
+                                        .append(" DQ ") //Tipo.
                                         .append(lexema) //Valor.
                                         .append('\n');
             }

@@ -8,7 +8,8 @@ public class Var_Var {
                 "UINT a, b, c;\n" +
                 "a = 5_ui;\n" +
                 "b = 6_ui;\n" +
-                "c = a * b;"+
+                "c = a * b;\n" +
+                "OUT(c);\n" +
                 "IF (c == a * b) THEN \n" +
                     "OUT(\"BIEN\");\n" +
                 "ELSE OUT(\"MAL\");\n" +

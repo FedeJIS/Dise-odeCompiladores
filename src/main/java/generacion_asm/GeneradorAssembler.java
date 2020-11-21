@@ -94,18 +94,18 @@ public class GeneradorAssembler {
                 case "BF":
                     asm.addAll(genInstrSalto(paso, pilaOps.remove(pilaOps.size() - 1), tipoComp));
                     break;
-//                case "OUT_UINT":
-//                    String op = pilaOps.remove(pilaOps.size()-1);
-//                    asm.add("invoke MessageBox, NULL, addr "+getPrefijo(op)+op+", addr "+getPrefijo(op)+op+", MB_OK" + '\n');
-//                    break;
-//                case "OUT_DOUBLE":
-//                    op = pilaOps.remove(pilaOps.size()-1);
-//                    asm.add("invoke MessageBox, NULL, addr "+getPrefijo(op)+op+", addr "+getPrefijo(op)+op+", MB_OK" + '\n');
-//                    break;
+                case "OUT_UINT":
+                    String op = pilaOps.remove(pilaOps.size()-1);
+                    asm.add("invoke printf, cfm$(\"%i\\n\"), "+getPrefijo(op)+op+'\n');
+                    break;
+                case "OUT_DOUBLE":
+                    op = pilaOps.remove(pilaOps.size()-1);
+                    asm.add("invoke printf, cfm$(\"%f\\n\"), "+getPrefijo(op)+op+'\n');
+                    break;
                 case "OUT_CAD":
-                    String op = pilaOps.remove(pilaOps.size() - 1);
+                    op = pilaOps.remove(pilaOps.size() - 1);
                     op = "_CAD_"+op.substring(1, op.length()-1);
-                    asm.add("invoke MessageBox, NULL, addr " + op + ", addr " + op + ", MB_OK" + '\n');
+                    asm.add("invoke printf, cfm$(\"%s\\n\"),OFFSET "+op + '\n');
                     break;
 
                 default:

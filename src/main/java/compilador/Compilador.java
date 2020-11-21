@@ -82,6 +82,9 @@ public class Compilador {
                 "include \\masm32\\include\\user32.inc\n" +
                 "includelib \\masm32\\lib\\kernel32.lib\n" +
                 "includelib \\masm32\\lib\\user32.lib\n" +
+                "include \\masm32\\include\\masm32rt.inc\n" +
+                "dll_dllcrt0 PROTO C\n" +
+                "printf PROTO C :VARARG\n" +
                 ".DATA\n" +
                 tablaS.toAsm() + "\n" +
                 "@resta_neg DB 'Error: Resultado de resta menor a cero.', 0" + "\n" +

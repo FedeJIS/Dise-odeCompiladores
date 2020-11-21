@@ -11,14 +11,10 @@ dll_dllcrt0 PROTO C
 printf PROTO C :VARARG
 .DATA
 _CAD_MAL DB 'MAL', 0
-_60p0 DQ 60.0
-_PROGRAM@c DQ 0
-_PROGRAM@b DQ 0
-_PROGRAM@a DQ 0
-@aux1 DQ 0
-@aux0 DQ 0
+_PROGRAM@c DW 0
+_PROGRAM@b DW 0
+_PROGRAM@a DW 0
 _CAD_BIEN DB 'BIEN', 0
-_70p0 DQ 70.0
 
 @resta_neg DB 'Error: Resultado de resta menor a cero.', 0
 @recursion DB 'Error: Recursiones en procedimientos no permitidas.', 0
@@ -26,27 +22,19 @@ _70p0 DQ 70.0
 .CODE
 
 START:
-FLD _60p0
-FSTP _PROGRAM@a
-FLD _70p0
-FSTP _PROGRAM@b
-FLD _PROGRAM@a
-FLD _PROGRAM@b
-FADD
-FSTP @aux0
-FLD @aux0
-FSTP _PROGRAM@c
-invoke printf, cfm$("%f\n"),OFFSET _PROGRAM@c
+MOV BX, 5
+MOV _PROGRAM@a, BX
+MOV BX, 6
+MOV _PROGRAM@b, BX
+MOV AX, _PROGRAM@a
+MUL _PROGRAM@b
+MOV _PROGRAM@c, AX
+invoke printf, cfm$("%i\n"),OFFSET _PROGRAM@c
 
-FLD _PROGRAM@a
-FLD _PROGRAM@b
-FADD
-FSTP @aux1
-FLD @aux1
-FLD _PROGRAM@c
-FCOMP
-FSTSW AX
-SAHF
+MOV AX, _PROGRAM@a
+MUL _PROGRAM@b
+MOV BX, _PROGRAM@c
+CMP BX, AX
 JNE L24
 invoke printf, cfm$("%s\n"),OFFSET _CAD_BIEN
 

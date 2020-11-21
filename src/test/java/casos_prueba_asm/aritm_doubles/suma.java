@@ -9,6 +9,7 @@ public class suma {
                 "a = 6.0d1;\n" +
                 "b = 7.0d1;\n" +
                 "c = a + b;\n" +
+                "OUT(c);\n" +
                 "IF (c == a + b) THEN \n" +
                     "OUT(\"BIEN\");\n" +
                 "ELSE OUT(\"MAL\");\n" +
