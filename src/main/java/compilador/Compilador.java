@@ -32,12 +32,12 @@ public class Compilador {
             System.out.println("###POLACA PROCEDIMIENTOS###\n"+polacaProcs.toString());
         }
 
-//        try {
-//            FileProcessor.escribirArchivo("archivos/double-div.asm",getAsm());
-//            System.out.println("Assembler generado exitosamente.");
-//        } catch (IllegalStateException illStEx){
-//            System.out.println("Assembler no generado.");
-//        }
+        try {
+            FileProcessor.escribirArchivo("archivos/uint-suma-v-v.asm",getAsm());
+            System.out.println("Assembler generado exitosamente.");
+        } catch (IllegalStateException illStEx){
+            System.out.println("Assembler no generado.");
+        }
 
         if (imprimirOtros) finCompilacion();
     }
@@ -47,12 +47,12 @@ public class Compilador {
         compilar(FileProcessor.getLineasFuente(pathSrc),false,false);
 
         //Generacion asm
-        try {
-            FileProcessor.escribirArchivo(basePathDest+"_asm.asm",getAsm());
-            System.out.println("Assembler generado exitosamente.");
-        } catch (IllegalStateException illStEx){
-            System.out.println("Assembler no generado.");
-        }
+//        try {
+//            FileProcessor.escribirArchivo(basePathDest+"_asm.asm",getAsm());
+//            System.out.println("Assembler generado exitosamente.");
+//        } catch (IllegalStateException illStEx){
+//            System.out.println("Assembler no generado.");
+//        }
 
         //Guardado de resultados
         String resultados =
@@ -69,7 +69,7 @@ public class Compilador {
 
 
         //Clear de estructuras estaticas
-        tablaS.clear();
+//        tablaS.clear();
     }
 
     private static String getAsm() {
@@ -94,8 +94,6 @@ public class Compilador {
                 "@resta_neg DB 'Error: Resultado de resta menor a cero.', 0" + "\n" +
                 "@recursion DB 'Error: Recursiones en procedimientos no permitidas.', 0" + "\n" +
                 "@ejecucion_sin_error DB 'Ejecucion sin errores.', 0" + "\n" +
-                "@bien DB 'Bien', 0" + "\n" +
-                "@mal DB 'Mal', 0" + "\n" +
                 ".CODE\n" +
                 asmProcsBuilder.toString() + "\n" +
                 "START:\n" +

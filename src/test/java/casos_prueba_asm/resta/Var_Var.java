@@ -8,7 +8,11 @@ public class Var_Var {
                 "UINT a, b, c;\n" +
                 "a = 7_ui;\n" +
                 "b = 6_ui;\n" +
-                "c = a - b;";
+                "c = a - b;" +
+                "IF (c == a - b) THEN \n" +
+                    "OUT(\"BIEN\");\n" +
+                "ELSE OUT(\"MAL\");\n" +
+                "END_IF;";
 
         Compilador.compilar(lineasCFuente,true,false);
     }

@@ -7,9 +7,11 @@ include \masm32\include\user32.inc
 includelib \masm32\lib\kernel32.lib
 includelib \masm32\lib\user32.lib
 .DATA
-PROGRAM@c DW 0
-PROGRAM@b DW 0
-PROGRAM@a DW 0
+_CAD_MAL DW 'MAL', 0
+_PROGRAM@c DW 0
+_PROGRAM@b DW 0
+_PROGRAM@a DW 0
+_CAD_BIEN DW 'BIEN', 0
 
 @resta_neg DB 'Error: Resultado de resta menor a cero.', 0
 @recursion DB 'Error: Recursiones en procedimientos no permitidas.', 0
@@ -24,8 +26,22 @@ MOV _PROGRAM@b, BX
 MOV BX, _PROGRAM@a
 SUB BX, _PROGRAM@b
 CMP BX, 0
-JB L_resta_neg
+JE L_resta_neg
 MOV _PROGRAM@c, BX
+MOV BX, _PROGRAM@a
+SUB BX, _PROGRAM@b
+CMP BX, 0
+JE L_resta_neg
+MOV CX, _PROGRAM@c
+CMP CX, BX
+JNE L22
+invoke MessageBox, NULL, addr _CAD_BIEN, addr _CAD_BIEN, MB_OK
+
+JMP L25
+L22:
+invoke MessageBox, NULL, addr _CAD_MAL, addr _CAD_MAL, MB_OK
+
+L25:
 JMP L_final
 L_resta_neg:
 invoke MessageBox, NULL, addr @resta_neg, addr @resta_neg , MB_OK

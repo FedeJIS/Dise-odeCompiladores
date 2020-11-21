@@ -186,24 +186,37 @@ public class TablaSimbolos {
             Celda celda = tablaSimb.get(lexema);
 
             if (lexema.startsWith("PROGRAM")) asmBuilder.append('_');
+            //Variable no auxiliar entera.
             if ((lexema.startsWith("PROGRAM") || lexema.startsWith("@"))
-                    && celda.getTipo().equals("UINT")){ //Variable entera.
+                    && celda.getTipo().equals("UINT")){
                 asmBuilder.append(lexema) //Nombre variable.
                             .append(" DW ") //Tipo.
                             .append(0) //Valor.
                             .append('\n');
             }
+            //Variable no auxiliar double.
             else if ((lexema.startsWith("PROGRAM") || lexema.startsWith("@"))
-                    && celda.getTipo().equals("DOUBLE")){ //variable double.
+                    && celda.getTipo().equals("DOUBLE")){
                 asmBuilder.append(lexema) //Nombre variable.
                             .append(" DD ") //Tipo.
                             .append(0) //Valor.
                             .append('\n');
-            } else if (celda.esCte() && celda.getTipo().equals("DOUBLE")){
+            }
+            //Constante double
+            else if (celda.esCte() && celda.getTipo().equals("DOUBLE")){
                 asmBuilder.append('_').append(formatDouble(lexema))
                                         .append(" DD ") //Tipo.
                                         .append(lexema) //Valor.
                                         .append('\n');
+            }
+            //Cadena caracteres
+            else if (lexema.startsWith("\"") && lexema.endsWith("\"")){
+                asmBuilder.append("_CAD_")
+                        .append(lexema, 1, lexema.length() - 1)
+                        .append(" DW ")
+                        .append("'").append(lexema, 1, lexema.length() - 1).append("'") //Cadena.
+                        .append(", 0")
+                        .append('\n');
             }
         }
 

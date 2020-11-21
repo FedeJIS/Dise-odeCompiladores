@@ -5,10 +5,14 @@ import compilador.Compilador;
 public class Var_Var {
     public static void main(String[] args) {
         String lineasCFuente =
-                "UINT a, b;\n" +
+                "UINT a, b, c;\n" +
                 "a = 30_ui;\n" +
                 "b = 6_ui;\n" +
-                "a = a / b;";
+                "c = a / b;" +
+                "IF (c == a / b) THEN \n" +
+                    "OUT(\"BIEN\");\n" +
+                "ELSE OUT(\"MAL\");\n" +
+                "END_IF;";
 
         Compilador.compilar(lineasCFuente,true,false);
     }
