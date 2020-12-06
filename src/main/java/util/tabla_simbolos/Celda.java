@@ -7,6 +7,7 @@ import java.util.List;
 
 public class Celda {
     public static final String USO_PROC = "Proc";
+    public static final String USO_VAR = "Var";
     public static final String USO_PARAM_CVR = "ParamCVR";
     public static final String USO_PARAM_CV = "ParamCV";
     private static final String USO_CTE = "CTE";
@@ -84,7 +85,7 @@ public class Celda {
 
     public void setUso(String uso) {
         this.uso = uso;
-        if (uso.equals(TablaSimbolos.USO_ENTRADA_PROC)) this.paramsDecl = new ArrayList<>();
+        if (uso.equals(Celda.USO_PROC)) this.paramsDecl = new ArrayList<>();
     }
 
     public boolean isDeclarada(){

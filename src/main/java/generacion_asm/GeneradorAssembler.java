@@ -157,8 +157,8 @@ public class GeneradorAssembler {
         String op2 = pilaOps.remove(pilaOps.size() - 1);
 
         //Primer operando es un valor inmediato.
-        if (!esRegistro(op2) && tablaS.esCte(op2) && tiposOperandosValidos(op1, false, op2, false))
-            if (tablaS.getTipo(op2).equals("DOUBLE")) { //Valor inmediato DOUBLE
+        if (!esRegistro(op2) && tablaS.esEntradaCte(op2) && tiposOperandosValidos(op1, false, op2, false))
+            if (tablaS.getTipoEntrada(op2).equals("DOUBLE")) { //Valor inmediato DOUBLE
                 asm.addAll(genInstrCompDouble(op1, op2));
                 return asm;
             } else { //Valor inmediato UINT
@@ -170,7 +170,7 @@ public class GeneradorAssembler {
 
         //Var COMP Var. Ambos operandos no pueden estar en memoria, tengo que traer uno a un reg.
         if (!esRegistro(op1) && !esRegistro(op2) && tiposOperandosValidos(op1, false, op2, false))
-            if (tablaS.getTipo(op1).equals("DOUBLE")) {
+            if (tablaS.getTipoEntrada(op1).equals("DOUBLE")) {
                 asm.addAll(genInstrCompDouble(op1, op2));
                 return asm;
             } else {
@@ -209,11 +209,11 @@ public class GeneradorAssembler {
         List<String> asm = new ArrayList<>();
 
         //Si el op1 es un valor inmediato primero lo cargo desde memoria.
-        if (!esRegistro(op1) && tablaS.esCte(op1)) op1 = "_" + TablaSimbolos.formatDouble(op1);
+        if (!esRegistro(op1) && tablaS.esEntradaCte(op1)) op1 = "_" + TablaSimbolos.formatDouble(op1);
         else op1 = getPrefijo(op1) + op1;
 
         //Si el op2 es un valor inmediato primero lo cargo desde memoria.
-        if (!esRegistro(op2) && tablaS.esCte(op2)) op2 = "_" + TablaSimbolos.formatDouble(op2);
+        if (!esRegistro(op2) && tablaS.esEntradaCte(op2)) op2 = "_" + TablaSimbolos.formatDouble(op2);
         else op2 = getPrefijo(op2) + op2;
 
         asm.add("FLD " + op1); //Pongo op1 en la pila del coproc.
@@ -242,8 +242,8 @@ public class GeneradorAssembler {
 
         //Variable & Variable
         if (!esRegistro(dest) && !esRegistro(src) && tiposOperandosValidos(dest, false, src, false)) {
-            if (tablaS.getTipo(dest).equals("DOUBLE")) { //Es un double
-                if (tablaS.esCte(src)) src = "_" + TablaSimbolos.formatDouble(src);
+            if (tablaS.getTipoEntrada(dest).equals("DOUBLE")) { //Es un double
+                if (tablaS.esEntradaCte(src)) src = "_" + TablaSimbolos.formatDouble(src);
                 else src = getPrefijo(src) + src;
 
                 asm.add("FLD " + src);
@@ -265,11 +265,11 @@ public class GeneradorAssembler {
         List<String> asm = new ArrayList<>();
 
         //Si el op1 es un valor inmediato primero lo cargo desde memoria.
-        if (!esRegistro(op1) && tablaS.esCte(op1)) op1 = "_" + TablaSimbolos.formatDouble(op1);
+        if (!esRegistro(op1) && tablaS.esEntradaCte(op1)) op1 = "_" + TablaSimbolos.formatDouble(op1);
         else op1 = getPrefijo(op1) + op1;
 
         //Si el op2 es un valor inmediato primero lo cargo desde memoria.
-        if (!esRegistro(op2) && tablaS.esCte(op2)) op2 = "_" + TablaSimbolos.formatDouble(op2);
+        if (!esRegistro(op2) && tablaS.esEntradaCte(op2)) op2 = "_" + TablaSimbolos.formatDouble(op2);
         else op2 = getPrefijo(op2) + op2;
 
         asm.add("FLD " + op1); //Pongo op1 en la pila del coproc.
@@ -296,7 +296,7 @@ public class GeneradorAssembler {
 
         //Variable & Variable
         if (!esRegistro(dest) && !esRegistro(src) && tiposOperandosValidos(dest, false, src, false))
-            if (tablaS.getTipo(src).equals("DOUBLE")) return generaInstrAritmDouble("+", dest, src);
+            if (tablaS.getTipoEntrada(src).equals("DOUBLE")) return generaInstrAritmDouble("+", dest, src);
             else {
                 int reg = getRegistroLibre(); //Obtengo reg libre.
                 asm.add("MOV " + getNombreRegistro(reg) + ", " + getPrefijo(dest) + dest);
@@ -336,7 +336,7 @@ public class GeneradorAssembler {
 
         //Variable & Variable
         if (!esRegistro(dest) && !esRegistro(src) && tiposOperandosValidos(dest, false, src, false))
-            if (tablaS.getTipo(dest).equals("DOUBLE")) return generaInstrAritmDouble("*", dest, src);
+            if (tablaS.getTipoEntrada(dest).equals("DOUBLE")) return generaInstrAritmDouble("*", dest, src);
             else {
                 asm.addAll(liberaRegistro(AX)); //Se encarga de liberar AX, y guardar su contenido previo si corresponde.
                 asm.add("MOV AX, " + getPrefijo(dest) + dest);
@@ -393,7 +393,7 @@ public class GeneradorAssembler {
 
         //Variable & Variable
         if (!esRegistro(dest) && !esRegistro(src) && tiposOperandosValidos(dest, false, src, false))
-            if (tablaS.getTipo(src).equals("DOUBLE")) return generaInstrAritmDouble("-", dest, src);
+            if (tablaS.getTipoEntrada(src).equals("DOUBLE")) return generaInstrAritmDouble("-", dest, src);
             else {
                 int reg = getRegistroLibre(); //Obtengo reg libre.
                 asm.add("MOV " + getNombreRegistro(reg) + ", " + getPrefijo(dest) + dest);
@@ -443,7 +443,7 @@ public class GeneradorAssembler {
 
         //Variable & Variable
         if (!esRegistro(divd) && !esRegistro(divs) && tiposOperandosValidos(divd, false, divs, false))
-            if (tablaS.getTipo(divd).equals("DOUBLE")) return generaInstrAritmDouble("/", divd, divs);
+            if (tablaS.getTipoEntrada(divd).equals("DOUBLE")) return generaInstrAritmDouble("/", divd, divs);
             else {
                 asm.addAll(liberaRegistro(AX)); //Se encarga de liberar AX, y guardar su contenido previo si corresponde.
                 asm.add("MOV AX, " + getPrefijo(divd) + divd); //Muevo divd a AX.
@@ -453,7 +453,7 @@ public class GeneradorAssembler {
                 asm.add("MOV DX, 0"); //Seteo DX en 0.
                 actualizaReg(DX, true, -1); //Ocupo DX.
 
-                if (tablaS.esCte(divs)) {
+                if (tablaS.esEntradaCte(divs)) {
                     asm.add("MOV @aux" + variableAux + ", " + divs); //Muevo divs a memoria pq el divs no puede ser un inmediato.
                     asm.add("DIV @aux" + variableAux); //Hago la division.
                     variableAux++;
@@ -471,7 +471,7 @@ public class GeneradorAssembler {
             asm.add("MOV DX, 0"); //Seteo DX en 0.
             actualizaReg(DX, true, -1); //Ocupo DX.
 
-            if (tablaS.esCte(divs)) {
+            if (tablaS.esEntradaCte(divs)) {
                 asm.add("MOV @aux" + variableAux + ", " + divs); //Muevo divs a memoria pq el divs no puede ser un inmediato.
                 asm.add("DIV @aux" + variableAux); //Hago la division.
                 variableAux++;
@@ -613,7 +613,7 @@ public class GeneradorAssembler {
 
     private static String getPrefijo(String op) {
         if (esRegistro(op)) return "";
-        if (tablaS.getUso(op).equals("Variable")
+        if (tablaS.getUsoEntrada(op).equals("Variable")
                 && !op.startsWith("@")) return "_";
 
         return "";
@@ -625,10 +625,10 @@ public class GeneradorAssembler {
         String tipoOp1, tipoOp2;
 
         if (esRegOp1) tipoOp1 = registros.get(getIdRegistro(op1)).getTipo();
-        else tipoOp1 = tablaS.getTipo(op1);
+        else tipoOp1 = tablaS.getTipoEntrada(op1);
 
         if (esRegOp2) tipoOp2 = registros.get(getIdRegistro(op2)).getTipo();
-        else tipoOp2 = tablaS.getTipo(op2);
+        else tipoOp2 = tablaS.getTipoEntrada(op2);
 
         //Tipos validos.
         if (tipoOp1.equals(tipoOp2)) return true;

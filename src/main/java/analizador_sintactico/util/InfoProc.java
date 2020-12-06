@@ -1,4 +1,4 @@
-package analizador_sintactico;
+package analizador_sintactico.util;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,11 +1,27 @@
-"PROC x(DOUBLE f) NI = 1_ui{" + '\n' +
+//Declaracion proc valida.
+"PROC x(VAR DOUBLE f, VAR DOUBLE g, DOUBLE h) NI = 1_ui{" + '\n' +
     "OUT(5_ui);" + '\n' +
-"};"
+"};" + '\n' +
+"DOUBLE w, y, z;" + '\n' +
+"x(w,y,z);"
 
+//Declaracion no valida por parametros con mismo nombre.
 "PROC x(DOUBLE f, DOUBLE f) NI = 1_ui{" + '\n' +
     "OUT(5_ui);" + '\n' +
 "};"
 
+//Declaracion no valida por parametro con mismo nombre que variable.
+"DOUBLE w;" + '\n' +
+"PROC x(VAR DOUBLE w, VAR DOUBLE g, DOUBLE h) NI = 1_ui{" + '\n' +
+    "OUT(5_ui);" + '\n' +
+"};"
+
+//Declaracion no valida por n params > 3.
 "PROC x(DOUBLE f, DOUBLE g, DOUBLE h, DOUBLE i) NI = 1_ui{" + '\n' +
+    "OUT(5_ui);" + '\n' +
+"};"
+
+//Declaracion no valida por NI fuera de rango.
+"PROC x(VAR DOUBLE f, VAR DOUBLE g, DOUBLE h) NI = 0_ui{" + '\n' +
     "OUT(5_ui);" + '\n' +
 "};"

@@ -2,6 +2,8 @@
 package analizador_sintactico;
 
 import analizador_lexico.AnalizadorLexico;
+import analizador_sintactico.util.ParserHelper;
+import analizador_sintactico.util.InfoProc;
 import generacion_c_intermedio.MultiPolaca;
 import generacion_c_intermedio.PilaAmbitos;
 import generacion_c_intermedio.Polaca;
@@ -24,8 +26,8 @@ import java.util.HashMap;
 programa	: bloque_sentencias
 			;
 			
-tipo_id	: UINT {ultimoTipoLeido = "UINT";}
-		| DOUBLE {ultimoTipoLeido = "DOUBLE";}
+tipo_id	: UINT {helper.setUltimoTipoLeido("UINT");}
+		| DOUBLE {helper.setUltimoTipoLeido("DOUBLE");}
 		;
 			
 bloque_sentencias	: tipo_sentencia fin_sentencia
@@ -40,15 +42,15 @@ fin_sentencia	:       {TablaNotificaciones.agregarError(aLexico.getLineaActual()
 				| ';'
 				;
 			
-sentencia_decl	: nombre_proc params_proc ni_proc cuerpo_proc {declaracionProc();}
+sentencia_decl	: nombre_proc params_proc ni_proc cuerpo_proc {helper.declaracionProc();}
 				| tipo_id lista_variables
 				;
 
-lista_variables	: ID {declaraId("Variable",$1.sval,ultimoTipoLeido);}
-				| ID ',' lista_variables {declaraId("Variable",$1.sval,ultimoTipoLeido);}
+lista_variables	: ID {helper.declaracionVar($1.sval);}
+				| ID ',' lista_variables {helper.declaracionVar($1.sval);}
 				;
 				
-nombre_proc	: PROC ID {lecturaIdProc($2.sval);}
+nombre_proc	: PROC ID {helper.lecturaIdProc($2.sval);}
 			| PROC {yyerror("Falta el identificador del procedimiento.");}
 			;
 			
@@ -72,20 +74,20 @@ param   : param_var
         | param_comun
         ;
 					
-param_var	: VAR tipo_id ID {lecturaParamFormal($3.sval, Celda.USO_PARAM_CVR);}
+param_var	: VAR tipo_id ID {helper.lecturaParamFormal($3.sval, Celda.USO_PARAM_CVR);}
             | VAR ID {yyerror("Falta el tipo de un parametro.");}
             | VAR tipo_id {yyerror("Falta el identificador de un parametro.");}
 		    ;
 
-param_comun : tipo_id ID {lecturaParamFormal($2.sval, Celda.USO_PARAM_CV);}
+param_comun : tipo_id ID {helper.lecturaParamFormal($2.sval, Celda.USO_PARAM_CV);}
 		    | tipo_id {yyerror("Falta el identificador de un parametro.");}
 		    ;
 
-ni_proc	: NI '=' CTE_UINT {lecturaNumInvoc(Integer.parseInt(val_peek(0).sval), false, "");}
-        | NI '=' {lecturaNumInvoc(0, true, "Falta el numero de invocaciones del procedimiento.");}
-        | '=' CTE_UINT {lecturaNumInvoc(0, true, "Falta la palabra clave 'NI' en el encabezado del procedimiento.");}
-        | NI CTE_UINT {lecturaNumInvoc(0, true, "Formato de declaracion de NI invalido. El formato correcto es 'NI = CTE_UINT'.");}
-        | error {lecturaNumInvoc(0, true, "Formato de declaracion de NI invalido. El formato correcto es 'NI = CTE_UINT'.");}
+ni_proc	: NI '=' CTE_UINT {helper.lecturaNumInvoc(Integer.parseInt(val_peek(0).sval), false, "");}
+        | NI '=' {helper.lecturaNumInvoc(0, true, "Falta el numero de invocaciones del procedimiento.");}
+        | '=' CTE_UINT {helper.lecturaNumInvoc(0, true, "Falta la palabra clave 'NI' en el encabezado del procedimiento.");}
+        | NI CTE_UINT {helper.lecturaNumInvoc(0, true, "Formato de declaracion de NI invalido. El formato correcto es 'NI = CTE_UINT'.");}
+        | error {helper.lecturaNumInvoc(0, true, "Formato de declaracion de NI invalido. El formato correcto es 'NI = CTE_UINT'.");}
 		;
 		
 cuerpo_proc	: '{' bloque_sentencias '}'
@@ -99,21 +101,16 @@ sentencia_ejec	: invocacion
 				| print
 				;
 
-invocacion	: ID '(' ')' {
-                            guardaParamsInvoc();
-                            invocaProc($1.sval);
-                            }
-			| ID '(' lista_params_inv ')' {invocaProc($1.sval);}
+invocacion	: ID '(' ')' {helper.invocacionProc($1.sval);}
+			| ID '(' lista_params_inv ')' {helper.invocacionProc($1.sval);}
 			;
-
-
 			
-lista_params_inv	: ID {guardaParamsInvoc($1.sval);}
-					| ID separador_variables ID {guardaParamsInvoc($1.sval, $3.sval);}
-					| ID separador_variables ID separador_variables ID {guardaParamsInvoc($1.sval, $3.sval, $5.sval);}
+lista_params_inv	: ID {helper.guardaParamsInvoc($1.sval);}
+					| ID separador_variables ID {helper.guardaParamsInvoc($1.sval, $3.sval);}
+					| ID separador_variables ID separador_variables ID {helper.guardaParamsInvoc($1.sval, $3.sval, $5.sval);}
 					| ID separador_variables ID separador_variables ID separador_variables lista_params_inv
                                                     {
-                                                    guardaParamsInvoc($1.sval, $3.sval, $5.sval);
+                                                    helper.guardaParamsInvoc($1.sval, $3.sval, $5.sval);
                                                     yyerror("Un procedimiento no puede tener mas de 3 parametros.");
                                                     }
                     ;
@@ -169,6 +166,7 @@ bloque_sentencias_ejec	: sentencia_ejec fin_sentencia
 					    | sentencia_decl fin_sentencia bloque_sentencias_ejec {yyerror("No se permiten sentencias declarativas dentro de un bloque de estructura de control.");}
 						;
 
+//        String lexemaParam = lexema+entrada.getParam(i);
 cuerpo_until	: UNTIL condicion {puntoControlUntil();}
                 | UNTIL {yyerror("Falta la condicion de corte del LOOP.");}
                 ;
@@ -239,6 +237,7 @@ imprimible	: CADENA {
 			;
 
 %%
+    private final ParserHelper helper;
 
     private final AnalizadorLexico aLexico;
     private final TablaSimbolos tablaS;
@@ -252,6 +251,8 @@ imprimible	: CADENA {
         this.pilaAmbitos = new PilaAmbitos();
         this.polacaProgram = new Polaca();
         this.polacaProcedimientos = new MultiPolaca();
+
+        helper = new ParserHelper(aLexico, tablaS, pilaAmbitos, polacaProgram, polacaProcedimientos);
     }
 
     private int yylex() {
@@ -298,221 +299,6 @@ imprimible	: CADENA {
         return ""; //La variable no esta declarada.
     }
 
-    //---DECLARACION VARIABLES Y PARAMS---
-
-    private String ultimoTipoLeido; //Almacena temporalmente el ultimo tipo leido.
-
-private boolean nombreIdValido = true;
-
-private void declaraId(String uso, String lexema, String tipo) {
-String ambito = getAmbitoId(lexema);
-
-if (!ambito.isEmpty() //La TS contiene el lexema recibido.
-        && tablaS.isEntradaDeclarada(ambito + "@" + lexema)) {//Tiene el flag de declaracion activado.
-  TablaNotificaciones.agregarError(aLexico.getLineaActual(), "El identificador '" + lexema + "' ya se encuentra declarado.");
-  pilaNombreProc.remove(pilaNombreProc.size() - 1);
-} else {
-  tablaS.setTipoEntrada(lexema, tipo);
-  tablaS.setUsoEntrada(lexema, uso);
-  tablaS.setDeclaracionEntrada(lexema, true);
-  tablaS.setAmbitoEntrada(lexema, pilaAmbitos.getAmbitoActual()); //Actualizo el lexema en la TS.
-
-  if (uso.equals("ParamCVR") || uso.equals("ParamCV"))
-    agregaParamDecl(pilaNombreProc.get(pilaNombreProc.size() - 1), ambito + "@" + lexema);
-
-  nombreIdValido = true;
-}
-}
-
-    private boolean isIdNoDeclarado(String lexema, String ambito){
-        if (ambito.isEmpty()) return true; //La TS no contiene el lexema en el ambito recibido.
-        if (!tablaS.isEntradaDeclarada(PilaAmbitos.aplicaNameManglin(ambito, lexema))) return true;
-
-        String msgError = "El identificador '" + lexema + "' ya se encuentra declarado.";
-        TablaNotificaciones.agregarError(aLexico.getLineaActual(), msgError);
-        return false;
-    }
-
-    //---DECLARACION PROCS---
-
-    /**
-     * Guarda informacion de los procedimientos. Facilita el anidamiento de los mismos.
-     */
-    private final List<InfoProc> pilaInfoProc = new ArrayList<>();
-
-    /**
-     * Invocado cuando se lee el identificador de un procedimiento.
-     */
-    private void lecturaIdProc(String lexema){
-        pilaInfoProc.add(new InfoProc(lexema));
-
-        if (isIdNoDeclarado(lexema, pilaAmbitos.getAmbitoActual())){
-            tablaS.quitarReferencia(lexema);
-
-            String nLexema = PilaAmbitos.aplicaNameManglin(pilaAmbitos.getAmbitoActual(), lexema);
-            tablaS.agregarEntrada(new Celda(Parser.ID, nLexema, "-", Celda.USO_PROC, true));
-
-            pilaAmbitos.agregarAmbito(lexema);
-        }
-        else pilaInfoProc.get(pilaInfoProc.size()-1).setInfoValida(false); //Marco proc como invalido.
-    }
-
-    /**
-     * Invocado cuando se lee un parametro formal de un procedimiento.
-     */
-    private void lecturaParamFormal(String lexema, String tipoPasaje){
-        InfoProc infoProc = pilaInfoProc.get(pilaInfoProc.size()-1); //El param formal es del ultimo proc leido.
-        String ambito = getAmbitoId(lexema);
-
-        if (isIdNoDeclarado(lexema, ambito)){
-            tablaS.quitarReferencia(lexema);
-
-            String nLexema = PilaAmbitos.aplicaNameManglin(pilaAmbitos.getAmbitoActual(), lexema);
-            infoProc.addParam(nLexema, tipoPasaje);
-            tablaS.agregarEntrada(new Celda(Parser.ID, nLexema, ultimoTipoLeido, tipoPasaje, true));
-        } else infoProc.setInfoValida(false); //Marco proc como invalido.
-    }
-
-    /**
-     * Invocado cuando se lee el NI de un procedimiento.
-     */
-    private void lecturaNumInvoc(int numInvoc, boolean errorGram, String msgErrorGram){
-        InfoProc infoProc = pilaInfoProc.get(pilaInfoProc.size()-1);
-        if (errorGram) {
-            infoProc.setInfoValida(false);
-            yyerror(msgErrorGram);
-        }
-
-        if (numInvoc < 1 || numInvoc > 4) {
-            String msgError = "El numero de invocaciones de un procedimiento debe estar en el rango [1,4].";
-            TablaNotificaciones.agregarError(lineaNI, msgError);
-            infoProc.setInfoValida(false);
-        } else infoProc.setNumInvoc(numInvoc);
-    }
-
-    /**
-     * Invocado cuando se termina de leer el cuerpo de un procedimiento.
-     */
-    private void declaracionProc(){
-        //Remove pq ya no se necesita almacenar mas la info.
-        InfoProc infoProc = pilaInfoProc.remove(pilaInfoProc.size()-1);
-        pilaAmbitos.eliminarUltimo();
-
-        if (infoProc.isInfoValida()){
-            tablaS.setMaxInvoc(infoProc.getLexema(), infoProc.getNumInvoc());
-            tablaS.setParamsProc(infoProc.getLexema(), infoProc.getParams());
-        }
-    }
-
-    private final List<String> pilaNombreProc = new ArrayList<>();
-
-  private final Map<String, List<String>> mapaListaParametros = new HashMap<>();
-
-  private int lineaNI; //Guarda la linea donde se declaro el proc.
-
-  private void declaraIdProc(String lexema) {
-    declaraId(TablaSimbolos.USO_ENTRADA_PROC, lexema, "-");
-    pilaNombreProc.add(pilaAmbitos.getAmbitoActual() + "@" + lexema);
-    mapaListaParametros.put(pilaAmbitos.getAmbitoActual() + "@" + lexema, new ArrayList<>());
-    lineaNI = aLexico.getLineaActual();
-    mapaListaParametros.put(pilaNombreProc.get(pilaNombreProc.size() - 1), new ArrayList<>());
-  }
-
-  private void agregaParamDecl(String nombreProc, String nombreParam) {
-    List<String> paramsProc = mapaListaParametros.get(nombreProc);
-    paramsProc.add(nombreParam);
-  }
-
-  private void declaraProc() {
-    //Este metodo se invoca al cierre de la declaracion de un procedimiento.
-    //Por lo tanto, saco el tope de la pila de nombres y de max invocs.
-    String nombreProc = pilaNombreProc.remove(pilaNombreProc.size() - 1);
-
-    List<String> listaParams = mapaListaParametros.remove(nombreProc);
-    int nParams = listaParams.size();
-    if (nParams > 3) nParams = 3; //Se queda con los primeros 3 params y descarta el resto.
-    tablaS.setParamsProc(nombreProc, listaParams.subList(0, nParams)); //A esta altura ya se verificaron los ids correspondientes a cada
-    // parametro. Solo resta asociarlos con el lexema del proc.
-    listaParams.clear();
-    nombreIdValido = true; //Reinicia el valor.
-  }
-
-  //---INVOCACION PROCS---
-
-  private final List<String> listaParams = new ArrayList<>();
-
-  private void guardaParamsInvoc(String... lexemaParams) {
-    for (String lexemaParam : lexemaParams)
-      listaParams.add(getAmbitoId(lexemaParam) + "@" + lexemaParam);
-  }
-
-  private boolean tipoParamsValidos(String lexema, int nParamsDecl) {
-    boolean invocValida = true;
-    for (int i = 0; i < nParamsDecl; i++) {
-      String tipoParamInvoc = tablaS.getTipo(listaParams.get(i));
-      String tipoParamDecl = tablaS.getTipoParam(lexema, i);
-      if (!tipoParamInvoc.equals(tipoParamDecl)) {
-        TablaNotificaciones.agregarError(aLexico.getLineaActual(),
-                "En la posicion " + (i + 1) + " se esperaba un " + tipoParamDecl + ", pero se encontro un " + tipoParamInvoc + ".");
-        invocValida = false;
-      }
-    }
-    return invocValida;
-  }
-
-  private void invocaProc(String lexema) {
-    String ambito = getAmbitoId(lexema);
-
-    boolean invocValida = true;
-
-    if (ambito.isEmpty()) {
-      TablaNotificaciones.agregarError(aLexico.getLineaActual(), "El procedimiento '" + lexema + "' no esta declarado.");
-      return; //Es necesario cortar aca para que 'ambito' no cause problemas por estar vacio.
-    }
-    String nLexema = ambito + "@" + lexema;
-
-    if (tablaS.maxInvocAlcanzadas(nLexema)) {
-      TablaNotificaciones.agregarError(aLexico.getLineaActual(), "El procedimiento '" + lexema + "' ya alcanzo su numero maximo de invocaciones.");
-      invocValida = false;
-    } else tablaS.incrementaNInvoc(nLexema);
-
-    int nParamsDecl = tablaS.getNParams(nLexema);
-    if (nParamsDecl != listaParams.size()) {
-      TablaNotificaciones.agregarError(aLexico.getLineaActual(), "Se esperaban " + nParamsDecl + " parametros, pero se encontraron " + listaParams.size() + ".");
-      invocValida = false;
-    }
-
-    if (nParamsDecl != 0 && listaParams.size() >= nParamsDecl) //El '>=' permite analizar los primeros parametros, aunque se tengan mas de los declarados.
-      invocValida = tipoParamsValidos(nLexema, nParamsDecl);
-
-    if (invocValida)
-      generaCodigoInvocacion(nLexema, nParamsDecl);
-
-    listaParams.clear();
-  }
-
-  private void generaCodigoInvocacion(String lexemaProc, int nParamsDecl) {
-    String paramDecl, paramInvoc;
-    for (int i = 0; i < nParamsDecl; i++) { //Pasa el valor de los parametros reales a los formales.
-      paramDecl = tablaS.getParam(lexemaProc, i);
-      paramInvoc = listaParams.get(i);
-      agregarPasosRepr(paramInvoc, paramDecl, "="); //paramDecl = paramInvoc.
-    }
-
-    agregarPasosRepr(lexemaProc, lexemaProc);
-    agregarPasosRepr(lexemaProc, Polaca.PASO_INVOC);
-
-    for (int i = 0; i < nParamsDecl; i++) { //Pasa el valor de los param formales a los reales (En caso de param CVR).
-      paramDecl = tablaS.getParam(lexemaProc, i);
-      if (tablaS.isEntradaParamCVR(paramDecl)) {
-        paramInvoc = listaParams.get(i);
-        agregarPasosRepr(paramDecl, paramInvoc, "="); //paramInvoc = paramDecl.
-      }
-    }
-  }
-
-  //---ASIGN---
-
   private void checkValidezAsign(String lexema) {
     String ambito = getAmbitoId(lexema);
 
@@ -549,21 +335,6 @@ if (!ambito.isEmpty() //La TS contiene el lexema recibido.
   //---OUT---
 
   private String tipoImpresion; //Almacena temporalmente el tipo de dato que debe imprimirse.
-
-  private boolean isIdDeclarado(String lexema) {
-    String ambito = getAmbitoId(lexema);
-
-    if (ambito.isEmpty()) { //La TS no contiene el lexema recibido en ningun ambito.
-      TablaNotificaciones.agregarError(aLexico.getLineaActual(), "El identificador '" + lexema + "' no esta declarado.");
-      return false; //Es necesario cortar aca para que 'ambito' no cause problemas por estar vacio.
-    }
-
-    if (!tablaS.isEntradaDeclarada(ambito + "@" + lexema)) { //Existe el lexema en la TS y tiene el flag de declaracion desactivado.
-      TablaNotificaciones.agregarError(aLexico.getLineaActual(), "El identificador '" + lexema + "' no esta declarado.");
-      return false;
-    }
-    return true;
-  }
 
   //---POLACA---
 
