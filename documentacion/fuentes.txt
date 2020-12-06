@@ -1,0 +1,11 @@
+"PROC x(DOUBLE f) NI = 1_ui{" + '\n' +
+    "OUT(5_ui);" + '\n' +
+"};"
+
+"PROC x(DOUBLE f, DOUBLE f) NI = 1_ui{" + '\n' +
+    "OUT(5_ui);" + '\n' +
+"};"
+
+"PROC x(DOUBLE f, DOUBLE g, DOUBLE h, DOUBLE i) NI = 1_ui{" + '\n' +
+    "OUT(5_ui);" + '\n' +
+"};"

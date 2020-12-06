@@ -26,6 +26,18 @@ public class TablaSimbolos {
     }
 
     /**
+     * Agrega una nueva entrada solo si no existe en la tabla.
+     *
+     * @param entrada celda a agregar.
+     */
+    public void agregarEntrada(Celda entrada){
+        if (tablaSimb.containsKey(entrada.getLexema()))
+            throw new IllegalStateException("Ya hay una entrada con el lexema '"+entrada.getLexema()+"'.");
+        tablaSimb.put(entrada.getLexema(), entrada);
+        entrada.actualizarReferencias(1);
+    }
+
+    /**
      * Agrega una celda (token,lexema,tipo). En caso de existir previamente, incrementa en uno las referencias a la
      * celda.
      */
@@ -115,7 +127,7 @@ public class TablaSimbolos {
 
     public void setMaxInvoc(String lexema, int nMax){
         Celda entrada = tablaSimb.get(lexema);
-        if (entrada == null) throw new IllegalStateException("Lexema no encontrado en la TS");
+        if (entrada == null) throw new IllegalStateException("Lexema '"+lexema+"' no encontrado en la TS");
         entrada.setMaxInvoc(nMax);
     }
 
@@ -170,7 +182,9 @@ public class TablaSimbolos {
     }
 
     public void quitarReferencia(String lexema) {
-        tablaSimb.get(lexema).actualizarReferencias(-1); //refs--
+        Celda celda = tablaSimb.get(lexema);
+        celda.actualizarReferencias(-1); //refs--
+        if (celda.sinReferencias()) tablaSimb.remove(celda.getLexema());
     }
 
     public boolean esCte(String lexema) {

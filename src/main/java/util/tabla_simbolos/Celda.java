@@ -7,7 +7,8 @@ import java.util.List;
 
 public class Celda {
     public static final String USO_PROC = "Proc";
-    private static final String USO_PARAM_CVR = "ParamCVR";
+    public static final String USO_PARAM_CVR = "ParamCVR";
+    public static final String USO_PARAM_CV = "ParamCV";
     private static final String USO_CTE = "CTE";
 
     /**
@@ -31,6 +32,14 @@ public class Celda {
         this.lexema = lexema;
         this.tipo = tipo;
         this.referencias = 0;
+    }
+
+    public Celda(int token, String lexema, String tipo, String uso, boolean declarada) {
+        this.token = token;
+        this.lexema = lexema;
+        this.tipo = tipo;
+        this.uso = uso;
+        this.declarada = declarada;
     }
 
     @Override
