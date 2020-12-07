@@ -32,6 +32,8 @@ public class Compilador {
             System.out.println("###POLACA PROCEDIMIENTOS###\n"+polacaProcs.toString());
         }
 
+        System.out.println(tablaS.toAsm());
+
         if (imprimirOtros) finCompilacion();
     }
 

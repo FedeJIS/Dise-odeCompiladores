@@ -102,3 +102,12 @@
 "UINT x;" + '\n' +
 "x = -1_ui;" + '\n' +
 "x = -1;"
+
+//Impresiones.
+"DOUBLE b; UINT x;" + '\n' +
+"OUT(b);" + '\n' +
+"OUT(-b);" + '\n' +
+"OUT(x);" + '\n' +
+"OUT(5_ui);" + '\n' +
+"OUT(\"HOLA Q TAL\");" + '\n' +
+"OUT(-5.0d1);"

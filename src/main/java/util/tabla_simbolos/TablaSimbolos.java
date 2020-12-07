@@ -27,38 +27,30 @@ public class TablaSimbolos {
         for (String lexema : tablaSimb.keySet()) {
             Celda celda = tablaSimb.get(lexema);
 
-            if (lexema.startsWith("PROGRAM")) asmBuilder.append('_');
-            //Variable no auxiliar entera.
-            if ((lexema.startsWith("PROGRAM") || lexema.startsWith("@"))
-                    && celda.getTipo().equals("UINT")){
-                asmBuilder.append(lexema) //Nombre variable.
-                        .append(" DW ") //Tipo.
-                        .append(0) //Valor.
-                        .append('\n');
+            //DOUBLE
+            if (celda.getTipo().equals(Celda.TIPO_DOUBLE)){
+                if (celda.esCte())
+                    asmBuilder.append('_').append(formatDouble(lexema)).append(" DQ ").append(lexema).append('\n'); //Cte.
+                else{ //Variable
+                    if (lexema.startsWith("PROGRAM")) asmBuilder.append('_'); //Variable no auxiliar.
+                    asmBuilder.append(lexema).append(" DQ ").append(0).append('\n');
+                }
+
             }
-            //Variable no auxiliar double.
-            else if ((lexema.startsWith("PROGRAM") || lexema.startsWith("@"))
-                    && celda.getTipo().equals("DOUBLE")){
-                asmBuilder.append(lexema) //Nombre variable.
-                        .append(" DQ ") //Tipo.
-                        .append(0) //Valor.
-                        .append('\n');
+
+            //UINT
+            if (celda.getTipo().equals(Celda.TIPO_UINT) && celda.getUso().equals(Celda.USO_VAR)){
+                if (lexema.startsWith("PROGRAM")) asmBuilder.append('_'); //Variable no auxiliar.
+                asmBuilder.append(lexema).append(" DW ").append(0).append('\n');
             }
-            //Constante double
-            else if (celda.esCte() && celda.getTipo().equals("DOUBLE")){
-                asmBuilder.append('_').append(formatDouble(lexema))
-                        .append(" DQ ") //Tipo.
-                        .append(lexema) //Valor.
-                        .append('\n');
-            }
+
             //Cadena caracteres
-            else if (lexema.startsWith("\"") && lexema.endsWith("\"")){
+            if (lexema.startsWith("\"") && lexema.endsWith("\"")){
                 asmBuilder.append("_CAD_")
-                        .append(lexema, 1, lexema.length() - 1)
+                        .append(lexema.replace(' ', '_'), 1, lexema.length() - 1)
                         .append(" DB ")
-                        .append("'").append(lexema, 1, lexema.length() - 1).append("'") //Cadena.
-                        .append(", 0")
-                        .append('\n');
+                        .append("'").append(lexema, 1, lexema.length() - 1).append("'")
+                        .append(", 0").append('\n');
             }
         }
 
@@ -106,16 +98,6 @@ public class TablaSimbolos {
         celda.actualizarReferencias(1);
     }
 
-    public void eliminarEntrada(String lexema) {
-        Celda celda = tablaSimb.get(lexema);
-        if (celda == null)
-            throw new IllegalStateException("El lexema '" + lexema + "' no se encontro en la tabla de simbolos.");
-        if (!celda.sinReferencias()) //No deja eliminar celdas con referencias.
-            throw new IllegalStateException("La entrada asociada al lexema '" + lexema + "' no puede ser eliminada porque" +
-                    "aun esta siendo referenciada.");
-        tablaSimb.remove(lexema);
-    }
-
     public Celda getEntrada(String lexema) {
         Celda celda = tablaSimb.get(lexema);
 
@@ -125,10 +107,6 @@ public class TablaSimbolos {
     }
 
     //---CONSULTAS DATOS ENTRADAS---
-
-    public boolean entradaSinReferencias(String lexema) {
-        return getEntrada(lexema).sinReferencias();
-    }
 
     public void agregarReferencia(String lexema){
         Celda celda = tablaSimb.get(lexema);
@@ -143,19 +121,13 @@ public class TablaSimbolos {
 
     public boolean esEntradaCte(String lexema) {
         Celda entrada = tablaSimb.get(lexema);
-        if (entrada == null) throw new IllegalStateException("Lexema del parametro no encontrado en la TS");
+        if (entrada == null) throw new IllegalStateException("Lexema '"+lexema+"' no encontrado en la TS");
         return entrada.esCte();
     }
 
     public String getTipoEntrada(String lexema){
         Celda entrada = tablaSimb.get(lexema);
         return entrada.getTipo();
-    }
-
-    public void setTipoEntrada(String lexema, String tipo){
-        Celda entrada = tablaSimb.get(lexema);
-        if (entrada == null) throw new IllegalStateException("Lexema no encontrado en la TS");
-        entrada.setTipo(tipo);
     }
 
     public String getUsoEntrada(String lexema) {
@@ -168,13 +140,6 @@ public class TablaSimbolos {
         Celda entrada = tablaSimb.get(lexema);
         if (entrada == null) throw new IllegalStateException("Lexema no encontrado en la TS");
         entrada.setUso(uso);
-    }
-
-    public void setAmbitoEntrada(String lexema, String ambito){
-        Celda entrada = tablaSimb.remove(lexema);
-        if (entrada == null) throw new IllegalStateException("Lexema no encontrado en la TS");
-        entrada.setAmbito(ambito);
-        tablaSimb.put(entrada.getLexema(),entrada);
     }
 
     public boolean isEntradaDeclarada(String lexema){
@@ -240,16 +205,5 @@ public class TablaSimbolos {
             throw new IllegalStateException("Lexema del parametro '"+entrada.getParam(i)+"'no encontrado en la TS");
 
         return entradaParam.getLexema();
-    }
-
-    public String getTipoParam(String lexema, int i){
-        Celda entrada = tablaSimb.get(lexema);
-        if (entrada == null) throw new IllegalStateException("Lexema no encontrado en la TS");
-
-        Celda entradaParam = tablaSimb.get(entrada.getParam(i));
-        if (entradaParam == null)
-            throw new IllegalStateException("Lexema del parametro '"+entrada.getParam(i)+"'no encontrado en la TS");
-
-        return entradaParam.getTipo();
     }
 }

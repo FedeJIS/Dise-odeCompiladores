@@ -3,18 +3,12 @@ package analizador_sintactico;
 
 import analizador_lexico.AnalizadorLexico;
 import analizador_sintactico.util.ParserHelper;
-import analizador_sintactico.util.InfoProc;
 import generacion_c_intermedio.MultiPolaca;
 import generacion_c_intermedio.PilaAmbitos;
 import generacion_c_intermedio.Polaca;
 import util.TablaNotificaciones;
 import util.tabla_simbolos.Celda;
 import util.tabla_simbolos.TablaSimbolos;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
 %}
 
 %token ID, COMP_MENOR_IGUAL, COMP_MAYOR_IGUAL, COMP_DISTINTO, COMP_IGUAL, UINT, DOUBLE, CADENA, IF , THEN, ELSE, END_IF,  LOOP, UNTIL, OUT , PROC , VAR,  NI, CTE_UINT, CTE_DOUBLE
@@ -142,10 +136,19 @@ termino	: termino '*' factor {helper.agregarPasosRepr("*");}
      	;	
 		
 factor 	: ID {helper.lecturaFactor($1.sval);}
-		| CTE_UINT {helper.agregarPasosRepr($1.sval);}
-		| CTE_DOUBLE {helper.agregarPasosRepr($1.sval);}
+		| CTE_UINT {helper.agregarPasosRepr($1.sval);helper.setTipoUltimoFactor("UINT");}
+		| CTE_DOUBLE {helper.agregarPasosRepr($1.sval);helper.setTipoUltimoFactor("DOUBLE");}
 		| '-' factor    {helper.cambioSignoFactor(yylval.sval);}
 		;
+
+print	: OUT '(' imprimible ')'
+        | OUT '(' imprimible
+        | OUT '(' error ')'
+		;
+
+imprimible	: CADENA {helper.agregarPasosRepr($1.sval, "OUT_CAD");}
+			| factor {helper.impresionFactor();}
+			;
 		
 loop	: encab_loop cuerpo_loop cuerpo_until
 		;
@@ -209,21 +212,8 @@ rama_then_prima : THEN bloque_estruct_ctrl {helper.puntoControlFinCondicional();
 rama_else	: ELSE bloque_estruct_ctrl {helper.puntoControlFinCondicional();}
             | ELSE {yyerror("Falta el bloque de sentencias ejecutables de la rama ELSE.");}
 			;
-			
-print	: OUT '(' imprimible ')'
-        | OUT '(' imprimible
-        | OUT '(' error ')'
-		;
-		
-imprimible	: CADENA {}
-			| CTE_UINT {}
-
-			| CTE_DOUBLE {}
-			| ID {}
-			;
 
 %%
-
     private final ParserHelper helper;
 
     private final AnalizadorLexico aLexico;
@@ -252,28 +242,12 @@ imprimible	: CADENA {}
         TablaNotificaciones.agregarError(aLexico.getLineaActual(), mensajeError);
     }
 
-  //---OUT---
+    //---POLACA---
 
-  private String tipoImpresion; //Almacena temporalmente el tipo de dato que debe imprimirse.
+    public Polaca getPolacaProgram() {
+        return polacaProgram;
+    }
 
-  //---POLACA---
-
-  private void quitarUltimoPasoRepr() {
-    if (pilaAmbitos.inAmbitoGlobal())
-      polacaProgram.quitarUltimoPaso();
-    else polacaProcedimientos.quitarUltimoPaso(pilaAmbitos.getAmbitoActual());
-  }
-
-  private void agregarPasosRepr(String... pasos) {
-    if (pilaAmbitos.inAmbitoGlobal())
-      polacaProgram.agregarPasos(pasos);
-    else polacaProcedimientos.agregarPasos(pilaAmbitos.getAmbitoActual(), pasos);
-  }
-
-  public Polaca getPolacaProgram() {
-    return polacaProgram;
-  }
-
-  public MultiPolaca getPolacaProcs() {
-    return polacaProcedimientos;
-  }
+    public MultiPolaca getPolacaProcs() {
+        return polacaProcedimientos;
+    }

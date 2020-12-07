@@ -4,6 +4,7 @@ import analizador_sintactico.Parser;
 import generacion_c_intermedio.MultiPolaca;
 import generacion_c_intermedio.Polaca;
 import util.TablaNotificaciones;
+import util.tabla_simbolos.Celda;
 import util.tabla_simbolos.TablaSimbolos;
 
 import java.util.ArrayList;
@@ -104,8 +105,8 @@ public class GeneradorAssembler {
                     break;
                 case "OUT_CAD":
                     op = pilaOps.remove(pilaOps.size() - 1);
-                    op = "_CAD_"+op.substring(1, op.length()-1);
-                    asm.add("invoke printf, cfm$(\"%s\\n\"),OFFSET "+op + '\n');
+                    op = "_CAD_"+op.substring(1, op.length()-1).replace(' ', '_')+" "; //Agrega esp al final.
+                    asm.add("invoke printf, cfm$(\"%s\\n\"), OFFSET "+op + '\n');
                     break;
 
                 default:
@@ -612,11 +613,11 @@ public class GeneradorAssembler {
     }
 
     private static String getPrefijo(String op) {
-        if (esRegistro(op)) return "";
-        if (tablaS.getUsoEntrada(op).equals("Variable")
-                && !op.startsWith("@")) return "_";
+        if (esRegistro(op)) return ""; //Regs
+        if (op.startsWith("@")) return ""; //Auxs
+        if (tablaS.getTipoEntrada(op).equals(Celda.TIPO_UINT)) return ""; //Ctes uint.
 
-        return "";
+        return "_"; //Ctes double o vars.
     }
 
     //---OTRAS UTILIDADES---

@@ -10,7 +10,6 @@ import util.tabla_simbolos.Celda;
 import util.tabla_simbolos.TablaSimbolos;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ParserHelper {
@@ -110,6 +109,15 @@ public class ParserHelper {
         }
     }
 
+    private String tipoUltimoFactor;
+
+    private boolean factorCte;
+
+    public void setTipoUltimoFactor(String tipoUltimoFactor) {
+        this.tipoUltimoFactor = tipoUltimoFactor;
+        factorCte = true;
+    }
+
     /**
      * Invocado cuando se lee un factor.
      */
@@ -130,17 +138,19 @@ public class ParserHelper {
                 "Un procedimiento no puede ser usado como operador.");
         else { //Asignacion valida.
             agregarPasosRepr(nLexema);
+            factorCte = false;
+            tipoUltimoFactor = tablaS.getTipoEntrada(nLexema);
             tablaS.agregarReferencia(nLexema);
         }
     }
 
     public void cambioSignoFactor(String lexemaSignoNoC){
-        if (tablaS.getTipoEntrada(lexemaSignoNoC).equals(Celda.TIPO_UINT)) //Check UINT negativo.
+        if (factorCte && tablaS.getTipoEntrada(lexemaSignoNoC).equals(Celda.TIPO_UINT)) //Check UINT negativo.
             TablaNotificaciones.agregarError(aLexico.getLineaActual(), "No se permiten UINT negativos");
         else{
             quitarUltimoPasoRepr(); //Saco de la polaca el factor que quedo con signo incorrecto.
 
-            if (tablaS.esEntradaCte(lexemaSignoNoC)){
+            if (factorCte){
                 tablaS.quitarReferencia(lexemaSignoNoC); //El lexema esta en la TS si o si. refs--.
 
                 String lexemaSignoC = String.valueOf(Double.parseDouble(lexemaSignoNoC) * -1); //Cambio el signo del factor.
@@ -347,6 +357,12 @@ public class ParserHelper {
         }
         tablaS.quitarReferencia(lexema);
         listaParamsInvoc.clear();
+    }
+
+    //---OUT---
+
+    public void impresionFactor(){
+        agregarPasosRepr("OUT_"+ tipoUltimoFactor);
     }
 
     //---POLACA---
