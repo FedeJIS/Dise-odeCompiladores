@@ -104,13 +104,18 @@ sentencia_ejec	: invocacion
 invocacion	: ID '(' ')' {helper.invocacionProc($1.sval);}
 			| ID '(' lista_params_inv ')' {helper.invocacionProc($1.sval);}
 			;
+
+param_inv   : ID {helper.guardaParamsInvoc($1.sval);}
+            | CTE_UINT {helper.guardaParamsInvoc($1.sval);}
+            | CTE_DOUBLE {helper.guardaParamsInvoc($1.sval);}
+            ;
 			
-lista_params_inv	: ID {helper.guardaParamsInvoc($1.sval);}
-					| ID separador_variables ID {helper.guardaParamsInvoc($1.sval, $3.sval);}
-					| ID separador_variables ID separador_variables ID {helper.guardaParamsInvoc($1.sval, $3.sval, $5.sval);}
-					| ID separador_variables ID separador_variables ID separador_variables lista_params_inv
+lista_params_inv	: param_inv {}
+					| param_inv separador_variables param_inv {}
+					| param_inv separador_variables param_inv separador_variables param_inv {}
+					| param_inv separador_variables param_inv separador_variables param_inv separador_variables lista_params_inv
                                                     {
-                                                    helper.guardaParamsInvoc($1.sval, $3.sval, $5.sval);
+
                                                     yyerror("Un procedimiento no puede tener mas de 3 parametros.");
                                                     }
                     ;
@@ -205,34 +210,16 @@ rama_else	: ELSE bloque_estruct_ctrl {puntoControlFinCondicional();}
             | ELSE {yyerror("Falta el bloque de sentencias ejecutables de la rama ELSE.");}
 			;
 			
-print	: OUT '(' imprimible ')' {agregarPasosRepr(tipoImpresion);}
-        | OUT '(' imprimible {yyerror("Falta parentesis de cierre de la sentencia OUT.");}
-        | OUT '(' error ')' {yyerror("El contenido de la sentencia OUT no es valido.");}
+print	: OUT '(' imprimible ')'
+        | OUT '(' imprimible
+        | OUT '(' error ')'
 		;
 		
-imprimible	: CADENA {
-                    tipoImpresion = "OUT_CAD";
-                    if (pilaAmbitos.inAmbitoGlobal()) polacaProgram.agregarPasos($1.sval);
-                    else polacaProcedimientos.agregarPasos(pilaAmbitos.getAmbitosConcatenados(),$1.sval);
-                    }
-			| CTE_UINT {
-                    tipoImpresion = "OUT_UINT";
-                    if (pilaAmbitos.inAmbitoGlobal()) polacaProgram.agregarPasos($1.sval);
-                    else polacaProcedimientos.agregarPasos(pilaAmbitos.getAmbitosConcatenados(),$1.sval);
-                    }
+imprimible	: CADENA {}
+			| CTE_UINT {}
 
-			| CTE_DOUBLE {
-                        tipoImpresion = "OUT_DOU";
-                        if (pilaAmbitos.inAmbitoGlobal()) polacaProgram.agregarPasos($1.sval);
-                        else polacaProcedimientos.agregarPasos(pilaAmbitos.getAmbitosConcatenados(),$1.sval);
-                        }
-			| ID {
-                  String nLexema = getAmbitoId(val_peek(0).sval) + "@" + val_peek(0).sval;
-                  tipoImpresion = "OUT_" + tablaS.getTipo(nLexema);
-
-                  if (pilaAmbitos.inAmbitoGlobal()) polacaProgram.agregarPasos(nLexema);
-                  else polacaProcedimientos.agregarPasos(pilaAmbitos.getAmbitosConcatenados(),nLexema);
-			    }
+			| CTE_DOUBLE {}
+			| ID {}
 			;
 
 %%

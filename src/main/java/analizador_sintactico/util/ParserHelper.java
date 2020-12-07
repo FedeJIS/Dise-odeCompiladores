@@ -154,12 +154,12 @@ public class ParserHelper {
         //Es un remove pq ya no se necesita almacenar mas la info.
         InfoProc infoProc = pilaInfoProc.remove(pilaInfoProc.size() - 1);
 
-        String ambito = pilaAmbitos.getAmbitoActual();
+        String ambito = getAmbitoId(infoProc.getLexema());
 
         if (infoProc.isInfoValida()) {
-            tablaS.setMaxInvoc(PilaAmbitos.aplicaNameManglin(ambito, ""), infoProc.getNumInvoc());
-            tablaS.setParamsProc(PilaAmbitos.aplicaNameManglin(ambito, ""), infoProc.getParams());
-        } else { //Limpia la TS sacando aquellos simbolos que no asociados al procedimiento invalido.
+            tablaS.setMaxInvoc(PilaAmbitos.aplicaNameManglin(ambito, infoProc.getLexema()), infoProc.getNumInvoc());
+            tablaS.setParamsProc(PilaAmbitos.aplicaNameManglin(ambito, infoProc.getLexema()), infoProc.getParams());
+        } else { //Limpia la TS sacando aquellos simbolos asociados al procedimiento invalido.
             tablaS.quitarReferencia(PilaAmbitos.aplicaNameManglin(ambito, infoProc.getLexema()));
             for (String lexemaParam : infoProc.getParams()) tablaS.quitarReferencia(lexemaParam);
         }
@@ -176,13 +176,9 @@ public class ParserHelper {
      * Guarda los lexemas de los parametros recibidos en una invocacion a un procedimiento.
      */
     public void guardaParamsInvoc(String... lexemaParams) {
-        for (String paramReal : lexemaParams)
-            listaParamsInvoc.add(PilaAmbitos.aplicaNameManglin(pilaAmbitos.getAmbitoActual(), paramReal));
-    }
-
-    private boolean isNotLlamadoRecursivo(String lexema, String ambito){
-        if (pilaAmbitos.inAmbitoGlobal()) return true;
-        return !ambito.substring(ambito.lastIndexOf("@")).equals(lexema);
+        if (listaParamsInvoc.size() < 3) for (String paramReal : lexemaParams)
+            if (tablaS.esEntradaCte(paramReal)) listaParamsInvoc.add(paramReal);
+            else listaParamsInvoc.add(PilaAmbitos.aplicaNameManglin(pilaAmbitos.getAmbitoActual(), paramReal));
     }
 
     /**
@@ -202,6 +198,26 @@ public class ParserHelper {
         return true;
     }
 
+    private boolean comparaParams(int nParam, String paramReal, String paramFormal){
+        boolean validos = true;
+        //Chequea que el param formal no tenga pasaje CVR y el param real sea una cte.
+        if (tablaS.isEntradaParamCVR(paramFormal) && tablaS.esEntradaCte(paramReal)){
+            validos = false;
+            TablaNotificaciones.agregarError(aLexico.getLineaActual(),
+                    String.format("En la posicion %d se esperaba una variable, pero se encontro una constante.", nParam));
+        }
+
+        //Compara tipos de parametros.
+        if (!tablaS.getTipoEntrada(paramReal).equals(tablaS.getTipoEntrada(paramFormal))){
+            validos = false;
+            TablaNotificaciones.agregarError(aLexico.getLineaActual(),
+                    String.format("En la posicion %d se esperaba un %s, pero se encontro un %s.",
+                            nParam, tablaS.getTipoEntrada(paramReal), tablaS.getTipoEntrada(paramFormal)));
+        }
+
+        return validos;
+    }
+
     /**
      * Chequea que los tipos de los params formales y reales coincidan.
      */
@@ -217,14 +233,7 @@ public class ParserHelper {
 
         //Check tipos parametros. Compara tantos parametros como sea posible.
         for (int i = 0; i < tablaS.getNParams(lexemaProc) && i < paramsReales.size(); i++) {
-            String tipoParamInvoc = tablaS.getTipoEntrada(listaParamsInvoc.get(i));
-            String tipoParamDecl = tablaS.getTipoParam(lexemaProc, i);
-            if (!tipoParamInvoc.equals(tipoParamDecl)) {
-                TablaNotificaciones.agregarError(aLexico.getLineaActual(),
-                        "En la posicion " + (i + 1) + " se esperaba un " + tipoParamDecl
-                                + ", pero se encontro un " + tipoParamInvoc + ".");
-                validos = false;
-            }
+            validos = comparaParams(i+1, listaParamsInvoc.get(i), tablaS.getParam(lexemaProc, i));
         }
 
         return validos;
@@ -237,13 +246,8 @@ public class ParserHelper {
 
         String nLexema = PilaAmbitos.aplicaNameManglin(ambito, lexema);
 
-        //Recursion.
-//        if (isNotLlamadoRecursivo(lexema, ambito)) nLexema = PilaAmbitos.aplicaNameManglin(ambito, lexema);
-//        else nLexema = ambito;
-
         //Hago el check de NI y params solo si es un id valido para la invocacion (esta declarado y es un proc).
         if (invocValida) {
-            System.out.println(lexema + " " + ambito + " " + nLexema);
             if (tablaS.maxInvocAlcanzadas(nLexema)) { //Check NI no superado.
                 invocValida = false;
                 TablaNotificaciones.agregarError(aLexico.getLineaActual(),

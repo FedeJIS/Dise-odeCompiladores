@@ -25,3 +25,16 @@
 "PROC x(VAR DOUBLE f, VAR DOUBLE g, DOUBLE h) NI = 0_ui{" + '\n' +
     "OUT(5_ui);" + '\n' +
 "};"
+
+//Param CVR es una cte.
+"PROC x(VAR DOUBLE f) NI = 1_ui{" + '\n' +
+    "OUT(5_ui);" + '\n' +
+"};" + '\n' +
+"x(5.0d1);"
+
+//Param CVR es una cte.
+"PROC x(VAR DOUBLE f, VAR DOUBLE g, DOUBLE h) NI = 1_ui{" + '\n' +
+    "OUT(5_ui);" + '\n' +
+"};" + '\n' +
+"DOUBLE w, y, z;" + '\n' +
+"x(7.2d11,y,7.2d11, z);"
