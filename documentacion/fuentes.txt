@@ -38,3 +38,28 @@
 "};" + '\n' +
 "DOUBLE w, y, z;" + '\n' +
 "x(7.2d11,y,7.2d11, z);"
+
+//Caso que no andaba.
+"DOUBLE a;" + '\n' +
+"PROC x() NI = 1_ui{" + '\n' +
+    "OUT(\"en x\");" + '\n' +
+"};" + '\n' +
+"a = 10.;" + '\n' +
+"LOOP {" + '\n' +
+    "OUT(a);" + '\n' +
+    "a = a - 1.;" + '\n' +
+    "x();" + '\n' +
+"}UNTIL (a == 0.);"
+
+//Otro caso que no andaba.
+"PROC lala(DOUBLE a, DOUBLE a , DOUBLE a, DOUBLE a) NI = 5_ui {" + '\n' +
+    "a = a;" + '\n' +
+    "a = a;" + '\n' +
+"};"
+
+//Otro caso que no andaba.
+"UINT a,b,c,d;" + '\n' +
+                "PROC lala(UINT e,UINT f,UINT g) NI = 3_ui{" + '\n' +
+                    "OUT(\"lala\");" + '\n' +
+                "};" + '\n' +
+                "lala(3_ui,c,d);"

@@ -159,9 +159,6 @@ public class ParserHelper {
         if (infoProc.isInfoValida()) {
             tablaS.setMaxInvoc(PilaAmbitos.aplicaNameManglin(ambito, infoProc.getLexema()), infoProc.getNumInvoc());
             tablaS.setParamsProc(PilaAmbitos.aplicaNameManglin(ambito, infoProc.getLexema()), infoProc.getParams());
-        } else { //Limpia la TS sacando aquellos simbolos asociados al procedimiento invalido.
-            tablaS.quitarReferencia(PilaAmbitos.aplicaNameManglin(ambito, infoProc.getLexema()));
-            for (String lexemaParam : infoProc.getParams()) tablaS.quitarReferencia(lexemaParam);
         }
     }
 
