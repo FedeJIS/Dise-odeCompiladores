@@ -59,7 +59,46 @@
 
 //Otro caso que no andaba.
 "UINT a,b,c,d;" + '\n' +
-                "PROC lala(UINT e,UINT f,UINT g) NI = 3_ui{" + '\n' +
-                    "OUT(\"lala\");" + '\n' +
-                "};" + '\n' +
-                "lala(3_ui,c,d);"
+"PROC lala(UINT e,UINT f,UINT g) NI = 3_ui{" + '\n' +
+    "OUT(\"lala\");" + '\n' +
+"};" + '\n' +
+"lala(3_ui,c,d);"
+
+//Varias asignaciones.
+"UINT a; DOUBLE b;" + '\n' +
+"a = a;" + '\n' +
+"a = 5_ui;" + '\n' +
+"b = a;" + '\n' +
+"b = 5.0d-1;" + '\n' +
+"b = -5.0d-1;"
+
+//Lado izq asignacion no valido.
+"a = 5_ui;" + '\n' +
+"PROC lala() NI = 1_ui {" + '\n' +
+    "DOUBLE a;" + '\n' +
+"};" + '\n' +
+"a = 5_ui;" + '\n' +
+"lala = 5_ui;"
+
+//Factor no valido.
+"DOUBLE b;" + '\n' +
+"PROC lala() NI = 1_ui {" + '\n' +
+    "DOUBLE a;" + '\n' +
+"};" + '\n' +
+"b = b * c;" + '\n' +
+"b = c;" + '\n' +
+"b = lala();" + '\n' +
+"b = lala;" + '\n' +
+"b = lala * b;"
+
+//Doubles negativos.
+"DOUBLE b;" + '\n' +
+"b = 5.0d-1;" + '\n' +
+"b = -5.0d-1;" + '\n' +
+"b = -b;" + '\n' +
+"b = -5.0d1 * -b;"
+
+//Uints negativos.
+"UINT x;" + '\n' +
+"x = -1_ui;" + '\n' +
+"x = -1;"

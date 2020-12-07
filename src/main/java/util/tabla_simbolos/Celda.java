@@ -10,7 +10,9 @@ public class Celda {
     public static final String USO_VAR = "Var";
     public static final String USO_PARAM_CVR = "ParamCVR";
     public static final String USO_PARAM_CV = "ParamCV";
-    private static final String USO_CTE = "CTE";
+    public static final String TIPO_UINT = "UINT";
+    public static final String TIPO_DOUBLE = "DOUBLE";
+    public static final String USO_CTE = "CTE";
 
     /**
      * Atributos comunes.
@@ -32,6 +34,7 @@ public class Celda {
         this.token = token;
         this.lexema = lexema;
         this.tipo = tipo;
+        this.declarada = true;
         this.referencias = 0;
     }
 

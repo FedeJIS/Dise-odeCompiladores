@@ -84,6 +84,78 @@ public class ParserHelper {
         }
     }
 
+    //---ASIGNACION---
+
+    /**
+     * Invocado cuando se lee el lado izq de una asignacion.
+     */
+    public void lecturaDestAsign(String lexema){
+        tablaS.quitarReferencia(lexema);
+
+        String ambito = getAmbitoId(lexema);
+        if (!isIdDecl(lexema, ambito)){ //Variable destino no declarada.
+            TablaNotificaciones.agregarError(aLexico.getLineaActual(),
+                    "La variable '" + lexema + "' no esta declarada.");
+            return;
+        }
+
+        String nLexema = PilaAmbitos.aplicaNameManglin(ambito, lexema);
+
+        //Esta declarado pero es un procedimiento.
+        if (tablaS.isEntradaProc(nLexema)) TablaNotificaciones.agregarError(aLexico.getLineaActual(),
+                "Un procedimiento no puede estar a la izquierda una asignacion.");
+        else { //Asignacion valida.
+            agregarPasosRepr(nLexema, "=");
+            tablaS.agregarReferencia(nLexema);
+        }
+    }
+
+    /**
+     * Invocado cuando se lee un factor.
+     */
+    public void lecturaFactor(String lexema){
+        tablaS.quitarReferencia(lexema);
+
+        String ambito = getAmbitoId(lexema);
+        if (!isIdDecl(lexema, ambito)){ //Variable destino no declarada.
+            TablaNotificaciones.agregarError(aLexico.getLineaActual(),
+                    "La variable '" + lexema + "' no esta declarada.");
+            return;
+        }
+
+        String nLexema = PilaAmbitos.aplicaNameManglin(ambito, lexema);
+
+        //Esta declarado pero es un procedimiento.
+        if (tablaS.isEntradaProc(nLexema)) TablaNotificaciones.agregarError(aLexico.getLineaActual(),
+                "Un procedimiento no puede ser usado como operador.");
+        else { //Asignacion valida.
+            agregarPasosRepr(nLexema);
+            tablaS.agregarReferencia(nLexema);
+        }
+    }
+
+    public void cambioSignoFactor(String lexemaSignoNoC){
+        if (tablaS.getTipoEntrada(lexemaSignoNoC).equals(Celda.TIPO_UINT)) //Check UINT negativo.
+            TablaNotificaciones.agregarError(aLexico.getLineaActual(), "No se permiten UINT negativos");
+        else{
+            quitarUltimoPasoRepr(); //Saco de la polaca el factor que quedo con signo incorrecto.
+
+            if (tablaS.esEntradaCte(lexemaSignoNoC)){
+                tablaS.quitarReferencia(lexemaSignoNoC); //El lexema esta en la TS si o si. refs--.
+
+                String lexemaSignoC = String.valueOf(Double.parseDouble(lexemaSignoNoC) * -1); //Cambio el signo del factor.
+                tablaS.agregarEntrada(Parser.CTE_DOUBLE, lexemaSignoC, Celda.TIPO_DOUBLE);
+                tablaS.setUsoEntrada(lexemaSignoC, Celda.USO_CTE);
+
+                agregarPasosRepr(lexemaSignoC); //Agrego a la polaca el factor con el signo que le corresponde.
+            } else {
+                String ambito = getAmbitoId(lexemaSignoNoC);
+                agregarPasosRepr(PilaAmbitos.aplicaNameManglin(ambito, lexemaSignoNoC), "-1", "*");
+            }
+        }
+
+    }
+
     //---DECLARACION PROCS---
 
     /**
@@ -195,6 +267,9 @@ public class ParserHelper {
         return true;
     }
 
+    /**
+     * Compara parametro real y formal, y determina su validez.
+     */
     private boolean comparaParams(int nParam, String paramReal, String paramFormal){
         boolean validos = true;
         //Chequea que el param formal no tenga pasaje CVR y el param real sea una cte.
@@ -236,6 +311,9 @@ public class ParserHelper {
         return validos;
     }
 
+    /**
+     * Invocado cuando se lee un llamado a un procedimiento.
+     */
     public void invocacionProc(String lexema) {
         String ambito = getAmbitoId(lexema);
 
@@ -271,7 +349,6 @@ public class ParserHelper {
         listaParamsInvoc.clear();
     }
 
-
     //---POLACA---
 
     private void quitarUltimoPasoRepr() {
@@ -280,37 +357,37 @@ public class ParserHelper {
         else polacaProcedimientos.quitarUltimoPaso(pilaAmbitos.getAmbitoActual());
     }
 
-    private void agregarPasosRepr(String... pasos) {
+    public void agregarPasosRepr(String... pasos) {
         if (pilaAmbitos.inAmbitoGlobal())
             polacaProgram.agregarPasos(pasos);
         else polacaProcedimientos.agregarPasos(pilaAmbitos.getAmbitoActual(), pasos);
     }
 
-    private void puntoControlThen() {
+    public void puntoControlThen() {
         if (pilaAmbitos.inAmbitoGlobal())
             polacaProgram.puntoControlThen();
         else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitoActual(), Polaca.PC_THEN);
     }
 
-    private void puntoControlElse() {
+    public void puntoControlElse() {
         if (pilaAmbitos.inAmbitoGlobal())
             polacaProgram.puntoControlElse();
         else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitoActual(), Polaca.PC_ELSE);
     }
 
-    private void puntoControlFinCondicional() {
+    public void puntoControlFinCondicional() {
         if (pilaAmbitos.inAmbitoGlobal())
             polacaProgram.puntoControlFinCondicional();
         else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitoActual(), Polaca.PC_FIN_COND);
     }
 
-    private void puntoControlLoop() {
+    public void puntoControlLoop() {
         if (pilaAmbitos.inAmbitoGlobal())
             polacaProgram.puntoControlLoop();
         else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitoActual(), Polaca.PC_LOOP);
     }
 
-    private void puntoControlUntil() {
+    public void puntoControlUntil() {
         if (pilaAmbitos.inAmbitoGlobal())
             polacaProgram.puntoControlUntil();
         else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitoActual(), Polaca.PC_UNTIL);

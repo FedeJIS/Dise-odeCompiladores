@@ -97,7 +97,8 @@ public class TablaSimbolos {
     public void agregarEntrada(int token, String lexema, String tipo) {
         Celda celda;
 
-        if (tablaSimb.containsKey(lexema)) celda = getEntrada(lexema); //Si el lexema existe extraigo la celda para actualizar las referencias
+        if (tablaSimb.containsKey(lexema))  //Si el lexema existe extraigo la celda para actualizar las referencias
+            celda = getEntrada(lexema);
         else {//Si no existe creo una nueva y la inserto.
             celda = new Celda(token, lexema, tipo);
             tablaSimb.put(lexema, celda);
@@ -127,6 +128,11 @@ public class TablaSimbolos {
 
     public boolean entradaSinReferencias(String lexema) {
         return getEntrada(lexema).sinReferencias();
+    }
+
+    public void agregarReferencia(String lexema){
+        Celda celda = tablaSimb.get(lexema);
+        celda.actualizarReferencias(1); //refs++
     }
 
     public void quitarReferencia(String lexema) {

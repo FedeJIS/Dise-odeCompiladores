@@ -63,7 +63,8 @@ params_proc	: '(' lista_params_decl ')'
 lista_params_decl	: param
 					| param separador_variables param
 					| param separador_variables param separador_variables param
-					| param separador_variables param separador_variables param separador_variables lista_params_decl {yyerror("Un procedimiento no puede tener mas de 3 parametros.");}
+					| param separador_variables param separador_variables param separador_variables lista_params_decl
+					                                {yyerror("Un procedimiento no puede tener mas de 3 parametros.");}
 					;
 
 separador_variables	:       {yyerror("Falta una ',' para separar dos parametros.");}
@@ -110,49 +111,46 @@ param_inv   : ID {helper.guardaParamsInvoc($1.sval);}
             | CTE_DOUBLE {helper.guardaParamsInvoc($1.sval);}
             ;
 			
-lista_params_inv	: param_inv {}
-					| param_inv separador_variables param_inv {}
-					| param_inv separador_variables param_inv separador_variables param_inv {}
+lista_params_inv	: param_inv
+					| param_inv separador_variables param_inv
+					| param_inv separador_variables param_inv separador_variables param_inv
 					| param_inv separador_variables param_inv separador_variables param_inv separador_variables lista_params_inv
-                                                    {
-
-                                                    yyerror("Un procedimiento no puede tener mas de 3 parametros.");
-                                                    }
+                                                    {yyerror("Un procedimiento no puede tener mas de 3 parametros.");}
                     ;
 
-asignacion	: ID '=' expresion {checkValidezAsign($1.sval);}
+asignacion	: ID '=' expresion {helper.lecturaDestAsign($1.sval);}
             | ID '=' error {
-                            checkValidezAsign($1.sval);
+                            helper.lecturaDestAsign($1.sval);
                             yyerror("El lado derecho de la asignacio no es valido.");
                             }
             | ID {
-                    checkValidezAsign($1.sval);
+                    helper.lecturaDestAsign($1.sval);
                     yyerror("Un identificador en solitario no es una sentencia valida.");
                     }
             | error '=' expresion {yyerror("El lado izquierdo de la asignacion no es valido");}
 
             ;
 			
-expresion	: expresion '+' termino {agregarPasosRepr("+");}
-			| expresion '-' termino {agregarPasosRepr("-");}
+expresion	: expresion '+' termino {helper.agregarPasosRepr("+");}
+			| expresion '-' termino {helper.agregarPasosRepr("-");}
 	        | termino
 			;
     		
-termino	: termino '*' factor {agregarPasosRepr("*");}
-		| termino '/' factor {agregarPasosRepr("/");}
+termino	: termino '*' factor {helper.agregarPasosRepr("*");}
+		| termino '/' factor {helper.agregarPasosRepr("/");}
 		| factor
      	;	
 		
-factor 	: ID {checkValidezFactor($1.sval);}
-		| CTE_UINT {agregarPasosRepr($1.sval);}
-		| CTE_DOUBLE {agregarPasosRepr($1.sval);}
-		| '-' factor    {checkCambioSigno();}
+factor 	: ID {helper.lecturaFactor($1.sval);}
+		| CTE_UINT {helper.agregarPasosRepr($1.sval);}
+		| CTE_DOUBLE {helper.agregarPasosRepr($1.sval);}
+		| '-' factor    {helper.cambioSignoFactor(yylval.sval);}
 		;
 		
 loop	: encab_loop cuerpo_loop cuerpo_until
 		;
 
-encab_loop  : LOOP {puntoControlLoop();}
+encab_loop  : LOOP {helper.puntoControlLoop();}
             ;
 		
 cuerpo_loop	: bloque_estruct_ctrl
@@ -167,15 +165,17 @@ bloque_estruct_ctrl	: sentencia_ejec fin_sentencia
 
 bloque_sentencias_ejec	: sentencia_ejec fin_sentencia
 						| sentencia_ejec fin_sentencia bloque_sentencias_ejec
-					    | sentencia_decl fin_sentencia {yyerror("No se permiten sentencias declarativas dentro de un bloque de estructura de control.");}
-					    | sentencia_decl fin_sentencia bloque_sentencias_ejec {yyerror("No se permiten sentencias declarativas dentro de un bloque de estructura de control.");}
+					    | sentencia_decl fin_sentencia
+					        {yyerror("No se permiten sentencias declarativas dentro de un bloque de estructura de control.");}
+					    | sentencia_decl fin_sentencia bloque_sentencias_ejec
+					        {yyerror("No se permiten sentencias declarativas dentro de un bloque de estructura de control.");}
 						;
 
-cuerpo_until	: UNTIL condicion {puntoControlUntil();}
+cuerpo_until	: UNTIL condicion {helper.puntoControlUntil();}
                 | UNTIL {yyerror("Falta la condicion de corte del LOOP.");}
                 ;
 
-condicion	: '(' expresion comparador expresion ')' {agregarPasosRepr($3.sval);}
+condicion	: '(' expresion comparador expresion ')' {helper.agregarPasosRepr($3.sval);}
             | '(' expresion comparador expresion {yyerror("Falta parentesis de cierre de la condicion.");}
             | '(' comparador expresion ')' {yyerror("Falta expresion en el lado izquierdo de la condicion.");}
             | '(' expresion comparador ')' {yyerror("Falta expresion en el lado derecho de la condicion.");}
@@ -194,19 +194,19 @@ if	: encabezado_if rama_then rama_else END_IF
 	| encabezado_if rama_then_prima END_IF
 	;
 
-encabezado_if	: IF condicion {puntoControlThen();}
+encabezado_if	: IF condicion {helper.puntoControlThen();}
                 | IF {yyerror("Falta la condicion del IF.");}
 				;
 				
-rama_then	: THEN bloque_estruct_ctrl {puntoControlElse();}
+rama_then	: THEN bloque_estruct_ctrl {helper.puntoControlElse();}
             | THEN {yyerror("Falta el bloque de sentencias ejecutables de la rama THEN.");}
 			;
 
-rama_then_prima : THEN bloque_estruct_ctrl {puntoControlFinCondicional();}
+rama_then_prima : THEN bloque_estruct_ctrl {helper.puntoControlFinCondicional();}
                 | THEN {yyerror("Falta el bloque de sentencias ejecutables de la rama THEN.");}
                 ;
 			
-rama_else	: ELSE bloque_estruct_ctrl {puntoControlFinCondicional();}
+rama_else	: ELSE bloque_estruct_ctrl {helper.puntoControlFinCondicional();}
             | ELSE {yyerror("Falta el bloque de sentencias ejecutables de la rama ELSE.");}
 			;
 			
@@ -223,6 +223,7 @@ imprimible	: CADENA {}
 			;
 
 %%
+
     private final ParserHelper helper;
 
     private final AnalizadorLexico aLexico;
@@ -251,73 +252,6 @@ imprimible	: CADENA {}
         TablaNotificaciones.agregarError(aLexico.getLineaActual(), mensajeError);
     }
 
-    private void checkCambioSigno() {
-        String lexemaSignoNoC = yylval.sval; //Obtengo el lexema del factor.
-        Celda celdaOriginal = tablaS.getEntrada(lexemaSignoNoC); //La sentencia va aca si o si, porque mas adelante ya no existe la entrada en la TS.
-
-        if (celdaOriginal.getTipo().equals("DOUBLE")) {
-            tablaS.quitarReferencia(lexemaSignoNoC); //El lexema esta en la TS si o si. refs--.
-            if (tablaS.entradaSinReferencias(lexemaSignoNoC)) tablaS.eliminarEntrada(lexemaSignoNoC);
-
-            String lexemaSignoC = String.valueOf(Double.parseDouble(lexemaSignoNoC) * -1); //Cambio el signo del factor.
-
-            quitarUltimoPasoRepr(); //Saco el factor que quedo con signo incorrecto.
-            agregarPasosRepr(lexemaSignoC); //Agrego el factor con el signo que le corresponde.
-
-            tablaS.agregarEntrada(celdaOriginal.getToken(), lexemaSignoC, celdaOriginal.getTipo());
-            tablaS.setUsoEntrada(lexemaSignoC, "CTE");
-        } else TablaNotificaciones.agregarError(aLexico.getLineaActual(), "No se permiten UINT negativos");
-    }
-
-    private String getAmbitoId(String lexema) {
-        StringBuilder builderAmbito = new StringBuilder(pilaAmbitos.getAmbitoActual());
-
-        while (!builderAmbito.toString().isEmpty()) {
-            //Busca el id en el ambito actual.
-            if (tablaS.contieneLexema(PilaAmbitos.aplicaNameManglin(builderAmbito.toString(), lexema)))
-            return builderAmbito.toString();
-
-            //"Baja" un nivel en la pila de ambitos.
-            if (!builderAmbito.toString().equals("PROGRAM")) //Chequea no estar en el ambito global.
-                builderAmbito.delete(builderAmbito.lastIndexOf("@"), builderAmbito.length());
-            else builderAmbito.delete(0, builderAmbito.length());
-        }
-        return ""; //La variable no esta declarada.
-    }
-
-  private void checkValidezAsign(String lexema) {
-    String ambito = getAmbitoId(lexema);
-
-    if (ambito.isEmpty()) { //La TS no contiene el lexema recibido en ningun ambito.
-      TablaNotificaciones.agregarError(aLexico.getLineaActual(), "El identificador '" + lexema + "' no esta declarado.");
-      return; //Es necesario cortar aca para que 'ambito' no cause problemas por estar vacio.
-    }
-
-    String nLexema = ambito + "@" + lexema;
-    if (!tablaS.isEntradaDeclarada(nLexema)) //Existe el lexema en la TS y tiene el flag de declaracion desactivado.
-      TablaNotificaciones.agregarError(aLexico.getLineaActual(), "El identificador '" + lexema + "' no esta declarado.");
-
-    if (tablaS.isEntradaProc(nLexema)) //Esta declarado pero es un procedimiento.
-      TablaNotificaciones.agregarError(aLexico.getLineaActual(), "Un procedimiento no puede estar a la izquierda una asignacion.");
-
-    agregarPasosRepr(nLexema, "=");
-  }
-
-  private void checkValidezFactor(String lexema) {
-    String ambito = getAmbitoId(lexema);
-
-    if (ambito.isEmpty()) { //La TS no contiene el lexema recibido en ningun ambito.
-      TablaNotificaciones.agregarError(aLexico.getLineaActual(), "El identificador '" + lexema + "' no esta declarado.");
-      return; //Es necesario cortar aca para que 'ambito' no cause problemas por estar vacio.
-    }
-
-    String nLexema = ambito + "@" + lexema;
-    if (!tablaS.isEntradaDeclarada(nLexema)) //Existe el lexema en la TS y tiene el flag de declaracion desactivado.
-      TablaNotificaciones.agregarError(aLexico.getLineaActual(), "El identificador '" + lexema + "' no esta declarado.");
-
-    agregarPasosRepr(nLexema);
-  }
-
   //---OUT---
 
   private String tipoImpresion; //Almacena temporalmente el tipo de dato que debe imprimirse.
@@ -334,36 +268,6 @@ imprimible	: CADENA {}
     if (pilaAmbitos.inAmbitoGlobal())
       polacaProgram.agregarPasos(pasos);
     else polacaProcedimientos.agregarPasos(pilaAmbitos.getAmbitoActual(), pasos);
-  }
-
-  private void puntoControlThen() {
-    if (pilaAmbitos.inAmbitoGlobal())
-      polacaProgram.puntoControlThen();
-    else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitoActual(), Polaca.PC_THEN);
-  }
-
-  private void puntoControlElse() {
-    if (pilaAmbitos.inAmbitoGlobal())
-      polacaProgram.puntoControlElse();
-    else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitoActual(), Polaca.PC_ELSE);
-  }
-
-  private void puntoControlFinCondicional() {
-    if (pilaAmbitos.inAmbitoGlobal())
-      polacaProgram.puntoControlFinCondicional();
-    else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitoActual(), Polaca.PC_FIN_COND);
-  }
-
-  private void puntoControlLoop() {
-    if (pilaAmbitos.inAmbitoGlobal())
-      polacaProgram.puntoControlLoop();
-    else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitoActual(), Polaca.PC_LOOP);
-  }
-
-  private void puntoControlUntil() {
-    if (pilaAmbitos.inAmbitoGlobal())
-      polacaProgram.puntoControlUntil();
-    else polacaProcedimientos.ejecutarPuntoControl(pilaAmbitos.getAmbitoActual(), Polaca.PC_UNTIL);
   }
 
   public Polaca getPolacaProgram() {
