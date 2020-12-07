@@ -29,10 +29,11 @@ public class PilaAmbitos {
         for (String ambito : ambitos){
             builder.append(ambito).append("@");
         }
-        return builder.substring(0,builder.length()-1); //El '-1' elimina el ultimo '.' concatenado.
+        return builder.substring(0,builder.length()-1); //El '-1' elimina el ultimo '@' concatenado.
     }
 
     public static String aplicaNameManglin(String ambito, String lexema){
+        if (lexema.isEmpty()) return ambito;
         return ambito + "@" + lexema;
     }
 }

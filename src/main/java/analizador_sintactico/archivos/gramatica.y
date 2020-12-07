@@ -42,7 +42,7 @@ fin_sentencia	:       {TablaNotificaciones.agregarError(aLexico.getLineaActual()
 				| ';'
 				;
 			
-sentencia_decl	: nombre_proc params_proc ni_proc cuerpo_proc {helper.declaracionProc();}
+sentencia_decl	: nombre_proc params_proc ni_proc cuerpo_proc {helper.eliminarUltimoAmbito();}
 				| tipo_id lista_variables
 				;
 
@@ -166,7 +166,6 @@ bloque_sentencias_ejec	: sentencia_ejec fin_sentencia
 					    | sentencia_decl fin_sentencia bloque_sentencias_ejec {yyerror("No se permiten sentencias declarativas dentro de un bloque de estructura de control.");}
 						;
 
-//        String lexemaParam = lexema+entrada.getParam(i);
 cuerpo_until	: UNTIL condicion {puntoControlUntil();}
                 | UNTIL {yyerror("Falta la condicion de corte del LOOP.");}
                 ;

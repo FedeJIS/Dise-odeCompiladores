@@ -31,6 +31,10 @@ public class ParserHelper {
 
     //---USO GENERAL---
 
+    public void eliminarUltimoAmbito(){
+        if (!pilaAmbitos.inAmbitoGlobal()) pilaAmbitos.eliminarUltimo();
+    }
+
     private String getAmbitoId(String lexema) {
         StringBuilder builderAmbito = new StringBuilder(pilaAmbitos.getAmbitoActual());
 
@@ -138,21 +142,23 @@ public class ParserHelper {
             TablaNotificaciones.agregarError(aLexico.getLineaActual(), msgError);
             infoProc.setInfoValida(false);
         } else infoProc.setNumInvoc(numInvoc);
+
+        if (!errorGram) //Ya tengo todos los datos que necesito para declarar el proc.
+            declaracionProc();
     }
 
     /**
      * Invocado cuando se termina de leer el cuerpo de un procedimiento.
      */
     public void declaracionProc() {
-        //Remove pq ya no se necesita almacenar mas la info.
+        //Es un remove pq ya no se necesita almacenar mas la info.
         InfoProc infoProc = pilaInfoProc.remove(pilaInfoProc.size() - 1);
-        if (!pilaAmbitos.inAmbitoGlobal()) pilaAmbitos.eliminarUltimo();
 
         String ambito = pilaAmbitos.getAmbitoActual();
 
         if (infoProc.isInfoValida()) {
-            tablaS.setMaxInvoc(PilaAmbitos.aplicaNameManglin(ambito, infoProc.getLexema()), infoProc.getNumInvoc());
-            tablaS.setParamsProc(PilaAmbitos.aplicaNameManglin(ambito, infoProc.getLexema()), infoProc.getParams());
+            tablaS.setMaxInvoc(PilaAmbitos.aplicaNameManglin(ambito, ""), infoProc.getNumInvoc());
+            tablaS.setParamsProc(PilaAmbitos.aplicaNameManglin(ambito, ""), infoProc.getParams());
         } else { //Limpia la TS sacando aquellos simbolos que no asociados al procedimiento invalido.
             tablaS.quitarReferencia(PilaAmbitos.aplicaNameManglin(ambito, infoProc.getLexema()));
             for (String lexemaParam : infoProc.getParams()) tablaS.quitarReferencia(lexemaParam);
@@ -172,6 +178,11 @@ public class ParserHelper {
     public void guardaParamsInvoc(String... lexemaParams) {
         for (String paramReal : lexemaParams)
             listaParamsInvoc.add(PilaAmbitos.aplicaNameManglin(pilaAmbitos.getAmbitoActual(), paramReal));
+    }
+
+    private boolean isNotLlamadoRecursivo(String lexema, String ambito){
+        if (pilaAmbitos.inAmbitoGlobal()) return true;
+        return !ambito.substring(ambito.lastIndexOf("@")).equals(lexema);
     }
 
     /**
@@ -220,24 +231,31 @@ public class ParserHelper {
     }
 
     public void invocacionProc(String lexema) {
-        String ambito = pilaAmbitos.getAmbitoActual();
+        String ambito = getAmbitoId(lexema);
 
         boolean invocValida = isIdInvocValido(lexema, ambito);
 
         String nLexema = PilaAmbitos.aplicaNameManglin(ambito, lexema);
+
+        //Recursion.
+//        if (isNotLlamadoRecursivo(lexema, ambito)) nLexema = PilaAmbitos.aplicaNameManglin(ambito, lexema);
+//        else nLexema = ambito;
+
         //Hago el check de NI y params solo si es un id valido para la invocacion (esta declarado y es un proc).
         if (invocValida) {
+            System.out.println(lexema + " " + ambito + " " + nLexema);
             if (tablaS.maxInvocAlcanzadas(nLexema)) { //Check NI no superado.
+                invocValida = false;
                 TablaNotificaciones.agregarError(aLexico.getLineaActual(),
                         "El procedimiento '" + lexema + "' ya alcanzo su numero maximo de invocaciones.");
-                invocValida = false;
             }
-            invocValida = areParamsRealesValidos(nLexema, listaParamsInvoc);
+            invocValida = invocValida && areParamsRealesValidos(nLexema, listaParamsInvoc);
         }
 
         //Si ningun control fallo, genero las instrucciones para la invocacion.
         if (invocValida) {
             agregarPasosRepr(nLexema, Polaca.PASO_INVOC);
+            tablaS.incrementaNInvoc(nLexema);
 
             //Pasa el valor de los param formales a los reales (En caso de param CVR).
             for (int i = 0; i < tablaS.getNParams(nLexema); i++) {

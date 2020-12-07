@@ -546,7 +546,7 @@ final static String yyrule[] = {
 "imprimible : ID",
 };
 
-//#line 239 "archivos/gramatica.y"
+//#line 238 "archivos/gramatica.y"
 
     private final ParserHelper helper;
 
@@ -866,7 +866,7 @@ case 8:
 break;
 case 10:
 //#line 45 "archivos/gramatica.y"
-{helper.declaracionProc();}
+{helper.eliminarUltimoAmbito();}
 break;
 case 12:
 //#line 49 "archivos/gramatica.y"
@@ -1050,79 +1050,79 @@ case 76:
 {yyerror("No se permiten sentencias declarativas dentro de un bloque de estructura de control.");}
 break;
 case 77:
-//#line 170 "archivos/gramatica.y"
+//#line 169 "archivos/gramatica.y"
 {puntoControlUntil();}
 break;
 case 78:
-//#line 171 "archivos/gramatica.y"
+//#line 170 "archivos/gramatica.y"
 {yyerror("Falta la condicion de corte del LOOP.");}
 break;
 case 79:
-//#line 174 "archivos/gramatica.y"
+//#line 173 "archivos/gramatica.y"
 {agregarPasosRepr(val_peek(2).sval);}
 break;
 case 80:
-//#line 175 "archivos/gramatica.y"
+//#line 174 "archivos/gramatica.y"
 {yyerror("Falta parentesis de cierre de la condicion.");}
 break;
 case 81:
-//#line 176 "archivos/gramatica.y"
+//#line 175 "archivos/gramatica.y"
 {yyerror("Falta expresion en el lado izquierdo de la condicion.");}
 break;
 case 82:
-//#line 177 "archivos/gramatica.y"
+//#line 176 "archivos/gramatica.y"
 {yyerror("Falta expresion en el lado derecho de la condicion.");}
 break;
 case 83:
-//#line 178 "archivos/gramatica.y"
+//#line 177 "archivos/gramatica.y"
 {yyerror("Error en la condicion.");}
 break;
 case 92:
-//#line 193 "archivos/gramatica.y"
+//#line 192 "archivos/gramatica.y"
 {puntoControlThen();}
 break;
 case 93:
-//#line 194 "archivos/gramatica.y"
+//#line 193 "archivos/gramatica.y"
 {yyerror("Falta la condicion del IF.");}
 break;
 case 94:
-//#line 197 "archivos/gramatica.y"
+//#line 196 "archivos/gramatica.y"
 {puntoControlElse();}
 break;
 case 95:
-//#line 198 "archivos/gramatica.y"
+//#line 197 "archivos/gramatica.y"
 {yyerror("Falta el bloque de sentencias ejecutables de la rama THEN.");}
 break;
 case 96:
-//#line 201 "archivos/gramatica.y"
+//#line 200 "archivos/gramatica.y"
 {puntoControlFinCondicional();}
 break;
 case 97:
-//#line 202 "archivos/gramatica.y"
+//#line 201 "archivos/gramatica.y"
 {yyerror("Falta el bloque de sentencias ejecutables de la rama THEN.");}
 break;
 case 98:
-//#line 205 "archivos/gramatica.y"
+//#line 204 "archivos/gramatica.y"
 {puntoControlFinCondicional();}
 break;
 case 99:
-//#line 206 "archivos/gramatica.y"
+//#line 205 "archivos/gramatica.y"
 {yyerror("Falta el bloque de sentencias ejecutables de la rama ELSE.");}
 break;
 case 100:
-//#line 209 "archivos/gramatica.y"
+//#line 208 "archivos/gramatica.y"
 {agregarPasosRepr(tipoImpresion);}
 break;
 case 101:
-//#line 210 "archivos/gramatica.y"
+//#line 209 "archivos/gramatica.y"
 {yyerror("Falta parentesis de cierre de la sentencia OUT.");}
 break;
 case 102:
-//#line 211 "archivos/gramatica.y"
+//#line 210 "archivos/gramatica.y"
 {yyerror("El contenido de la sentencia OUT no es valido.");}
 break;
 case 103:
-//#line 214 "archivos/gramatica.y"
+//#line 213 "archivos/gramatica.y"
 {
                     tipoImpresion = "OUT_CAD";
                     if (pilaAmbitos.inAmbitoGlobal()) polacaProgram.agregarPasos(val_peek(0).sval);
@@ -1130,7 +1130,7 @@ case 103:
                     }
 break;
 case 104:
-//#line 219 "archivos/gramatica.y"
+//#line 218 "archivos/gramatica.y"
 {
                     tipoImpresion = "OUT_UINT";
                     if (pilaAmbitos.inAmbitoGlobal()) polacaProgram.agregarPasos(val_peek(0).sval);
@@ -1138,7 +1138,7 @@ case 104:
                     }
 break;
 case 105:
-//#line 225 "archivos/gramatica.y"
+//#line 224 "archivos/gramatica.y"
 {
                         tipoImpresion = "OUT_DOU";
                         if (pilaAmbitos.inAmbitoGlobal()) polacaProgram.agregarPasos(val_peek(0).sval);
@@ -1146,7 +1146,7 @@ case 105:
                         }
 break;
 case 106:
-//#line 230 "archivos/gramatica.y"
+//#line 229 "archivos/gramatica.y"
 {
                   String nLexema = getAmbitoId(val_peek(0).sval) + "@" + val_peek(0).sval;
 //                  tipoImpresion = "OUT_" + tablaS.getTipo(nLexema);
