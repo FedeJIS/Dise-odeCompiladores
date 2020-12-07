@@ -214,22 +214,19 @@ rama_else	: ELSE bloque_estruct_ctrl {helper.puntoControlFinCondicional();}
 			;
 
 %%
+
     private final ParserHelper helper;
 
     private final AnalizadorLexico aLexico;
-    private final TablaSimbolos tablaS;
-    private final PilaAmbitos pilaAmbitos;
     private final Polaca polacaProgram;
     private final MultiPolaca polacaProcedimientos;
 
     public Parser(AnalizadorLexico aLexico, TablaSimbolos tablaS) {
         this.aLexico = aLexico;
-        this.tablaS = tablaS;
-        this.pilaAmbitos = new PilaAmbitos();
         this.polacaProgram = new Polaca();
         this.polacaProcedimientos = new MultiPolaca();
 
-        helper = new ParserHelper(aLexico, tablaS, pilaAmbitos, polacaProgram, polacaProcedimientos);
+        helper = new ParserHelper(aLexico, tablaS, new PilaAmbitos(), polacaProgram, polacaProcedimientos);
     }
 
     private int yylex() {
@@ -251,3 +248,5 @@ rama_else	: ELSE bloque_estruct_ctrl {helper.puntoControlFinCondicional();}
     public MultiPolaca getPolacaProcs() {
         return polacaProcedimientos;
     }
+
+    

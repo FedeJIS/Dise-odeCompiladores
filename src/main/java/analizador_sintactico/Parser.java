@@ -549,19 +549,15 @@ final static String yyrule[] = {
     private final ParserHelper helper;
 
     private final AnalizadorLexico aLexico;
-    private final TablaSimbolos tablaS;
-    private final PilaAmbitos pilaAmbitos;
     private final Polaca polacaProgram;
     private final MultiPolaca polacaProcedimientos;
 
     public Parser(AnalizadorLexico aLexico, TablaSimbolos tablaS) {
         this.aLexico = aLexico;
-        this.tablaS = tablaS;
-        this.pilaAmbitos = new PilaAmbitos();
         this.polacaProgram = new Polaca();
         this.polacaProcedimientos = new MultiPolaca();
 
-        helper = new ParserHelper(aLexico, tablaS, pilaAmbitos, polacaProgram, polacaProcedimientos);
+        helper = new ParserHelper(aLexico, tablaS, new PilaAmbitos(), polacaProgram, polacaProcedimientos);
     }
 
     private int yylex() {
@@ -583,6 +579,7 @@ final static String yyrule[] = {
     public MultiPolaca getPolacaProcs() {
         return polacaProcedimientos;
     }
+
 //#line 515 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
