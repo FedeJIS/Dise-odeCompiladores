@@ -30,6 +30,18 @@ public class GeneradorAssembler {
         registros.add(new InfoReg());
     }
 
+    public static int getVariableAux() {
+        return variableAux;
+    }
+
+    public static void incrementaVarAux() {
+        GeneradorAssembler.variableAux++;
+    }
+
+    public static void cambiaElementoPila(int refAnterior, String valorNuevaRef){
+        pilaOps.set(refAnterior, valorNuevaRef);
+    }
+
     public static List<String> generaAsmDeclProc(MultiPolaca multiPolaca) {
         List<String> asmProcs = new ArrayList<>();
         for (String proc : multiPolaca.getNombreProcs()) {
@@ -65,16 +77,20 @@ public class GeneradorAssembler {
                     procAnterior = procInvocado;
                     break;
                 case "*":
-                    asm.addAll(genInstrAritmMult(pilaOps.remove(pilaOps.size() - 1), pilaOps.remove(pilaOps.size() - 1)));
+                    asm.addAll(genInstrAritmMult(pilaOps.remove(pilaOps.size() - 1),
+                            pilaOps.remove(pilaOps.size() - 1)));
                     break;
                 case "+":
-                    asm.addAll(genInstrAritmSuma(pilaOps.remove(pilaOps.size() - 1), pilaOps.remove(pilaOps.size() - 1)));
+                    asm.addAll(genInstrAritmSuma(pilaOps.remove(pilaOps.size() - 1),
+                            pilaOps.remove(pilaOps.size() - 1)));
                     break;
                 case "/":
-                    asm.addAll(genInstrAritmDiv(pilaOps.remove(pilaOps.size() - 1), pilaOps.remove(pilaOps.size() - 1)));
+                    asm.addAll(genInstrAritmDiv(pilaOps.remove(pilaOps.size() - 1),
+                            pilaOps.remove(pilaOps.size() - 1)));
                     break;
                 case "-":
-                    asm.addAll(genInstrAritmResta(pilaOps.remove(pilaOps.size() - 1), pilaOps.remove(pilaOps.size() - 1)));
+                    asm.addAll(genInstrAritmResta(pilaOps.remove(pilaOps.size() - 1),
+                            pilaOps.remove(pilaOps.size() - 1)));
                     break;
                 case "=":
                     asm.addAll(genInstrAsign());
@@ -143,7 +159,7 @@ public class GeneradorAssembler {
                     asm.add("JE L" + labelJump); //Opuesto de '!=' = '=='.
                     break;
                 default:
-                    throw new IllegalStateException("Simbolo " + tipoComp + " no reconocido como comparador");
+                    break;
             }
 
         return asm;
@@ -164,7 +180,7 @@ public class GeneradorAssembler {
                 return asm;
             } else { //Valor inmediato UINT
                 String nuevoOp = getNombreRegistro(getRegistroLibre());
-                asm.add("MOV " + nuevoOp + ", " + op2);
+                asm.add("MOV " + nuevoOp + ", " + op2); //No tiene prefijo pq es un valor inmediato UINT.
                 asm.add("CMP " + nuevoOp + ", " + getPrefijo(op1) + op1);
                 return asm;
             }
