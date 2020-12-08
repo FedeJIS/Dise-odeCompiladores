@@ -33,6 +33,11 @@ public class UtilsRegistro {
         return -1;
     }
 
+    public static void marcaRegLiberado(List<InfoReg> registros, String reg) {
+        registros.get(getIdRegistro(reg)).setOcupado(false);
+        registros.get(getIdRegistro(reg)).setRef(-1);
+    }
+
     public static List<String> liberaRegistro(List<InfoReg> registros, int idReg) {
         List<String> asm = new ArrayList<>();
 

@@ -1,6 +1,7 @@
 package generacion_asm;
 
 import analizador_sintactico.Parser;
+import generacion_asm.generadores.GeneradorAsign;
 import generacion_asm.generadores.GeneradorComp;
 import generacion_asm.generadores.GeneradorOut;
 import generacion_asm.util.InfoReg;
@@ -95,8 +96,8 @@ public class GeneradorAssembler {
                     asm.addAll(genInstrAritmResta(pilaOps.remove(pilaOps.size() - 1),
                             pilaOps.remove(pilaOps.size() - 1)));
                     break;
-                case "=":
-                    asm.addAll(genInstrAsign());
+                case "=": asm.addAll(GeneradorAsign.genInstrAsign(tablaS, registros, 
+                        pilaOps.remove(pilaOps.size() - 1), pilaOps.remove(pilaOps.size() - 1)));
                     break;
                 case "<":
                 case "<=":
@@ -110,22 +111,18 @@ public class GeneradorAssembler {
                     tipoComp = paso;
                     break;
                 }
-                case "BI":
-                    asm.add("JMP L" + pilaOps.remove(pilaOps.size() - 1));
+                case "BI": asm.add("JMP L" + pilaOps.remove(pilaOps.size() - 1));
                     break;
-                case "BF":
-                    asm.addAll(GeneradorComp.genInstrSalto(paso, pilaOps.remove(pilaOps.size() - 1), tipoComp));
+                case "BF": asm.addAll(GeneradorComp.genInstrSalto(paso, pilaOps.remove(pilaOps.size() - 1), tipoComp));
                     break;
                 case "OUT_UINT":
                 case "OUT_DOUBLE":
-                case "OUT_CAD":
-                    asm.add(GeneradorOut.generaInstrOut(tablaS, paso, pilaOps.remove(pilaOps.size()-1)));
+                case "OUT_CAD": asm.add(GeneradorOut.generaInstrOut(tablaS, paso, pilaOps.remove(pilaOps.size()-1)));
                     break;
-
                 default:
                     if (esRegistro(paso))
                         registros.get(getIdRegistro(paso)).setRef(pilaOps.size() - 1);
-                    pilaOps.add(paso.replace(":", "@"));
+                    pilaOps.add(paso);
                     break;
             }
         }
