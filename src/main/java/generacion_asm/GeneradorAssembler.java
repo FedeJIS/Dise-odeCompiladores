@@ -4,6 +4,7 @@ import analizador_sintactico.Parser;
 import generacion_asm.generadores.GeneradorAsign;
 import generacion_asm.generadores.GeneradorComp;
 import generacion_asm.generadores.GeneradorOut;
+import generacion_asm.generadores.GeneradorSuma;
 import generacion_asm.util.InfoReg;
 import generacion_c_intermedio.MultiPolaca;
 import generacion_c_intermedio.Polaca;
@@ -46,6 +47,14 @@ public class GeneradorAssembler {
         pilaOps.set(refAnterior, valorNuevaRef);
     }
 
+    public static void agregaElementoPila(String elem){
+        pilaOps.add(elem);
+    }
+
+    public static int getLongitudPila(){
+        return pilaOps.size() - 1;
+    }
+
     public static List<String> generaAsmDeclProc(MultiPolaca multiPolaca) {
         List<String> asmProcs = new ArrayList<>();
         for (String proc : multiPolaca.getNombreProcs()) {
@@ -84,9 +93,8 @@ public class GeneradorAssembler {
                     asm.addAll(genInstrAritmMult(pilaOps.remove(pilaOps.size() - 1),
                             pilaOps.remove(pilaOps.size() - 1)));
                     break;
-                case "+":
-                    asm.addAll(genInstrAritmSuma(pilaOps.remove(pilaOps.size() - 1),
-                            pilaOps.remove(pilaOps.size() - 1)));
+                case "+": asm.addAll(GeneradorSuma.genInstrAritmSuma(tablaS, registros,
+                        pilaOps.remove(pilaOps.size() - 1), pilaOps.remove(pilaOps.size() - 1)));
                     break;
                 case "/":
                     asm.addAll(genInstrAritmDiv(pilaOps.remove(pilaOps.size() - 1),
@@ -96,7 +104,7 @@ public class GeneradorAssembler {
                     asm.addAll(genInstrAritmResta(pilaOps.remove(pilaOps.size() - 1),
                             pilaOps.remove(pilaOps.size() - 1)));
                     break;
-                case "=": asm.addAll(GeneradorAsign.genInstrAsign(tablaS, registros, 
+                case "=": asm.addAll(GeneradorAsign.genInstrAsign(tablaS, registros,
                         pilaOps.remove(pilaOps.size() - 1), pilaOps.remove(pilaOps.size() - 1)));
                     break;
                 case "<":
@@ -128,40 +136,6 @@ public class GeneradorAssembler {
         }
         return asm;
     }
-
-
-    private static List<String> genInstrAsign() {
-        List<String> asm = new ArrayList<>();
-
-        String dest = pilaOps.remove(pilaOps.size() - 1);
-        String src = pilaOps.remove(pilaOps.size() - 1);
-
-        //dest = Variable & src = Reg
-        if (!esRegistro(dest) && esRegistro(src) && tiposOperandosValidos(dest, false, src, true)) {
-            asm.add("MOV " + getPrefijo(dest) + dest + ", " + src);
-            marcaRegLiberado(src);
-        }
-
-        //Variable & Variable
-        if (!esRegistro(dest) && !esRegistro(src) && tiposOperandosValidos(dest, false, src, false)) {
-            if (tablaS.getTipoEntrada(dest).equals("DOUBLE")) { //Es un double
-                if (tablaS.esEntradaCte(src)) src = "_" + TablaSimbolos.formatDouble(src);
-                else src = getPrefijo(src) + src;
-
-                asm.add("FLD " + src);
-                asm.add("FSTP " + getPrefijo(dest) + dest);
-
-                return asm;
-            }
-            int idReg = getRegistroLibre();
-            asm.add("MOV " + getNombreRegistro(idReg) + ", " + getPrefijo(src) + src);
-            asm.add("MOV _" + dest + ", " + getNombreRegistro(idReg));
-        }
-
-        return asm;
-    }
-
-    //---GENERACION INSTRUCCIONES ASIGNACION---
 
     private static List<String> generaInstrAritmDouble(String operador, String op1, String op2) {
         List<String> asm = new ArrayList<>();

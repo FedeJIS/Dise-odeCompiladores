@@ -38,6 +38,12 @@ public class UtilsRegistro {
         registros.get(getIdRegistro(reg)).setRef(-1);
     }
 
+    public static void actualizaReg(List<InfoReg> registros, int nReg, boolean ocupado, int ref) {
+        InfoReg reg = registros.get(nReg);
+        reg.setOcupado(ocupado);
+        reg.setRef(ref);
+    }
+
     public static List<String> liberaRegistro(List<InfoReg> registros, int idReg) {
         List<String> asm = new ArrayList<>();
 
