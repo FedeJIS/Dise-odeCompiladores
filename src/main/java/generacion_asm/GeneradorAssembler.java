@@ -2,6 +2,7 @@ package generacion_asm;
 
 import analizador_sintactico.Parser;
 import generacion_asm.generadores.GeneradorComp;
+import generacion_asm.generadores.GeneradorOut;
 import generacion_asm.util.InfoReg;
 import generacion_c_intermedio.MultiPolaca;
 import generacion_c_intermedio.Polaca;
@@ -116,17 +117,9 @@ public class GeneradorAssembler {
                     asm.addAll(GeneradorComp.genInstrSalto(paso, pilaOps.remove(pilaOps.size() - 1), tipoComp));
                     break;
                 case "OUT_UINT":
-                    String op = pilaOps.remove(pilaOps.size()-1);
-                    asm.add("invoke printf, cfm$(\"%i\\n\"), "+getPrefijo(op)+op+'\n');
-                    break;
                 case "OUT_DOUBLE":
-                    op = pilaOps.remove(pilaOps.size()-1);
-                    asm.add("invoke printf, cfm$(\"%f\\n\"), "+getPrefijo(op)+op+'\n');
-                    break;
                 case "OUT_CAD":
-                    op = pilaOps.remove(pilaOps.size() - 1);
-                    op = "_CAD_"+op.substring(1, op.length()-1).replace(' ', '_')+" "; //Agrega esp al final.
-                    asm.add("invoke printf, cfm$(\"%s\\n\"), OFFSET "+op + '\n');
+                    asm.add(GeneradorOut.generaInstrOut(tablaS, paso, pilaOps.remove(pilaOps.size()-1)));
                     break;
 
                 default:
