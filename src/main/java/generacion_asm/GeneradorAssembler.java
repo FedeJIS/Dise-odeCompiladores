@@ -1,6 +1,8 @@
 package generacion_asm;
 
 import analizador_sintactico.Parser;
+import generacion_asm.generadores.GeneradorComp;
+import generacion_asm.util.InfoReg;
 import generacion_c_intermedio.MultiPolaca;
 import generacion_c_intermedio.Polaca;
 import util.TablaNotificaciones;
@@ -101,7 +103,9 @@ public class GeneradorAssembler {
                 case ">=":
                 case "==":
                 case "!=": {
-                    asm.addAll(genInstrComp());
+                    String opDer = pilaOps.remove(pilaOps.size()-1);
+                    String opIzq = pilaOps.remove(pilaOps.size()-1);
+                    asm.addAll(GeneradorComp.genInstrComp(tablaS, registros, opIzq, opDer));
                     tipoComp = paso;
                     break;
                 }
@@ -109,7 +113,7 @@ public class GeneradorAssembler {
                     asm.add("JMP L" + pilaOps.remove(pilaOps.size() - 1));
                     break;
                 case "BF":
-                    asm.addAll(genInstrSalto(paso, pilaOps.remove(pilaOps.size() - 1), tipoComp));
+                    asm.addAll(GeneradorComp.genInstrSalto(paso, pilaOps.remove(pilaOps.size() - 1), tipoComp));
                     break;
                 case "OUT_UINT":
                     String op = pilaOps.remove(pilaOps.size()-1);
@@ -135,115 +139,6 @@ public class GeneradorAssembler {
         return asm;
     }
 
-    private static List<String> genInstrSalto(String tipoJump, String labelJump, String tipoComp) {
-        List<String> asm = new ArrayList<>();
-
-        if (tipoJump.equals("BF"))
-            switch (tipoComp) {
-                case "<":
-                    asm.add("JAE L" + labelJump); //Opuesto de '<' = '>='.
-                    break;
-                case "<=":
-                    asm.add("JA L" + labelJump); //Opuesto de '<=' = '>'.
-                    break;
-                case ">":
-                    asm.add("JBE L" + labelJump); //Opuesto de '>' = '<='.
-                    break;
-                case ">=":
-                    asm.add("JB L" + labelJump); //Opuesto de '>=' = '<'.
-                    break;
-                case "==":
-                    asm.add("JNE L" + labelJump); //Opuesto de '==' = '!='.
-                    break;
-                case "!=":
-                    asm.add("JE L" + labelJump); //Opuesto de '!=' = '=='.
-                    break;
-                default:
-                    break;
-            }
-
-        return asm;
-    }
-
-    //---GENERACION INSTRUCCIONES JUMP---
-
-    private static List<String> genInstrComp() {
-        List<String> asm = new ArrayList<>();
-
-        String op1 = pilaOps.remove(pilaOps.size() - 1); //Op mas a la derecha.
-        String op2 = pilaOps.remove(pilaOps.size() - 1);
-
-        //Primer operando es un valor inmediato.
-        if (!esRegistro(op2) && tablaS.esEntradaCte(op2) && tiposOperandosValidos(op1, false, op2, false))
-            if (tablaS.getTipoEntrada(op2).equals("DOUBLE")) { //Valor inmediato DOUBLE
-                asm.addAll(genInstrCompDouble(op1, op2));
-                return asm;
-            } else { //Valor inmediato UINT
-                String nuevoOp = getNombreRegistro(getRegistroLibre());
-                asm.add("MOV " + nuevoOp + ", " + op2); //No tiene prefijo pq es un valor inmediato UINT.
-                asm.add("CMP " + nuevoOp + ", " + getPrefijo(op1) + op1);
-                return asm;
-            }
-
-        //Var COMP Var. Ambos operandos no pueden estar en memoria, tengo que traer uno a un reg.
-        if (!esRegistro(op1) && !esRegistro(op2) && tiposOperandosValidos(op1, false, op2, false))
-            if (tablaS.getTipoEntrada(op1).equals("DOUBLE")) {
-                asm.addAll(genInstrCompDouble(op1, op2));
-                return asm;
-            } else {
-                String nuevoOp = getNombreRegistro(getRegistroLibre());
-                asm.add("MOV " + nuevoOp + ", " + getPrefijo(op2) + op2);
-                asm.add("CMP " + nuevoOp + ", " + getPrefijo(op1) + op1);
-                return asm;
-            }
-
-        //Reg COMP Var.
-        if (!esRegistro(op1) && esRegistro(op2) && tiposOperandosValidos(op1,false,op2,true)){
-            asm.add("CMP " + op2 + ", " + getPrefijo(op1) + op1);
-            return asm;
-        }
-
-        //Var COMP Reg.
-        if (esRegistro(op1) && !esRegistro(op2) && tiposOperandosValidos(op1,true,op2,false)){
-            String nuevoOp = getNombreRegistro(getRegistroLibre());
-            asm.add("MOV " + nuevoOp + ", " + getPrefijo(op2) + op2);
-            asm.add("CMP " + nuevoOp + ", " + getPrefijo(op1) + op1);
-            return asm;
-        }
-
-        //Reg COMP Reg.
-        if (esRegistro(op1) && esRegistro(op2) && tiposOperandosValidos(op1,true,op2,true)){
-            asm.add("CMP " + op2 + ", " + op1);
-            return asm;
-        }
-
-        return asm;
-    }
-
-    //---GENERACION INSTRUCCIONES COMPARACION---
-
-    private static List<String> genInstrCompDouble(String op1, String op2) {
-        List<String> asm = new ArrayList<>();
-
-        //Si el op1 es un valor inmediato primero lo cargo desde memoria.
-        if (!esRegistro(op1) && tablaS.esEntradaCte(op1)) op1 = "_" + TablaSimbolos.formatDouble(op1);
-        else op1 = getPrefijo(op1) + op1;
-
-        //Si el op2 es un valor inmediato primero lo cargo desde memoria.
-        if (!esRegistro(op2) && tablaS.esEntradaCte(op2)) op2 = "_" + TablaSimbolos.formatDouble(op2);
-        else op2 = getPrefijo(op2) + op2;
-
-        asm.add("FLD " + op1); //Pongo op1 en la pila del coproc.
-        asm.add("FLD " + op2); //Pongo op2 en la pila del coproc.
-        asm.add("FCOMP"); //Comparacion.
-
-        asm.addAll(liberaRegistro(AX));
-        asm.add("FSTSW AX"); //Almacena el resultado en memoria.
-
-        asm.add("SAHF"); //Almacena en los ocho bits menos significativos del registro de indicadores el valor del registro AH.
-
-        return asm;
-    }
 
     private static List<String> genInstrAsign() {
         List<String> asm = new ArrayList<>();
@@ -653,37 +548,5 @@ public class GeneradorAssembler {
         //Tipos invalidos.
         TablaNotificaciones.agregarError(0, "Los operandos '" + op1 + "' y '" + op2 + "' no tienen tipos compatibles.");
         throw new IllegalStateException("El codigo tiene errores, cortando generacion asm.");
-    }
-
-    private static class InfoReg {
-        private final String tipo;
-        private int ref;
-        private boolean ocupado;
-
-        public InfoReg() {
-            this.ref = -1;
-            this.ocupado = false;
-            this.tipo = "UINT";
-        }
-
-        public int getRef() {
-            return ref;
-        }
-
-        public void setRef(int ref) {
-            this.ref = ref;
-        }
-
-        public boolean isNotOcupado() {
-            return !ocupado;
-        }
-
-        public void setOcupado(boolean ocupado) {
-            this.ocupado = ocupado;
-        }
-
-        public String getTipo() {
-            return tipo;
-        }
     }
 }

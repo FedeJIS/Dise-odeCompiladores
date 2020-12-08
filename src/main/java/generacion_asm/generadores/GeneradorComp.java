@@ -86,4 +86,34 @@ public class GeneradorComp {
 
         return asm;
     }
+
+    public static List<String> genInstrSalto(String tipoJump, String labelJump, String tipoComp) {
+        List<String> asm = new ArrayList<>();
+
+        if (tipoJump.equals("BF"))
+            switch (tipoComp) {
+                case "<":
+                    asm.add("JAE L" + labelJump); //Opuesto de '<' = '>='.
+                    break;
+                case "<=":
+                    asm.add("JA L" + labelJump); //Opuesto de '<=' = '>'.
+                    break;
+                case ">":
+                    asm.add("JBE L" + labelJump); //Opuesto de '>' = '<='.
+                    break;
+                case ">=":
+                    asm.add("JB L" + labelJump); //Opuesto de '>=' = '<'.
+                    break;
+                case "==":
+                    asm.add("JNE L" + labelJump); //Opuesto de '==' = '!='.
+                    break;
+                case "!=":
+                    asm.add("JE L" + labelJump); //Opuesto de '!=' = '=='.
+                    break;
+                default:
+                    break;
+            }
+
+        return asm;
+    }
 }

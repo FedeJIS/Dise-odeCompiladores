@@ -16,7 +16,11 @@ public class TestComp {
         tablaS.agregarEntrada(new Celda(0, "uint2", "UINT", Celda.USO_VAR, true));
         tablaS.agregarEntrada(new Celda(0, "5", "UINT", Celda.USO_CTE, true));
 
-        for (String instr : GeneradorComp.genInstrComp(tablaS, UtilsRegistro.init(), "uint1", "5"))
-            System.out.println(instr);
+//        for (String instr : GeneradorComp.genInstrComp(tablaS, UtilsRegistro.init(), "uint1", "5"))
+//            System.out.println(instr);
+
+        for (String i : GeneradorComp.genInstrSalto("BF",
+                "label", "!="))
+            System.out.println(i);
     }
 }
