@@ -24,7 +24,7 @@ public class GeneradorMult {
         //Variable & Variable
         if (!esRegistro(opIzq) && !esRegistro(opDer))
             if (tablaS.getTipoEntrada(opIzq).equals("DOUBLE"))
-                return GeneradorAritmDouble.generaInstrAritmDouble(tablaS, "*", opIzq, opDer);
+                return GeneradorAritmDouble.genInstrAritmDouble(tablaS, "*", opIzq, opDer);
             else {
                 //Se encarga de liberar AX, y guardar su contenido previo si corresponde.
                 asm.addAll(liberaRegistro(registros, AX));

@@ -24,7 +24,7 @@ public class GeneradorSuma {
         //Variable & Variable
         if (!esRegistro(opIzq) && !esRegistro(opDer))
             if (tablaS.getTipoEntrada(opDer).equals("DOUBLE"))
-                return GeneradorAritmDouble.generaInstrAritmDouble(tablaS, "+", opIzq, opDer);
+                return GeneradorAritmDouble.genInstrAritmDouble(tablaS, "+", opIzq, opDer);
             else {
                 int reg = getRegistroLibre(registros); //Obtengo reg libre.
                 asm.add("MOV " + getNombreRegistro(reg) + ", " + getPrefijo(tablaS, opIzq) + opIzq);

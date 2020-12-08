@@ -138,4 +138,8 @@ public class Celda {
     public String getUso() {
         return uso;
     }
+
+    public int getMaxInvoc(){
+        return maxInvoc;
+    }
 }

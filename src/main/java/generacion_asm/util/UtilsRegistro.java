@@ -131,6 +131,6 @@ public class UtilsRegistro {
 
         //Tipos invalidos.
         TablaNotificaciones.agregarError(0, "Los operandos '" + op1 + "' y '" + op2 + "' no tienen tipos compatibles.");
-        throw new IllegalStateException("El codigo tiene errores, cortando generacion asm.");
+        throw new IllegalStateException("Operacion entre tipos no compatibles. Cortando generacion de asm.");
     }
 }

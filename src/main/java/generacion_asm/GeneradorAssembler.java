@@ -1,10 +1,7 @@
 package generacion_asm;
 
 import analizador_sintactico.Parser;
-import generacion_asm.generadores.GeneradorAsign;
-import generacion_asm.generadores.GeneradorComp;
-import generacion_asm.generadores.GeneradorOut;
-import generacion_asm.generadores.GeneradorSuma;
+import generacion_asm.generadores.*;
 import generacion_asm.util.InfoReg;
 import generacion_c_intermedio.MultiPolaca;
 import generacion_c_intermedio.Polaca;
@@ -75,34 +72,19 @@ public class GeneradorAssembler {
         for (String paso : polaca.getListaPasos()) {
             if (paso.charAt(0) == 'L') asm.add(paso + ":"); //Agrego el label.
             else switch (paso) {
-                case "INVOC":
-                    int aux2 = 0;
-                    String procInvocado = pilaOps.remove(pilaOps.size() - 1);
-                    if (procAnterior.equals(procInvocado)) aux2 = 1;
-
-                    //Si aux1 y aux2 son iguales, significa que se esta realizando una invocacion recursiva.
-                    String reg = getNombreRegistro(getRegistroLibre());
-                    asm.add("MOV " + reg + ", 1");
-                    asm.add("CMP " + reg + ", " + aux2);
-                    asm.add("JE L_recursion");
-                    asm.add("CALL _" + procInvocado);
-
-                    procAnterior = procInvocado;
+                case "INVOC": GeneradorInvoc.genInstrInvoc(paso);
                     break;
-                case "*":
-                    asm.addAll(genInstrAritmMult(pilaOps.remove(pilaOps.size() - 1),
-                            pilaOps.remove(pilaOps.size() - 1)));
+                case "*": asm.addAll(GeneradorMult.genInstrAritmMult(tablaS, registros,
+                        pilaOps.remove(pilaOps.size() - 1), pilaOps.remove(pilaOps.size() - 1)));
                     break;
                 case "+": asm.addAll(GeneradorSuma.genInstrAritmSuma(tablaS, registros,
                         pilaOps.remove(pilaOps.size() - 1), pilaOps.remove(pilaOps.size() - 1)));
                     break;
-                case "/":
-                    asm.addAll(genInstrAritmDiv(pilaOps.remove(pilaOps.size() - 1),
-                            pilaOps.remove(pilaOps.size() - 1)));
+                case "/": asm.addAll(GeneradorDiv.genInstrAritmDiv(tablaS, registros,
+                        pilaOps.remove(pilaOps.size() - 1), pilaOps.remove(pilaOps.size() - 1)));
                     break;
-                case "-":
-                    asm.addAll(genInstrAritmResta(pilaOps.remove(pilaOps.size() - 1),
-                            pilaOps.remove(pilaOps.size() - 1)));
+                case "-": asm.addAll(GeneradorResta.genInstrAritmResta(tablaS, registros,
+                        pilaOps.remove(pilaOps.size() - 1), pilaOps.remove(pilaOps.size() - 1)));
                     break;
                 case "=": asm.addAll(GeneradorAsign.genInstrAsign(tablaS, registros,
                         pilaOps.remove(pilaOps.size() - 1), pilaOps.remove(pilaOps.size() - 1)));
@@ -128,8 +110,7 @@ public class GeneradorAssembler {
                 case "OUT_CAD": asm.add(GeneradorOut.generaInstrOut(tablaS, paso, pilaOps.remove(pilaOps.size()-1)));
                     break;
                 default:
-                    if (esRegistro(paso))
-                        registros.get(getIdRegistro(paso)).setRef(pilaOps.size() - 1);
+                    if (esRegistro(paso)) registros.get(getIdRegistro(paso)).setRef(pilaOps.size() - 1);
                     pilaOps.add(paso);
                     break;
             }
@@ -138,87 +119,10 @@ public class GeneradorAssembler {
     }
 
     private static List<String> generaInstrAritmDouble(String operador, String op1, String op2) {
-        List<String> asm = new ArrayList<>();
-
-        //Si el op1 es un valor inmediato primero lo cargo desde memoria.
-        if (!esRegistro(op1) && tablaS.esEntradaCte(op1)) op1 = "_" + TablaSimbolos.formatDouble(op1);
-        else op1 = getPrefijo(op1) + op1;
-
-        //Si el op2 es un valor inmediato primero lo cargo desde memoria.
-        if (!esRegistro(op2) && tablaS.esEntradaCte(op2)) op2 = "_" + TablaSimbolos.formatDouble(op2);
-        else op2 = getPrefijo(op2) + op2;
-
-        asm.add("FLD " + op1); //Pongo op1 en la pila del coproc.
-        asm.add("FLD " + op2); //Pongo op2 en la pila del coproc.
-        asm.add(getInstrAritmDouble(operador)); //Hago op en la pila del coproc.
-        asm.add("FSTP @aux" + variableAux); //Muevo resultado a mem.
-        pilaOps.add("@aux" + variableAux); //Agrego operando a pila.
-        tablaS.agregarEntrada(Parser.ID, "@aux" + variableAux, "DOUBLE"); //Agreo vaux a TS.
-
-        variableAux++;
-
-        return asm;
+        return new ArrayList<>();
     }
 
     //---GENERACION INSTRUCCIONES ARITMETICAS---
-
-
-    /**
-     * Fuente: A * B
-     * Polaca: A,B,*
-     * src = B, dest = A
-     */
-    private static List<String> genInstrAritmMult(String src, String dest) {
-        List<String> asm = new ArrayList<>();
-
-        //Variable & Variable
-        if (!esRegistro(dest) && !esRegistro(src) && tiposOperandosValidos(dest, false, src, false))
-            if (tablaS.getTipoEntrada(dest).equals("DOUBLE")) return generaInstrAritmDouble("*", dest, src);
-            else {
-                asm.addAll(liberaRegistro(AX)); //Se encarga de liberar AX, y guardar su contenido previo si corresponde.
-                asm.add("MOV AX, " + getPrefijo(dest) + dest);
-                asm.add("MUL " + getPrefijo(src) + src);
-            }
-
-        //Reg & Variable. Reg destino tiene que ser AX.
-        if (esRegistro(dest) && !esRegistro(src) && tiposOperandosValidos(dest, true, src, false))
-            if (dest.equals("AX")) asm.add("MUL " + getPrefijo(src) + src);
-            else { //Tengo que mover el dest a AX.
-                asm.addAll(liberaRegistro(AX));
-                asm.add("MOV AX, " + dest);
-                asm.add("MUL " + getPrefijo(src) + src);
-
-                actualizaReg(getIdRegistro(dest), false, -1);
-            }
-
-        //Reg & Reg. Reg destino tiene que ser AX.
-        if (esRegistro(dest) && esRegistro(src) && tiposOperandosValidos(dest, true, src, true))
-            if (dest.equals("AX")) asm.add("MUL " + src);
-            else {
-                asm.addAll(liberaRegistro(AX));
-                asm.add("MOV AX, " + dest);
-                asm.add("MUL " + src);
-
-                actualizaReg(getIdRegistro(dest), false, -1);
-                actualizaReg(getIdRegistro(src), false, -1);
-            }
-
-        //Variable & Reg. Reg destino tiene que ser AX.
-        if (!esRegistro(dest) && esRegistro(src) && tiposOperandosValidos(dest, false, src, true))
-            if (src.equals("AX"))
-                asm.add("MUL " + getPrefijo(dest) + dest); //Puedo invertir los operandos por prop conmut.
-            else {
-                asm.addAll(liberaRegistro(AX));
-                asm.add("MOV AX, " + src);
-                asm.add("MUL " + getPrefijo(dest) + dest);
-
-                actualizaReg(getIdRegistro(src), false, -1);
-            }
-
-        pilaOps.add("AX");
-        actualizaReg(AX, true, pilaOps.size() - 1);
-        return asm;
-    }
 
     /**
      * Fuente: A - B

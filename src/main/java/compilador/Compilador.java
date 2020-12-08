@@ -91,6 +91,7 @@ public class Compilador {
                 tablaS.toAsm() + "\n" +
                 "@resta_neg DB 'Error: Resultado de resta menor a cero.', 0" + "\n" +
                 "@recursion DB 'Error: Recursiones en procedimientos no permitidas.', 0" + "\n" +
+                "@ni_superado DB 'Error: NI para el procedimiento superado.', 0" + "\n" +
                 "@ejecucion_sin_error DB 'Ejecucion sin errores.', 0" + "\n" +
                 ".CODE\n" +
                 asmProcsBuilder.toString() + "\n" +
@@ -102,6 +103,9 @@ public class Compilador {
                 "JMP L_final" + '\n' +
                 "L_recursion:" + '\n' +
                 "invoke MessageBox, NULL, addr @recursion, addr @recursion , MB_OK" + '\n' +
+                "JMP L_final" + '\n' +
+                "L_ni_superado:" + '\n' +
+                "invoke MessageBox, NULL, addr @ni_superado, addr @ni_superado , MB_OK" + '\n' +
                 "JMP L_final" + '\n' +
                 "L_final:" + '\n' +
                 "invoke MessageBox, NULL, addr @ejecucion_sin_error, addr @ejecucion_sin_error , MB_OK" + '\n' +

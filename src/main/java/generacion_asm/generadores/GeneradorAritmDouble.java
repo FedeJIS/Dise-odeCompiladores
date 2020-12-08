@@ -24,7 +24,7 @@ public class GeneradorAritmDouble {
         return null;
     }
 
-    public static List<String> generaInstrAritmDouble(TablaSimbolos tablaS, String operador, String op1, String op2) {
+    public static List<String> genInstrAritmDouble(TablaSimbolos tablaS, String operador, String op1, String op2) {
         List<String> asm = new ArrayList<>();
 
         //Si el op1 es un valor inmediato primero lo cargo desde memoria.

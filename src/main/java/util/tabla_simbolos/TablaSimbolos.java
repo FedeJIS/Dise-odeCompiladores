@@ -27,6 +27,11 @@ public class TablaSimbolos {
         for (String lexema : tablaSimb.keySet()) {
             Celda celda = tablaSimb.get(lexema);
 
+            if (celda.isProc()){
+                asmBuilder.append("_NI_MAX_").append(lexema).append(" DW ").append(getMaxInvoc(lexema)).append('\n');
+                asmBuilder.append("_NI_ACT_").append(lexema).append(" DW ").append(0).append('\n');
+            }
+
             //DOUBLE
             if (celda.getTipo().equals(Celda.TIPO_DOUBLE)){
                 if (celda.esCte())
@@ -170,6 +175,12 @@ public class TablaSimbolos {
         Celda entrada = tablaSimb.get(lexema);
         if (entrada == null) throw new IllegalStateException("Lexema '"+lexema+"' no encontrado en la TS");
         entrada.setMaxInvoc(nMax);
+    }
+
+    public int getMaxInvoc(String lexema){
+        Celda entrada = tablaSimb.get(lexema);
+        if (entrada == null) throw new IllegalStateException("Lexema '"+lexema+"' no encontrado en la TS");
+        return entrada.getMaxInvoc();
     }
 
     public boolean maxInvocAlcanzadas(String lexema){
