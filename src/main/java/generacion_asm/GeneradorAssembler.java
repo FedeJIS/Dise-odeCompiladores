@@ -162,45 +162,6 @@ public class GeneradorAssembler {
 
     //---GENERACION INSTRUCCIONES ARITMETICAS---
 
-    /**
-     * Fuente: A + B
-     * Polaca: A,B,+
-     * src = B, dest = A
-     */
-    private static List<String> genInstrAritmSuma(String src, String dest) {
-        List<String> asm = new ArrayList<>();
-
-        //Variable & Variable
-        if (!esRegistro(dest) && !esRegistro(src) && tiposOperandosValidos(dest, false, src, false))
-            if (tablaS.getTipoEntrada(src).equals("DOUBLE")) return generaInstrAritmDouble("+", dest, src);
-            else {
-                int reg = getRegistroLibre(); //Obtengo reg libre.
-                asm.add("MOV " + getNombreRegistro(reg) + ", " + getPrefijo(dest) + dest);
-                asm.add("ADD " + getNombreRegistro(reg) + ", " + getPrefijo(src) + src);
-                pilaOps.add(getNombreRegistro(reg));
-                actualizaReg(reg, true, pilaOps.size() - 1);
-            }
-
-        //Reg & Variable
-        if (esRegistro(dest) && !esRegistro(src) && tiposOperandosValidos(dest, true, src, false)) {
-            asm.add("ADD " + dest + ", " + getPrefijo(src) + src); //dest es el registro.
-            pilaOps.add(dest);
-        }
-
-        //Reg & Reg
-        if (esRegistro(dest) && esRegistro(src) && tiposOperandosValidos(dest, true, src, true)) {
-            asm.add("ADD " + dest + ", " + src);
-            pilaOps.add(dest);
-            marcaRegLiberado(src);
-        }
-
-        //Variable & Reg
-        if (!esRegistro(dest) && esRegistro(src) && tiposOperandosValidos(dest, false, src, true)) {
-            asm.add("ADD " + src + ", " + getPrefijo(dest) + dest); //src es el registro. Puedo sumar sobre src porque la op es conmutativa.
-            pilaOps.add(src);
-        }
-        return asm;
-    }
 
     /**
      * Fuente: A * B

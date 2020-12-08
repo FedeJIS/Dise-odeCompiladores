@@ -53,7 +53,7 @@ public class UtilsRegistro {
             while (regLibre < registros.size() && !registros.get(regLibre).isNotOcupado())
                 regLibre++; //Encuentra 1 reg libre.
 
-            int refAnterior = registros.get(AX).getRef();
+            int refAnterior = registros.get(idReg).getRef();
             String valorNuevaRef;
             if (regLibre == registros.size()) { //No hay regs libres.
                 valorNuevaRef = "@aux" + GeneradorAssembler.getVariableAux();
@@ -62,8 +62,10 @@ public class UtilsRegistro {
                 valorNuevaRef = getNombreRegistro(regLibre);
                 registros.get(regLibre).setOcupado(true); //Marco el registro al cual movi como ocupado.
             }
-            GeneradorAssembler.cambiaElementoPila(refAnterior, valorNuevaRef); //Actualizo el op que estaba en la pila.
-            asm.add("MOV " + valorNuevaRef + ", AX"); //Copio lo que estaba en AX en su nuevo lugar.
+            //Actualizo el op que estaba en la pila.
+            GeneradorAssembler.cambiaElementoPila(refAnterior, valorNuevaRef);
+            //Copio lo que estaba en el reg a desocupar en su nuevo lugar.
+            asm.add("MOV " + valorNuevaRef + ", "+getNombreRegistro(idReg));
         }
         return asm;
     }
@@ -89,7 +91,7 @@ public class UtilsRegistro {
         return "";
     }
 
-    private static int getIdRegistro(String nombre) {
+    public static int getIdRegistro(String nombre) {
         switch (nombre) {
             case "AX":
                 return 0;
