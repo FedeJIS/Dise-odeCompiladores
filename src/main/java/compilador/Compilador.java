@@ -28,17 +28,21 @@ public class Compilador {
         polacaProcs = parser.getPolacaProcs();
 
         if (imprimirPolaca) {
+            System.out.println(tablaS.toAsm());
             System.out.println("###POLACA PROGRAM###\n"+polacaProgram.toString());
             System.out.println("###POLACA PROCEDIMIENTOS###\n"+polacaProcs.toString());
         }
-
-        System.out.println(tablaS.toAsm());
 
         if (imprimirOtros) finCompilacion();
     }
 
     public static void compilar(String pathSrc, String basePathDest){
         //Compilacion
+        if (!FileProcessor.existeArchivo(pathSrc)) {
+            System.out.println("No existe el archivo: '" + pathSrc + "'.");
+            return;
+        }
+
         compilar(FileProcessor.getLineasFuente(pathSrc),false,false);
 
         //Generacion asm
@@ -46,6 +50,7 @@ public class Compilador {
             FileProcessor.escribirArchivo(basePathDest+"_asm.asm",getAsm());
             System.out.println("Assembler generado exitosamente.");
         } catch (IllegalStateException illStEx){
+            System.out.println(illStEx.getMessage());
             System.out.println("Assembler no generado.");
         }
 
@@ -86,27 +91,27 @@ public class Compilador {
                 "includelib \\masm32\\lib\\user32.lib\n" +
                 "include \\masm32\\include\\masm32rt.inc\n" +
                 "dll_dllcrt0 PROTO C\n" +
-                "printf PROTO C :VARARG\n" +
+                "printf PROTO C :VARARG\n\n" +
                 ".DATA\n" +
                 tablaS.toAsm() + "\n" +
                 "@resta_neg DB 'Error: Resultado de resta menor a cero.', 0" + "\n" +
                 "@recursion DB 'Error: Recursiones en procedimientos no permitidas.', 0" + "\n" +
                 "@ni_superado DB 'Error: NI para el procedimiento superado.', 0" + "\n" +
-                "@ejecucion_sin_error DB 'Ejecucion sin errores.', 0" + "\n" +
+                "@ejecucion_sin_error DB 'Ejecucion sin errores.', 0" + "\n\n" +
                 ".CODE\n" +
-                asmProcsBuilder.toString() + "\n" +
+                asmProcsBuilder.toString() + "\n\n" +
                 "START:\n" +
                 asmProgramBuilder.toString() +
-                "JMP L_final" + '\n' +
+                "JMP L_final" + "\n\n" +
                 "L_resta_neg:" + '\n' +
                 "invoke MessageBox, NULL, addr @resta_neg, addr @resta_neg , MB_OK" + '\n' +
-                "JMP L_final" + '\n' +
+                "JMP L_final" + "\n\n" +
                 "L_recursion:" + '\n' +
                 "invoke MessageBox, NULL, addr @recursion, addr @recursion , MB_OK" + '\n' +
-                "JMP L_final" + '\n' +
+                "JMP L_final" + "\n\n" +
                 "L_ni_superado:" + '\n' +
                 "invoke MessageBox, NULL, addr @ni_superado, addr @ni_superado , MB_OK" + '\n' +
-                "JMP L_final" + '\n' +
+                "JMP L_final" + "\n\n" +
                 "L_final:" + '\n' +
                 "invoke MessageBox, NULL, addr @ejecucion_sin_error, addr @ejecucion_sin_error , MB_OK" + '\n' +
                 "invoke ExitProcess, 0" + '\n' +

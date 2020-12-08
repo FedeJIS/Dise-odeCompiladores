@@ -30,20 +30,24 @@ public class GeneraTokenDouble extends AccionSemantica {
             int exp = 0; //Vale 0 por defecto (Util para los casos donde no se tiene exponente).
             String expString = getString();
 
-            if (expString.isEmpty() //No se cargo el exponente.
-                    || expString.equals("-") //Se cargo solo un '-' para el exponente.
-                    || expString.equals("+")) //Se cargo solo un '+' para el exponente.
-                TablaNotificaciones.agregarWarning(maquinaEstados.getLineaActual(),"Falto el exponente del numero DOUBLE. El exponente es 0 por defecto");
-            else exp = Integer.parseInt(expString);
+            try {
+                if (expString.isEmpty() //No se cargo el exponente.
+                        || expString.equals("-") //Se cargo solo un '-' para el exponente.
+                        || expString.equals("+")) //Se cargo solo un '+' para el exponente.
+                    TablaNotificaciones.agregarWarning(maquinaEstados.getLineaActual(), "Falto el exponente del numero DOUBLE. El exponente es 0 por defecto");
+                else exp = Integer.parseInt(expString);
 
-            double baseNumDouble = getBaseNumDouble();
-            if (doubleValido(baseNumDouble, exp)) {
-                double doubleNormalizado = baseNumDouble * Math.pow(10, exp);
+                double baseNumDouble = getBaseNumDouble();
+                if (doubleValido(baseNumDouble, exp)) {
+                    double doubleNormalizado = baseNumDouble * Math.pow(10, exp);
 
-                tablaS.agregarEntrada(token, String.valueOf(doubleNormalizado), "DOUBLE");
-                tablaS.setDeclaracionEntrada(String.valueOf(doubleNormalizado),true);
-                tablaS.setUsoEntrada(String.valueOf(doubleNormalizado),"CTE");
-                maquinaEstados.setVariablesSintactico(token, String.valueOf(doubleNormalizado));
+                    tablaS.agregarEntrada(token, String.valueOf(doubleNormalizado), "DOUBLE");
+                    tablaS.setDeclaracionEntrada(String.valueOf(doubleNormalizado), true);
+                    tablaS.setUsoEntrada(String.valueOf(doubleNormalizado), "CTE");
+                    maquinaEstados.setVariablesSintactico(token, String.valueOf(doubleNormalizado));
+                }
+            } catch (NumberFormatException nFEx){
+                System.out.println(nFEx.getMessage());
             }
         }
     }

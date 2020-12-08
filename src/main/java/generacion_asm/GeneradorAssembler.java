@@ -72,7 +72,7 @@ public class GeneradorAssembler {
         for (String paso : polaca.getListaPasos()) {
             if (paso.charAt(0) == 'L') asm.add(paso + ":"); //Agrego el label.
             else switch (paso) {
-                case "INVOC": GeneradorInvoc.genInstrInvoc(paso);
+                case "INVOC": asm.addAll(GeneradorInvoc.genInstrInvoc(tablaS, registros, procAnterior));
                     break;
                 case "*": asm.addAll(GeneradorMult.genInstrAritmMult(tablaS, registros,
                         pilaOps.remove(pilaOps.size() - 1), pilaOps.remove(pilaOps.size() - 1)));
@@ -111,6 +111,7 @@ public class GeneradorAssembler {
                     break;
                 default:
                     if (esRegistro(paso)) registros.get(getIdRegistro(paso)).setRef(pilaOps.size() - 1);
+                    procAnterior = paso;
                     pilaOps.add(paso);
                     break;
             }

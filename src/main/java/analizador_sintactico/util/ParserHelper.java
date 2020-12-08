@@ -331,20 +331,14 @@ public class ParserHelper {
 
         String nLexema = PilaAmbitos.aplicaNameManglin(ambito, lexema);
 
-        //Hago el check de NI y params solo si es un id valido para la invocacion (esta declarado y es un proc).
-        if (invocValida) {
-            if (tablaS.maxInvocAlcanzadas(nLexema)) { //Check NI no superado.
-                invocValida = false;
-                TablaNotificaciones.agregarError(aLexico.getLineaActual(),
-                        "El procedimiento '" + lexema + "' ya alcanzo su numero maximo de invocaciones.");
-            }
-            invocValida = invocValida && areParamsRealesValidos(nLexema, listaParamsInvoc);
-        }
+        //Hago el check de params solo si es un id valido para la invocacion (esta declarado y es un proc).
+        if (invocValida) invocValida = invocValida && areParamsRealesValidos(nLexema, listaParamsInvoc);
 
         //Si ningun control fallo, genero las instrucciones para la invocacion.
         if (invocValida) {
             agregarPasosRepr(nLexema, Polaca.PASO_INVOC);
-            tablaS.incrementaNInvoc(nLexema);
+
+            tablaS.setParamsReales(nLexema, listaParamsInvoc);
 
             //Pasa el valor de los param formales a los reales (En caso de param CVR).
             for (int i = 0; i < tablaS.getNParams(nLexema); i++) {

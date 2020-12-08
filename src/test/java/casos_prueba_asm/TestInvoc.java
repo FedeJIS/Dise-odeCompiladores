@@ -18,7 +18,7 @@ public class TestInvoc {
         tablaS.agregarEntrada(new Celda(0, "proc", "-", Celda.USO_PROC, true));
         tablaS.setMaxInvoc("proc", 3);
 
-        for (String instr : GeneradorInvoc.genInstrInvoc("proc"))
+        for (String instr : GeneradorInvoc.genInstrInvoc(tablaS, UtilsRegistro.init(), "proc"))
             System.out.println(instr);
     }
 }

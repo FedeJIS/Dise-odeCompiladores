@@ -135,15 +135,9 @@ public class TablaSimbolos {
         return entrada.getTipo();
     }
 
-    public String getUsoEntrada(String lexema) {
-        Celda entrada = tablaSimb.get(lexema);
-        if (entrada == null) throw new IllegalStateException("Lexema no encontrado en la TS");
-        return entrada.getUso();
-    }
-
     public void setUsoEntrada(String lexema, String uso){
         Celda entrada = tablaSimb.get(lexema);
-        if (entrada == null) throw new IllegalStateException("Lexema no encontrado en la TS");
+        if (entrada == null) throw new IllegalStateException("Lexema '" + lexema + "' no encontrado en la TS");
         entrada.setUso(uso);
     }
 
@@ -161,13 +155,13 @@ public class TablaSimbolos {
 
     public boolean isEntradaProc(String lexema){
         Celda entrada = tablaSimb.get(lexema);
-        if (entrada == null) throw new IllegalStateException("Lexema no encontrado en la TS");
+        if (entrada == null) throw new IllegalStateException("Lexema '" + lexema + "' no encontrado en la TS");
         return entrada.isProc();
     }
 
     public boolean isEntradaParamCVR(String lexema){
         Celda entrada = tablaSimb.get(lexema);
-        if (entrada == null) throw new IllegalStateException("Lexema no encontrado en la TS");
+        if (entrada == null) throw new IllegalStateException("Lexema '" + lexema + "' no encontrado en la TS");
         return entrada.isParamCVR();
     }
 
@@ -185,36 +179,49 @@ public class TablaSimbolos {
 
     public boolean maxInvocAlcanzadas(String lexema){
         Celda entrada = tablaSimb.get(lexema);
-        if (entrada == null) throw new IllegalStateException("Lexema no encontrado en la TS");
+        if (entrada == null) throw new IllegalStateException("Lexema '" + lexema + "' no encontrado en la TS");
         return entrada.maxInvocAlcanzadas();
     }
 
     public void incrementaNInvoc(String lexema){
         Celda entrada = tablaSimb.get(lexema);
-        if (entrada == null) throw new IllegalStateException("Lexema no encontrado en la TS");
+        if (entrada == null) throw new IllegalStateException("Lexema '" + lexema + "' no encontrado en la TS");
         entrada.incrementaNInvoc();
     }
 
     public void setParamsProc(String lexema, List<String> paramsProc){
         Celda entrada = tablaSimb.get(lexema);
-        if (entrada == null) throw new IllegalStateException("Lexema no encontrado en la TS");
+        if (entrada == null) throw new IllegalStateException("Lexema '" + lexema + "' no encontrado en la TS");
         entrada.setParamsDecl(paramsProc);
+    }
+
+    public void setParamsReales(String lexema, List<String> paramsReales){
+        Celda entrada = tablaSimb.get(lexema);
+        if (entrada == null) throw new IllegalStateException("Lexema '" + lexema + "' no encontrado en la TS");
+        entrada.setParamsReales(paramsReales);
     }
 
     public int getNParams(String lexema){
         Celda entrada = tablaSimb.get(lexema);
-        if (entrada == null) throw new IllegalStateException("Lexema no encontrado en la TS");
+        if (entrada == null) throw new IllegalStateException("Lexema '" + lexema + "' no encontrado en la TS");
         return entrada.getNParams();
     }
 
     public String getParam(String lexema, int i){
         Celda entrada = tablaSimb.get(lexema);
-        if (entrada == null) throw new IllegalStateException("Lexema no encontrado en la TS");
+        if (entrada == null) throw new IllegalStateException("Lexema '" + lexema + "' no encontrado en la TS");
 
         Celda entradaParam = tablaSimb.get(entrada.getParam(i));
         if (entradaParam == null)
             throw new IllegalStateException("Lexema del parametro '"+entrada.getParam(i)+"'no encontrado en la TS");
 
         return entradaParam.getLexema();
+    }
+
+    public List<String> getParamReales(String lexema){
+        Celda entrada = tablaSimb.get(lexema);
+        if (entrada == null) throw new IllegalStateException("Lexema '" + lexema + "' no encontrado en la TS");
+
+        return entrada.getParamsReales(); //Params reales de la primera invocacion.
     }
 }

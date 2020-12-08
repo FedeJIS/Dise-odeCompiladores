@@ -37,6 +37,11 @@ public class FileProcessor {
                 e2.printStackTrace();
             }
         }
+        if (builderFuente.length() == 0){
+            System.out.println("El archivo: '" + path + "' esta vacio.");
+            return "";
+        }
+
         return builderFuente.substring(0,builderFuente.length()-1); //Saca el '\n' hecho luego de leer la ultima linea.
     }
 
@@ -68,5 +73,15 @@ public class FileProcessor {
         }
     }
 
+    /**
+     * Demuestra la existencia o no de un archivo
+     *
+     * @param path ruta del archivo
+     * @return true si existe, false sino.
+     */
+    public static boolean existeArchivo(String path) {
+        File f = new File(path);
+        return (f.exists() && !f.isDirectory());
+    }
 
 }

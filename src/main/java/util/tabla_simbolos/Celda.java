@@ -29,6 +29,7 @@ public class Celda {
      */
     private int nInvoc, maxInvoc;
     private List<String> paramsDecl;
+    private List<List<String>> paramsReales = new ArrayList<>();
 
     public Celda(int token, String lexema, String tipo) {
         this.token = token;
@@ -55,13 +56,10 @@ public class Celda {
                 ", uso='" + uso + '\'' +
                 ", decl='" + declarada + '\'' +
                 ", nRefs=" + referencias;
-        if (uso.equals(USO_PROC) && paramsDecl != null)
-            return baseCelda + ", actNI=" + nInvoc + ", maxNI="+maxInvoc+", params=" + paramsDecl.toString() + '}';
+        if (uso.equals(USO_PROC) && paramsDecl != null && paramsReales != null)
+            return baseCelda + ", actNI=" + nInvoc + ", maxNI="+maxInvoc+"," +
+                    "\n paramsFormales=" + paramsDecl.toString() + "\n paramsReales=" + paramsReales.toString() + '}';
         return baseCelda + '}';
-    }
-
-    public void setAmbito(String ambito){
-        lexema = ambito+"@"+lexema;
     }
 
     public String getLexema() {
@@ -141,5 +139,14 @@ public class Celda {
 
     public int getMaxInvoc(){
         return maxInvoc;
+    }
+
+    public void setParamsReales(List<String> paramsReales) {
+        List<String> copia = new ArrayList<>(paramsReales);
+        this.paramsReales.add(copia);
+    }
+
+    public List<String> getParamsReales() {
+        return paramsReales.remove(0); //Params reales de la primera invocacion.
     }
 }
