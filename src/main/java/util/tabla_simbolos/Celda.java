@@ -84,6 +84,8 @@ public class Celda {
 
     public boolean isParamCVR() {return uso.equals(USO_PARAM_CVR);}
 
+    public boolean isParamCV() {return uso.equals(USO_PARAM_CV);}
+
     public void setUso(String uso) {
         this.uso = uso;
         if (uso.equals(Celda.USO_PROC)) this.paramsDecl = new ArrayList<>();

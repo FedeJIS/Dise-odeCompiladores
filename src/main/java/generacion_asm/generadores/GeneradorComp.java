@@ -11,6 +11,7 @@ import static generacion_asm.util.UtilsRegistro.*;
 public class GeneradorComp {
     private static List<String> genInstrCompDouble(TablaSimbolos tablaS, List<InfoReg> registros, String op1, String op2) {
         List<String> asm = new ArrayList<>();
+        asm.add("FINIT");
 
         //Si el op1 es un valor inmediato primero lo cargo desde memoria.
         if (!esRegistro(op1) && tablaS.esEntradaCte(op1)) op1 = "_" + TablaSimbolos.formatDouble(op1);

@@ -26,6 +26,7 @@ public class GeneradorAritmDouble {
 
     public static List<String> genInstrAritmDouble(TablaSimbolos tablaS, String operador, String op1, String op2) {
         List<String> asm = new ArrayList<>();
+        asm.add("FINIT");
 
         //Si el op1 es un valor inmediato primero lo cargo desde memoria.
         if (!esRegistro(op1) && tablaS.esEntradaCte(op1)) op1 = "_" + TablaSimbolos.formatDouble(op1);

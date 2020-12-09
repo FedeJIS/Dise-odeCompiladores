@@ -55,7 +55,7 @@ public class GeneradorResta {
 
             //Check resta negativa.
             asm.add("CMP " + opIzq + ", 0");
-            asm.add("JLE L_resta_neg");
+            asm.add("JL L_resta_neg");
 
             GeneradorAssembler.agregaElementoPila(opIzq);
             marcaRegLiberado(registros, opDer);

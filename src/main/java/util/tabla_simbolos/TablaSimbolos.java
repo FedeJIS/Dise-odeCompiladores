@@ -44,7 +44,8 @@ public class TablaSimbolos {
             }
 
             //UINT
-            if (celda.getTipo().equals(Celda.TIPO_UINT) && celda.getUso().equals(Celda.USO_VAR)){
+            if (celda.getTipo().equals(Celda.TIPO_UINT)
+                    && (celda.getUso().equals(Celda.USO_VAR) || celda.isParamCVR() || celda.isParamCV())){
                 if (lexema.startsWith("PROGRAM")) asmBuilder.append('_'); //Variable no auxiliar.
                 asmBuilder.append(lexema).append(" DW ").append(0).append('\n');
             }
