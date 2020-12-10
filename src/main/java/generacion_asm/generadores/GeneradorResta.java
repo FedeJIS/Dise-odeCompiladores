@@ -32,7 +32,7 @@ public class GeneradorResta {
 
                 //Check resta negativa.
                 asm.add("CMP " + getNombreRegistro(reg) + ", 0");
-                asm.add("JLE L_resta_neg");
+                asm.add("JL L_resta_neg");
 
                 GeneradorAssembler.agregaElementoPila(getNombreRegistro(reg));
                 actualizaReg(registros, reg, true, GeneradorAssembler.getLongitudPila());
@@ -44,7 +44,7 @@ public class GeneradorResta {
 
             //Check resta negativa.
             asm.add("CMP " + opIzq + ", 0");
-            asm.add("JLE L_resta_neg");
+            asm.add("JL L_resta_neg");
 
             GeneradorAssembler.agregaElementoPila(opIzq);
         }
@@ -69,7 +69,7 @@ public class GeneradorResta {
 
             //Check resta negativa.
             asm.add("CMP " + getNombreRegistro(reg) + ", 0");
-            asm.add("JLE L_resta_neg");
+            asm.add("JL L_resta_neg");
 
             GeneradorAssembler.agregaElementoPila(getNombreRegistro(reg));
             actualizaReg(registros, reg, true, GeneradorAssembler.getLongitudPila());
