@@ -30,6 +30,7 @@ public class TablaSimbolos {
             if (celda.isProc()){
                 asmBuilder.append("_NI_MAX_").append(lexema).append(" DW ").append(getMaxInvoc(lexema)).append('\n');
                 asmBuilder.append("_NI_ACT_").append(lexema).append(" DW ").append(0).append('\n');
+                asmBuilder.append("_INVOCADO_").append(lexema).append(" DW ").append(0).append('\n');
             }
 
             //DOUBLE
