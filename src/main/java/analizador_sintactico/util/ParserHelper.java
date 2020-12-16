@@ -256,8 +256,15 @@ public class ParserHelper {
      */
     public void guardaParamsInvoc(String... lexemaParams) {
         if (listaParamsInvoc.size() < 3) for (String paramReal : lexemaParams)
-            if (tablaS.esEntradaCte(paramReal)) listaParamsInvoc.add(paramReal);
-            else listaParamsInvoc.add(PilaAmbitos.aplicaNameManglin(pilaAmbitos.getAmbitoActual(), paramReal));
+            if (tablaS.esEntradaCte(paramReal)) {
+                listaParamsInvoc.add(paramReal);
+                agregarPasosRepr(paramReal);
+            }
+            else {
+                listaParamsInvoc.add(PilaAmbitos.aplicaNameManglin(pilaAmbitos.getAmbitoActual(), paramReal));
+                agregarPasosRepr(PilaAmbitos.aplicaNameManglin(pilaAmbitos.getAmbitoActual(), paramReal));
+            }
+
     }
 
     /**

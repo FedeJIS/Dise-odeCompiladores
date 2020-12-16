@@ -48,6 +48,17 @@ public class GeneradorAssembler {
         pilaOps.add(elem);
     }
 
+    public static  void quitaElementoPila(){
+        if (pilaOps.size() > 0) {
+            System.out.println("Antes:");
+            System.out.println(pilaOps.toString());
+            pilaOps.remove(pilaOps.size() - 1);
+            System.out.println();
+            System.out.println("Dsp:");
+            System.out.println(pilaOps.toString());
+        }
+    }
+
     public static int getLongitudPila(){
         return pilaOps.size() - 1;
     }

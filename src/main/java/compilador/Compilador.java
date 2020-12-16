@@ -113,7 +113,6 @@ public class Compilador {
                 "invoke MessageBox, NULL, addr @ni_superado, addr @ni_superado , MB_OK" + '\n' +
                 "JMP L_final" + "\n\n" +
                 "L_final:" + '\n' +
-                "invoke MessageBox, NULL, addr @ejecucion_sin_error, addr @ejecucion_sin_error , MB_OK" + '\n' +
                 "invoke ExitProcess, 0" + '\n' +
                 "END START";
     }
