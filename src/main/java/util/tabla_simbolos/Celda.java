@@ -28,7 +28,7 @@ public class Celda {
      * Atributos de procedimientos.
      */
     private int nInvoc, maxInvoc;
-    private List<String> paramsDecl;
+    private List<String> paramsDecl = new ArrayList<>();
     private List<List<String>> paramsReales = new ArrayList<>();
 
     public Celda(int token, String lexema, String tipo) {
@@ -117,6 +117,10 @@ public class Celda {
 
     public boolean maxInvocAlcanzadas(){
         return nInvoc == maxInvoc;
+    }
+
+    public void addParamDecl(String param){
+        this.paramsDecl.add(param);
     }
 
     public void setParamsDecl(List<String> paramsDecl){

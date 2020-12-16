@@ -199,14 +199,16 @@ public class ParserHelper {
         if (isIdNoRedecl(lexema, ambito)) { //Solo actuo si el id no se declaro para otra cosa.
             tablaS.quitarReferencia(lexema);
 
-            String nLexema = PilaAmbitos.aplicaNameManglin(pilaAmbitos.getAmbitoActual(), lexema);
-            infoProc.addParam(nLexema, tipoPasaje);
-            tablaS.agregarEntrada(new Celda(Parser.ID, nLexema, ultimoTipoLeido, tipoPasaje, true));
+            String paramFormal = PilaAmbitos.aplicaNameManglin(pilaAmbitos.getAmbitoActual(), lexema);
+            infoProc.addParam(PilaAmbitos.aplicaNameManglin(getAmbitoId(infoProc.getLexema()), infoProc.getLexema()),
+                    paramFormal, tipoPasaje, tablaS);
+            tablaS.agregarEntrada(new Celda(Parser.ID, paramFormal, ultimoTipoLeido, tipoPasaje, true));
         } else {
             infoProc.setInfoValida(false); //Marco proc como invalido.
-            tablaS.quitarReferencia(lexema);
+            infoProc.addParam(PilaAmbitos.aplicaNameManglin(getAmbitoId(infoProc.getLexema()), infoProc.getLexema()),
+                    lexema, tipoPasaje, tablaS);
+//            tablaS.quitarReferencia(lexema);
         }
-
     }
 
     /**
@@ -240,7 +242,7 @@ public class ParserHelper {
 
         if (infoProc.isInfoValida()) {
             tablaS.setMaxInvoc(PilaAmbitos.aplicaNameManglin(ambito, infoProc.getLexema()), infoProc.getNumInvoc());
-            tablaS.setParamsProc(PilaAmbitos.aplicaNameManglin(ambito, infoProc.getLexema()), infoProc.getParams());
+//            tablaS.setParamsProc(PilaAmbitos.aplicaNameManglin(ambito, infoProc.getLexema()), infoProc.getParams());
         }
     }
 
@@ -356,6 +358,7 @@ public class ParserHelper {
                 }
             }
         }
+
         tablaS.quitarReferencia(lexema);
         listaParamsInvoc.clear();
     }

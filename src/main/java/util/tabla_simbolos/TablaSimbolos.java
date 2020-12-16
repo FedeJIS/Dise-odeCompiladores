@@ -191,6 +191,12 @@ public class TablaSimbolos {
         entrada.incrementaNInvoc();
     }
 
+    public void addParamProc(String lexema, String param){
+        Celda entrada = tablaSimb.get(lexema);
+        if (entrada == null) throw new IllegalStateException("Lexema '" + lexema + "' no encontrado en la TS");
+        entrada.addParamDecl(param);
+    }
+
     public void setParamsProc(String lexema, List<String> paramsProc){
         Celda entrada = tablaSimb.get(lexema);
         if (entrada == null) throw new IllegalStateException("Lexema '" + lexema + "' no encontrado en la TS");

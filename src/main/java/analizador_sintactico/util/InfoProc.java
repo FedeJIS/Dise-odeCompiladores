@@ -1,5 +1,8 @@
 package analizador_sintactico.util;
 
+import generacion_c_intermedio.PilaAmbitos;
+import util.tabla_simbolos.TablaSimbolos;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,9 +33,10 @@ public class InfoProc {
         return nombreParams;
     }
 
-    public void addParam(String nombreParam, String tipoPasaje){
+    public void addParam(String proc, String nombreParam, String tipoPasaje, TablaSimbolos tablaS){
         if (nombreParams.size() < 3){ //Solo agrego si tengo menos de 3 parametros.
             this.nombreParams.add(nombreParam);
+            tablaS.addParamProc(proc, nombreParam);
             this.tipoPasajeParams.add(tipoPasaje);
         }
     }
