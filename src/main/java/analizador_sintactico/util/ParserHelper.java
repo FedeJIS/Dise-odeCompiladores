@@ -205,8 +205,9 @@ public class ParserHelper {
             tablaS.agregarEntrada(new Celda(Parser.ID, paramFormal, ultimoTipoLeido, tipoPasaje, true));
         } else {
             infoProc.setInfoValida(false); //Marco proc como invalido.
+            String paramFormal = PilaAmbitos.aplicaNameManglin(getAmbitoId(lexema), lexema); //El parametro es el previamente declarado
             infoProc.addParam(PilaAmbitos.aplicaNameManglin(getAmbitoId(infoProc.getLexema()), infoProc.getLexema()),
-                    lexema, tipoPasaje, tablaS);
+                    paramFormal, tipoPasaje, tablaS);
 //            tablaS.quitarReferencia(lexema);
         }
     }
