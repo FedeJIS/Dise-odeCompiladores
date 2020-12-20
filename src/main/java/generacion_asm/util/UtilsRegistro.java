@@ -9,10 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UtilsRegistro {
-    public static int AX = 0;
-    public static int BX = 1;
-    public static int CX = 2;
-    public static int DX = 3;
+    public static final int AX = 0;
+    public static final int BX = 1;
+    public static final int CX = 2;
+    public static final int DX = 3;
 
     public static List<InfoReg> init(){
         List<InfoReg> registros = new ArrayList<>();

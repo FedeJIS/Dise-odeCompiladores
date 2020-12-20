@@ -1,8 +1,6 @@
 package analizador_lexico.acciones_semanticas;
 
 import analizador_lexico.maquina_estados.MaquinaEstados;
-import util.TablaNotificaciones;
-import util.TablaPalabrasR;
 import util.tabla_simbolos.TablaSimbolos;
 
 /**

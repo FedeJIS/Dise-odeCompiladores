@@ -208,7 +208,6 @@ public class ParserHelper {
             String paramFormal = PilaAmbitos.aplicaNameManglin(getAmbitoId(lexema), lexema); //El parametro es el previamente declarado
             infoProc.addParam(PilaAmbitos.aplicaNameManglin(getAmbitoId(infoProc.getLexema()), infoProc.getLexema()),
                     paramFormal, tipoPasaje, tablaS);
-//            tablaS.quitarReferencia(lexema);
         }
     }
 

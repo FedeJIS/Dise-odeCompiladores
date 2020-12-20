@@ -1,7 +1,4 @@
 import compilador.Compilador;
-import util.FileProcessor;
-
-import java.io.File;
 
 public class Main {
 

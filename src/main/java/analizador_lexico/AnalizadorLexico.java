@@ -1,13 +1,9 @@
 package analizador_lexico;
 
 import analizador_lexico.maquina_estados.MaquinaEstados;
-import analizador_sintactico.Parser;
 import util.CodigoFuente;
 import util.TablaPalabrasR;
 import util.tabla_simbolos.TablaSimbolos;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class AnalizadorLexico {
     private final CodigoFuente cFuente;

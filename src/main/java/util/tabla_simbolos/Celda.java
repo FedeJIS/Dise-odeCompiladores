@@ -1,7 +1,5 @@
 package util.tabla_simbolos;
 
-import generacion_c_intermedio.Polaca;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +16,7 @@ public class Celda {
      * Atributos comunes.
      */
     private final int token;
-    private String lexema;
+    private final String lexema;
     private String tipo;
     private String uso = "-";
     private boolean declarada;
@@ -29,7 +27,7 @@ public class Celda {
      */
     private int nInvoc, maxInvoc;
     private List<String> paramsDecl = new ArrayList<>();
-    private List<List<String>> paramsReales = new ArrayList<>();
+    private final List<List<String>> paramsReales = new ArrayList<>();
 
     public Celda(int token, String lexema, String tipo) {
         this.token = token;

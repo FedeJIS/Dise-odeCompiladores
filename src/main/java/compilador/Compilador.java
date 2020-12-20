@@ -97,7 +97,6 @@ public class Compilador {
                 "@resta_neg DB 'Error: Resultado de resta menor a cero.', 0" + "\n" +
                 "@recursion DB 'Error: Recursiones en procedimientos no permitidas.', 0" + "\n" +
                 "@ni_superado DB 'Error: NI para el procedimiento superado.', 0" + "\n" +
-                "@ejecucion_sin_error DB 'Ejecucion sin errores.', 0" + "\n\n" +
                 ".CODE\n" +
                 asmProcsBuilder.toString() + "\n\n" +
                 "START:\n" +

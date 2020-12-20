@@ -1,6 +1,5 @@
 package analizador_sintactico.util;
 
-import generacion_c_intermedio.PilaAmbitos;
 import util.tabla_simbolos.TablaSimbolos;
 
 import java.util.ArrayList;
@@ -27,10 +26,6 @@ public class InfoProc {
 
     public void setNumInvoc(int numInvoc) {
         this.numInvoc = numInvoc;
-    }
-
-    public List<String> getParams() {
-        return nombreParams;
     }
 
     public void addParam(String proc, String nombreParam, String tipoPasaje, TablaSimbolos tablaS){
