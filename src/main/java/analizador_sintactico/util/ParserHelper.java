@@ -242,7 +242,6 @@ public class ParserHelper {
 
         if (infoProc.isInfoValida()) {
             tablaS.setMaxInvoc(PilaAmbitos.aplicaNameManglin(ambito, infoProc.getLexema()), infoProc.getNumInvoc());
-//            tablaS.setParamsProc(PilaAmbitos.aplicaNameManglin(ambito, infoProc.getLexema()), infoProc.getParams());
         }
     }
 
@@ -303,7 +302,7 @@ public class ParserHelper {
             validos = false;
             TablaNotificaciones.agregarError(aLexico.getLineaActual(),
                     String.format("En la posicion %d se esperaba un %s, pero se encontro un %s.",
-                            nParam, tablaS.getTipoEntrada(paramReal), tablaS.getTipoEntrada(paramFormal)));
+                            nParam, tablaS.getTipoEntrada(paramFormal), tablaS.getTipoEntrada(paramReal)));
         }
 
         return validos;
