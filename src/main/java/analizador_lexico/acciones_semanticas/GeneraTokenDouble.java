@@ -27,6 +27,7 @@ public class GeneraTokenDouble extends AccionSemantica {
 
     public void ejecutar() {
         if (baseNumDoubleInicializado()) {
+            boolean expValido = true;
             int exp = 0; //Vale 0 por defecto (Util para los casos donde no se tiene exponente).
             String expString = getString();
 
@@ -34,10 +35,17 @@ public class GeneraTokenDouble extends AccionSemantica {
                     || expString.equals("-") //Se cargo solo un '-' para el exponente.
                     || expString.equals("+")) //Se cargo solo un '+' para el exponente.
                 TablaNotificaciones.agregarWarning(maquinaEstados.getLineaActual(), "Falto el exponente del numero DOUBLE. El exponente es 0 por defecto");
-            else exp = Integer.parseInt(expString);
+            else try{
+                exp = Integer.parseInt(expString);
+            } catch (NumberFormatException numberFormatEx){
+                expValido = false;
+                maquinaEstados.reiniciar();
+                TablaNotificaciones.agregarError(maquinaEstados.getLineaActual(),
+                    "El exponente "+ expString + "del numero DOUBLE esta fuera de rango.");
+            }
 
             double baseNumDouble = getBaseNumDouble();
-            if (doubleValido(baseNumDouble, exp)) {
+            if (expValido && doubleValido(baseNumDouble, exp)) {
                 double doubleNormalizado = baseNumDouble * Math.pow(10, exp);
 
                 tablaS.agregarEntrada(token, String.valueOf(doubleNormalizado), "DOUBLE");

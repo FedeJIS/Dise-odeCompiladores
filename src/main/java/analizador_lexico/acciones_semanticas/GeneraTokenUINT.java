@@ -25,13 +25,18 @@ public class GeneraTokenUINT extends AccionSemantica {
     @Override
     public void ejecutar() {
         String numeroString = getString();
-        int numero = Integer.parseInt(numeroString);
-        if (numeroEnRango(numero)) {
-            tablaS.agregarEntrada(token, numeroString, "UINT");
-            tablaS.setDeclaracionEntrada(numeroString, true);
-            tablaS.setUsoEntrada(numeroString, "CTE");
-            maquinaEstados.setVariablesSintactico(token, numeroString);
-        } else {
+        try{
+            int numero = Integer.parseInt(numeroString);
+            if (numeroEnRango(numero)) {
+                tablaS.agregarEntrada(token, numeroString, "UINT");
+                tablaS.setDeclaracionEntrada(numeroString, true);
+                tablaS.setUsoEntrada(numeroString, "CTE");
+                maquinaEstados.setVariablesSintactico(token, numeroString);
+            } else {
+                TablaNotificaciones.agregarError(maquinaEstados.getLineaActual(), "El numero UINT '" + numeroString + "' esta fuera de rango.");
+                maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token.
+            }
+        } catch (NumberFormatException numberFormatEx){
             TablaNotificaciones.agregarError(maquinaEstados.getLineaActual(), "El numero UINT '" + numeroString + "' esta fuera de rango.");
             maquinaEstados.reiniciar(); //Evita que la maquina quede en el estado final, para que el lexico no genere un token.
         }

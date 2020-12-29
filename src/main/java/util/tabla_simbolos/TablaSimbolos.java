@@ -41,7 +41,6 @@ public class TablaSimbolos {
                     if (lexema.startsWith("PROGRAM")) asmBuilder.append('_'); //Variable no auxiliar.
                     asmBuilder.append(lexema).append(" DQ ").append(0).append('\n');
                 }
-
             }
 
             //UINT
@@ -169,6 +168,7 @@ public class TablaSimbolos {
 
     public void setMaxInvoc(String lexema, int nMax){
         Celda entrada = tablaSimb.get(lexema);
+
         if (entrada == null) throw new IllegalStateException("Lexema '"+lexema+"' no encontrado en la TS");
         entrada.setMaxInvoc(nMax);
     }
@@ -185,22 +185,22 @@ public class TablaSimbolos {
         return entrada.maxInvocAlcanzadas();
     }
 
-    public void incrementaNInvoc(String lexema){
-        Celda entrada = tablaSimb.get(lexema);
-        if (entrada == null) throw new IllegalStateException("Lexema '" + lexema + "' no encontrado en la TS");
-        entrada.incrementaNInvoc();
-    }
-
     public void addParamProc(String lexema, String param){
         Celda entrada = tablaSimb.get(lexema);
         if (entrada == null) throw new IllegalStateException("Lexema '" + lexema + "' no encontrado en la TS");
         entrada.addParamDecl(param);
     }
 
-    public void setParamsProc(String lexema, List<String> paramsProc){
+    public void addTipoParamProc(String lexema, String tipoParam){
         Celda entrada = tablaSimb.get(lexema);
         if (entrada == null) throw new IllegalStateException("Lexema '" + lexema + "' no encontrado en la TS");
-        entrada.setParamsDecl(paramsProc);
+        entrada.addTipoParamDecl(tipoParam);
+    }
+
+    public String getTipoParamProc(String lexema, int nParam){
+        Celda entrada = tablaSimb.get(lexema);
+        if (entrada == null) throw new IllegalStateException("Lexema '" + lexema + "' no encontrado en la TS");
+        return entrada.getTipoParam(nParam);
     }
 
     public void setParamsReales(String lexema, List<String> paramsReales){

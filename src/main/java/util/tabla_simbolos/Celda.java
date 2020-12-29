@@ -25,8 +25,9 @@ public class Celda {
     /**
      * Atributos de procedimientos.
      */
-    private int nInvoc, maxInvoc;
+    private int maxInvoc;
     private List<String> paramsDecl = new ArrayList<>();
+    private List<String> tipoParamsDecl = new ArrayList<>();
     private final List<List<String>> paramsReales = new ArrayList<>();
 
     public Celda(int token, String lexema, String tipo) {
@@ -55,7 +56,7 @@ public class Celda {
                 ", decl='" + declarada + '\'' +
                 ", nRefs=" + referencias;
         if (uso.equals(USO_PROC) && paramsDecl != null && paramsReales != null)
-            return baseCelda + ", actNI=" + nInvoc + ", maxNI="+maxInvoc+"," +
+            return baseCelda + ", maxNI="+maxInvoc+"," +
                     "\n paramsFormales=" + paramsDecl.toString() + "\n paramsReales=" + paramsReales.toString() + '}';
         return baseCelda + '}';
     }
@@ -105,24 +106,24 @@ public class Celda {
         return referencias == 0;
     }
 
-    public void incrementaNInvoc(){
-        nInvoc++;
-    }
-
     public void setMaxInvoc(int maxInvoc) {
         this.maxInvoc = maxInvoc;
     }
 
     public boolean maxInvocAlcanzadas(){
-        return nInvoc == maxInvoc;
+        return false;
     }
 
     public void addParamDecl(String param){
         this.paramsDecl.add(param);
     }
 
-    public void setParamsDecl(List<String> paramsDecl){
-        this.paramsDecl = new ArrayList<>(paramsDecl);
+    public void addTipoParamDecl(String tipoParam){
+        this.tipoParamsDecl.add(tipoParam);
+    }
+
+    public String getTipoParam(int nParam){
+        return this.tipoParamsDecl.get(nParam);
     }
 
     public int getNParams(){

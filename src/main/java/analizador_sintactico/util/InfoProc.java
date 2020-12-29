@@ -9,7 +9,7 @@ public class InfoProc {
     private final String lexema;
     private int numInvoc;
     private final List<String> nombreParams = new ArrayList<>();
-    private final List<String> tipoPasajeParams = new ArrayList<>();
+    private final List<String> tipoParams = new ArrayList<>();
     private boolean infoValida = true;
 
     public InfoProc(String lexema) {
@@ -28,11 +28,11 @@ public class InfoProc {
         this.numInvoc = numInvoc;
     }
 
-    public void addParam(String proc, String nombreParam, String tipoPasaje, TablaSimbolos tablaS){
+    public void addParam(String proc, String nombreParam, String tipo, TablaSimbolos tablaS){
         if (nombreParams.size() < 3){ //Solo agrego si tengo menos de 3 parametros.
             this.nombreParams.add(nombreParam);
             tablaS.addParamProc(proc, nombreParam);
-            this.tipoPasajeParams.add(tipoPasaje);
+            tablaS.addTipoParamProc(proc, tipo);
         }
     }
 

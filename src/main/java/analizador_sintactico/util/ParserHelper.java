@@ -18,6 +18,21 @@ public class ParserHelper {
     private final PilaAmbitos pilaAmbitos;
     private final Polaca polacaProgram;
     private final MultiPolaca polacaProcedimientos;
+    /**
+     * Guarda informacion de los procedimientos. Facilita el anidamiento de los mismos.
+     */
+    private final List<InfoProc> pilaInfoProc = new ArrayList<>();
+
+    //---USO GENERAL---
+    /**
+     * Almacena hasta tres parametros de una invocacion a un procedimiento.
+     */
+    private final List<String> listaParamsInvoc = new ArrayList<>();
+    private String ultimoTipoLeido; //Almacena temporalmente el ultimo tipo leido.
+    private String tipoUltimoFactor;
+    private boolean factorCte;
+
+    //---DECLARACION VARIABLES---
 
     public ParserHelper(AnalizadorLexico aLexico, TablaSimbolos tablaS, PilaAmbitos pilaAmbitos, Polaca polacaProgram,
                         MultiPolaca polacaProcedimientos) {
@@ -28,9 +43,7 @@ public class ParserHelper {
         this.polacaProcedimientos = polacaProcedimientos;
     }
 
-    //---USO GENERAL---
-
-    public void eliminarUltimoAmbito(){
+    public void eliminarUltimoAmbito() {
         if (!pilaAmbitos.inAmbitoGlobal()) pilaAmbitos.eliminarUltimo();
     }
 
@@ -50,8 +63,11 @@ public class ParserHelper {
         return ""; //La variable no esta declarada.
     }
 
+    //---ASIGNACION---
+
     private boolean isIdDecl(String lexema, String ambito) {
         if (ambito.isEmpty()) return false; //La TS no contiene el lexema en el ambito recibido.
+        ambito = getAmbitoId(lexema);
         return tablaS.isEntradaDeclarada(PilaAmbitos.aplicaNameManglin(ambito, lexema));
     }
 
@@ -64,18 +80,14 @@ public class ParserHelper {
         return true;
     }
 
-    //---DECLARACION VARIABLES---
-
-    private String ultimoTipoLeido; //Almacena temporalmente el ultimo tipo leido.
-
-    public void setUltimoTipoLeido(String tipo){
+    public void setUltimoTipoLeido(String tipo) {
         ultimoTipoLeido = tipo;
     }
 
-    public void declaracionVar(String lexema){
+    public void declaracionVar(String lexema) {
         String ambito = getAmbitoId(lexema);
 
-        if (isIdNoRedecl(lexema, ambito)){
+        if (isIdNoRedecl(lexema, ambito)) {
             tablaS.quitarReferencia(lexema);
 
             String nLexema = PilaAmbitos.aplicaNameManglin(pilaAmbitos.getAmbitoActual(), lexema);
@@ -83,18 +95,16 @@ public class ParserHelper {
         }
     }
 
-    //---ASIGNACION---
-
     /**
      * Invocado cuando se lee el lado izq de una asignacion.
      */
-    public void lecturaDestAsign(String lexema){
+    public void lecturaDestAsign(String lexema) {
         tablaS.quitarReferencia(lexema);
 
         String ambito = getAmbitoId(lexema);
-        if (!isIdDecl(lexema, ambito)){ //Variable destino no declarada.
+        if (!isIdDecl(lexema, ambito)) { //Variable destino no declarada.
             TablaNotificaciones.agregarError(aLexico.getLineaActual(),
-                    "La variable '" + lexema + "' no esta declarada.");
+                "La variable '" + lexema + "' no esta declarada.");
             return;
         }
 
@@ -102,32 +112,30 @@ public class ParserHelper {
 
         //Esta declarado pero es un procedimiento.
         if (tablaS.isEntradaProc(nLexema)) TablaNotificaciones.agregarError(aLexico.getLineaActual(),
-                "Un procedimiento no puede estar a la izquierda una asignacion.");
+            "Un procedimiento no puede estar a la izquierda una asignacion.");
         else { //Asignacion valida.
             agregarPasosRepr(nLexema, "=");
             tablaS.agregarReferencia(nLexema);
         }
     }
 
-    private String tipoUltimoFactor;
-
-    private boolean factorCte;
-
     public void setTipoUltimoFactor(String tipoUltimoFactor) {
         this.tipoUltimoFactor = tipoUltimoFactor;
         factorCte = true;
     }
 
+    //---DECLARACION PROCS---
+
     /**
      * Invocado cuando se lee un factor.
      */
-    public void lecturaFactor(String lexema){
+    public void lecturaFactor(String lexema) {
         tablaS.quitarReferencia(lexema);
 
         String ambito = getAmbitoId(lexema);
-        if (!isIdDecl(lexema, ambito)){ //Variable destino no declarada.
+        if (!isIdDecl(lexema, ambito)) { //Variable destino no declarada.
             TablaNotificaciones.agregarError(aLexico.getLineaActual(),
-                    "La variable '" + lexema + "' no esta declarada.");
+                "La variable '" + lexema + "' no esta declarada.");
             return;
         }
 
@@ -135,7 +143,7 @@ public class ParserHelper {
 
         //Esta declarado pero es un procedimiento.
         if (tablaS.isEntradaProc(nLexema)) TablaNotificaciones.agregarError(aLexico.getLineaActual(),
-                "Un procedimiento no puede ser usado como operador.");
+            "Un procedimiento no puede ser usado como operador.");
         else { //Asignacion valida.
             agregarPasosRepr(nLexema);
             factorCte = false;
@@ -144,16 +152,17 @@ public class ParserHelper {
         }
     }
 
-    public void cambioSignoFactor(String lexemaSignoNoC){
+    public void cambioSignoFactor(String lexemaSignoNoC) {
         if (factorCte && tablaS.getTipoEntrada(lexemaSignoNoC).equals(Celda.TIPO_UINT)) //Check UINT negativo.
             TablaNotificaciones.agregarError(aLexico.getLineaActual(), "No se permiten UINT negativos");
-        else{
+        else {
             quitarUltimoPasoRepr(); //Saco de la polaca el factor que quedo con signo incorrecto.
 
-            if (factorCte){
+            if (factorCte) {
                 tablaS.quitarReferencia(lexemaSignoNoC); //El lexema esta en la TS si o si. refs--.
 
-                String lexemaSignoC = String.valueOf(Double.parseDouble(lexemaSignoNoC) * -1); //Cambio el signo del factor.
+                String lexemaSignoC = String.valueOf(
+                    Double.parseDouble(lexemaSignoNoC) * -1); //Cambio el signo del factor.
                 tablaS.agregarEntrada(Parser.CTE_DOUBLE, lexemaSignoC, Celda.TIPO_DOUBLE);
                 tablaS.setUsoEntrada(lexemaSignoC, Celda.USO_CTE);
 
@@ -165,13 +174,6 @@ public class ParserHelper {
         }
 
     }
-
-    //---DECLARACION PROCS---
-
-    /**
-     * Guarda informacion de los procedimientos. Facilita el anidamiento de los mismos.
-     */
-    private final List<InfoProc> pilaInfoProc = new ArrayList<>();
 
     /**
      * Invocado cuando se lee el identificador de un procedimiento.
@@ -185,8 +187,10 @@ public class ParserHelper {
             String nLexema = PilaAmbitos.aplicaNameManglin(pilaAmbitos.getAmbitoActual(), lexema);
             tablaS.agregarEntrada(new Celda(Parser.ID, nLexema, "-", Celda.USO_PROC, true));
 
-            pilaAmbitos.agregarAmbito(lexema);
+//            pilaAmbitos.agregarAmbito(lexema);
         } else pilaInfoProc.get(pilaInfoProc.size() - 1).setInfoValida(false); //Marco proc como invalido.
+
+        pilaAmbitos.agregarAmbito(lexema);
     }
 
     /**
@@ -200,14 +204,17 @@ public class ParserHelper {
             tablaS.quitarReferencia(lexema);
 
             String paramFormal = PilaAmbitos.aplicaNameManglin(pilaAmbitos.getAmbitoActual(), lexema);
+
             infoProc.addParam(PilaAmbitos.aplicaNameManglin(getAmbitoId(infoProc.getLexema()), infoProc.getLexema()),
-                    paramFormal, tipoPasaje, tablaS);
+                paramFormal, ultimoTipoLeido, tablaS);
             tablaS.agregarEntrada(new Celda(Parser.ID, paramFormal, ultimoTipoLeido, tipoPasaje, true));
         } else {
             infoProc.setInfoValida(false); //Marco proc como invalido.
-            String paramFormal = PilaAmbitos.aplicaNameManglin(getAmbitoId(lexema), lexema); //El parametro es el previamente declarado
+            String paramFormal = PilaAmbitos.aplicaNameManglin(getAmbitoId(lexema),
+                lexema); //El parametro es el previamente declarado
+
             infoProc.addParam(PilaAmbitos.aplicaNameManglin(getAmbitoId(infoProc.getLexema()), infoProc.getLexema()),
-                    paramFormal, tipoPasaje, tablaS);
+                paramFormal, ultimoTipoLeido, tablaS);
         }
     }
 
@@ -231,6 +238,8 @@ public class ParserHelper {
             declaracionProc();
     }
 
+    //---INVOCACION PROCS---
+
     /**
      * Invocado cuando se termina de leer el cuerpo de un procedimiento.
      */
@@ -242,15 +251,9 @@ public class ParserHelper {
 
         if (infoProc.isInfoValida()) {
             tablaS.setMaxInvoc(PilaAmbitos.aplicaNameManglin(ambito, infoProc.getLexema()), infoProc.getNumInvoc());
+
         }
     }
-
-    //---INVOCACION PROCS---
-
-    /**
-     * Almacena hasta tres parametros de una invocacion a un procedimiento.
-     */
-    private final List<String> listaParamsInvoc = new ArrayList<>();
 
     /**
      * Guarda los lexemas de los parametros recibidos en una invocacion a un procedimiento.
@@ -260,10 +263,9 @@ public class ParserHelper {
             if (tablaS.esEntradaCte(paramReal)) {
                 listaParamsInvoc.add(paramReal);
                 agregarPasosRepr(paramReal);
-            }
-            else {
-                listaParamsInvoc.add(PilaAmbitos.aplicaNameManglin(pilaAmbitos.getAmbitoActual(), paramReal));
-                agregarPasosRepr(PilaAmbitos.aplicaNameManglin(pilaAmbitos.getAmbitoActual(), paramReal));
+            } else {
+                listaParamsInvoc.add(PilaAmbitos.aplicaNameManglin(getAmbitoId(paramReal), paramReal));
+                agregarPasosRepr(PilaAmbitos.aplicaNameManglin(getAmbitoId(paramReal), paramReal));
             }
 
     }
@@ -274,12 +276,12 @@ public class ParserHelper {
     private boolean isIdInvocValido(String lexema, String ambito) {
         if (!isIdDecl(lexema, ambito)) { //Proc no declarado.
             TablaNotificaciones.agregarError(aLexico.getLineaActual(),
-                    "El procedimiento '" + lexema + "' no esta declarado.");
+                "El procedimiento '" + lexema + "' no esta declarado.");
             return false;
         }
         if (!tablaS.isEntradaProc(PilaAmbitos.aplicaNameManglin(ambito, lexema))) { //Id no es de un proc.
             TablaNotificaciones.agregarError(aLexico.getLineaActual(),
-                    "El identificador '" + lexema + "' no se corresponde con ningun procedimiento.");
+                "El identificador '" + lexema + "' no se corresponde con ningun procedimiento.");
             return false;
         }
         return true;
@@ -288,21 +290,23 @@ public class ParserHelper {
     /**
      * Compara parametro real y formal, y determina su validez.
      */
-    private boolean comparaParams(int nParam, String paramReal, String paramFormal){
+    private boolean comparaParams(String proc, int nParam, String paramReal, String paramFormal) {
         boolean validos = true;
         //Chequea que el param formal no tenga pasaje CVR y el param real sea una cte.
-        if (tablaS.isEntradaParamCVR(paramFormal) && tablaS.esEntradaCte(paramReal)){
+        if (tablaS.isEntradaParamCVR(paramFormal) && tablaS.esEntradaCte(paramReal)) {
             validos = false;
             TablaNotificaciones.agregarError(aLexico.getLineaActual(),
-                    String.format("En la posicion %d se esperaba una variable, pero se encontro una constante.", nParam));
+                String.format("En la posicion %d se esperaba una variable, pero se encontro una constante.", nParam));
         }
 
         //Compara tipos de parametros.
-        if (!tablaS.getTipoEntrada(paramReal).equals(tablaS.getTipoEntrada(paramFormal))){
+        System.out.println(paramReal+ ":"+tablaS.getTipoEntrada(paramReal)+
+            ", "+ paramFormal+":"+tablaS.getTipoParamProc(proc, nParam-1));
+        if (!tablaS.getTipoEntrada(paramReal).equals(tablaS.getTipoParamProc(proc, nParam-1))) {
             validos = false;
             TablaNotificaciones.agregarError(aLexico.getLineaActual(),
-                    String.format("En la posicion %d se esperaba un %s, pero se encontro un %s.",
-                            nParam, tablaS.getTipoEntrada(paramFormal), tablaS.getTipoEntrada(paramReal)));
+                String.format("En la posicion %d se esperaba un %s, pero se encontro un %s.",
+                    nParam, tablaS.getTipoEntrada(paramFormal), tablaS.getTipoParamProc(proc, nParam-1)));
         }
 
         return validos;
@@ -316,15 +320,17 @@ public class ParserHelper {
         //Check numero params reales coincide con numero params formales.
         if (paramsReales.size() != tablaS.getNParams(lexemaProc)) {
             TablaNotificaciones.agregarError(aLexico.getLineaActual(),
-                    "Se esperaban " + tablaS.getNParams(lexemaProc) + " parametros, "
-                            + "pero se encontraron " + listaParamsInvoc.size() + ".");
+                "Se esperaban " + tablaS.getNParams(lexemaProc) + " parametros, "
+                    + "pero se encontraron " + listaParamsInvoc.size() + ".");
             validos = false;
         }
 
         //Check tipos parametros. Compara tantos parametros como sea posible.
+        System.out.println(lexemaProc);
         for (int i = 0; i < tablaS.getNParams(lexemaProc) && i < paramsReales.size(); i++) {
-            validos = comparaParams(i+1, listaParamsInvoc.get(i), tablaS.getParam(lexemaProc, i));
+            validos = comparaParams(lexemaProc, i + 1, listaParamsInvoc.get(i), tablaS.getParam(lexemaProc, i));
         }
+        System.out.println("---------");
 
         return validos;
     }
@@ -364,8 +370,8 @@ public class ParserHelper {
 
     //---OUT---
 
-    public void impresionFactor(){
-        agregarPasosRepr("OUT_"+ tipoUltimoFactor);
+    public void impresionFactor() {
+        agregarPasosRepr("OUT_" + tipoUltimoFactor);
     }
 
     //---POLACA---

@@ -3,7 +3,7 @@ import compilador.Compilador;
 public class Test {
 
     public static void main(String[] args) {
-        Main.main(new String[]{("/home/brunog/Desktop/proc_tipo_params_invoc.txt")});
+        Main.main(new String[]{("/home/brunog/Desktop/g15_segunda_reentrega/fuente.txt")});
 
 //        Compilador.compilar(
 //                "PROC x(VAR UINT f, UINT g, DOUBLE h) NI = 1_ui{" + '\n' +
