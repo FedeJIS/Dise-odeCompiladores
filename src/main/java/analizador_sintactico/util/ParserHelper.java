@@ -298,7 +298,7 @@ public class ParserHelper {
             validos = false;
             TablaNotificaciones.agregarError(aLexico.getLineaActual(),
                 String.format("En la posicion %d se esperaba un %s, pero se encontro un %s.",
-                    nParam, tablaS.getTipoEntrada(paramFormal), tablaS.getTipoParamProc(proc, nParam-1)));
+                    nParam, tablaS.getTipoParamProc(proc, nParam-1), tablaS.getTipoEntrada(paramReal)));
         }
 
         return validos;
