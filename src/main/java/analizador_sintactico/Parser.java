@@ -671,7 +671,7 @@ boolean doaction;
         {
 //        yyerror("syntax error");
         yynerrs++;
-        }t
+        }
       if (yyerrflag < 3) //low error count?
         {
         yyerrflag = 3;
