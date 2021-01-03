@@ -8,7 +8,8 @@ import util.TablaPalabrasR;
 import util.tabla_simbolos.TablaSimbolos;
 
 public class MaquinaEstados {
-    private final TransicionEstado[][] maquinaEstados = new TransicionEstado[Estado.TOTAL_ESTADOS][Input.TOTAL_INPUTS]; //[filas][columnas].
+    private final TransicionEstado[][] maquinaEstados =
+        new TransicionEstado[Estado.TOTAL_ESTADOS][Input.TOTAL_INPUTS]; //[filas][columnas].
     private final AnalizadorLexico aLexico; //Permite agregar tokens a medida que se generan.
     private final CuentaSaltoLinea cuentaSaltoLinea = new CuentaSaltoLinea(); //Permite saber la linea actual
     private int estadoActual = Estado.INICIAL;
@@ -16,7 +17,8 @@ public class MaquinaEstados {
     /**
      * Constructor.
      */
-    public MaquinaEstados(AnalizadorLexico aLexico, CodigoFuente cFuente, TablaSimbolos tablaS, TablaPalabrasR tablaPR) {
+    public MaquinaEstados(AnalizadorLexico aLexico, CodigoFuente cFuente, TablaSimbolos tablaS,
+                          TablaPalabrasR tablaPR) {
         this.aLexico = aLexico;
 
         inicMaquinaEstados(cFuente, tablaS, tablaPR);
@@ -38,15 +40,18 @@ public class MaquinaEstados {
         GeneraTokenParticular generaTokenEOF = new GeneraTokenParticular(this, AnalizadorLexico.T_EOF);
 
         /* Estados y transiciones */
-        inicTransiciones(Estado.INICIAL, Estado.INICIAL, notificaErrorLexico); //Transiciones por defecto para cualquier simbolo no reconocido.
+        inicTransiciones(Estado.INICIAL, Estado.INICIAL,
+            notificaErrorLexico); //Transiciones por defecto para cualquier simbolo no reconocido.
         maquinaEstados[Estado.INICIAL][Input.DESCARTABLE] = new TransicionEstado(Estado.INICIAL); //Tab y espacio.
-        maquinaEstados[Estado.INICIAL][Input.SALTO_LINEA] = new TransicionEstado(Estado.INICIAL, cuentaSaltoLinea); //Salto de linea.
+        maquinaEstados[Estado.INICIAL][Input.SALTO_LINEA] = new TransicionEstado(Estado.INICIAL,
+            cuentaSaltoLinea); //Salto de linea.
         inicCaminoLiterales(cFuente);
         inicCaminoIds(inicStringVacio, concatenaChar, truncaId, generaTokenId, retrocedeFuente);
         inicCaminoPRs(inicStringVacio, concatenaChar, generaTokenPR, retrocedeFuente);
         inicCaminoComentario(cFuente, retrocedeFuente, notificaErrorLexico);
         inicCaminoComparadores(cFuente, retrocedeFuente, consumeChar);
-        inicCaminoCtesNum(inicStringVacio, concatenaChar, retrocedeFuente, generaTokenUINT, consumeChar, generaTokenDouble);
+        inicCaminoCtesNum(inicStringVacio, concatenaChar, retrocedeFuente, generaTokenUINT, consumeChar,
+            generaTokenDouble);
         inicCaminoCadenas(cFuente, inicStringVacio, concatenaChar, generaTokenCadena);
         maquinaEstados[Estado.INICIAL][Input.EOF] = new TransicionEstado(Estado.FINAL, generaTokenEOF); //EOF
 
@@ -96,7 +101,7 @@ public class MaquinaEstados {
         TransicionEstado transicionEstado = maquinaEstados[estadoActual][Input.EOF];
 
         transicionEstado.ejecutarAccionSemantica();
-        aLexico.setVariablesSintactico(AnalizadorLexico.T_EOF,""); //Genera el token asociado al EOF ('0').
+        aLexico.setVariablesSintactico(AnalizadorLexico.T_EOF, ""); //Genera el token asociado al EOF ('0').
         estadoActual = Estado.FINAL; //Finalizo ejecucion
     }
 
@@ -136,21 +141,27 @@ public class MaquinaEstados {
     private void inicCaminoIds(AccionSemantica inicStringVacio, AccionSemantica concatenaChar, AccionSemantica truncaId,
                                AccionSemantica generaTokenId, AccionSemantica retrocedeFuente) {
         /* Estado 0 */
-        maquinaEstados[Estado.INICIAL][Input.D_MINUSC] = new TransicionEstado(Estado.DETECCION_ID, inicStringVacio, concatenaChar);
-        maquinaEstados[Estado.INICIAL][Input.U_MINUSC] = new TransicionEstado(Estado.DETECCION_ID, inicStringVacio, concatenaChar);
-        maquinaEstados[Estado.INICIAL][Input.I_MINUSC] = new TransicionEstado(Estado.DETECCION_ID, inicStringVacio, concatenaChar);
-        maquinaEstados[Estado.INICIAL][Input.LETRA_MINUSC] = new TransicionEstado(Estado.DETECCION_ID, inicStringVacio, concatenaChar);
+        maquinaEstados[Estado.INICIAL][Input.D_MINUSC] = new TransicionEstado(Estado.DETECCION_ID, inicStringVacio,
+            concatenaChar);
+        maquinaEstados[Estado.INICIAL][Input.U_MINUSC] = new TransicionEstado(Estado.DETECCION_ID, inicStringVacio,
+            concatenaChar);
+        maquinaEstados[Estado.INICIAL][Input.I_MINUSC] = new TransicionEstado(Estado.DETECCION_ID, inicStringVacio,
+            concatenaChar);
+        maquinaEstados[Estado.INICIAL][Input.LETRA_MINUSC] = new TransicionEstado(Estado.DETECCION_ID, inicStringVacio,
+            concatenaChar);
 
         /* Estado 1 */
         //Inputs no reconocidos.
         inicTransiciones(Estado.DETECCION_ID, Estado.FINAL, truncaId, generaTokenId, retrocedeFuente);
         //Salto de linea. Cuenta una nueva linea. No devuelve el ultimo leido pq se descartaria de todas formas.
-        maquinaEstados[Estado.DETECCION_ID][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL, truncaId, generaTokenId, cuentaSaltoLinea);
+        maquinaEstados[Estado.DETECCION_ID][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL, truncaId,
+            generaTokenId, cuentaSaltoLinea);
         //Letras minusculas.
         maquinaEstados[Estado.DETECCION_ID][Input.D_MINUSC] = new TransicionEstado(Estado.DETECCION_ID, concatenaChar);
         maquinaEstados[Estado.DETECCION_ID][Input.U_MINUSC] = new TransicionEstado(Estado.DETECCION_ID, concatenaChar);
         maquinaEstados[Estado.DETECCION_ID][Input.I_MINUSC] = new TransicionEstado(Estado.DETECCION_ID, concatenaChar);
-        maquinaEstados[Estado.DETECCION_ID][Input.LETRA_MINUSC] = new TransicionEstado(Estado.DETECCION_ID, concatenaChar);
+        maquinaEstados[Estado.DETECCION_ID][Input.LETRA_MINUSC] = new TransicionEstado(Estado.DETECCION_ID,
+            concatenaChar);
         //Guio bajo
         maquinaEstados[Estado.DETECCION_ID][Input.DIGITO] = new TransicionEstado(Estado.DETECCION_ID, concatenaChar);
         //Digitos
@@ -165,15 +176,18 @@ public class MaquinaEstados {
     private void inicCaminoPRs(AccionSemantica inicStringVacio, AccionSemantica concatenaChar,
                                AccionSemantica generaTokenPR, AccionSemantica retrocedeFuente) {
         /* Estado 0 */
-        maquinaEstados[Estado.INICIAL][Input.LETRA_MAYUS] = new TransicionEstado(Estado.DETECCION_PR, inicStringVacio, concatenaChar);
+        maquinaEstados[Estado.INICIAL][Input.LETRA_MAYUS] = new TransicionEstado(Estado.DETECCION_PR, inicStringVacio,
+            concatenaChar);
 
         /* Estado 1 */
         //Inputs no reconocidos.
         inicTransiciones(Estado.DETECCION_PR, Estado.FINAL, generaTokenPR, retrocedeFuente);
         //Salto de linea. Cuenta una nueva linea. No devuelve el ultimo leido pq se descartaria de todas formas.
-        maquinaEstados[Estado.DETECCION_PR][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL, generaTokenPR, cuentaSaltoLinea);
+        maquinaEstados[Estado.DETECCION_PR][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL, generaTokenPR,
+            cuentaSaltoLinea);
         //Letras mayusculas.
-        maquinaEstados[Estado.DETECCION_PR][Input.LETRA_MAYUS] = new TransicionEstado(Estado.DETECCION_PR, concatenaChar);
+        maquinaEstados[Estado.DETECCION_PR][Input.LETRA_MAYUS] = new TransicionEstado(Estado.DETECCION_PR,
+            concatenaChar);
         //Guion bajo.
         maquinaEstados[Estado.DETECCION_PR][Input.GUION_B] = new TransicionEstado(Estado.DETECCION_PR, concatenaChar);
         //EOF. Voy directo al estado final. No hace falta devolver ultimo leido.
@@ -184,7 +198,8 @@ public class MaquinaEstados {
     /**
      * Transiciones asociadas a la deteccion y descarte de comentarios unilinea.
      */
-    private void inicCaminoComentario(CodigoFuente cFuente, AccionSemantica retrocedeFuente, AccionSemantica notificaErrorLexico) {
+    private void inicCaminoComentario(CodigoFuente cFuente, AccionSemantica retrocedeFuente,
+                                      AccionSemantica notificaErrorLexico) {
         /* Estado 0 */
         maquinaEstados[Estado.INICIAL][Input.PORCENTAJE] = new TransicionEstado(Estado.INICIO_COMENT);
 
@@ -192,10 +207,12 @@ public class MaquinaEstados {
         //Inputs invalidos. Hay que notificar error porque queda el '%' solo.
         inicTransiciones(Estado.INICIO_COMENT, Estado.INICIAL, retrocedeFuente, notificaErrorLexico);
         //Salto de linea. Cuenta una nueva linea. No devuelve el ultimo leido pq se descartaria de todas formas.
-        maquinaEstados[Estado.INICIO_COMENT][Input.SALTO_LINEA] = new TransicionEstado(Estado.INICIAL, cuentaSaltoLinea);
+        maquinaEstados[Estado.INICIO_COMENT][Input.SALTO_LINEA] = new TransicionEstado(Estado.INICIAL,
+            cuentaSaltoLinea);
         //'%'
         maquinaEstados[Estado.INICIO_COMENT][Input.PORCENTAJE] = new TransicionEstado(Estado.CUERPO_COMENT);
-        //EOF. Voy directo al estado final. No hace falta devolver ultimo leido. Hay que notificar error porque queda el '%' solo.
+        //EOF. Voy directo al estado final. No hace falta devolver ultimo leido. Hay que notificar error porque queda
+        // el '%' solo.
         NotificaError errorEOFComentario = new NotificaError("Simbolo no reconocido", aLexico, cFuente, true);
         maquinaEstados[Estado.INICIO_COMENT][Input.EOF] = new TransicionEstado(Estado.FINAL, errorEOFComentario);
 
@@ -203,7 +220,8 @@ public class MaquinaEstados {
         //Inputs validos.
         inicTransiciones(Estado.CUERPO_COMENT, Estado.CUERPO_COMENT);
         /* Salto de linea (fin comentario). Cuenta una nueva linea */
-        maquinaEstados[Estado.CUERPO_COMENT][Input.SALTO_LINEA] = new TransicionEstado(Estado.INICIAL, cuentaSaltoLinea);
+        maquinaEstados[Estado.CUERPO_COMENT][Input.SALTO_LINEA] = new TransicionEstado(Estado.INICIAL,
+            cuentaSaltoLinea);
         //EOF. Voy directo al estado final. No hace falta devolver ultimo leido.
         maquinaEstados[Estado.CUERPO_COMENT][Input.EOF] = new TransicionEstado(Estado.FINAL);
     }
@@ -211,7 +229,8 @@ public class MaquinaEstados {
     /**
      * Transiciones asociadas a la deteccion de comparadores y token asignacion.
      */
-    private void inicCaminoComparadores(CodigoFuente cFuente, AccionSemantica retrocedeFuente, AccionSemantica consumeChar) {
+    private void inicCaminoComparadores(CodigoFuente cFuente, AccionSemantica retrocedeFuente,
+                                        AccionSemantica consumeChar) {
         GeneraTokenParticular generaTokenParticular;
 
         /* Token '<': Estado 0 */
@@ -222,12 +241,14 @@ public class MaquinaEstados {
         //Inputs no definidos. Comparacion por menor estricto.
         inicTransiciones(Estado.COMP_MENOR, Estado.FINAL, retrocedeFuente, generaTokenParticular);
         //Salto de linea. Comparacion por menor estricto.
-        maquinaEstados[Estado.COMP_MENOR][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL, generaTokenParticular, cuentaSaltoLinea);
+        maquinaEstados[Estado.COMP_MENOR][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL, generaTokenParticular,
+            cuentaSaltoLinea);
         //EOF. Comparacion por menor estricto.
         maquinaEstados[Estado.COMP_MENOR][Input.EOF] = new TransicionEstado(Estado.FINAL, generaTokenParticular);
         //'='. Comparacion por menor e igual.
         generaTokenParticular = new GeneraTokenParticular(this, Parser.COMP_MENOR_IGUAL);
-        maquinaEstados[Estado.COMP_MENOR][Input.IGUAL] = new TransicionEstado(Estado.FINAL, consumeChar, generaTokenParticular);
+        maquinaEstados[Estado.COMP_MENOR][Input.IGUAL] = new TransicionEstado(Estado.FINAL, consumeChar,
+            generaTokenParticular);
 
         /* Token '>': Estado 0 */
         maquinaEstados[Estado.INICIAL][Input.MAYOR] = new TransicionEstado(Estado.COMP_MAYOR);
@@ -237,27 +258,32 @@ public class MaquinaEstados {
         //Inputs no definidos. Comparacion por mayor estricto.
         inicTransiciones(Estado.COMP_MAYOR, Estado.FINAL, retrocedeFuente, generaTokenParticular);
         //Salto de linea. Comparacion por mayor estricto.
-        maquinaEstados[Estado.COMP_MAYOR][Input.SALTO_LINEA] = new TransicionEstado(Estado.INICIAL, generaTokenParticular, cuentaSaltoLinea);
+        maquinaEstados[Estado.COMP_MAYOR][Input.SALTO_LINEA] = new TransicionEstado(Estado.INICIAL,
+            generaTokenParticular, cuentaSaltoLinea);
         //EOF. Comparacion por mayor estricto.
         maquinaEstados[Estado.COMP_MAYOR][Input.EOF] = new TransicionEstado(Estado.FINAL, generaTokenParticular);
         //'='. Comparacion por mayor e igual.
         generaTokenParticular = new GeneraTokenParticular(this, Parser.COMP_MAYOR_IGUAL);
-        maquinaEstados[Estado.COMP_MAYOR][Input.IGUAL] = new TransicionEstado(Estado.FINAL, consumeChar, generaTokenParticular);
+        maquinaEstados[Estado.COMP_MAYOR][Input.IGUAL] = new TransicionEstado(Estado.FINAL, consumeChar,
+            generaTokenParticular);
 
         /* Token '!': Estado 0 */
         maquinaEstados[Estado.INICIAL][Input.ADMIRACION] = new TransicionEstado(Estado.COMP_DISTINTO);
 
         /* Estado 7 */
         //Inputs invalidos. El simbolo '!' por si solo no hace nada, solo puede estar acompañado por un '='.
-        NotificaError errorSimboloInvalido = new NotificaError("El simbolo '!' por si solo no tiene ninguna funcion en el lenguaje", aLexico, cFuente, false);
+        NotificaError errorSimboloInvalido = new NotificaError(
+            "El simbolo '!' por si solo no tiene ninguna funcion en el lenguaje", aLexico, cFuente, false);
         inicTransiciones(Estado.COMP_DISTINTO, Estado.INICIAL, retrocedeFuente, errorSimboloInvalido);
         //Salto de linea. Misma situacion que sentencia anterior.
-        maquinaEstados[Estado.COMP_DISTINTO][Input.SALTO_LINEA] = new TransicionEstado(Estado.INICIAL, cuentaSaltoLinea, errorSimboloInvalido);
+        maquinaEstados[Estado.COMP_DISTINTO][Input.SALTO_LINEA] = new TransicionEstado(Estado.INICIAL, cuentaSaltoLinea,
+            errorSimboloInvalido);
         //EOF. Misma situacion que sentencia anterior.
         maquinaEstados[Estado.COMP_DISTINTO][Input.EOF] = new TransicionEstado(Estado.INICIAL, errorSimboloInvalido);
         //'='. Comparacion por distincion.
         generaTokenParticular = new GeneraTokenParticular(this, Parser.COMP_DISTINTO);
-        maquinaEstados[Estado.COMP_DISTINTO][Input.IGUAL] = new TransicionEstado(Estado.FINAL, consumeChar, generaTokenParticular);
+        maquinaEstados[Estado.COMP_DISTINTO][Input.IGUAL] = new TransicionEstado(Estado.FINAL, consumeChar,
+            generaTokenParticular);
 
         /* Token '=': Estado 0 */
         maquinaEstados[Estado.INICIAL][Input.IGUAL] = new TransicionEstado(Estado.SIGNO_IGUAL);
@@ -267,12 +293,14 @@ public class MaquinaEstados {
         //Inputs no definidos. Asignacion.
         inicTransiciones(Estado.SIGNO_IGUAL, Estado.FINAL, retrocedeFuente, generaTokenParticular);
         //Salto de linea. Asignacion
-        maquinaEstados[Estado.SIGNO_IGUAL][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL, generaTokenParticular, cuentaSaltoLinea);
+        maquinaEstados[Estado.SIGNO_IGUAL][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL,
+            generaTokenParticular, cuentaSaltoLinea);
         //EOF. Asignacion
         maquinaEstados[Estado.SIGNO_IGUAL][Input.EOF] = new TransicionEstado(Estado.FINAL, generaTokenParticular);
         //'='. Comparacion por igualdad.
         generaTokenParticular = new GeneraTokenParticular(this, Parser.COMP_IGUAL);
-        maquinaEstados[Estado.SIGNO_IGUAL][Input.IGUAL] = new TransicionEstado(Estado.FINAL, consumeChar, generaTokenParticular);
+        maquinaEstados[Estado.SIGNO_IGUAL][Input.IGUAL] = new TransicionEstado(Estado.FINAL, consumeChar,
+            generaTokenParticular);
     }
 
     /**
@@ -283,113 +311,167 @@ public class MaquinaEstados {
                                    AccionSemantica consumeChar, AccionSemantica generaTokenDouble) {
         /* Acciones semanticas usadas */
         ParseBaseDouble parseBaseDouble = new ParseBaseDouble();
-        NotificaWarning warningFaltaSufijo = new NotificaWarning("Falto el sufijo '_ui' luego del numero. El numero fue tomado como un UINT", aLexico);
-        NotificaWarning warningFaltaExponente = new NotificaWarning("Falto el exponente del numero DOUBLE. El exponente es 0 por defecto", aLexico);
+        NotificaWarning warningFaltaSufijo = new NotificaWarning(
+            "Falto el sufijo '_ui' luego del numero. El numero fue tomado como un UINT", aLexico);
+        NotificaWarning warningSufijoInvalido = new NotificaWarning(
+            "El sufijo encontrado luego del numero no se corresponde con el estipulado para un numero UINT. " +
+                "El mismo fue tomado como un UINT", aLexico);
+        NotificaWarning warningFaltaExponente = new NotificaWarning(
+            "Falto el exponente del numero DOUBLE. El exponente es 0 por defecto", aLexico);
 
         /* Estado 0. */
-        maquinaEstados[Estado.INICIAL][Input.DIGITO] = new TransicionEstado(Estado.CTE_PARTE_ENTERA, inicStringVacio, concatenaChar);
-        maquinaEstados[Estado.INICIAL][Input.PUNTO] = new TransicionEstado(Estado.CTE_PARTE_DECIM, inicStringVacio, concatenaChar);
+        maquinaEstados[Estado.INICIAL][Input.DIGITO] = new TransicionEstado(Estado.CTE_PARTE_ENTERA, inicStringVacio,
+            concatenaChar);
+        maquinaEstados[Estado.INICIAL][Input.PUNTO] = new TransicionEstado(Estado.CTE_PARTE_DECIM, inicStringVacio,
+            concatenaChar);
 
         /* Estado 9 */
-        //Inputs no reconocidos. El lexico "da por hecho" que es un UINT, asi se evita dar problemas al sintactico, pero genera un warning.
+        //Inputs no reconocidos. El lexico "da por hecho" que es un UINT, asi se evita dar problemas al sintactico,
+        // pero genera un warning.
         inicTransiciones(Estado.CTE_PARTE_ENTERA, Estado.FINAL, generaTokenUINT, retrocedeFuente, warningFaltaSufijo);
-        //Salto de linea. No devuelve el ultimo leido pq se descartaria de todas formas. Genera un warning por falta de sufijo.
-        maquinaEstados[Estado.CTE_PARTE_ENTERA][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL, generaTokenUINT, cuentaSaltoLinea, warningFaltaSufijo);
+        //Salto de linea. No devuelve el ultimo leido pq se descartaria de todas formas. Genera un warning por falta
+        // de sufijo.
+        maquinaEstados[Estado.CTE_PARTE_ENTERA][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL, generaTokenUINT,
+            cuentaSaltoLinea, warningFaltaSufijo);
         //Digitos.
-        maquinaEstados[Estado.CTE_PARTE_ENTERA][Input.DIGITO] = new TransicionEstado(Estado.CTE_PARTE_ENTERA, concatenaChar);
+        maquinaEstados[Estado.CTE_PARTE_ENTERA][Input.DIGITO] = new TransicionEstado(Estado.CTE_PARTE_ENTERA,
+            concatenaChar);
         //Guion bajo. Salto a deteccion de sufijo para UIs.
         maquinaEstados[Estado.CTE_PARTE_ENTERA][Input.GUION_B] = new TransicionEstado(Estado.CTE_UI_SUF1);
         //Punto ('.'). Salto a deteccion de parte decimal de doubles.
-        maquinaEstados[Estado.CTE_PARTE_ENTERA][Input.PUNTO] = new TransicionEstado(Estado.CTE_PARTE_DECIM, concatenaChar);
-        //Letra 'd' minuscula. Salto a deteccion de parte exponencial de doubles. Como ya detecte toda la base la parseo.
-        maquinaEstados[Estado.CTE_PARTE_ENTERA][Input.D_MINUSC] = new TransicionEstado(Estado.CTE_PARTE_EXP_SIGNO, parseBaseDouble, consumeChar);
+        maquinaEstados[Estado.CTE_PARTE_ENTERA][Input.PUNTO] = new TransicionEstado(Estado.CTE_PARTE_DECIM,
+            concatenaChar);
+        //Letra 'd' minuscula. Salto a deteccion de parte exponencial de doubles. Como ya detecte toda la base la
+        // parseo.
+        maquinaEstados[Estado.CTE_PARTE_ENTERA][Input.D_MINUSC] = new TransicionEstado(Estado.CTE_PARTE_EXP_SIGNO,
+            parseBaseDouble, consumeChar);
         //EOF. Crea un UINT pero genera un warning por falta de sufijo.
-        maquinaEstados[Estado.CTE_PARTE_ENTERA][Input.EOF] = new TransicionEstado(Estado.FINAL, generaTokenUINT, warningFaltaSufijo);
+        maquinaEstados[Estado.CTE_PARTE_ENTERA][Input.EOF] = new TransicionEstado(Estado.FINAL, generaTokenUINT,
+            warningFaltaSufijo);
 
         /* Estado 10 */
         //Inputs invalidos. Crea un UINT pero genera un warning por falta de sufijo.
-        inicTransiciones(Estado.CTE_UI_SUF1, Estado.FINAL, retrocedeFuente, generaTokenUINT, warningFaltaSufijo);
+        inicTransiciones(Estado.CTE_UI_SUF1, Estado.FINAL, retrocedeFuente, generaTokenUINT, warningSufijoInvalido);
         //Salto de linea. Crea un UINT pero genera un warning por falta de sufijo.
-        maquinaEstados[Estado.CTE_UI_SUF1][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL, generaTokenUINT, cuentaSaltoLinea, warningFaltaSufijo);
+        maquinaEstados[Estado.CTE_UI_SUF1][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL, generaTokenUINT,
+            cuentaSaltoLinea, warningSufijoInvalido);
         //Letra 'u' minuscula.
         maquinaEstados[Estado.CTE_UI_SUF1][Input.U_MINUSC] = new TransicionEstado(Estado.CTE_UI_SUF2);
+        //Cualquier letra minuscula. "Tomo" la letra recibida como parte del sufijo.
+        maquinaEstados[Estado.CTE_UI_SUF1][Input.LETRA_MINUSC] = new TransicionEstado(Estado.CTE_UI_SUF1);
+        maquinaEstados[Estado.CTE_UI_SUF1][Input.D_MINUSC] = new TransicionEstado(Estado.CTE_UI_SUF1);
+        maquinaEstados[Estado.CTE_UI_SUF1][Input.I_MINUSC] = new TransicionEstado(Estado.CTE_UI_SUF1);
         //EOF. Crea un UINT pero genera un warning por falta de sufijo.
-        maquinaEstados[Estado.CTE_UI_SUF1][Input.EOF] = new TransicionEstado(Estado.FINAL, generaTokenUINT, warningFaltaSufijo);
+        maquinaEstados[Estado.CTE_UI_SUF1][Input.EOF] = new TransicionEstado(Estado.FINAL, generaTokenUINT,
+            warningSufijoInvalido);
 
         /* Estado 11 */
         //Inputs invalidos. Crea un UINT pero genera un warning por falta de sufijo.
-        inicTransiciones(Estado.CTE_UI_SUF2, Estado.FINAL, retrocedeFuente, generaTokenUINT, warningFaltaSufijo);
+        inicTransiciones(Estado.CTE_UI_SUF2, Estado.FINAL, retrocedeFuente, generaTokenUINT, warningSufijoInvalido);
         //Salto de linea. Crea un UINT pero genera un warning por falta de sufijo.
-        maquinaEstados[Estado.CTE_UI_SUF2][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL, generaTokenUINT, cuentaSaltoLinea, warningFaltaSufijo);
+        maquinaEstados[Estado.CTE_UI_SUF2][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL, generaTokenUINT,
+            cuentaSaltoLinea, warningSufijoInvalido);
         //Letra 'i' minuscula.
         maquinaEstados[Estado.CTE_UI_SUF2][Input.I_MINUSC] = new TransicionEstado(Estado.CTE_UI_SUF3);
+        //Cualquier letra minuscula. "Tomo" la letra recibida como parte del sufijo.
+        maquinaEstados[Estado.CTE_UI_SUF2][Input.LETRA_MINUSC] = new TransicionEstado(Estado.CTE_UI_SUF2);
+        maquinaEstados[Estado.CTE_UI_SUF2][Input.U_MINUSC] = new TransicionEstado(Estado.CTE_UI_SUF2);
+        maquinaEstados[Estado.CTE_UI_SUF2][Input.D_MINUSC] = new TransicionEstado(Estado.CTE_UI_SUF2);
         //EOF. Crea un UINT pero genera un warning por falta de sufijo.
-        maquinaEstados[Estado.CTE_UI_SUF2][Input.EOF] = new TransicionEstado(Estado.FINAL, generaTokenUINT, warningFaltaSufijo);
+        maquinaEstados[Estado.CTE_UI_SUF2][Input.EOF] = new TransicionEstado(Estado.FINAL, generaTokenUINT,
+            warningSufijoInvalido);
 
         /* Estado 12 */
-        //Cualquier input es valido. Ya se leyo el sufijo completo, se genera el token y se retrocede el fuente una posicion.
+        //Cualquier input es valido (salvo letras minusculas). Ya se leyo el sufijo completo, se genera el token y se
+        // retrocede el fuente una posicion.
         inicTransiciones(Estado.CTE_UI_SUF3, Estado.FINAL, retrocedeFuente, generaTokenUINT);
         //Salto de linea. No devuelve ultimo leido porque se descartaria.
-        maquinaEstados[Estado.CTE_UI_SUF3][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL, generaTokenUINT, cuentaSaltoLinea);
+        maquinaEstados[Estado.CTE_UI_SUF3][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL, generaTokenUINT,
+            cuentaSaltoLinea);
+        //Cualquier letra minuscula. "Tomo" la letra recibida como parte del sufijo.
+        maquinaEstados[Estado.CTE_UI_SUF3][Input.LETRA_MINUSC] = new TransicionEstado(Estado.CTE_UI_SUF3);
+        maquinaEstados[Estado.CTE_UI_SUF3][Input.D_MINUSC] = new TransicionEstado(Estado.CTE_UI_SUF3);
+        maquinaEstados[Estado.CTE_UI_SUF3][Input.I_MINUSC] = new TransicionEstado(Estado.CTE_UI_SUF3);
+        maquinaEstados[Estado.CTE_UI_SUF3][Input.U_MINUSC] = new TransicionEstado(Estado.CTE_UI_SUF3);
         //EOF.
         maquinaEstados[Estado.CTE_UI_SUF3][Input.EOF] = new TransicionEstado(Estado.FINAL, generaTokenUINT);
 
         /* Estado 13 */
-        //Inputs no reconocidos. Como ya detecte toda la base la parseo. No hay exponente, por lo que se puede generar el token.
+        //Inputs no reconocidos. Como ya detecte toda la base la parseo. No hay exponente, por lo que se puede
+        // generar el token.
         inicTransiciones(Estado.CTE_PARTE_DECIM, Estado.FINAL, retrocedeFuente, parseBaseDouble, generaTokenDouble);
-        //Salto de linea. Como ya detecte toda la base la parseo. No hay exponente, por lo que se puede generar el token.
-        maquinaEstados[Estado.CTE_PARTE_DECIM][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL, parseBaseDouble, generaTokenDouble, cuentaSaltoLinea);
+        //Salto de linea. Como ya detecte toda la base la parseo. No hay exponente, por lo que se puede generar el
+        // token.
+        maquinaEstados[Estado.CTE_PARTE_DECIM][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL, parseBaseDouble,
+            generaTokenDouble, cuentaSaltoLinea);
         //Digitos
-        maquinaEstados[Estado.CTE_PARTE_DECIM][Input.DIGITO] = new TransicionEstado(Estado.CTE_PARTE_DECIM, concatenaChar);
-        //Letra 'd' minuscula. Salto a deteccion de parte exponencial de doubles. Como ya detecte toda la base la parseo.
-        maquinaEstados[Estado.CTE_PARTE_DECIM][Input.D_MINUSC] = new TransicionEstado(Estado.CTE_PARTE_EXP_SIGNO, parseBaseDouble, consumeChar);
+        maquinaEstados[Estado.CTE_PARTE_DECIM][Input.DIGITO] = new TransicionEstado(Estado.CTE_PARTE_DECIM,
+            concatenaChar);
+        //Letra 'd' minuscula. Salto a deteccion de parte exponencial de doubles. Como ya detecte toda la base la
+        // parseo.
+        maquinaEstados[Estado.CTE_PARTE_DECIM][Input.D_MINUSC] = new TransicionEstado(Estado.CTE_PARTE_EXP_SIGNO,
+            parseBaseDouble, consumeChar);
         //EOF. Como ya detecte toda la base la parseo. No hay exponente, por lo que se puede generar el token.
-        maquinaEstados[Estado.CTE_PARTE_DECIM][Input.EOF] = new TransicionEstado(Estado.FINAL, parseBaseDouble, generaTokenDouble);
+        maquinaEstados[Estado.CTE_PARTE_DECIM][Input.EOF] = new TransicionEstado(Estado.FINAL, parseBaseDouble,
+            generaTokenDouble);
 
         /* Estado 14 */
-        //Inputs no reconocidos. El exponente por defecto es 0, pero genera un warning. El n° ya esta completo, por lo que se puede generar el token.
-        inicTransiciones(Estado.CTE_PARTE_EXP_SIGNO, Estado.FINAL, retrocedeFuente, generaTokenDouble, warningFaltaExponente);
+        //Inputs no reconocidos. El exponente por defecto es 0, pero genera un warning. El n° ya esta completo, por
+        // lo que se puede generar el token.
+        inicTransiciones(Estado.CTE_PARTE_EXP_SIGNO, Estado.FINAL, retrocedeFuente, generaTokenDouble,
+            warningFaltaExponente);
         //Salto de linea. El exponente por defecto es 0, pero genera un warning.
-        maquinaEstados[Estado.CTE_PARTE_EXP_SIGNO][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL, generaTokenDouble, warningFaltaExponente, cuentaSaltoLinea);
+        maquinaEstados[Estado.CTE_PARTE_EXP_SIGNO][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL,
+            generaTokenDouble, warningFaltaExponente, cuentaSaltoLinea);
         //'+'
-        maquinaEstados[Estado.CTE_PARTE_EXP_SIGNO][Input.SUMA] = new TransicionEstado(Estado.CTE_PARTE_EXP_VALOR, concatenaChar);
+        maquinaEstados[Estado.CTE_PARTE_EXP_SIGNO][Input.SUMA] = new TransicionEstado(Estado.CTE_PARTE_EXP_VALOR,
+            concatenaChar);
         //'-'
-        maquinaEstados[Estado.CTE_PARTE_EXP_SIGNO][Input.GUION] = new TransicionEstado(Estado.CTE_PARTE_EXP_VALOR, concatenaChar);
+        maquinaEstados[Estado.CTE_PARTE_EXP_SIGNO][Input.GUION] = new TransicionEstado(Estado.CTE_PARTE_EXP_VALOR,
+            concatenaChar);
         //Digitos. El exponente sera positivo.
-        maquinaEstados[Estado.CTE_PARTE_EXP_SIGNO][Input.DIGITO] = new TransicionEstado(Estado.CTE_PARTE_EXP_VALOR, concatenaChar);
+        maquinaEstados[Estado.CTE_PARTE_EXP_SIGNO][Input.DIGITO] = new TransicionEstado(Estado.CTE_PARTE_EXP_VALOR,
+            concatenaChar);
         //EOF.
-        maquinaEstados[Estado.CTE_PARTE_EXP_SIGNO][Input.EOF] = new TransicionEstado(Estado.FINAL, generaTokenDouble, warningFaltaExponente);
+        maquinaEstados[Estado.CTE_PARTE_EXP_SIGNO][Input.EOF] = new TransicionEstado(Estado.FINAL, generaTokenDouble,
+            warningFaltaExponente);
 
         /* Estado 15 */
         //Inputs no reconocidos.
         inicTransiciones(Estado.CTE_PARTE_EXP_VALOR, Estado.FINAL, retrocedeFuente, generaTokenDouble);
         //Salto de linea.
-        maquinaEstados[Estado.CTE_PARTE_EXP_VALOR][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL, generaTokenDouble, cuentaSaltoLinea);
+        maquinaEstados[Estado.CTE_PARTE_EXP_VALOR][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL,
+            generaTokenDouble, cuentaSaltoLinea);
         //Digitos.
-        maquinaEstados[Estado.CTE_PARTE_EXP_VALOR][Input.DIGITO] = new TransicionEstado(Estado.CTE_PARTE_EXP_VALOR, concatenaChar);
+        maquinaEstados[Estado.CTE_PARTE_EXP_VALOR][Input.DIGITO] = new TransicionEstado(Estado.CTE_PARTE_EXP_VALOR,
+            concatenaChar);
         //EOF.
         maquinaEstados[Estado.CTE_PARTE_EXP_VALOR][Input.EOF] = new TransicionEstado(Estado.FINAL, generaTokenDouble);
     }
 
     /**
-     * Transiciones asociadas a la deteccion de constantes numericas.
-     * Nota: Ante un salto de linea, no se guarda ni el guion ni el propio salto de linea.
+     * Transiciones asociadas a la deteccion de constantes numericas. Nota: Ante un salto de linea, no se guarda ni el
+     * guion ni el propio salto de linea.
      */
     private void inicCaminoCadenas(CodigoFuente cFuente, AccionSemantica inicStringVacio, AccionSemantica concatenaChar,
                                    AccionSemantica generaTokenCadena) {
         /* Estado 0 */
-        maquinaEstados[Estado.INICIAL][Input.COMILLA] = new TransicionEstado(Estado.CADENA, inicStringVacio, concatenaChar);
+        maquinaEstados[Estado.INICIAL][Input.COMILLA] = new TransicionEstado(Estado.CADENA, inicStringVacio,
+            concatenaChar);
 
         /* Estado 16 */
         //Inputs validos. Cualquier caracter que se lee se mete en la cadena.
         inicTransiciones(Estado.CADENA, Estado.CADENA, concatenaChar);
         //'"'. Fin de cadena.
-        maquinaEstados[Estado.CADENA][Input.COMILLA] = new TransicionEstado(Estado.FINAL, concatenaChar, generaTokenCadena);
+        maquinaEstados[Estado.CADENA][Input.COMILLA] = new TransicionEstado(Estado.FINAL, concatenaChar,
+            generaTokenCadena);
         //Hay un salto de linea.
-        CheckSaltoLinea checkSaltoLinea = new CheckSaltoLinea(cFuente,this);
-        maquinaEstados[Estado.CADENA][Input.SALTO_LINEA] = new TransicionEstado(Estado.CADENA, cuentaSaltoLinea, checkSaltoLinea);
+        CheckSaltoLinea checkSaltoLinea = new CheckSaltoLinea(cFuente, this);
+        maquinaEstados[Estado.CADENA][Input.SALTO_LINEA] = new TransicionEstado(Estado.CADENA, cuentaSaltoLinea,
+            checkSaltoLinea);
         //EOF. Queda la cadena abierta, por lo que hay que notificar un error.
-        NotificaError errorCadenaAbierta = new NotificaError("Se llego al EOF y la cadena quedo abierta", aLexico, cFuente, false);
+        NotificaError errorCadenaAbierta = new NotificaError("Se llego al EOF y la cadena quedo abierta", aLexico,
+            cFuente, false);
         maquinaEstados[Estado.CADENA][Input.EOF] = new TransicionEstado(Estado.FINAL, errorCadenaAbierta);
     }
 }

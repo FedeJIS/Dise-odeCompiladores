@@ -23,7 +23,6 @@ public class ParserHelper {
      */
     private final List<InfoProc> pilaInfoProc = new ArrayList<>();
 
-    //---USO GENERAL---
     /**
      * Almacena hasta tres parametros de una invocacion a un procedimiento.
      */
@@ -31,8 +30,6 @@ public class ParserHelper {
     private String ultimoTipoLeido; //Almacena temporalmente el ultimo tipo leido.
     private String tipoUltimoFactor;
     private boolean factorCte;
-
-    //---DECLARACION VARIABLES---
 
     public ParserHelper(AnalizadorLexico aLexico, TablaSimbolos tablaS, PilaAmbitos pilaAmbitos, Polaca polacaProgram,
                         MultiPolaca polacaProcedimientos) {
@@ -62,8 +59,6 @@ public class ParserHelper {
         }
         return ""; //La variable no esta declarada.
     }
-
-    //---ASIGNACION---
 
     private boolean isIdDecl(String lexema, String ambito) {
         if (ambito.isEmpty()) return false; //La TS no contiene el lexema en el ambito recibido.
@@ -123,8 +118,6 @@ public class ParserHelper {
         this.tipoUltimoFactor = tipoUltimoFactor;
         factorCte = true;
     }
-
-    //---DECLARACION PROCS---
 
     /**
      * Invocado cuando se lee un factor.
@@ -259,14 +252,15 @@ public class ParserHelper {
      * Guarda los lexemas de los parametros recibidos en una invocacion a un procedimiento.
      */
     public void guardaParamsInvoc(String... lexemaParams) {
-        if (listaParamsInvoc.size() < 3) for (String paramReal : lexemaParams)
-            if (tablaS.esEntradaCte(paramReal)) {
-                listaParamsInvoc.add(paramReal);
-                agregarPasosRepr(paramReal);
-            } else {
-                listaParamsInvoc.add(PilaAmbitos.aplicaNameManglin(getAmbitoId(paramReal), paramReal));
-                agregarPasosRepr(PilaAmbitos.aplicaNameManglin(getAmbitoId(paramReal), paramReal));
-            }
+        if (listaParamsInvoc.size() < 3)
+            for (String paramReal : lexemaParams)
+                if (tablaS.esEntradaCte(paramReal)) {
+                    listaParamsInvoc.add(paramReal);
+                    agregarPasosRepr(paramReal);
+                } else {
+                    listaParamsInvoc.add(PilaAmbitos.aplicaNameManglin(getAmbitoId(paramReal), paramReal));
+                    agregarPasosRepr(PilaAmbitos.aplicaNameManglin(getAmbitoId(paramReal), paramReal));
+                }
 
     }
 
@@ -300,8 +294,6 @@ public class ParserHelper {
         }
 
         //Compara tipos de parametros.
-        System.out.println(paramReal+ ":"+tablaS.getTipoEntrada(paramReal)+
-            ", "+ paramFormal+":"+tablaS.getTipoParamProc(proc, nParam-1));
         if (!tablaS.getTipoEntrada(paramReal).equals(tablaS.getTipoParamProc(proc, nParam-1))) {
             validos = false;
             TablaNotificaciones.agregarError(aLexico.getLineaActual(),
@@ -326,11 +318,9 @@ public class ParserHelper {
         }
 
         //Check tipos parametros. Compara tantos parametros como sea posible.
-        System.out.println(lexemaProc);
         for (int i = 0; i < tablaS.getNParams(lexemaProc) && i < paramsReales.size(); i++) {
             validos = comparaParams(lexemaProc, i + 1, listaParamsInvoc.get(i), tablaS.getParam(lexemaProc, i));
         }
-        System.out.println("---------");
 
         return validos;
     }
