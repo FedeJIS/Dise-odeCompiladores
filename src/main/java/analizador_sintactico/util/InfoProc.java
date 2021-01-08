@@ -10,6 +10,7 @@ public class InfoProc {
     private int numInvoc;
     private final List<String> nombreParams = new ArrayList<>();
     private final List<String> tipoParams = new ArrayList<>();
+    private boolean redeclarado = false;
     private boolean infoValida = true;
 
     public InfoProc(String lexema) {
@@ -29,15 +30,23 @@ public class InfoProc {
     }
 
     public void addParam(String proc, String nombreParam, String tipo, TablaSimbolos tablaS){
-        if (nombreParams.size() < 3){ //Solo agrego si tengo menos de 3 parametros.
+        if (!redeclarado && nombreParams.size() < 3){ //Solo agrego si tengo menos de 3 parametros.
             this.nombreParams.add(nombreParam);
             tablaS.addParamProc(proc, nombreParam);
             tablaS.addTipoParamProc(proc, tipo);
         }
     }
 
+    public boolean isRedeclarado() {
+        return redeclarado;
+    }
+
+    public void setRedeclarado(boolean redeclarado) {
+        this.redeclarado = redeclarado;
+    }
+
     public boolean isInfoValida() {
-        return infoValida;
+        return infoValida && !redeclarado;
     }
 
     public void setInfoValida(boolean infoValida) {

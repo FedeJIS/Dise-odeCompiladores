@@ -180,8 +180,7 @@ public class ParserHelper {
             String nLexema = PilaAmbitos.aplicaNameManglin(pilaAmbitos.getAmbitoActual(), lexema);
             tablaS.agregarEntrada(new Celda(Parser.ID, nLexema, "-", Celda.USO_PROC, true));
 
-//            pilaAmbitos.agregarAmbito(lexema);
-        } else pilaInfoProc.get(pilaInfoProc.size() - 1).setInfoValida(false); //Marco proc como invalido.
+        } else pilaInfoProc.get(pilaInfoProc.size() - 1).setRedeclarado(true);
 
         pilaAmbitos.agregarAmbito(lexema);
     }
@@ -189,22 +188,22 @@ public class ParserHelper {
     /**
      * Invocado cuando se lee un parametro formal de un procedimiento.
      */
-    public void lecturaParamFormal(String lexema, String tipoPasaje) {
+    public void lecturaParamFormal(String lexemaParam, String tipoPasaje) {
         InfoProc infoProc = pilaInfoProc.get(pilaInfoProc.size() - 1); //El param formal es del ultimo proc leido.
-        String ambito = getAmbitoId(lexema);
+        String ambito = getAmbitoId(lexemaParam);
 
-        if (isIdNoRedecl(lexema, ambito)) { //Solo actuo si el id no se declaro para otra cosa.
-            tablaS.quitarReferencia(lexema);
+        if (isIdNoRedecl(lexemaParam, ambito)) { //Solo actuo si el id no se declaro para otra cosa.
+            tablaS.quitarReferencia(lexemaParam);
 
-            String paramFormal = PilaAmbitos.aplicaNameManglin(pilaAmbitos.getAmbitoActual(), lexema);
+            String paramFormal = PilaAmbitos.aplicaNameManglin(pilaAmbitos.getAmbitoActual(), lexemaParam);
 
             infoProc.addParam(PilaAmbitos.aplicaNameManglin(getAmbitoId(infoProc.getLexema()), infoProc.getLexema()),
                 paramFormal, ultimoTipoLeido, tablaS);
             tablaS.agregarEntrada(new Celda(Parser.ID, paramFormal, ultimoTipoLeido, tipoPasaje, true));
-        } else {
+        } else { //Parametro redeclarado.
             infoProc.setInfoValida(false); //Marco proc como invalido.
-            String paramFormal = PilaAmbitos.aplicaNameManglin(getAmbitoId(lexema),
-                lexema); //El parametro es el previamente declarado
+            String paramFormal = PilaAmbitos.aplicaNameManglin(getAmbitoId(lexemaParam),
+                lexemaParam); //El parametro es el previamente declarado
 
             infoProc.addParam(PilaAmbitos.aplicaNameManglin(getAmbitoId(infoProc.getLexema()), infoProc.getLexema()),
                 paramFormal, ultimoTipoLeido, tablaS);
@@ -336,7 +335,7 @@ public class ParserHelper {
         String nLexema = PilaAmbitos.aplicaNameManglin(ambito, lexema);
 
         //Hago el check de params solo si es un id valido para la invocacion (esta declarado y es un proc).
-        if (invocValida) invocValida = invocValida && areParamsRealesValidos(nLexema, listaParamsInvoc);
+        if (invocValida) invocValida = areParamsRealesValidos(nLexema, listaParamsInvoc);
 
         //Si ningun control fallo, genero las instrucciones para la invocacion.
         if (invocValida) {
