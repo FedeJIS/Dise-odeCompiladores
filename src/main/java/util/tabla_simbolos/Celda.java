@@ -154,4 +154,8 @@ public class Celda {
     public List<String> getParamsReales() {
         return paramsReales.remove(0); //Params reales de la primera invocacion.
     }
+
+    public boolean containsParamFormal(String paramFormal){
+        return paramsDecl.contains(paramFormal);
+    }
 }

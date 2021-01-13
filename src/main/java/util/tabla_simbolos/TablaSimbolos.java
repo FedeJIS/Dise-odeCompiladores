@@ -232,4 +232,11 @@ public class TablaSimbolos {
 
         return entrada.getParamsReales(); //Params reales de la primera invocacion.
     }
+
+    public boolean containsParamFormal(String proc, String paramFormal){
+        Celda entrada = tablaSimb.get(proc);
+        if (entrada == null) throw new IllegalStateException("Lexema '" + proc + "' no encontrado en la TS");
+
+        return entrada.containsParamFormal(paramFormal);
+    }
 }
