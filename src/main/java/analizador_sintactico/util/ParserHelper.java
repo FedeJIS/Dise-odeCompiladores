@@ -75,6 +75,30 @@ public class ParserHelper {
         return true;
     }
 
+
+    private boolean isParamNoRedecl(String lexemaParam, String ambito){
+        if (!isIdDecl(lexemaParam, ambito)) { //Si el id no esta declarado el param no puede estar redecl.
+            return true;
+        }
+
+        String lexemaAux = PilaAmbitos.aplicaNameManglin(ambito, lexemaParam);
+        if (!pilaInfoProc.get(pilaInfoProc.size()-1).isRedeclarado()) {
+            String msgError = "El identificador '" + lexemaParam + "' ya se encuentra declarado.";
+            TablaNotificaciones.agregarError(aLexico.getLineaActual(), msgError);
+            return false;
+        }
+
+        InfoProc infoProc = pilaInfoProc.get(pilaInfoProc.size()-1);
+        String lexemaProc = PilaAmbitos.aplicaNameManglin(getAmbitoId(infoProc.getLexema()), infoProc.getLexema());
+        if (tablaS.containsParamFormal(lexemaProc, lexemaAux)) {
+            return false;
+        }
+
+        String msgError = "El identificador '" + lexemaParam + "' ya se encuentra declarado.";
+        TablaNotificaciones.agregarError(aLexico.getLineaActual(), msgError);
+        return false;
+    }
+
     public void setUltimoTipoLeido(String tipo) {
         ultimoTipoLeido = tipo;
     }
@@ -192,7 +216,7 @@ public class ParserHelper {
         InfoProc infoProc = pilaInfoProc.get(pilaInfoProc.size() - 1); //El param formal es del ultimo proc leido.
         String ambito = getAmbitoId(lexemaParam);
 
-        if (isIdNoRedecl(lexemaParam, ambito)) { //Solo actuo si el id no se declaro para otra cosa.
+        if (isParamNoRedecl(lexemaParam, ambito)) { //Solo actuo si el id no se declaro para otra cosa.
             tablaS.quitarReferencia(lexemaParam);
 
             String paramFormal = PilaAmbitos.aplicaNameManglin(pilaAmbitos.getAmbitoActual(), lexemaParam);
