@@ -82,10 +82,11 @@ public class TablaSimbolos {
      * Agrega una nueva entrada solo si no existe en la tabla.
      */
     public void agregarEntrada(Celda entrada){
-        if (tablaSimb.containsKey(entrada.getLexema()))
-            throw new IllegalStateException("Ya hay una entrada con el lexema '"+entrada.getLexema()+"'.");
-        tablaSimb.put(entrada.getLexema(), entrada);
-        entrada.actualizarReferencias(1);
+        if (!tablaSimb.containsKey(entrada.getLexema())) {
+            tablaSimb.put(entrada.getLexema(), entrada);
+            entrada.actualizarReferencias(1);
+        }
+        //throw new IllegalStateException("Ya hay una entrada con el lexema '"+entrada.getLexema()+"'.");
     }
 
     /**

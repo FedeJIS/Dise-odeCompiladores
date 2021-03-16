@@ -16,8 +16,7 @@
 
 
 
-//#line 1 "archivos/gramatica.y"
-
+//#line 2 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 package analizador_sintactico;
 
 import analizador_lexico.AnalizadorLexico;
@@ -28,7 +27,7 @@ import generacion_c_intermedio.Polaca;
 import util.TablaNotificaciones;
 import util.tabla_simbolos.Celda;
 import util.tabla_simbolos.TablaSimbolos;
-//#line 29 "Parser.java"
+//#line 28 "Parser.java"
 
 
 
@@ -186,6 +185,8 @@ public final static short VAR=273;
 public final static short NI=274;
 public final static short CTE_UINT=275;
 public final static short CTE_DOUBLE=276;
+public final static short MAS_IGUAL=277;
+public final static short MENOS_IGUAL=278;
 public final static short YYERRCODE=256;
 final static short yylhs[] = {                           -1,
     0,    2,    2,    1,    1,    3,    3,    4,    4,    5,
@@ -193,12 +194,13 @@ final static short yylhs[] = {                           -1,
    12,   12,   12,   14,   14,   13,   13,   15,   15,   15,
    16,   16,    9,    9,    9,    9,    9,   10,   10,    6,
     6,    6,    6,    6,   17,   17,   23,   23,   23,   22,
-   22,   22,   22,   18,   18,   18,   18,   24,   24,   24,
-   25,   25,   25,   26,   26,   26,   26,   21,   21,   21,
-   27,   27,   19,   28,   29,   29,   31,   31,   31,   31,
-   32,   32,   32,   32,   30,   30,   33,   33,   33,   33,
-   33,   34,   34,   34,   34,   34,   34,   20,   20,   35,
-   35,   36,   36,   38,   38,   37,   37,
+   22,   22,   22,   18,   18,   18,   18,   18,   18,   18,
+   18,   24,   24,   24,   25,   25,   25,   26,   26,   26,
+   26,   21,   21,   21,   27,   27,   19,   28,   29,   29,
+   31,   31,   31,   31,   32,   32,   32,   32,   30,   30,
+   33,   33,   33,   33,   33,   34,   34,   34,   34,   34,
+   34,   20,   20,   35,   35,   36,   36,   38,   38,   37,
+   37,
 };
 final static short yylen[] = {                            2,
     1,    1,    1,    2,    3,    1,    1,    0,    1,    4,
@@ -206,212 +208,227 @@ final static short yylen[] = {                            2,
     3,    5,    7,    0,    1,    1,    1,    3,    2,    2,
     2,    1,    3,    2,    2,    2,    1,    3,    2,    1,
     1,    1,    1,    1,    3,    4,    1,    1,    1,    1,
-    3,    5,    7,    3,    3,    1,    3,    3,    3,    1,
-    3,    3,    1,    1,    1,    1,    2,    4,    3,    4,
-    1,    1,    3,    1,    1,    0,    2,    3,    2,    2,
-    2,    3,    2,    3,    2,    1,    5,    4,    4,    4,
-    3,    1,    1,    1,    1,    1,    1,    4,    3,    2,
-    1,    2,    1,    2,    1,    2,    1,
+    3,    5,    7,    3,    3,    3,    3,    3,    3,    1,
+    3,    3,    3,    1,    3,    3,    1,    1,    1,    1,
+    2,    4,    3,    4,    1,    1,    3,    1,    1,    0,
+    2,    3,    2,    2,    2,    3,    2,    3,    2,    1,
+    5,    4,    4,    4,    3,    1,    1,    1,    1,    1,
+    1,    4,    3,    2,    1,    2,    1,    2,    1,    2,
+    1,
 };
 final static short yydefred[] = {                         0,
-    0,    0,    2,    3,    0,   74,    0,    0,    0,    1,
+    0,    0,    2,    3,    0,   78,    0,    0,    0,    1,
     0,    0,    6,    7,    0,   40,   41,   42,   43,   44,
-    0,    0,    0,    0,    0,    0,  100,    0,   14,    0,
-   11,    9,    0,    0,    0,    0,    0,    0,    0,   75,
-    0,    0,    0,   64,   65,   66,    0,    0,    0,   63,
-   47,   48,   49,   45,    0,    0,   55,    0,    0,   93,
-   92,   97,   96,   94,   95,    0,    0,    0,   71,   72,
-    0,    0,    5,    0,   17,    0,    0,    0,   26,   27,
-   37,    0,    0,    0,   79,    0,    0,    0,   80,   77,
-    0,   73,    0,    0,    0,   99,   67,    0,    0,    0,
-    0,   46,   25,    0,   91,    0,    0,   70,   68,   13,
-   29,    0,   31,   16,    0,   36,    0,   35,    0,   10,
-    0,    0,   78,   85,  106,   98,    0,    0,   61,   62,
-    0,   90,    0,   89,   28,    0,   33,   39,    0,   84,
-   82,    0,   87,    0,   38,    0,    0,    0,    0,   53,
-   23,
+    0,    0,    0,    0,    0,    0,    0,    0,  104,    0,
+   14,    0,   11,    9,    0,    0,    0,    0,    0,    0,
+    0,   79,    0,    0,    0,   68,   69,   70,    0,    0,
+    0,   67,   58,    0,   57,    0,   47,   48,   49,   45,
+    0,    0,   59,    0,    0,   97,   96,  101,  100,   98,
+   99,    0,    0,    0,   75,   76,    0,    0,    5,    0,
+   17,    0,    0,    0,   26,   27,   37,    0,    0,    0,
+   83,    0,    0,    0,   84,   81,    0,   77,    0,    0,
+    0,  103,   71,    0,    0,    0,    0,   46,   25,    0,
+   95,    0,    0,   74,   72,   13,   29,    0,   31,   16,
+    0,   36,    0,   35,    0,   10,    0,    0,   82,   89,
+  110,  102,    0,    0,   65,   66,    0,   94,    0,   93,
+   28,    0,   33,   39,    0,   88,   86,    0,   91,    0,
+   38,    0,    0,    0,    0,   53,   23,
 };
 final static short yydgoto[] = {                          9,
-   10,   11,   12,   33,   13,   14,   15,   35,   84,  120,
-   31,   77,   78,  104,   79,   80,   16,   17,   18,   19,
-   20,   55,   56,   48,   49,   50,   71,   21,   39,   92,
-   40,   88,   27,   67,   22,   42,   95,   43,
+   10,   11,   12,   35,   13,   14,   15,   37,   90,  126,
+   33,   83,   84,  110,   85,   86,   16,   17,   18,   19,
+   20,   61,   62,   50,   51,   52,   77,   21,   41,   98,
+   42,   94,   29,   73,   22,   44,  101,   45,
 };
-final static short yysindex[] = {                       257,
-  -27,  -18,    0,    0,    8,    0,   16, -226,    0,    0,
- -217,   31,    0,    0,   29,    0,    0,    0,    0,    0,
- -109, -172,  -26,  -37,  147,  307,    0,  208,    0,   55,
-    0,    0,  257,  -33,   -9,  -98,   31,   31, -168,    0,
- -109, -160, -148,    0,    0,    0,  -26,   42,  -10,    0,
-    0,    0,    0,    0,   80,   84,    0,   42,   83,    0,
-    0,    0,    0,    0,    0,  313,  -26,   88,    0,    0,
-   90, -217,    0, -189,    0, -125,   95,   84,    0,    0,
-    0,  -56, -142,   14,    0,   31,   31,   13,    0,    0,
-    8,    0,    0, -109, -127,    0,    0,  -26,  -26,  -26,
-  -26,    0,    0, -204,    0,  -39,    4,    0,    0,    0,
-    0, -115,    0,    0, -237,    0, -132,    0,  -75,    0,
-  257,  257,    0,    0,    0,    0,  -10,  -10,    0,    0,
-   84,    0,   52,    0,    0,   84,    0,    0,   19,    0,
-    0, -204,    0, -237,    0,   84,   84, -204, -237,    0,
-    0,
+final static short yysindex[] = {                       -67,
+  -37,  -38,    0,    0,  -13,    0,    7, -223,    0,    0,
+ -217,    9,    0,    0,   11,    0,    0,    0,    0,    0,
+  -92, -207,  167,  147,  152,  -32,  272,  340,    0,  111,
+    0,   33,    0,    0,  -67,  -41,  -55,  304,    9,    9,
+ -177,    0,  -92, -163, -160,    0,    0,    0,  167,   42,
+   23,    0,    0,   42,    0,   42,    0,    0,    0,    0,
+   84,   72,    0,   42,   89,    0,    0,    0,    0,    0,
+    0,  390,  167,   90,    0,    0,   94, -217,    0, -227,
+    0, -121,   97,   72,    0,    0,    0,  -57, -136,   17,
+    0,    9,    9,   16,    0,    0,  -13,    0,    0,  -92,
+ -126,    0,    0,  167,  167,  167,  167,    0,    0, -219,
+    0,  -34,   26,    0,    0,    0,    0, -114,    0,    0,
+ -234,    0, -131,    0,  355,    0,  -67,  -67,    0,    0,
+    0,    0,   23,   23,    0,    0,   72,    0,   31,    0,
+    0,   72,    0,    0,   20,    0,    0, -219,    0, -234,
+    0,   72,   72, -219, -234,    0,    0,
 };
 final static short yyrindex[] = {                         0,
-    0,   75,    0,    0, -121,    0,    0,  110,    0,    0,
-    0,  191,    0,    0,    0,    0,    0,    0,    0,    0,
- -118,    0,    0,    0,    0,    0,    0,    0,    0,   92,
-    0,    0,   10,   61,    0,    0, -162, -162,    0,    0,
- -191,    0,    0,    0,    0,    0,    0,  109,    1,    0,
-    0,    0,    0,    0,    0,  -34,    0,  127,    0,    0,
+    0,   75,    0,    0, -119,    0,    0,  108,    0,    0,
+    0,  233,    0,    0,    0,    0,    0,    0,    0,    0,
+ -120,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,   92,    0,    0,    3,  -43,    0,    0, -171, -171,
+    0,    0, -157,    0,    0,    0,    0,    0,    0,  109,
+    1,    0,    0,  127,    0,  149,    0,    0,    0,    0,
+    0,  -28,    0,  169,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,  191,    0,    0,    0,
+    0,  -36,   62,  244,    0,    0,    0,    0,    0,    0,
+    0,  366,  366,    0,    0,    0,  216,    0, -155, -116,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-  149,    0,    0,    0,    0,  -41,   62,  214,    0,    0,
-    0,    0,    0,    0,    0,  -58,  -58,    0,    0,    0,
-  169,    0, -157, -113,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,  278,    0,    0,    0,    0,   34,    0,    0,    0,
-   36,   45,    0,    0,    0,    0,   21,   41,    0,    0,
-  -32,    0,   58,    0,    0,  235,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,  -30,  244,    0,    0,    0,
-    0,
+    0,    0,    0,    0,    0,    0,    0,  278,    0,    0,
+    0,    0,   30,    0,    0,    0,   29,   32,    0,    0,
+    0,    0,   21,   41,    0,    0,  -22,    0,   58,    0,
+    0,  309,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,   77,  332,    0,    0,    0,    0,
 };
 final static short yygindex[] = {                         0,
-  -21,  -19,    0,   -8,   -3,   18,    0,    0,    0,    0,
-  100,   26,  -87,  255,    0,    0,    0,    0,    0,    0,
-    0,   28,  -91,   -2,   15,  -12,    0,    0,    0,    0,
-  -24,   -6,   86,  112,    0,    0,    0,    0,
+  -23,  -26,    0,   67,   -6,    5,    0,    0,    0,    0,
+   80,    6, -105,  -64,    0,    0,    0,    0,    0,    0,
+    0,    8,  -93,   25,   10,  -16,    0,    0,    0,    0,
+  -21,   -8,   66,   83,    0,    0,    0,    0,
 };
-final static int YYTABLESIZE=583;
+final static int YYTABLESIZE=651;
 static short yytable[];
 static { yytable();}
 static void yytable(){
-yytable = new short[]{                         32,
-   60,  132,   32,   54,  117,   47,   50,   75,   51,    4,
-   52,   73,  131,   36,   76,   70,   93,   37,   47,   32,
-   58,   24,   58,   66,    3,    4,   85,  136,   89,   90,
-   29,  100,   86,   23,   97,   74,  101,   37,   38,   30,
-   59,   60,   25,   60,  134,   60,   98,   26,   99,  138,
-  146,   83,   51,   87,  112,   28,  147,   88,   38,   60,
-   60,   58,   60,   58,  107,   58,    8,  111,   34,  125,
-   52,   53,    3,    4,   56,  103,  105,  121,  122,   58,
-   58,   59,   58,   59,   98,   59,   99,  129,  130,   32,
-   37,   12,  143,   41,   98,   76,   99,  139,   72,   59,
-   59,   91,   59,  133,    8,    8,   94,    8,   57,  102,
-  104,   38,  127,  128,  140,  141,   88,   86,   86,   96,
-  102,   19,   18,  105,   76,   60,   54,  103,  108,   76,
-  109,  113,  118,   56,    4,  114,  119,  123,   87,   87,
-  126,  135,  137,  145,  101,   58,    1,    2,   69,   15,
-   12,   76,    3,    4,  107,    5,   34,    1,    2,    6,
-   83,    7,    8,    3,    4,   59,    5,   57,   86,   81,
-    6,  110,    7,    8,  151,  150,  124,  106,    0,    0,
-    1,    2,   88,    0,    0,   54,    3,    4,    0,    5,
-    8,   47,    0,    6,    0,    7,    8,    8,    8,   56,
-    0,    0,    0,    8,    8,    0,    8,   69,    0,    0,
-    8,    0,    8,    8,   32,    0,   12,   44,  116,   51,
-   32,   32,   24,    0,   24,    0,   24,   86,    3,    4,
-   44,   32,   32,   57,    0,   45,   46,   52,   53,   74,
-   24,   24,   24,   24,   24,   24,   81,    0,   45,   46,
-    0,   54,   47,    0,   20,    0,   60,   60,   60,   60,
-   60,   60,   60,   60,   82,   60,   60,   60,   60,   60,
-   60,   60,   60,   69,   20,   21,   58,   58,   58,   58,
-   58,   58,   58,   58,   22,   58,   58,   58,   58,   58,
-   58,   58,   58,   86,    0,   21,   59,   59,   59,   59,
-   59,   59,   59,   59,   22,   59,   59,   59,   59,   59,
-   59,   59,   59,   88,   88,    8,   19,   18,   30,   88,
-   88,   30,   88,   88,   88,   88,   88,   88,   88,   88,
-   56,   56,  115,    0,   19,   18,   56,   56,   30,   56,
-    0,   56,   56,   56,   56,   56,   56,   12,   12,    0,
-    0,   47,    0,   12,   12,   98,   12,   99,   12,   12,
-   12,   12,   12,   12,   57,   57,   64,    0,   65,    0,
-   57,   57,   64,   57,   65,   57,   57,   57,   57,   57,
-   57,    0,   54,   54,    0,  142,    0,    0,   54,   54,
-  144,   54,    0,   54,   54,   54,   54,   54,   54,    0,
-  148,  149,   57,   44,   69,   69,    0,    0,    0,    0,
-   69,   69,    0,   69,    0,   69,   69,   69,   69,   69,
-   69,   45,   46,    0,   86,   86,    0,    0,    0,    0,
-   86,   86,    0,   86,    0,   86,   86,   86,   86,   86,
-   86,    0,    0,    0,    0,    0,    8,    8,    0,    0,
-    0,    0,    8,    8,    0,    8,    0,    0,    0,    8,
-    0,    8,    8,   68,   44,    0,    0,    0,    0,   20,
-    0,   69,    0,    0,    0,   24,   24,    0,    0,    0,
-    0,    0,   45,   46,    0,    0,   24,   20,    0,    0,
-   21,    0,    0,    0,    0,    0,   24,   24,    0,   22,
-    0,    0,    0,    0,    0,   24,   24,   24,   21,    0,
-    0,    0,    1,    2,    0,    0,   24,   22,    3,    4,
-    0,    5,    0,    0,    0,    6,    0,    7,    8,    0,
+yytable = new short[]{                         81,
+   64,   26,    4,  123,   32,   89,  138,   32,   60,   82,
+   49,   79,   50,   76,   39,  142,  137,   19,   51,  121,
+   62,   99,   27,   23,   32,   40,   28,    3,    4,  117,
+   38,   92,  103,   31,    3,    4,   39,   57,   80,   32,
+   63,   64,   93,   64,  153,   64,   30,   40,   54,   56,
+   36,   64,   72,  118,  152,   58,   59,   92,   43,   64,
+   64,   62,   64,   62,  106,   62,  140,   34,  104,  107,
+  105,  149,  148,  104,   60,  105,   78,  150,  131,   62,
+   62,   63,   62,   63,  104,   63,  105,  154,  155,  135,
+  136,   12,   97,   39,   82,    8,    8,  113,    8,   63,
+   63,  145,   63,  100,   40,   95,   96,  102,   61,  107,
+  109,  106,  108,  133,  134,  109,   92,   52,  146,  147,
+   92,   92,   18,   82,  108,   64,   56,    4,   82,  111,
+  114,   93,   93,   60,  115,  119,  139,  120,  124,  125,
+  129,  132,  141,  143,  151,   62,  105,   15,   55,   80,
+   12,  111,   34,   87,  112,   49,   85,  116,  127,  128,
+  157,  156,  130,    1,    2,   63,    0,   61,   54,    3,
+    4,    0,    5,    0,    0,    0,    6,    0,    7,    8,
+    0,    0,   92,    0,    0,   56,    0,    0,    1,    2,
+   73,   49,    0,    0,    3,    4,   49,    5,    0,   60,
+   87,    6,    0,    7,    8,    0,    0,   55,    0,    0,
+    0,   49,   19,    0,    0,   90,   12,  122,   88,   32,
+    3,    4,   46,    0,   57,   32,   32,   54,   24,    0,
+   19,   80,    8,   61,   24,    0,   32,   32,   24,   25,
+   47,   48,   58,   59,    0,    0,   24,   24,    0,   73,
+    0,   56,   24,   24,    0,    0,   64,   64,   64,   64,
+   64,   64,   64,   64,    0,   64,   64,   64,   64,   64,
+   64,   64,   64,   55,   90,    0,   62,   62,   62,   62,
+   62,   62,   62,   62,   20,   62,   62,   62,   62,   62,
+   62,   62,   62,   54,    0,    0,   63,   63,   63,   63,
+   63,   63,   63,   63,   20,   63,   63,   63,   63,   63,
+   63,   63,   63,   92,   92,   73,   49,   18,   30,   92,
+   92,   30,   92,   92,   92,   92,   92,   92,   92,   92,
+   60,   60,    0,   24,    0,   18,   60,   60,   30,   60,
+   90,   60,   60,   60,   60,   60,   60,   12,   12,   21,
+    0,   24,   24,   12,   12,    0,   12,    8,   12,   12,
+   12,   12,   12,   12,   61,   61,   74,   46,    0,   21,
+   61,   61,   22,   61,   75,   61,   61,   61,   61,   61,
+   61,    0,   56,   56,   49,   47,   48,    0,   56,   56,
+    0,   56,   22,   56,   56,   56,   56,   56,   56,   70,
+    0,   71,   53,   46,   55,   55,    0,   55,   46,    0,
+   55,   55,    0,   55,    0,   55,   55,   55,   55,   55,
+   55,   47,   48,   46,   54,   54,   47,   48,   91,    0,
+   54,   54,  104,   54,  105,   54,   54,   54,   54,   54,
+   54,   47,   48,    0,    0,    0,   73,   73,    0,   70,
+    0,   71,   73,   73,    0,   73,    0,   73,   73,   73,
+   73,   73,   73,    0,    0,    0,    0,    0,    0,    0,
+    0,   90,   90,    0,    0,    0,    0,   90,   90,  144,
+   90,    0,   90,   90,   90,   90,   90,   90,    8,    8,
+    8,    0,    0,    0,    8,    8,    0,    8,    0,   20,
+    0,    8,    0,    8,    8,   24,   24,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,   24,   20,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,   63,   46,    0,
     0,    0,    0,   30,    0,    0,    0,    0,    0,   30,
-   30,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-   30,   30,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,   59,   44,   60,   61,   62,   63,    0,    0,
-   60,   61,   62,   63,    0,    0,    0,    0,    0,    0,
-    0,   45,   46,
+   30,    0,    0,    0,    0,    0,   47,   48,    0,    0,
+   30,   30,    0,    0,    0,    0,    0,    0,    0,    1,
+    2,    0,    0,    0,   21,    3,    4,    0,    5,    0,
+   24,   24,    6,    0,    7,    8,    0,    0,    0,    0,
+    0,   24,   21,    0,    0,    0,    0,   22,    0,    0,
+    0,    0,    0,   24,   24,   65,   46,   66,   67,   68,
+   69,    0,    0,    0,   24,   22,    0,    0,    0,    0,
+    1,    2,    0,    0,   47,   48,    3,    4,    0,    5,
+    0,    8,    8,    6,    0,    7,    8,    8,    8,    0,
+    8,    0,    0,    0,    8,    0,    8,    8,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,   66,   67,   68,
+   69,
 };
 }
 static short yycheck[];
 static { yycheck(); }
 static void yycheck() {
 yycheck = new short[] {                         41,
-    0,   41,   44,   41,   61,   45,   41,   41,   41,    0,
-   41,   33,  104,  123,   34,   28,   41,   21,   45,   61,
-    0,   40,   25,   26,  262,  263,  125,  115,   37,   38,
-  257,   42,   36,   61,   47,  273,   47,   41,   21,  257,
-    0,   41,   61,   43,   41,   45,   43,   40,   45,  125,
-  142,   61,  257,   36,   74,   40,  144,    0,   41,   59,
-   60,   41,   62,   43,   67,   45,  125,  257,   40,   94,
-  275,  276,  262,  263,    0,  267,  268,   86,   87,   59,
-   60,   41,   62,   43,   43,   45,   45,  100,  101,   59,
-   94,    0,   41,  266,   43,  115,   45,  119,   44,   59,
-   60,  270,   62,  106,  267,  268,  267,  270,    0,  267,
-  268,   94,   98,   99,  121,  122,   59,  121,  122,  268,
-   41,   61,   61,   41,  144,  125,    0,   44,   41,  149,
-   41,  257,  275,   59,  125,   41,  123,  125,  121,  122,
-  268,  257,  275,  125,  266,  125,  256,  257,    0,   40,
-   59,  270,  262,  263,  268,  265,  123,  256,  257,  269,
-  125,  271,  272,  262,  263,  125,  265,   59,    0,  125,
-  269,   72,  271,  272,  149,  148,   91,   66,   -1,   -1,
-  256,  257,  125,   -1,   -1,   59,  262,  263,   -1,  265,
-    0,   45,   -1,  269,   -1,  271,  272,  256,  257,  125,
-   -1,   -1,   -1,  262,  263,   -1,  265,   59,   -1,   -1,
-  269,   -1,  271,  272,  256,   -1,  125,  257,  275,  257,
-  262,  263,  257,   -1,  257,   -1,  257,   59,  262,  263,
-  257,  273,  274,  125,   -1,  275,  276,  275,  276,  273,
-  275,  276,  275,  276,  275,  276,  256,   -1,  275,  276,
-   -1,  125,   45,   -1,   41,   -1,  256,  257,  258,  259,
-  260,  261,  262,  263,  274,  265,  266,  267,  268,  269,
-  270,  271,  272,  125,   61,   41,  256,  257,  258,  259,
+    0,   40,    0,   61,   41,   61,   41,   44,   41,   36,
+   45,   35,   41,   30,   21,  121,  110,   61,   41,   84,
+    0,   43,   61,   61,   61,   21,   40,  262,  263,  257,
+  123,   38,   49,  257,  262,  263,   43,  257,  273,  257,
+    0,   41,   38,   43,  150,   45,   40,   43,   24,   25,
+   40,   27,   28,   80,  148,  275,  276,    0,  266,   59,
+   60,   41,   62,   43,   42,   45,   41,   59,   43,   47,
+   45,   41,  137,   43,    0,   45,   44,  142,  100,   59,
+   60,   41,   62,   43,   43,   45,   45,  152,  153,  106,
+  107,    0,  270,  100,  121,  267,  268,   73,  270,   59,
+   60,  125,   62,  267,  100,   39,   40,  268,    0,  267,
+  268,  267,  268,  104,  105,   44,   59,   41,  127,  128,
+  127,  128,   61,  150,   41,  125,    0,  125,  155,   41,
+   41,  127,  128,   59,   41,  257,  112,   41,  275,  123,
+  125,  268,  257,  275,  125,  125,  266,   40,    0,  270,
+   59,  268,  123,  125,   72,   45,  125,   78,   92,   93,
+  155,  154,   97,  256,  257,  125,   -1,   59,    0,  262,
+  263,   -1,  265,   -1,   -1,   -1,  269,   -1,  271,  272,
+   -1,   -1,  125,   -1,   -1,   59,   -1,   -1,  256,  257,
+    0,   45,   -1,   -1,  262,  263,   45,  265,   -1,  125,
+  256,  269,   -1,  271,  272,   -1,   -1,   59,   -1,   -1,
+   -1,   45,  256,   -1,   -1,    0,  125,  275,  274,  256,
+  262,  263,  257,   -1,  257,  262,  263,   59,  257,   -1,
+  274,  273,    0,  125,  257,   -1,  273,  274,  277,  278,
+  275,  276,  275,  276,   -1,   -1,  275,  276,   -1,   59,
+   -1,  125,  275,  276,   -1,   -1,  256,  257,  258,  259,
+  260,  261,  262,  263,   -1,  265,  266,  267,  268,  269,
+  270,  271,  272,  125,   59,   -1,  256,  257,  258,  259,
   260,  261,  262,  263,   41,  265,  266,  267,  268,  269,
-  270,  271,  272,  125,   -1,   61,  256,  257,  258,  259,
+  270,  271,  272,  125,   -1,   -1,  256,  257,  258,  259,
   260,  261,  262,  263,   61,  265,  266,  267,  268,  269,
-  270,  271,  272,  256,  257,  125,  256,  256,   41,  262,
+  270,  271,  272,  256,  257,  125,   45,  256,   41,  262,
   263,   44,  265,  266,  267,  268,  269,  270,  271,  272,
-  256,  257,   78,   -1,  274,  274,  262,  263,   61,  265,
-   -1,  267,  268,  269,  270,  271,  272,  256,  257,   -1,
-   -1,   45,   -1,  262,  263,   43,  265,   45,  267,  268,
-  269,  270,  271,  272,  256,  257,   60,   -1,   62,   -1,
-  262,  263,   60,  265,   62,  267,  268,  269,  270,  271,
-  272,   -1,  256,  257,   -1,  131,   -1,   -1,  262,  263,
-  136,  265,   -1,  267,  268,  269,  270,  271,  272,   -1,
-  146,  147,  256,  257,  256,  257,   -1,   -1,   -1,   -1,
+  256,  257,   -1,  257,   -1,  274,  262,  263,   61,  265,
+  125,  267,  268,  269,  270,  271,  272,  256,  257,   41,
+   -1,  275,  276,  262,  263,   -1,  265,  125,  267,  268,
+  269,  270,  271,  272,  256,  257,  256,  257,   -1,   61,
+  262,  263,   41,  265,  264,  267,  268,  269,  270,  271,
+  272,   -1,  256,  257,   45,  275,  276,   -1,  262,  263,
+   -1,  265,   61,  267,  268,  269,  270,  271,  272,   60,
+   -1,   62,  256,  257,  256,  257,   -1,  256,  257,   -1,
   262,  263,   -1,  265,   -1,  267,  268,  269,  270,  271,
-  272,  275,  276,   -1,  256,  257,   -1,   -1,   -1,   -1,
-  262,  263,   -1,  265,   -1,  267,  268,  269,  270,  271,
-  272,   -1,   -1,   -1,   -1,   -1,  256,  257,   -1,   -1,
-   -1,   -1,  262,  263,   -1,  265,   -1,   -1,   -1,  269,
-   -1,  271,  272,  256,  257,   -1,   -1,   -1,   -1,  256,
-   -1,  264,   -1,   -1,   -1,  262,  263,   -1,   -1,   -1,
-   -1,   -1,  275,  276,   -1,   -1,  273,  274,   -1,   -1,
-  256,   -1,   -1,   -1,   -1,   -1,  262,  263,   -1,  256,
-   -1,   -1,   -1,   -1,   -1,  262,  263,  273,  274,   -1,
-   -1,   -1,  256,  257,   -1,   -1,  273,  274,  262,  263,
-   -1,  265,   -1,   -1,   -1,  269,   -1,  271,  272,   -1,
+  272,  275,  276,  257,  256,  257,  275,  276,  125,   -1,
+  262,  263,   43,  265,   45,  267,  268,  269,  270,  271,
+  272,  275,  276,   -1,   -1,   -1,  256,  257,   -1,   60,
+   -1,   62,  262,  263,   -1,  265,   -1,  267,  268,  269,
+  270,  271,  272,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
+   -1,  256,  257,   -1,   -1,   -1,   -1,  262,  263,  125,
+  265,   -1,  267,  268,  269,  270,  271,  272,  256,  257,
+  125,   -1,   -1,   -1,  262,  263,   -1,  265,   -1,  256,
+   -1,  269,   -1,  271,  272,  262,  263,   -1,   -1,   -1,
+   -1,   -1,   -1,   -1,   -1,   -1,  273,  274,   -1,   -1,
+   -1,   -1,   -1,   -1,   -1,   -1,   -1,  256,  257,   -1,
    -1,   -1,   -1,  256,   -1,   -1,   -1,   -1,   -1,  262,
-  263,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-  273,  274,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,   -1,  256,  257,  258,  259,  260,  261,   -1,   -1,
-  258,  259,  260,  261,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,  275,  276,
+  263,   -1,   -1,   -1,   -1,   -1,  275,  276,   -1,   -1,
+  273,  274,   -1,   -1,   -1,   -1,   -1,   -1,   -1,  256,
+  257,   -1,   -1,   -1,  256,  262,  263,   -1,  265,   -1,
+  262,  263,  269,   -1,  271,  272,   -1,   -1,   -1,   -1,
+   -1,  273,  274,   -1,   -1,   -1,   -1,  256,   -1,   -1,
+   -1,   -1,   -1,  262,  263,  256,  257,  258,  259,  260,
+  261,   -1,   -1,   -1,  273,  274,   -1,   -1,   -1,   -1,
+  256,  257,   -1,   -1,  275,  276,  262,  263,   -1,  265,
+   -1,  256,  257,  269,   -1,  271,  272,  262,  263,   -1,
+  265,   -1,   -1,   -1,  269,   -1,  271,  272,   -1,   -1,
+   -1,   -1,   -1,   -1,   -1,   -1,   -1,  258,  259,  260,
+  261,
 };
 }
 final static short YYFINAL=9;
-final static short YYMAXTOKEN=276;
+final static short YYMAXTOKEN=278;
 final static String yyname[] = {
 "end-of-file",null,null,null,null,null,null,null,null,null,null,null,null,null,
 null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,
@@ -432,6 +449,7 @@ null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,
 null,null,null,null,null,null,null,"ID","COMP_MENOR_IGUAL","COMP_MAYOR_IGUAL",
 "COMP_DISTINTO","COMP_IGUAL","UINT","DOUBLE","CADENA","IF","THEN","ELSE",
 "END_IF","LOOP","UNTIL","OUT","PROC","VAR","NI","CTE_UINT","CTE_DOUBLE",
+"MAS_IGUAL","MENOS_IGUAL",
 };
 final static String yyrule[] = {
 "$accept : programa",
@@ -489,6 +507,10 @@ final static String yyrule[] = {
 "lista_params_inv : param_inv separador_variables param_inv separador_variables param_inv",
 "lista_params_inv : param_inv separador_variables param_inv separador_variables param_inv separador_variables lista_params_inv",
 "asignacion : ID '=' expresion",
+"asignacion : ID MENOS_IGUAL expresion",
+"asignacion : ID MAS_IGUAL expresion",
+"asignacion : ID MENOS_IGUAL error",
+"asignacion : ID MAS_IGUAL error",
 "asignacion : ID '=' error",
 "asignacion : ID",
 "asignacion : error '=' expresion",
@@ -544,7 +566,7 @@ final static String yyrule[] = {
 "rama_else : ELSE",
 };
 
-//#line 216 "archivos/gramatica.y"
+//#line 360 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 
     private final ParserHelper helper;
 
@@ -580,7 +602,7 @@ final static String yyrule[] = {
         return polacaProcedimientos;
     }
 
-//#line 515 "Parser.java"
+//#line 534 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -669,7 +691,7 @@ boolean doaction;
       {
       if (yyerrflag==0)
         {
-//        yyerror("syntax error");
+        yyerror("syntax error");
         yynerrs++;
         }
       if (yyerrflag < 3) //low error count?
@@ -735,268 +757,423 @@ boolean doaction;
       {
 //########## USER-SUPPLIED ACTIONS ##########
 case 2:
-//#line 23 "archivos/gramatica.y"
+//#line 23 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {helper.setUltimoTipoLeido("UINT");}
 break;
 case 3:
-//#line 24 "archivos/gramatica.y"
+//#line 24 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {helper.setUltimoTipoLeido("DOUBLE");}
 break;
 case 8:
-//#line 35 "archivos/gramatica.y"
+//#line 35 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {TablaNotificaciones.agregarError(aLexico.getLineaActual()-1,"Falta ';' al final de la sentencia.");}
 break;
 case 10:
-//#line 39 "archivos/gramatica.y"
+//#line 39 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {helper.eliminarUltimoAmbito();}
 break;
 case 12:
-//#line 43 "archivos/gramatica.y"
+//#line 43 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {helper.declaracionVar(val_peek(0).sval);}
 break;
 case 13:
-//#line 44 "archivos/gramatica.y"
+//#line 44 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {helper.declaracionVar(val_peek(2).sval);}
 break;
 case 14:
-//#line 47 "archivos/gramatica.y"
+//#line 47 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {helper.lecturaIdProc(val_peek(0).sval);}
 break;
 case 15:
-//#line 48 "archivos/gramatica.y"
+//#line 48 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {yyerror("Falta el identificador del procedimiento.");}
 break;
 case 18:
-//#line 53 "archivos/gramatica.y"
+//#line 53 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {yyerror("Falta el parentesis de cierre para los parametros.");}
 break;
 case 19:
-//#line 54 "archivos/gramatica.y"
+//#line 54 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {yyerror("Falta el parentesis de cierre para los parametros.");}
 break;
 case 23:
-//#line 61 "archivos/gramatica.y"
+//#line 61 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {yyerror("Un procedimiento no puede tener mas de 3 parametros.");}
 break;
 case 24:
-//#line 64 "archivos/gramatica.y"
+//#line 64 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {yyerror("Falta una ',' para separar dos parametros.");}
 break;
 case 28:
-//#line 72 "archivos/gramatica.y"
+//#line 72 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {helper.lecturaParamFormal(val_peek(0).sval, Celda.USO_PARAM_CVR);}
 break;
 case 29:
-//#line 73 "archivos/gramatica.y"
+//#line 73 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {yyerror("Falta el tipo de un parametro.");}
 break;
 case 30:
-//#line 74 "archivos/gramatica.y"
+//#line 74 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {yyerror("Falta el identificador de un parametro.");}
 break;
 case 31:
-//#line 77 "archivos/gramatica.y"
+//#line 77 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {helper.lecturaParamFormal(val_peek(0).sval, Celda.USO_PARAM_CV);}
 break;
 case 32:
-//#line 78 "archivos/gramatica.y"
+//#line 78 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {yyerror("Falta el identificador de un parametro.");}
 break;
 case 33:
-//#line 81 "archivos/gramatica.y"
+//#line 81 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {helper.lecturaNumInvoc(Integer.parseInt(val_peek(0).sval), false, "");}
 break;
 case 34:
-//#line 82 "archivos/gramatica.y"
+//#line 82 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {helper.lecturaNumInvoc(0, true, "Falta el numero de invocaciones del procedimiento.");}
 break;
 case 35:
-//#line 83 "archivos/gramatica.y"
+//#line 83 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {helper.lecturaNumInvoc(0, true, "Falta la palabra clave 'NI' en el encabezado del procedimiento.");}
 break;
 case 36:
-//#line 84 "archivos/gramatica.y"
+//#line 84 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {helper.lecturaNumInvoc(0, true, "Formato de declaracion de NI invalido. El formato correcto es 'NI = CTE_UINT'.");}
 break;
 case 37:
-//#line 85 "archivos/gramatica.y"
+//#line 85 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {helper.lecturaNumInvoc(0, true, "Formato de declaracion de NI invalido. El formato correcto es 'NI = CTE_UINT'.");}
 break;
 case 39:
-//#line 89 "archivos/gramatica.y"
+//#line 89 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {yyerror("Cuerpo del procedimiento vacio.");}
 break;
 case 45:
-//#line 99 "archivos/gramatica.y"
+//#line 99 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {helper.invocacionProc(val_peek(2).sval);}
 break;
 case 46:
-//#line 100 "archivos/gramatica.y"
+//#line 100 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {helper.invocacionProc(val_peek(3).sval);}
 break;
 case 47:
-//#line 103 "archivos/gramatica.y"
+//#line 103 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {helper.guardaParamsInvoc(val_peek(0).sval);}
 break;
 case 48:
-//#line 104 "archivos/gramatica.y"
+//#line 104 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {helper.guardaParamsInvoc(val_peek(0).sval);}
 break;
 case 49:
-//#line 105 "archivos/gramatica.y"
+//#line 105 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {helper.guardaParamsInvoc(val_peek(0).sval);}
 break;
 case 53:
-//#line 112 "archivos/gramatica.y"
+//#line 112 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {yyerror("Un procedimiento no puede tener mas de 3 parametros.");}
 break;
 case 54:
-//#line 115 "archivos/gramatica.y"
+//#line 115 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {helper.lecturaDestAsign(val_peek(2).sval);}
 break;
 case 55:
-//#line 116 "archivos/gramatica.y"
-{
-                            helper.lecturaDestAsign(val_peek(2).sval);
-                            yyerror("El lado derecho de la asignacio no es valido.");
-                            }
+//#line 116 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+{helper.lecturaDestMenosIgual(val_peek(2).sval);}
 break;
 case 56:
-//#line 120 "archivos/gramatica.y"
+//#line 117 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+{helper.lecturaDestMasIgual(val_peek(2).sval);}
+break;
+case 57:
+//#line 118 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+{helper.lecturaDestMenosIgual(val_peek(2).sval);   yyerror("El lado derecho de la asignacion no es valido."); }
+break;
+case 58:
+//#line 119 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+{helper.lecturaDestMasIgual(val_peek(2).sval);    yyerror("El lado derecho de la asignacion no es valido.");}
+break;
+case 59:
+//#line 120 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+{
+                            helper.lecturaDestAsign(val_peek(2).sval);
+                            yyerror("El lado derecho de la asignacion no es valido.");
+                            }
+break;
+case 60:
+//#line 124 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {
                     helper.lecturaDestAsign(val_peek(0).sval);
                     yyerror("Un identificador en solitario no es una sentencia valida.");
                     }
 break;
-case 57:
-//#line 124 "archivos/gramatica.y"
+case 61:
+//#line 128 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {yyerror("El lado izquierdo de la asignacion no es valido");}
 break;
-case 58:
-//#line 128 "archivos/gramatica.y"
-{helper.agregarPasosRepr("+");}
-break;
-case 59:
-//#line 129 "archivos/gramatica.y"
-{helper.agregarPasosRepr("-");}
-break;
-case 61:
-//#line 133 "archivos/gramatica.y"
-{helper.agregarPasosRepr("*");}
-break;
 case 62:
-//#line 134 "archivos/gramatica.y"
-{helper.agregarPasosRepr("/");}
+//#line 132 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+{
+                                      if (!TablaNotificaciones.hayErrores()){
+                                          String[] ultimosPasos = helper.getUltimosPasos();
+                                          String ultimoPaso = ultimosPasos[0];
+                                          String anteultimoPaso = ultimosPasos[1];
+                                          if(helper.entradaCte(ultimoPaso) && helper.entradaCte(anteultimoPaso))
+                                          {
+                                             if(helper.getTipoEntrada(ultimoPaso).equals(helper.getTipoEntrada(anteultimoPaso)))
+                                             {
+                                                if(helper.getTipoEntrada(ultimoPaso).equals("UINT"))
+                                                {
+
+                                                    int ultimo = Integer.parseInt(ultimoPaso);
+                                                    int anteultimo = Integer.parseInt(anteultimoPaso);
+                                                    int calculo = ultimo + anteultimo;
+                                                    helper.quitarUltimoPasoRepr();
+                                                    helper.quitarUltimoPasoRepr();
+                                                    helper.agregarPasosRepr(String.valueOf(calculo));
+                                                    helper.agregarEntradaTS(new Celda(Parser.CTE_UINT,String.valueOf(calculo),Celda.TIPO_UINT,Celda.USO_CTE,true));
+                                                }
+                                                else
+                                                {
+                                                    double ultimo = Double.parseDouble(ultimoPaso);
+                                                    double anteultimo = Double.parseDouble(anteultimoPaso);
+                                                    double calculo = ultimo + anteultimo;
+                                                    helper.quitarUltimoPasoRepr();
+                                                    helper.quitarUltimoPasoRepr();
+                                                    helper.agregarPasosRepr(String.valueOf(calculo));
+                                                    helper.agregarEntradaTS(new Celda(Parser.CTE_DOUBLE,String.valueOf(calculo),Celda.TIPO_DOUBLE,Celda.USO_CTE,true));
+                                                }
+                                              } else { yyerror("Los operandos son de diferentes tipos.");}
+                                          } else {  helper.agregarPasosRepr("+");}
+                                         }
+                                      }
 break;
-case 64:
-//#line 138 "archivos/gramatica.y"
-{helper.lecturaFactor(val_peek(0).sval);}
+case 63:
+//#line 166 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+{
+			                        if (!TablaNotificaciones.hayErrores()){
+                                                      String[] ultimosPasos = helper.getUltimosPasos();
+                                                      String ultimoPaso = ultimosPasos[0];
+                                                      String anteultimoPaso = ultimosPasos[1];
+                                                      if(helper.entradaCte(ultimoPaso) && helper.entradaCte(anteultimoPaso))
+                                                      {
+                                                         if(helper.getTipoEntrada(ultimoPaso).equals(helper.getTipoEntrada(anteultimoPaso)))
+                                                         {
+                                                            if(helper.getTipoEntrada(ultimoPaso).equals("UINT"))
+                                                            {
+
+                                                                int ultimo = Integer.parseInt(ultimoPaso);
+                                                                int anteultimo = Integer.parseInt(anteultimoPaso);
+                                                                int calculo = anteultimo - ultimo;
+                                                                helper.quitarUltimoPasoRepr();
+                                                                helper.quitarUltimoPasoRepr();
+                                                                helper.agregarPasosRepr(String.valueOf(calculo));
+                                                                helper.agregarEntradaTS(new Celda(Parser.CTE_UINT,String.valueOf(calculo),Celda.TIPO_UINT,Celda.USO_CTE,true));
+                                                            }
+                                                            else
+                                                            {
+                                                                double ultimo = Double.parseDouble(ultimoPaso);
+                                                                double anteultimo = Double.parseDouble(anteultimoPaso);
+                                                                double calculo = anteultimo - ultimo;
+                                                                helper.quitarUltimoPasoRepr();
+                                                                helper.quitarUltimoPasoRepr();
+                                                                helper.agregarPasosRepr(String.valueOf(calculo));
+                                                                helper.agregarEntradaTS(new Celda(Parser.CTE_DOUBLE,String.valueOf(calculo),Celda.TIPO_DOUBLE,Celda.USO_CTE,true));
+                                                            }
+                                                          } else { yyerror("Los operandos son de diferentes tipos.");}
+                                                      } else {  helper.agregarPasosRepr("-");}
+                                                     }
+                                    }
 break;
 case 65:
-//#line 139 "archivos/gramatica.y"
-{helper.agregarPasosRepr(val_peek(0).sval);helper.setTipoUltimoFactor("UINT");}
+//#line 203 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+{
+                                if (!TablaNotificaciones.hayErrores()){
+                                                      String[] ultimosPasos = helper.getUltimosPasos();
+                                                      String ultimoPaso = ultimosPasos[0];
+                                                      String anteultimoPaso = ultimosPasos[1];
+                                                      if(helper.entradaCte(ultimoPaso) && helper.entradaCte(anteultimoPaso))
+                                                      {
+                                                         if(helper.getTipoEntrada(ultimoPaso).equals(helper.getTipoEntrada(anteultimoPaso)))
+                                                         {
+                                                            if(helper.getTipoEntrada(ultimoPaso).equals("UINT"))
+                                                            {
+
+                                                                int ultimo = Integer.parseInt(ultimoPaso);
+                                                                int anteultimo = Integer.parseInt(anteultimoPaso);
+                                                                int calculo = ultimo * anteultimo;
+                                                                helper.quitarUltimoPasoRepr();
+                                                                helper.quitarUltimoPasoRepr();
+                                                                helper.agregarPasosRepr(String.valueOf(calculo));
+                                                                helper.agregarEntradaTS(new Celda(Parser.CTE_UINT,String.valueOf(calculo),Celda.TIPO_UINT,Celda.USO_CTE,true));
+                                                            }
+                                                            else
+                                                            {
+                                                                double ultimo = Double.parseDouble(ultimoPaso);
+                                                                double anteultimo = Double.parseDouble(anteultimoPaso);
+                                                                double calculo = ultimo * anteultimo;
+                                                                helper.quitarUltimoPasoRepr();
+                                                                helper.quitarUltimoPasoRepr();
+                                                                helper.agregarPasosRepr(String.valueOf(calculo));
+                                                                helper.agregarEntradaTS(new Celda(Parser.CTE_DOUBLE,String.valueOf(calculo),Celda.TIPO_DOUBLE,Celda.USO_CTE,true));
+                                                            }
+                                                          } else { yyerror("Los operandos son de diferentes tipos.");}
+                                                      } else {  helper.agregarPasosRepr("*");}
+                                                     }
+
+}
 break;
 case 66:
-//#line 140 "archivos/gramatica.y"
+//#line 238 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+{
+                                if (!TablaNotificaciones.hayErrores()){
+                                                      String[] ultimosPasos = helper.getUltimosPasos();
+                                                      String ultimoPaso = ultimosPasos[0];
+                                                      String anteultimoPaso = ultimosPasos[1];
+                                                      if(helper.entradaCte(ultimoPaso) && helper.entradaCte(anteultimoPaso))
+                                                      {
+                                                         if(helper.getTipoEntrada(ultimoPaso).equals(helper.getTipoEntrada(anteultimoPaso)))
+                                                         {
+                                                            if(helper.getTipoEntrada(ultimoPaso).equals("UINT"))
+                                                            {
+
+                                                                int ultimo = Integer.parseInt(ultimoPaso);
+                                                                int anteultimo = Integer.parseInt(anteultimoPaso);
+                                                                if(ultimo > 0)
+                                                                {
+                                                                    int calculo = anteultimo / ultimo;
+                                                                    helper.quitarUltimoPasoRepr();
+                                                                    helper.quitarUltimoPasoRepr();
+                                                                    helper.agregarPasosRepr(String.valueOf(calculo));
+                                                                    helper.agregarEntradaTS(new Celda(Parser.CTE_UINT,String.valueOf(calculo),Celda.TIPO_UINT,Celda.USO_CTE,true));
+                                                                }else yyerror("No se puede dividir por cero");
+                                                            }
+                                                            else
+                                                            {
+                                                                double ultimo = Double.parseDouble(ultimoPaso);
+                                                                double anteultimo = Double.parseDouble(anteultimoPaso);
+                                                                if(ultimo > 0)
+                                                                {
+                                                                    double calculo = anteultimo / ultimo;
+                                                                    helper.quitarUltimoPasoRepr();
+                                                                    helper.quitarUltimoPasoRepr();
+                                                                    helper.agregarPasosRepr(String.valueOf(calculo));
+                                                                    helper.agregarEntradaTS(new Celda(Parser.CTE_DOUBLE,String.valueOf(calculo),Celda.TIPO_DOUBLE,Celda.USO_CTE,true));
+                                                                }else yyerror("No se puede dividir por cero");
+                                                            }
+                                                          } else { yyerror("Los operandos son de diferentes tipos.");}
+                                                      } else {  helper.agregarPasosRepr("/");}
+                                                     }
+		                        }
+break;
+case 68:
+//#line 281 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+{helper.lecturaFactor(val_peek(0).sval);}
+break;
+case 69:
+//#line 282 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+{helper.agregarPasosRepr(val_peek(0).sval);helper.setTipoUltimoFactor("UINT");}
+break;
+case 70:
+//#line 283 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {helper.agregarPasosRepr(val_peek(0).sval);helper.setTipoUltimoFactor("DOUBLE");}
 break;
-case 67:
-//#line 141 "archivos/gramatica.y"
+case 71:
+//#line 284 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {helper.cambioSignoFactor(yylval.sval);}
 break;
-case 71:
-//#line 149 "archivos/gramatica.y"
+case 75:
+//#line 292 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {helper.agregarPasosRepr(val_peek(0).sval, "OUT_CAD");}
 break;
-case 72:
-//#line 150 "archivos/gramatica.y"
+case 76:
+//#line 293 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {helper.impresionFactor();}
 break;
-case 74:
-//#line 156 "archivos/gramatica.y"
+case 78:
+//#line 299 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {helper.puntoControlLoop();}
 break;
-case 76:
-//#line 160 "archivos/gramatica.y"
+case 80:
+//#line 303 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {yyerror("Falta el bloque de sentencias ejecutables del LOOP.");}
 break;
-case 79:
-//#line 165 "archivos/gramatica.y"
+case 83:
+//#line 308 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {yyerror("Bloque de sentencias vacio.");}
 break;
-case 80:
-//#line 166 "archivos/gramatica.y"
-{yyerror("No se permiten sentencias declarativas dentro de un bloque de estructura de control.");}
-break;
-case 83:
-//#line 172 "archivos/gramatica.y"
-{yyerror("No se permiten sentencias declarativas dentro de un bloque de estructura de control.");}
-break;
 case 84:
-//#line 174 "archivos/gramatica.y"
+//#line 309 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {yyerror("No se permiten sentencias declarativas dentro de un bloque de estructura de control.");}
-break;
-case 85:
-//#line 177 "archivos/gramatica.y"
-{helper.puntoControlUntil();}
-break;
-case 86:
-//#line 178 "archivos/gramatica.y"
-{yyerror("Falta la condicion de corte del LOOP.");}
 break;
 case 87:
-//#line 181 "archivos/gramatica.y"
-{helper.agregarPasosRepr(val_peek(2).sval);}
+//#line 315 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+{yyerror("No se permiten sentencias declarativas dentro de un bloque de estructura de control.");}
 break;
 case 88:
-//#line 182 "archivos/gramatica.y"
-{yyerror("Falta parentesis de cierre de la condicion.");}
+//#line 317 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+{yyerror("No se permiten sentencias declarativas dentro de un bloque de estructura de control.");}
 break;
 case 89:
-//#line 183 "archivos/gramatica.y"
-{yyerror("Falta expresion en el lado izquierdo de la condicion.");}
+//#line 320 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+{helper.puntoControlUntil();}
 break;
 case 90:
-//#line 184 "archivos/gramatica.y"
-{yyerror("Falta expresion en el lado derecho de la condicion.");}
+//#line 321 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+{yyerror("Falta la condicion de corte del LOOP.");}
 break;
 case 91:
-//#line 185 "archivos/gramatica.y"
+//#line 324 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+{helper.agregarPasosRepr(val_peek(2).sval);}
+break;
+case 92:
+//#line 325 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+{yyerror("Falta parentesis de cierre de la condicion.");}
+break;
+case 93:
+//#line 326 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+{yyerror("Falta expresion en el lado izquierdo de la condicion.");}
+break;
+case 94:
+//#line 327 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+{yyerror("Falta expresion en el lado derecho de la condicion.");}
+break;
+case 95:
+//#line 328 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {yyerror("Error en la condicion.");}
 break;
-case 100:
-//#line 200 "archivos/gramatica.y"
+case 104:
+//#line 343 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {helper.puntoControlThen();}
 break;
-case 101:
-//#line 201 "archivos/gramatica.y"
+case 105:
+//#line 344 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {yyerror("Falta la condicion del IF.");}
 break;
-case 102:
-//#line 204 "archivos/gramatica.y"
+case 106:
+//#line 347 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {helper.puntoControlElse();}
 break;
-case 103:
-//#line 205 "archivos/gramatica.y"
-{yyerror("Falta el bloque de sentencias ejecutables de la rama THEN.");}
-break;
-case 104:
-//#line 208 "archivos/gramatica.y"
-{helper.puntoControlFinCondicional();}
-break;
-case 105:
-//#line 209 "archivos/gramatica.y"
-{yyerror("Falta el bloque de sentencias ejecutables de la rama THEN.");}
-break;
-case 106:
-//#line 212 "archivos/gramatica.y"
-{helper.puntoControlFinCondicional();}
-break;
 case 107:
-//#line 213 "archivos/gramatica.y"
+//#line 348 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+{yyerror("Falta el bloque de sentencias ejecutables de la rama THEN.");}
+break;
+case 108:
+//#line 351 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+{helper.puntoControlFinCondicional();}
+break;
+case 109:
+//#line 352 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+{yyerror("Falta el bloque de sentencias ejecutables de la rama THEN.");}
+break;
+case 110:
+//#line 355 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+{helper.puntoControlFinCondicional();}
+break;
+case 111:
+//#line 356 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {yyerror("Falta el bloque de sentencias ejecutables de la rama ELSE.");}
 break;
-//#line 926 "Parser.java"
+//#line 1100 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

@@ -119,7 +119,6 @@ public class ParserHelper {
      */
     public void lecturaDestAsign(String lexema) {
         tablaS.quitarReferencia(lexema);
-
         String ambito = getAmbitoId(lexema);
         if (!isIdDecl(lexema, ambito)) { //Variable destino no declarada.
             TablaNotificaciones.agregarError(aLexico.getLineaActual(),
@@ -134,6 +133,52 @@ public class ParserHelper {
             "Un procedimiento no puede estar a la izquierda una asignacion.");
         else { //Asignacion valida.
             agregarPasosRepr(nLexema, "=");
+            tablaS.agregarReferencia(nLexema);
+        }
+    }
+
+    /**
+     * Invocado cuando se lee el lado izq de +=.
+     */
+    public void lecturaDestMasIgual(String lexema) {
+        tablaS.quitarReferencia(lexema);
+        String ambito = getAmbitoId(lexema);
+        if (!isIdDecl(lexema, ambito)) { //Variable destino no declarada.
+            TablaNotificaciones.agregarError(aLexico.getLineaActual(),
+                    "La variable '" + lexema + "' no esta declarada.");
+            return;
+        }
+
+        String nLexema = PilaAmbitos.aplicaNameManglin(ambito, lexema);
+
+        //Esta declarado pero es un procedimiento.
+        if (tablaS.isEntradaProc(nLexema)) TablaNotificaciones.agregarError(aLexico.getLineaActual(),
+                "Un procedimiento no puede estar a la izquierda una asignacion.");
+        else { //Asignacion valida.
+            agregarPasosRepr(nLexema, "+", nLexema, "=");
+            tablaS.agregarReferencia(nLexema);
+        }
+    }
+
+    /**
+     * Invocado cuando se lee el lado izq de -=.
+     */
+    public void lecturaDestMenosIgual(String lexema) {
+        tablaS.quitarReferencia(lexema);
+        String ambito = getAmbitoId(lexema);
+        if (!isIdDecl(lexema, ambito)) { //Variable destino no declarada.
+            TablaNotificaciones.agregarError(aLexico.getLineaActual(),
+                    "La variable '" + lexema + "' no esta declarada.");
+            return;
+        }
+
+        String nLexema = PilaAmbitos.aplicaNameManglin(ambito, lexema);
+
+        //Esta declarado pero es un procedimiento.
+        if (tablaS.isEntradaProc(nLexema)) TablaNotificaciones.agregarError(aLexico.getLineaActual(),
+                "Un procedimiento no puede estar a la izquierda una asignacion.");
+        else { //Asignacion valida.
+            agregarPasosRepr(nLexema, "-", nLexema, "=");
             tablaS.agregarReferencia(nLexema);
         }
     }
@@ -389,7 +434,7 @@ public class ParserHelper {
 
     //---POLACA---
 
-    private void quitarUltimoPasoRepr() {
+    public void quitarUltimoPasoRepr() {
         if (pilaAmbitos.inAmbitoGlobal())
             polacaProgram.quitarUltimoPaso();
         else polacaProcedimientos.quitarUltimoPaso(pilaAmbitos.getAmbitoActual());
@@ -437,5 +482,27 @@ public class ParserHelper {
 
     public MultiPolaca getPolacaProcs() {
         return polacaProcedimientos;
+    }
+
+    public String[] getUltimosPasos(){
+        if (pilaAmbitos.inAmbitoGlobal())
+            return polacaProgram.getUltimosPasos();
+        else return polacaProcedimientos.getUltimosPasos(pilaAmbitos.getAmbitoActual());
+    }
+
+    public boolean entradaCte(String lexema)
+    {
+        return tablaS.esEntradaCte(lexema);
+    }
+
+
+    public String getTipoEntrada(String lexema)
+    {
+        return tablaS.getTipoEntrada(lexema);
+    }
+
+    public void agregarEntradaTS(Celda celda)
+    {
+        tablaS.agregarEntrada(celda);
     }
 }

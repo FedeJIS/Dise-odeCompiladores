@@ -52,6 +52,16 @@ public class Polaca {
         return new ArrayList<>(listaPasos);
     }
 
+    public String[] getUltimosPasos(){
+        if(listaPasos.size() >= 1) {
+            String ultimoPaso = listaPasos.get(listaPasos.size()-1);
+            String anteultimoPaso = listaPasos.get(listaPasos.size()-2);
+            String[] pasos = {ultimoPaso,anteultimoPaso};
+            return pasos;
+        }
+        return null;
+    }
+
     public void puntoControlThen(){
         if (!TablaNotificaciones.hayErrores()) {
             listaPasos.add(simboloPasoIncompleto); //Agrego el BF con destino incompleto.

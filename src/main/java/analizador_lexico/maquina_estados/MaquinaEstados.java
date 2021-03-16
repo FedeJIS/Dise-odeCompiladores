@@ -123,8 +123,8 @@ public class MaquinaEstados {
      */
     private void inicCaminoLiterales(CodigoFuente cFuente) {
         GeneraTokenLiteral generaTokenLiteral = new GeneraTokenLiteral(this, cFuente);
-        maquinaEstados[Estado.INICIAL][Input.SUMA] = new TransicionEstado(Estado.FINAL, generaTokenLiteral);
-        maquinaEstados[Estado.INICIAL][Input.GUION] = new TransicionEstado(Estado.FINAL, generaTokenLiteral);
+        //maquinaEstados[Estado.INICIAL][Input.SUMA] = new TransicionEstado(Estado.FINAL, generaTokenLiteral);
+        //maquinaEstados[Estado.INICIAL][Input.GUION] = new TransicionEstado(Estado.FINAL, generaTokenLiteral);
         maquinaEstados[Estado.INICIAL][Input.MULTIPL] = new TransicionEstado(Estado.FINAL, generaTokenLiteral);
         maquinaEstados[Estado.INICIAL][Input.DIV] = new TransicionEstado(Estado.FINAL, generaTokenLiteral);
         maquinaEstados[Estado.INICIAL][Input.LLAVE_A] = new TransicionEstado(Estado.FINAL, generaTokenLiteral);
@@ -227,7 +227,7 @@ public class MaquinaEstados {
     }
 
     /**
-     * Transiciones asociadas a la deteccion de comparadores y token asignacion.
+     * Transiciones asociadas a la deteccion de comparadores , token asignacion, += y -=.
      */
     private void inicCaminoComparadores(CodigoFuente cFuente, AccionSemantica retrocedeFuente,
                                         AccionSemantica consumeChar) {
@@ -301,6 +301,39 @@ public class MaquinaEstados {
         generaTokenParticular = new GeneraTokenParticular(this, Parser.COMP_IGUAL);
         maquinaEstados[Estado.SIGNO_IGUAL][Input.IGUAL] = new TransicionEstado(Estado.FINAL, consumeChar,
             generaTokenParticular);
+
+        //NUEVO
+
+        /* Token '+': Estado 0 */
+        maquinaEstados[Estado.INICIAL][Input.SUMA] = new TransicionEstado(Estado.SUMA);
+        /* Estado 17 */
+        generaTokenParticular = new GeneraTokenParticular(this, (short) '+');
+        //Inputs no definidos. Suma.
+        inicTransiciones(Estado.SUMA, Estado.FINAL, retrocedeFuente, generaTokenParticular);
+        //Salto de linea. SUMA
+        maquinaEstados[Estado.SUMA][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL,
+                generaTokenParticular, cuentaSaltoLinea);
+        //EOF. SUMA
+        maquinaEstados[Estado.SUMA][Input.EOF] = new TransicionEstado(Estado.FINAL, generaTokenParticular);
+
+        //Input '='. Genero +=.
+        generaTokenParticular = new GeneraTokenParticular(this, Parser.MAS_IGUAL);
+        maquinaEstados[Estado.SUMA][Input.IGUAL] = new TransicionEstado(Estado.FINAL, consumeChar, generaTokenParticular);
+
+        /* Token '-': Estado 0 */
+        maquinaEstados[Estado.INICIAL][Input.GUION] = new TransicionEstado(Estado.RESTA);
+        /* Estado 18 */
+        generaTokenParticular = new GeneraTokenParticular(this, (short) '-');
+        //Inputs no definidos. Resta.
+        inicTransiciones(Estado.RESTA, Estado.FINAL, retrocedeFuente, generaTokenParticular);
+        //Salto de linea. RESTA
+        maquinaEstados[Estado.RESTA][Input.SALTO_LINEA] = new TransicionEstado(Estado.FINAL, generaTokenParticular, cuentaSaltoLinea);
+        //EOF. RESTA
+        maquinaEstados[Estado.RESTA][Input.EOF] = new TransicionEstado(Estado.FINAL, generaTokenParticular);
+
+        //Input '='. Genero -=
+        generaTokenParticular = new GeneraTokenParticular(this, Parser.MENOS_IGUAL);
+        maquinaEstados[Estado.RESTA][Input.IGUAL] = new TransicionEstado(Estado.FINAL, consumeChar, generaTokenParticular);
     }
 
     /**

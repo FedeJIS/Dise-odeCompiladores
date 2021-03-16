@@ -18,7 +18,9 @@ public class Estado {
     public static final int CTE_PARTE_EXP_SIGNO = 14;
     public static final int CTE_PARTE_EXP_VALOR = 15;
     public static final int CADENA = 16;
-    public static final int FINAL = 17;
+    public static final int SUMA = 17;
+    public static final int RESTA = 18;
+    public static final int FINAL = 19;
 
-    public static final int TOTAL_ESTADOS = 18;
+    public static final int TOTAL_ESTADOS = 20;
 }

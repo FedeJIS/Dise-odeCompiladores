@@ -44,6 +44,12 @@ public class MultiPolaca {
         polacaProcedimientos.put(proc,polacaProc);
     }
 
+    public String[] getUltimosPasos(String proc){
+        Polaca polacaProc = polacaProcedimientos.get(proc);
+        if (polacaProc == null) throw new IllegalStateException("No existe polaca para el procedimiento '"+proc+"'.");
+        return polacaProc.getUltimosPasos();
+    }
+
     public Collection<String> getNombreProcs(){
         return polacaProcedimientos.keySet();
     }

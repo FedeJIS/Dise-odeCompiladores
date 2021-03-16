@@ -6,8 +6,43 @@
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="593fd477-49da-4fa6-ac05-b714f65ecf31" name="Default Changelist" comment="" />
+    <list default="true" id="593fd477-49da-4fa6-ac05-b714f65ecf31" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/compilador_maven_g15.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/documentacion/fuentes.txt" beforeDir="false" afterPath="$PROJECT_DIR$/documentacion/fuentes.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/analizador_lexico/maquina_estados/Estado.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/analizador_lexico/maquina_estados/Estado.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/analizador_lexico/maquina_estados/MaquinaEstados.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/analizador_lexico/maquina_estados/MaquinaEstados.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/analizador_sintactico/Parser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/analizador_sintactico/Parser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/analizador_sintactico/archivos/gramatica.y" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/analizador_sintactico/archivos/gramatica.y" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/analizador_sintactico/util/ParserHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/analizador_sintactico/util/ParserHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/compilador/Compilador.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/compilador/Compilador.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/generacion_c_intermedio/MultiPolaca.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/generacion_c_intermedio/MultiPolaca.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/generacion_c_intermedio/Polaca.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/generacion_c_intermedio/Polaca.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/util/ReprTokens.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/util/ReprTokens.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/util/tabla_simbolos/TablaSimbolos.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/util/tabla_simbolos/TablaSimbolos.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/Test.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -20,6 +55,16 @@
       </list>
     </option>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHome" value="C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2020.2.1\plugins\maven\lib\maven3" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
   <component name="ProjectId" id="1jFSEJrot0M0NZ0d1k8Tt1UqfBR" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -27,8 +72,9 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="extract.method.default.visibility" value="private" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/test/java/casos_prueba_asm/mult" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
@@ -56,6 +102,13 @@
     </key>
   </component>
   <component name="RunManager" selected="Application.Test">
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Main" />
+      <module name="compilador_maven_g15" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Test" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Test" />
       <module name="compilador_maven_g15" />
@@ -84,26 +137,67 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="TestSuma" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="casos_prueba_asm.TestSuma" />
-      <module name="compilador_maven_g15" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Application.Test" />
         <item itemvalue="Application.TestResta" />
+        <item itemvalue="Application.Main" />
         <item itemvalue="Application.TestInvoc" />
         <item itemvalue="Application.TestMult" />
-        <item itemvalue="Application.TestSuma" />
       </list>
     </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="593fd477-49da-4fa6-ac05-b714f65ecf31" name="Default Changelist" comment="" />
+      <created>1615178836112</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1615178836112</updated>
+    </task>
+    <servers />
+  </component>
   <component name="UnknownFeatures">
     <option featureType="com.intellij.fileTypeFactory" implementationName="*.asm" />
     <option featureType="com.intellij.fileTypeFactory" implementationName="*.y" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="722" y="382" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1615499837461">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state x="722" y="382" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1160@0.0.1920.1160" timestamp="1615499837461" />
+    <state x="740" y="335" key="FileChooserDialogImpl" timestamp="1615178874206">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state x="740" y="335" key="FileChooserDialogImpl/0.0.1920.1160@0.0.1920.1160" timestamp="1615178874206" />
+    <state width="1877" height="321" key="GridCell.Tab.0.bottom" timestamp="1615578427504">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state width="1877" height="321" key="GridCell.Tab.0.bottom/0.0.1920.1160@0.0.1920.1160" timestamp="1615578427504" />
+    <state width="1877" height="321" key="GridCell.Tab.0.center" timestamp="1615578427503">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state width="1877" height="321" key="GridCell.Tab.0.center/0.0.1920.1160@0.0.1920.1160" timestamp="1615578427503" />
+    <state width="1877" height="321" key="GridCell.Tab.0.left" timestamp="1615578427503">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state width="1877" height="321" key="GridCell.Tab.0.left/0.0.1920.1160@0.0.1920.1160" timestamp="1615578427503" />
+    <state width="1877" height="321" key="GridCell.Tab.0.right" timestamp="1615578427504">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state width="1877" height="321" key="GridCell.Tab.0.right/0.0.1920.1160@0.0.1920.1160" timestamp="1615578427504" />
   </component>
 </project>

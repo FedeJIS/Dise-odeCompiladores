@@ -142,6 +142,10 @@ public class Compilador {
         ReprTokens.add(Parser.COMP_MAYOR_IGUAL,">=");
         ReprTokens.add(Parser.COMP_DISTINTO,"!=");
         ReprTokens.add(Parser.COMP_IGUAL,"==");
+        ReprTokens.add(Parser.MAS_IGUAL,"+=");
+        ReprTokens.add(Parser.MENOS_IGUAL,"-=");
+        ReprTokens.add((short) '+',"+");
+        ReprTokens.add((short) '-',"-");
     }
 
     private static void finCompilacion() {

@@ -19,7 +19,7 @@ public class ReprTokens {
     
     public static String getRepresentacion(short token){
         String repr = representaciones.get(token);
-        if (repr == null) throw new IllegalStateException("No existe el token solicitado.");
+        if (repr == null) throw new IllegalStateException("No existe el token solicitado. "+token);
         return repr;
     }
 }

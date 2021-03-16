@@ -1,0 +1,341 @@
+###TABLA SIMBOLOS###
+{lex='es', tipo='', uso='-', decl='true', nRefs=2}
+{lex='"OUT(-b);"', tipo='', uso='-', decl='true', nRefs=1}
+{lex='"b = lala();"', tipo='', uso='-', decl='true', nRefs=1}
+{lex='en', tipo='', uso='-', decl='true', nRefs=1}
+{lex='"x(w,y,z);"', tipo='', uso='-', decl='true', nRefs=1}
+{lex='"OUT(\"', tipo='', uso='-', decl='true', nRefs=3}
+{lex='actor', tipo='', uso='-', decl='true', nRefs=1}
+{lex='"PROC lala(UINT e,UINT f,UINT g) NI = 3_ui{"', tipo='', uso='-', decl='true', nRefs=1}
+{lex='arias', tipo='', uso='-', decl='true', nRefs=1}
+{lex='"PROC x(VAR DOUBLE f, VAR DOUBLE g, DOUBLE h) NI = 0_ui{"', tipo='', uso='-', decl='true', nRefs=1}
+{lex='"x(5.0d1);"', tipo='', uso='-', decl='true', nRefs=1}
+{lex='"a = a;"', tipo='', uso='-', decl='true', nRefs=3}
+{lex='"PROC x(VAR DOUBLE w, VAR DOUBLE g, DOUBLE h) NI = 1_ui{"', tipo='', uso='-', decl='true', nRefs=1}
+{lex='"DOUBLE b;"', tipo='', uso='-', decl='true', nRefs=2}
+{lex='eclaracion', tipo='', uso='-', decl='true', nRefs=5}
+{lex='ado', tipo='', uso='-', decl='true', nRefs=1}
+{lex='variable', tipo='', uso='-', decl='true', nRefs=1}
+{lex='"DOUBLE a;"', tipo='', uso='-', decl='true', nRefs=3}
+{lex='"PROC x(VAR DOUBLE f) NI = 1_ui{"', tipo='', uso='-', decl='true', nRefs=1}
+{lex='"};"', tipo='', uso='-', decl='true', nRefs=12}
+{lex='"PROC x(VAR DOUBLE f, VAR DOUBLE g, DOUBLE h) NI = 1_ui{"', tipo='', uso='-', decl='true', nRefs=2}
+{lex='de', tipo='', uso='-', decl='true', nRefs=1}
+{lex='"UINT x;"', tipo='', uso='-', decl='true', nRefs=1}
+{lex='"UINT a,b,c,d;"', tipo='', uso='-', decl='true', nRefs=1}
+{lex='tro', tipo='', uso='-', decl='true', nRefs=2}
+{lex='"x(7.2d11,y,7.2d11, z);"', tipo='', uso='-', decl='true', nRefs=1}
+{lex='"OUT(5_ui);"', tipo='', uso='-', decl='true', nRefs=8}
+{lex='caso', tipo='', uso='-', decl='true', nRefs=2}
+{lex='con', tipo='', uso='-', decl='true', nRefs=2}
+{lex='rango', tipo='', uso='-', decl='true', nRefs=1}
+{lex='izq', tipo='', uso='-', decl='true', nRefs=1}
+{lex='"PROC x(DOUBLE f, DOUBLE f) NI = 1_ui{"', tipo='', uso='-', decl='true', nRefs=1}
+{lex='"b = lala * b;"', tipo='', uso='-', decl='true', nRefs=1}
+{lex='mismo', tipo='', uso='-', decl='true', nRefs=2}
+{lex='"b = -5.0d-1;"', tipo='', uso='-', decl='true', nRefs=2}
+{lex='"OUT(x);"', tipo='', uso='-', decl='true', nRefs=1}
+{lex='parametros', tipo='', uso='-', decl='true', nRefs=1}
+{lex='x', tipo='', uso='-', decl='true', nRefs=1}
+{lex='"a = 10.;"', tipo='', uso='-', decl='true', nRefs=1}
+{lex='asignacion', tipo='', uso='-', decl='true', nRefs=1}
+{lex='n', tipo='', uso='-', decl='true', nRefs=67}
+{lex='oubles', tipo='', uso='-', decl='true', nRefs=1}
+{lex='"DOUBLE w;"', tipo='', uso='-', decl='true', nRefs=1}
+{lex='"b = 5.0d-1;"', tipo='', uso='-', decl='true', nRefs=2}
+{lex='asignaciones', tipo='', uso='-', decl='true', nRefs=1}
+{lex='cte', tipo='', uso='-', decl='true', nRefs=2}
+{lex='andaba', tipo='', uso='-', decl='true', nRefs=3}
+{lex='no', tipo='', uso='-', decl='true', nRefs=9}
+{lex='"b = lala;"', tipo='', uso='-', decl='true', nRefs=1}
+{lex='aram', tipo='', uso='-', decl='true', nRefs=2}
+{lex='"UINT a; DOUBLE b;"', tipo='', uso='-', decl='true', nRefs=1}
+{lex='"LOOP {"', tipo='', uso='-', decl='true', nRefs=1}
+{lex='fuera', tipo='', uso='-', decl='true', nRefs=1}
+{lex='"x = -1;"', tipo='', uso='-', decl='true', nRefs=1}
+{lex='3.0', tipo='DOUBLE', uso='CTE', decl='true', nRefs=1}
+{lex='"DOUBLE w, y, z;"', tipo='', uso='-', decl='true', nRefs=2}
+{lex='aso', tipo='', uso='-', decl='true', nRefs=1}
+{lex='"PROC x() NI = 1_ui{"', tipo='', uso='-', decl='true', nRefs=1}
+{lex='"x = -1_ui;"', tipo='', uso='-', decl='true', nRefs=1}
+{lex='"x();"', tipo='', uso='-', decl='true', nRefs=1}
+{lex='lala', tipo='', uso='-', decl='true', nRefs=1}
+{lex='"OUT(a);"', tipo='', uso='-', decl='true', nRefs=1}
+{lex='"OUT(b);"', tipo='', uso='-', decl='true', nRefs=1}
+{lex='"DOUBLE b; UINT x;"', tipo='', uso='-', decl='true', nRefs=1}
+{lex='"b = -5.0d1 * -b;"', tipo='', uso='-', decl='true', nRefs=1}
+{lex='0.0', tipo='DOUBLE', uso='CTE', decl='true', nRefs=15}
+{lex='"OUT(-5.0d1);"', tipo='', uso='-', decl='true', nRefs=1}
+{lex='"a = a - 1.;"', tipo='', uso='-', decl='true', nRefs=1}
+{lex='proc', tipo='', uso='-', decl='true', nRefs=1}
+{lex='params', tipo='', uso='-', decl='true', nRefs=1}
+{lex='");"', tipo='', uso='-', decl='true', nRefs=3}
+{lex='"PROC lala(DOUBLE a, DOUBLE a , DOUBLE a, DOUBLE a) NI = 5_ui {"', tipo='', uso='-', decl='true', nRefs=1}
+{lex='"a = 5_ui;"', tipo='', uso='-', decl='true', nRefs=3}
+{lex='valido', tipo='', uso='-', decl='true', nRefs=2}
+{lex='ints', tipo='', uso='-', decl='true', nRefs=1}
+{lex='por', tipo='', uso='-', decl='true', nRefs=4}
+{lex='"b = -b;"', tipo='', uso='-', decl='true', nRefs=1}
+{lex='"b = c;"', tipo='', uso='-', decl='true', nRefs=1}
+{lex='"b = b * c;"', tipo='', uso='-', decl='true', nRefs=1}
+{lex='valida', tipo='', uso='-', decl='true', nRefs=5}
+{lex='"lala(3_ui,c,d);"', tipo='', uso='-', decl='true', nRefs=1}
+{lex='mpresiones', tipo='', uso='-', decl='true', nRefs=1}
+{lex='que', tipo='', uso='-', decl='true', nRefs=4}
+{lex='"lala = 5_ui;"', tipo='', uso='-', decl='true', nRefs=1}
+{lex='"b = a;"', tipo='', uso='-', decl='true', nRefs=1}
+{lex='una', tipo='', uso='-', decl='true', nRefs=2}
+{lex='parametro', tipo='', uso='-', decl='true', nRefs=1}
+{lex='negativos', tipo='', uso='-', decl='true', nRefs=2}
+{lex='"PROC lala() NI = 1_ui {"', tipo='', uso='-', decl='true', nRefs=2}
+{lex='nombre', tipo='', uso='-', decl='true', nRefs=2}
+{lex='"PROC x(DOUBLE f, DOUBLE g, DOUBLE h, DOUBLE i) NI = 1_ui{"', tipo='', uso='-', decl='true', nRefs=1}
+{lex='"}UNTIL (a == 0.);"', tipo='', uso='-', decl='true', nRefs=1}
+--------------------------------------------
+###ERRORES###
+Linea 1: La palabra 'D' no es una palabra reservada valida.
+Linea 2: Simbolo ''' no reconocido.
+Linea 2: Simbolo '\' no reconocido.
+Linea 2: Simbolo ''' no reconocido.
+Linea 3: Simbolo ''' no reconocido.
+Linea 3: Simbolo '\' no reconocido.
+Linea 3: Simbolo ''' no reconocido.
+Linea 4: Simbolo ''' no reconocido.
+Linea 4: Simbolo '\' no reconocido.
+Linea 4: Simbolo ''' no reconocido.
+Linea 5: Simbolo ''' no reconocido.
+Linea 5: Simbolo '\' no reconocido.
+Linea 5: Simbolo ''' no reconocido.
+Linea 8: La palabra 'D' no es una palabra reservada valida.
+Linea 9: Simbolo ''' no reconocido.
+Linea 9: Simbolo '\' no reconocido.
+Linea 9: Simbolo ''' no reconocido.
+Linea 10: Simbolo ''' no reconocido.
+Linea 10: Simbolo '\' no reconocido.
+Linea 10: Simbolo ''' no reconocido.
+Linea 13: La palabra 'D' no es una palabra reservada valida.
+Linea 14: Simbolo ''' no reconocido.
+Linea 14: Simbolo '\' no reconocido.
+Linea 14: Simbolo ''' no reconocido.
+Linea 15: Simbolo ''' no reconocido.
+Linea 15: Simbolo '\' no reconocido.
+Linea 15: Simbolo ''' no reconocido.
+Linea 16: Simbolo ''' no reconocido.
+Linea 16: Simbolo '\' no reconocido.
+Linea 16: Simbolo ''' no reconocido.
+Linea 19: La palabra 'D' no es una palabra reservada valida.
+Linea 20: Simbolo ''' no reconocido.
+Linea 20: Simbolo '\' no reconocido.
+Linea 20: Simbolo ''' no reconocido.
+Linea 21: Simbolo ''' no reconocido.
+Linea 21: Simbolo '\' no reconocido.
+Linea 21: Simbolo ''' no reconocido.
+Linea 24: La palabra 'D' no es una palabra reservada valida.
+Linea 25: Simbolo ''' no reconocido.
+Linea 25: Simbolo '\' no reconocido.
+Linea 25: Simbolo ''' no reconocido.
+Linea 26: Simbolo ''' no reconocido.
+Linea 26: Simbolo '\' no reconocido.
+Linea 26: Simbolo ''' no reconocido.
+Linea 29: La palabra 'P' no es una palabra reservada valida.
+Linea 29: La palabra 'CVR' no es una palabra reservada valida.
+Linea 30: Simbolo ''' no reconocido.
+Linea 30: Simbolo '\' no reconocido.
+Linea 30: Simbolo ''' no reconocido.
+Linea 31: Simbolo ''' no reconocido.
+Linea 31: Simbolo '\' no reconocido.
+Linea 31: Simbolo ''' no reconocido.
+Linea 32: Simbolo ''' no reconocido.
+Linea 32: Simbolo '\' no reconocido.
+Linea 32: Simbolo ''' no reconocido.
+Linea 35: La palabra 'P' no es una palabra reservada valida.
+Linea 35: La palabra 'CVR' no es una palabra reservada valida.
+Linea 36: Simbolo ''' no reconocido.
+Linea 36: Simbolo '\' no reconocido.
+Linea 36: Simbolo ''' no reconocido.
+Linea 37: Simbolo ''' no reconocido.
+Linea 37: Simbolo '\' no reconocido.
+Linea 37: Simbolo ''' no reconocido.
+Linea 38: Simbolo ''' no reconocido.
+Linea 38: Simbolo '\' no reconocido.
+Linea 38: Simbolo ''' no reconocido.
+Linea 39: Simbolo ''' no reconocido.
+Linea 39: Simbolo '\' no reconocido.
+Linea 39: Simbolo ''' no reconocido.
+Linea 42: La palabra 'C' no es una palabra reservada valida.
+Linea 43: Simbolo ''' no reconocido.
+Linea 43: Simbolo '\' no reconocido.
+Linea 43: Simbolo ''' no reconocido.
+Linea 44: Simbolo ''' no reconocido.
+Linea 44: Simbolo '\' no reconocido.
+Linea 44: Simbolo ''' no reconocido.
+Linea 45: Simbolo '\' no reconocido.
+Linea 45: Simbolo ''' no reconocido.
+Linea 45: Simbolo '\' no reconocido.
+Linea 45: Simbolo ''' no reconocido.
+Linea 46: Simbolo ''' no reconocido.
+Linea 46: Simbolo '\' no reconocido.
+Linea 46: Simbolo ''' no reconocido.
+Linea 47: Simbolo ''' no reconocido.
+Linea 47: Simbolo '\' no reconocido.
+Linea 47: Simbolo ''' no reconocido.
+Linea 48: Simbolo ''' no reconocido.
+Linea 48: Simbolo '\' no reconocido.
+Linea 48: Simbolo ''' no reconocido.
+Linea 49: Simbolo ''' no reconocido.
+Linea 49: Simbolo '\' no reconocido.
+Linea 49: Simbolo ''' no reconocido.
+Linea 50: Simbolo ''' no reconocido.
+Linea 50: Simbolo '\' no reconocido.
+Linea 50: Simbolo ''' no reconocido.
+Linea 51: Simbolo ''' no reconocido.
+Linea 51: Simbolo '\' no reconocido.
+Linea 51: Simbolo ''' no reconocido.
+Linea 54: La palabra 'O' no es una palabra reservada valida.
+Linea 55: Simbolo ''' no reconocido.
+Linea 55: Simbolo '\' no reconocido.
+Linea 55: Simbolo ''' no reconocido.
+Linea 56: Simbolo ''' no reconocido.
+Linea 56: Simbolo '\' no reconocido.
+Linea 56: Simbolo ''' no reconocido.
+Linea 57: Simbolo ''' no reconocido.
+Linea 57: Simbolo '\' no reconocido.
+Linea 57: Simbolo ''' no reconocido.
+Linea 60: La palabra 'O' no es una palabra reservada valida.
+Linea 61: Simbolo ''' no reconocido.
+Linea 61: Simbolo '\' no reconocido.
+Linea 61: Simbolo ''' no reconocido.
+Linea 62: Simbolo ''' no reconocido.
+Linea 62: Simbolo '\' no reconocido.
+Linea 62: Simbolo ''' no reconocido.
+Linea 63: Simbolo '\' no reconocido.
+Linea 63: Simbolo ''' no reconocido.
+Linea 63: Simbolo '\' no reconocido.
+Linea 63: Simbolo ''' no reconocido.
+Linea 64: Simbolo ''' no reconocido.
+Linea 64: Simbolo '\' no reconocido.
+Linea 64: Simbolo ''' no reconocido.
+Linea 67: La palabra 'V' no es una palabra reservada valida.
+Linea 68: Simbolo ''' no reconocido.
+Linea 68: Simbolo '\' no reconocido.
+Linea 68: Simbolo ''' no reconocido.
+Linea 69: Simbolo ''' no reconocido.
+Linea 69: Simbolo '\' no reconocido.
+Linea 69: Simbolo ''' no reconocido.
+Linea 70: Simbolo ''' no reconocido.
+Linea 70: Simbolo '\' no reconocido.
+Linea 70: Simbolo ''' no reconocido.
+Linea 71: Simbolo ''' no reconocido.
+Linea 71: Simbolo '\' no reconocido.
+Linea 71: Simbolo ''' no reconocido.
+Linea 72: Simbolo ''' no reconocido.
+Linea 72: Simbolo '\' no reconocido.
+Linea 72: Simbolo ''' no reconocido.
+Linea 75: La palabra 'L' no es una palabra reservada valida.
+Linea 76: Simbolo ''' no reconocido.
+Linea 76: Simbolo '\' no reconocido.
+Linea 76: Simbolo ''' no reconocido.
+Linea 77: Simbolo ''' no reconocido.
+Linea 77: Simbolo '\' no reconocido.
+Linea 77: Simbolo ''' no reconocido.
+Linea 78: Simbolo ''' no reconocido.
+Linea 78: Simbolo '\' no reconocido.
+Linea 78: Simbolo ''' no reconocido.
+Linea 79: Simbolo ''' no reconocido.
+Linea 79: Simbolo '\' no reconocido.
+Linea 79: Simbolo ''' no reconocido.
+Linea 80: Simbolo ''' no reconocido.
+Linea 80: Simbolo '\' no reconocido.
+Linea 80: Simbolo ''' no reconocido.
+Linea 83: La palabra 'F' no es una palabra reservada valida.
+Linea 84: Simbolo ''' no reconocido.
+Linea 84: Simbolo '\' no reconocido.
+Linea 84: Simbolo ''' no reconocido.
+Linea 85: Simbolo ''' no reconocido.
+Linea 85: Simbolo '\' no reconocido.
+Linea 85: Simbolo ''' no reconocido.
+Linea 86: Simbolo ''' no reconocido.
+Linea 86: Simbolo '\' no reconocido.
+Linea 86: Simbolo ''' no reconocido.
+Linea 87: Simbolo ''' no reconocido.
+Linea 87: Simbolo '\' no reconocido.
+Linea 87: Simbolo ''' no reconocido.
+Linea 88: Simbolo ''' no reconocido.
+Linea 88: Simbolo '\' no reconocido.
+Linea 88: Simbolo ''' no reconocido.
+Linea 89: Simbolo ''' no reconocido.
+Linea 89: Simbolo '\' no reconocido.
+Linea 89: Simbolo ''' no reconocido.
+Linea 90: Simbolo ''' no reconocido.
+Linea 90: Simbolo '\' no reconocido.
+Linea 90: Simbolo ''' no reconocido.
+Linea 91: Simbolo ''' no reconocido.
+Linea 91: Simbolo '\' no reconocido.
+Linea 91: Simbolo ''' no reconocido.
+Linea 94: La palabra 'D' no es una palabra reservada valida.
+Linea 95: Simbolo ''' no reconocido.
+Linea 95: Simbolo '\' no reconocido.
+Linea 95: Simbolo ''' no reconocido.
+Linea 96: Simbolo ''' no reconocido.
+Linea 96: Simbolo '\' no reconocido.
+Linea 96: Simbolo ''' no reconocido.
+Linea 97: Simbolo ''' no reconocido.
+Linea 97: Simbolo '\' no reconocido.
+Linea 97: Simbolo ''' no reconocido.
+Linea 98: Simbolo ''' no reconocido.
+Linea 98: Simbolo '\' no reconocido.
+Linea 98: Simbolo ''' no reconocido.
+Linea 101: La palabra 'U' no es una palabra reservada valida.
+Linea 102: Simbolo ''' no reconocido.
+Linea 102: Simbolo '\' no reconocido.
+Linea 102: Simbolo ''' no reconocido.
+Linea 103: Simbolo ''' no reconocido.
+Linea 103: Simbolo '\' no reconocido.
+Linea 103: Simbolo ''' no reconocido.
+Linea 106: La palabra 'I' no es una palabra reservada valida.
+Linea 107: Simbolo ''' no reconocido.
+Linea 107: Simbolo '\' no reconocido.
+Linea 107: Simbolo ''' no reconocido.
+Linea 108: Simbolo ''' no reconocido.
+Linea 108: Simbolo '\' no reconocido.
+Linea 108: Simbolo ''' no reconocido.
+Linea 109: Simbolo ''' no reconocido.
+Linea 109: Simbolo '\' no reconocido.
+Linea 109: Simbolo ''' no reconocido.
+Linea 110: Simbolo ''' no reconocido.
+Linea 110: Simbolo '\' no reconocido.
+Linea 110: Simbolo ''' no reconocido.
+Linea 111: Simbolo ''' no reconocido.
+Linea 111: Simbolo '\' no reconocido.
+Linea 111: Simbolo ''' no reconocido.
+Linea 112: La palabra 'HOLA' no es una palabra reservada valida.
+Linea 112: La palabra 'Q' no es una palabra reservada valida.
+Linea 112: La palabra 'TAL' no es una palabra reservada valida.
+Linea 112: Simbolo '\' no reconocido.
+Linea 112: Simbolo ''' no reconocido.
+Linea 112: Simbolo '\' no reconocido.
+Linea 112: Simbolo ''' no reconocido.
+
+###WARNINGS###
+Linea1: Falto el exponente del numero DOUBLE. El exponente es 0 por defecto
+Linea8: Falto el exponente del numero DOUBLE. El exponente es 0 por defecto
+Linea13: Falto el exponente del numero DOUBLE. El exponente es 0 por defecto
+Linea19: Falto el exponente del numero DOUBLE. El exponente es 0 por defecto
+Linea24: Falto el exponente del numero DOUBLE. El exponente es 0 por defecto
+Linea29: Falto el exponente del numero DOUBLE. El exponente es 0 por defecto
+Linea35: Falto el exponente del numero DOUBLE. El exponente es 0 por defecto
+Linea42: Falto el exponente del numero DOUBLE. El exponente es 0 por defecto
+Linea54: Falto el exponente del numero DOUBLE. El exponente es 0 por defecto
+Linea60: Falto el exponente del numero DOUBLE. El exponente es 0 por defecto
+Linea67: Falto el exponente del numero DOUBLE. El exponente es 0 por defecto
+Linea75: Falto el exponente del numero DOUBLE. El exponente es 0 por defecto
+Linea83: Falto el exponente del numero DOUBLE. El exponente es 0 por defecto
+Linea94: Falto el exponente del numero DOUBLE. El exponente es 0 por defecto
+Linea101: Falto el exponente del numero DOUBLE. El exponente es 0 por defecto
+Linea106: Falto el exponente del numero DOUBLE. El exponente es 0 por defecto
+
+--------------------------------------------
+###POLACA PROGRAM###
+--------------------------------------------
+###POLACA PROCEDIMENTOS###
+
