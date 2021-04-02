@@ -132,69 +132,71 @@ asignacion	: ID '=' expresion {helper.lecturaDestAsign($1.sval);}
 expresion	: expresion '+' termino {
                                       if (!TablaNotificaciones.hayErrores()){
                                           String[] ultimosPasos = helper.getUltimosPasos();
-                                          String ultimoPaso = ultimosPasos[0];
-                                          String anteultimoPaso = ultimosPasos[1];
-                                          if(helper.entradaCte(ultimoPaso) && helper.entradaCte(anteultimoPaso))
-                                          {
-                                             if(helper.getTipoEntrada(ultimoPaso).equals(helper.getTipoEntrada(anteultimoPaso)))
-                                             {
-                                                if(helper.getTipoEntrada(ultimoPaso).equals("UINT"))
-                                                {
+                                          String ultimoPaso = ultimosPasos[1];
+                                          String anteultimoPaso = ultimosPasos[0];
+                                          if(!helper.entradaOperador(ultimoPaso) && !helper.entradaOperador(anteultimoPaso)){
+                                              if(helper.entradaCte(ultimoPaso) && helper.entradaCte(anteultimoPaso))
+                                              {
+                                                 if(helper.getTipoEntrada(ultimoPaso).equals(helper.getTipoEntrada(anteultimoPaso)))
+                                                 {
+                                                    if(helper.getTipoEntrada(ultimoPaso).equals("UINT"))
+                                                    {
 
-                                                    int ultimo = Integer.parseInt(ultimoPaso);
-                                                    int anteultimo = Integer.parseInt(anteultimoPaso);
-                                                    int calculo = ultimo + anteultimo;
-                                                    helper.quitarUltimoPasoRepr();
-                                                    helper.quitarUltimoPasoRepr();
-                                                    helper.agregarPasosRepr(String.valueOf(calculo));
-                                                    helper.agregarEntradaTS(new Celda(Parser.CTE_UINT,String.valueOf(calculo),Celda.TIPO_UINT,Celda.USO_CTE,true));
-                                                }
-                                                else
-                                                {
-                                                    double ultimo = Double.parseDouble(ultimoPaso);
-                                                    double anteultimo = Double.parseDouble(anteultimoPaso);
-                                                    double calculo = ultimo + anteultimo;
-                                                    helper.quitarUltimoPasoRepr();
-                                                    helper.quitarUltimoPasoRepr();
-                                                    helper.agregarPasosRepr(String.valueOf(calculo));
-                                                    helper.agregarEntradaTS(new Celda(Parser.CTE_DOUBLE,String.valueOf(calculo),Celda.TIPO_DOUBLE,Celda.USO_CTE,true));
-                                                }
-                                              } else { yyerror("Los operandos son de diferentes tipos.");}
-                                          } else {  helper.agregarPasosRepr("+");}
-                                         }
+                                                        int ultimo = Integer.parseInt(ultimoPaso);
+                                                        int anteultimo = Integer.parseInt(anteultimoPaso);
+                                                        int calculo = ultimo + anteultimo;
+                                                        helper.quitarUltimoPasoRepr();
+                                                        helper.quitarUltimoPasoRepr();
+                                                        helper.agregarPasosRepr(String.valueOf(calculo));
+                                                        helper.agregarEntradaTS(new Celda(Parser.CTE_UINT,String.valueOf(calculo),Celda.TIPO_UINT,Celda.USO_CTE,true));
+                                                    }
+                                                    else
+                                                    {
+                                                        double ultimo = Double.parseDouble(ultimoPaso);
+                                                        double anteultimo = Double.parseDouble(anteultimoPaso);
+                                                        double calculo = ultimo + anteultimo;
+                                                        helper.quitarUltimoPasoRepr();
+                                                        helper.quitarUltimoPasoRepr();
+                                                        helper.agregarPasosRepr(String.valueOf(calculo));
+                                                        helper.agregarEntradaTS(new Celda(Parser.CTE_DOUBLE,String.valueOf(calculo),Celda.TIPO_DOUBLE,Celda.USO_CTE,true));
+                                                    }
+                                                  } else { yyerror("Los operandos son de diferentes tipos.");}
+                                              }else {helper.agregarPasosRepr("+");}
+                                          }else {helper.agregarPasosRepr("+");}
+                                             }
                                       }
 			| expresion '-' termino {
 			                        if (!TablaNotificaciones.hayErrores()){
                                                       String[] ultimosPasos = helper.getUltimosPasos();
-                                                      String ultimoPaso = ultimosPasos[0];
-                                                      String anteultimoPaso = ultimosPasos[1];
-                                                      if(helper.entradaCte(ultimoPaso) && helper.entradaCte(anteultimoPaso))
-                                                      {
-                                                         if(helper.getTipoEntrada(ultimoPaso).equals(helper.getTipoEntrada(anteultimoPaso)))
-                                                         {
-                                                            if(helper.getTipoEntrada(ultimoPaso).equals("UINT"))
-                                                            {
+                                                      String ultimoPaso = ultimosPasos[1];
+                                                      String anteultimoPaso = ultimosPasos[0];
+                                                      if(!helper.entradaOperador(ultimoPaso) && !helper.entradaOperador(anteultimoPaso)){
+                                                          if(helper.entradaCte(ultimoPaso) && helper.entradaCte(anteultimoPaso))
+                                                          {
+                                                             if(helper.getTipoEntrada(ultimoPaso).equals(helper.getTipoEntrada(anteultimoPaso)))
+                                                             {
+                                                                if(helper.getTipoEntrada(ultimoPaso).equals("UINT"))
+                                                                {
+                                                                    int ultimo = Integer.parseInt(ultimoPaso);
+                                                                    int anteultimo = Integer.parseInt(anteultimoPaso);
+                                                                    int calculo = anteultimo - ultimo;
+                                                                    helper.quitarUltimoPasoRepr();
+                                                                    helper.quitarUltimoPasoRepr();
+                                                                    helper.agregarPasosRepr(String.valueOf(calculo));
+                                                                    helper.agregarEntradaTS(new Celda(Parser.CTE_UINT,String.valueOf(calculo),Celda.TIPO_UINT,Celda.USO_CTE,true));
 
-                                                                int ultimo = Integer.parseInt(ultimoPaso);
-                                                                int anteultimo = Integer.parseInt(anteultimoPaso);
-                                                                int calculo = anteultimo - ultimo;
-                                                                helper.quitarUltimoPasoRepr();
-                                                                helper.quitarUltimoPasoRepr();
-                                                                helper.agregarPasosRepr(String.valueOf(calculo));
-                                                                helper.agregarEntradaTS(new Celda(Parser.CTE_UINT,String.valueOf(calculo),Celda.TIPO_UINT,Celda.USO_CTE,true));
-                                                            }
-                                                            else
-                                                            {
-                                                                double ultimo = Double.parseDouble(ultimoPaso);
-                                                                double anteultimo = Double.parseDouble(anteultimoPaso);
-                                                                double calculo = anteultimo - ultimo;
-                                                                helper.quitarUltimoPasoRepr();
-                                                                helper.quitarUltimoPasoRepr();
-                                                                helper.agregarPasosRepr(String.valueOf(calculo));
-                                                                helper.agregarEntradaTS(new Celda(Parser.CTE_DOUBLE,String.valueOf(calculo),Celda.TIPO_DOUBLE,Celda.USO_CTE,true));
-                                                            }
-                                                          } else { yyerror("Los operandos son de diferentes tipos.");}
-                                                      } else {  helper.agregarPasosRepr("-");}
+                                                                }else{
+                                                                    double ultimo = Double.parseDouble(ultimoPaso);
+                                                                    double anteultimo = Double.parseDouble(anteultimoPaso);
+                                                                    double calculo = anteultimo - ultimo;
+                                                                    helper.quitarUltimoPasoRepr();
+                                                                    helper.quitarUltimoPasoRepr();
+                                                                    helper.agregarPasosRepr(String.valueOf(calculo));
+                                                                    helper.agregarEntradaTS(new Celda(Parser.CTE_DOUBLE,String.valueOf(calculo),Celda.TIPO_DOUBLE,Celda.USO_CTE,true));
+                                                                }
+                                                              }else{ yyerror("Los operandos son de diferentes tipos.");}
+                                                          }else {  helper.agregarPasosRepr("-");}
+                                                      }else { helper.agregarPasosRepr("-");}
                                                      }
                                     }
 	        | termino
@@ -203,34 +205,34 @@ expresion	: expresion '+' termino {
 termino	: termino '*' factor {
                                 if (!TablaNotificaciones.hayErrores()){
                                                       String[] ultimosPasos = helper.getUltimosPasos();
-                                                      String ultimoPaso = ultimosPasos[0];
-                                                      String anteultimoPaso = ultimosPasos[1];
-                                                      if(helper.entradaCte(ultimoPaso) && helper.entradaCte(anteultimoPaso))
-                                                      {
-                                                         if(helper.getTipoEntrada(ultimoPaso).equals(helper.getTipoEntrada(anteultimoPaso)))
-                                                         {
-                                                            if(helper.getTipoEntrada(ultimoPaso).equals("UINT"))
-                                                            {
-
-                                                                int ultimo = Integer.parseInt(ultimoPaso);
-                                                                int anteultimo = Integer.parseInt(anteultimoPaso);
-                                                                int calculo = ultimo * anteultimo;
-                                                                helper.quitarUltimoPasoRepr();
-                                                                helper.quitarUltimoPasoRepr();
-                                                                helper.agregarPasosRepr(String.valueOf(calculo));
-                                                                helper.agregarEntradaTS(new Celda(Parser.CTE_UINT,String.valueOf(calculo),Celda.TIPO_UINT,Celda.USO_CTE,true));
-                                                            }
-                                                            else
-                                                            {
-                                                                double ultimo = Double.parseDouble(ultimoPaso);
-                                                                double anteultimo = Double.parseDouble(anteultimoPaso);
-                                                                double calculo = ultimo * anteultimo;
-                                                                helper.quitarUltimoPasoRepr();
-                                                                helper.quitarUltimoPasoRepr();
-                                                                helper.agregarPasosRepr(String.valueOf(calculo));
-                                                                helper.agregarEntradaTS(new Celda(Parser.CTE_DOUBLE,String.valueOf(calculo),Celda.TIPO_DOUBLE,Celda.USO_CTE,true));
-                                                            }
-                                                          } else { yyerror("Los operandos son de diferentes tipos.");}
+                                                      String ultimoPaso = ultimosPasos[1];
+                                                      String anteultimoPaso = ultimosPasos[0];
+                                                      if(!helper.entradaOperador(ultimoPaso) && !helper.entradaOperador(anteultimoPaso)){
+                                                          if(helper.entradaCte(ultimoPaso) && helper.entradaCte(anteultimoPaso))
+                                                          {
+                                                             if(helper.getTipoEntrada(ultimoPaso).equals(helper.getTipoEntrada(anteultimoPaso)))
+                                                             {
+                                                                if(helper.getTipoEntrada(ultimoPaso).equals("UINT"))
+                                                                {
+                                                                    int ultimo = Integer.parseInt(ultimoPaso);
+                                                                    int anteultimo = Integer.parseInt(anteultimoPaso);
+                                                                    int calculo = ultimo * anteultimo;
+                                                                    helper.quitarUltimoPasoRepr();
+                                                                    helper.quitarUltimoPasoRepr();
+                                                                    helper.agregarPasosRepr(String.valueOf(calculo));
+                                                                    helper.agregarEntradaTS(new Celda(Parser.CTE_UINT,String.valueOf(calculo),Celda.TIPO_UINT,Celda.USO_CTE,true));
+                                                                }else
+                                                                {
+                                                                    double ultimo = Double.parseDouble(ultimoPaso);
+                                                                    double anteultimo = Double.parseDouble(anteultimoPaso);
+                                                                    double calculo = ultimo * anteultimo;
+                                                                    helper.quitarUltimoPasoRepr();
+                                                                    helper.quitarUltimoPasoRepr();
+                                                                    helper.agregarPasosRepr(String.valueOf(calculo));
+                                                                    helper.agregarEntradaTS(new Celda(Parser.CTE_DOUBLE,String.valueOf(calculo),Celda.TIPO_DOUBLE,Celda.USO_CTE,true));
+                                                                }
+                                                              } else { yyerror("Los operandos son de diferentes tipos.");}
+                                                          }else {  helper.agregarPasosRepr("*");}
                                                       } else {  helper.agregarPasosRepr("*");}
                                                      }
 
@@ -238,41 +240,40 @@ termino	: termino '*' factor {
 		| termino '/' factor {
                                 if (!TablaNotificaciones.hayErrores()){
                                                       String[] ultimosPasos = helper.getUltimosPasos();
-                                                      String ultimoPaso = ultimosPasos[0];
-                                                      String anteultimoPaso = ultimosPasos[1];
-                                                      if(helper.entradaCte(ultimoPaso) && helper.entradaCte(anteultimoPaso))
-                                                      {
-                                                         if(helper.getTipoEntrada(ultimoPaso).equals(helper.getTipoEntrada(anteultimoPaso)))
-                                                         {
-                                                            if(helper.getTipoEntrada(ultimoPaso).equals("UINT"))
-                                                            {
+                                                      String ultimoPaso = ultimosPasos[1];
+                                                      String anteultimoPaso = ultimosPasos[0];
+                                                      if(!helper.entradaOperador(ultimoPaso) && !helper.entradaOperador(anteultimoPaso)){
+                                                          if(helper.entradaCte(ultimoPaso) && helper.entradaCte(anteultimoPaso))
+                                                          {
+                                                             if(helper.getTipoEntrada(ultimoPaso).equals(helper.getTipoEntrada(anteultimoPaso)))
+                                                             {
+                                                                if(helper.getTipoEntrada(ultimoPaso).equals("UINT"))
+                                                                {
 
-                                                                int ultimo = Integer.parseInt(ultimoPaso);
-                                                                int anteultimo = Integer.parseInt(anteultimoPaso);
-                                                                if(ultimo > 0)
+                                                                    int ultimo = Integer.parseInt(ultimoPaso);
+                                                                    int anteultimo = Integer.parseInt(anteultimoPaso);
+                                                                    if(ultimo > 0)
+                                                                    {
+                                                                        int calculo = anteultimo / ultimo;
+                                                                        helper.quitarUltimoPasoRepr();
+                                                                        helper.quitarUltimoPasoRepr();
+                                                                        helper.agregarPasosRepr(String.valueOf(calculo));
+                                                                        helper.agregarEntradaTS(new Celda(Parser.CTE_UINT,String.valueOf(calculo),Celda.TIPO_UINT,Celda.USO_CTE,true));
+                                                                    }else yyerror("No se puede dividir por cero");
+                                                                }
+                                                                else
                                                                 {
-                                                                    int calculo = anteultimo / ultimo;
-                                                                    helper.quitarUltimoPasoRepr();
-                                                                    helper.quitarUltimoPasoRepr();
-                                                                    helper.agregarPasosRepr(String.valueOf(calculo));
-                                                                    helper.agregarEntradaTS(new Celda(Parser.CTE_UINT,String.valueOf(calculo),Celda.TIPO_UINT,Celda.USO_CTE,true));
-                                                                }else yyerror("No se puede dividir por cero");
-                                                            }
-                                                            else
-                                                            {
-                                                                double ultimo = Double.parseDouble(ultimoPaso);
-                                                                double anteultimo = Double.parseDouble(anteultimoPaso);
-                                                                if(ultimo > 0)
-                                                                {
+                                                                    double ultimo = Double.parseDouble(ultimoPaso);
+                                                                    double anteultimo = Double.parseDouble(anteultimoPaso);
                                                                     double calculo = anteultimo / ultimo;
                                                                     helper.quitarUltimoPasoRepr();
                                                                     helper.quitarUltimoPasoRepr();
                                                                     helper.agregarPasosRepr(String.valueOf(calculo));
                                                                     helper.agregarEntradaTS(new Celda(Parser.CTE_DOUBLE,String.valueOf(calculo),Celda.TIPO_DOUBLE,Celda.USO_CTE,true));
-                                                                }else yyerror("No se puede dividir por cero");
-                                                            }
-                                                          } else { yyerror("Los operandos son de diferentes tipos.");}
-                                                      } else {  helper.agregarPasosRepr("/");}
+                                                                }
+                                                              } else { yyerror("Los operandos son de diferentes tipos.");}
+                                                          }else {  helper.agregarPasosRepr("/");}
+                                                      }else {  helper.agregarPasosRepr("/");}
                                                      }
 		                        }
 		| factor

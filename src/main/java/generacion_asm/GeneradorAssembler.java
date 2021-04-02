@@ -51,6 +51,10 @@ public class GeneradorAssembler {
     public static  void quitaElementoPila(){
         if (pilaOps.size() > 0) pilaOps.remove(pilaOps.size() - 1);
     }
+    public static  String getTopePila(){
+        if (pilaOps.size() > 0) return pilaOps.remove(pilaOps.size() - 1);
+        return null;
+    }
 
     public static int getLongitudPila(){
         return pilaOps.size() - 1;
@@ -110,6 +114,9 @@ public class GeneradorAssembler {
                         pilaOps.remove(pilaOps.size() - 1), pilaOps.remove(pilaOps.size() - 1)));
                     break;
                 case "=": asm.addAll(GeneradorAsign.genInstrAsign(tablaS, registros,
+                        pilaOps.remove(pilaOps.size() - 1), pilaOps.remove(pilaOps.size() - 1)));
+                    break;
+                case "-=": asm.addAll(GeneradorAsign.genInstrAsignResta(tablaS, registros,
                         pilaOps.remove(pilaOps.size() - 1), pilaOps.remove(pilaOps.size() - 1)));
                     break;
                 case "<":

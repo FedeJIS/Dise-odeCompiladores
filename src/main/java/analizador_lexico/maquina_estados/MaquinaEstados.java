@@ -124,7 +124,7 @@ public class MaquinaEstados {
     private void inicCaminoLiterales(CodigoFuente cFuente) {
         GeneraTokenLiteral generaTokenLiteral = new GeneraTokenLiteral(this, cFuente);
         //maquinaEstados[Estado.INICIAL][Input.SUMA] = new TransicionEstado(Estado.FINAL, generaTokenLiteral);
-        //maquinaEstados[Estado.INICIAL][Input.GUION] = new TransicionEstado(Estado.FINAL, generaTokenLiteral);
+       // maquinaEstados[Estado.INICIAL][Input.GUION] = new TransicionEstado(Estado.FINAL, generaTokenLiteral);
         maquinaEstados[Estado.INICIAL][Input.MULTIPL] = new TransicionEstado(Estado.FINAL, generaTokenLiteral);
         maquinaEstados[Estado.INICIAL][Input.DIV] = new TransicionEstado(Estado.FINAL, generaTokenLiteral);
         maquinaEstados[Estado.INICIAL][Input.LLAVE_A] = new TransicionEstado(Estado.FINAL, generaTokenLiteral);
@@ -302,8 +302,9 @@ public class MaquinaEstados {
         maquinaEstados[Estado.SIGNO_IGUAL][Input.IGUAL] = new TransicionEstado(Estado.FINAL, consumeChar,
             generaTokenParticular);
 
-        //NUEVO
+        /**NUEVA ENTREGA: DETECCIÓN DE TOKENS - SUMA, RESTA, += y -= **/
 
+        /**NUEVA ENTREGA:SUMA**/
         /* Token '+': Estado 0 */
         maquinaEstados[Estado.INICIAL][Input.SUMA] = new TransicionEstado(Estado.SUMA);
         /* Estado 17 */
@@ -316,10 +317,12 @@ public class MaquinaEstados {
         //EOF. SUMA
         maquinaEstados[Estado.SUMA][Input.EOF] = new TransicionEstado(Estado.FINAL, generaTokenParticular);
 
+        /**NUEVA ENTREGA:+= **/
         //Input '='. Genero +=.
         generaTokenParticular = new GeneraTokenParticular(this, Parser.MAS_IGUAL);
         maquinaEstados[Estado.SUMA][Input.IGUAL] = new TransicionEstado(Estado.FINAL, consumeChar, generaTokenParticular);
 
+        /**NUEVA ENTREGA: RESTA **/
         /* Token '-': Estado 0 */
         maquinaEstados[Estado.INICIAL][Input.GUION] = new TransicionEstado(Estado.RESTA);
         /* Estado 18 */
@@ -331,6 +334,7 @@ public class MaquinaEstados {
         //EOF. RESTA
         maquinaEstados[Estado.RESTA][Input.EOF] = new TransicionEstado(Estado.FINAL, generaTokenParticular);
 
+        /**NUEVA ENTREGA:-= **/
         //Input '='. Genero -=
         generaTokenParticular = new GeneraTokenParticular(this, Parser.MENOS_IGUAL);
         maquinaEstados[Estado.RESTA][Input.IGUAL] = new TransicionEstado(Estado.FINAL, consumeChar, generaTokenParticular);

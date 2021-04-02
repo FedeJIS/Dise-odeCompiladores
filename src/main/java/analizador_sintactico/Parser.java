@@ -566,7 +566,7 @@ final static String yyrule[] = {
 "rama_else : ELSE",
 };
 
-//#line 360 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+//#line 370 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 
     private final ParserHelper helper;
 
@@ -915,265 +915,272 @@ case 62:
 {
                                       if (!TablaNotificaciones.hayErrores()){
                                           String[] ultimosPasos = helper.getUltimosPasos();
-                                          String ultimoPaso = ultimosPasos[0];
-                                          String anteultimoPaso = ultimosPasos[1];
-                                          if(helper.entradaCte(ultimoPaso) && helper.entradaCte(anteultimoPaso))
-                                          {
-                                             if(helper.getTipoEntrada(ultimoPaso).equals(helper.getTipoEntrada(anteultimoPaso)))
-                                             {
-                                                if(helper.getTipoEntrada(ultimoPaso).equals("UINT"))
-                                                {
+                                          String ultimoPaso = ultimosPasos[1];
+                                          String anteultimoPaso = ultimosPasos[0];
+                                          if(!helper.entradaOperador(ultimoPaso) && !helper.entradaOperador(anteultimoPaso)){
+                                              if(helper.entradaCte(ultimoPaso) && helper.entradaCte(anteultimoPaso))
+                                              {
+                                                 if(helper.getTipoEntrada(ultimoPaso).equals(helper.getTipoEntrada(anteultimoPaso)))
+                                                 {
+                                                    if(helper.getTipoEntrada(ultimoPaso).equals("UINT"))
+                                                    {
 
-                                                    int ultimo = Integer.parseInt(ultimoPaso);
-                                                    int anteultimo = Integer.parseInt(anteultimoPaso);
-                                                    int calculo = ultimo + anteultimo;
-                                                    helper.quitarUltimoPasoRepr();
-                                                    helper.quitarUltimoPasoRepr();
-                                                    helper.agregarPasosRepr(String.valueOf(calculo));
-                                                    helper.agregarEntradaTS(new Celda(Parser.CTE_UINT,String.valueOf(calculo),Celda.TIPO_UINT,Celda.USO_CTE,true));
-                                                }
-                                                else
-                                                {
-                                                    double ultimo = Double.parseDouble(ultimoPaso);
-                                                    double anteultimo = Double.parseDouble(anteultimoPaso);
-                                                    double calculo = ultimo + anteultimo;
-                                                    helper.quitarUltimoPasoRepr();
-                                                    helper.quitarUltimoPasoRepr();
-                                                    helper.agregarPasosRepr(String.valueOf(calculo));
-                                                    helper.agregarEntradaTS(new Celda(Parser.CTE_DOUBLE,String.valueOf(calculo),Celda.TIPO_DOUBLE,Celda.USO_CTE,true));
-                                                }
-                                              } else { yyerror("Los operandos son de diferentes tipos.");}
-                                          } else {  helper.agregarPasosRepr("+");}
-                                         }
+                                                        int ultimo = Integer.parseInt(ultimoPaso);
+                                                        int anteultimo = Integer.parseInt(anteultimoPaso);
+                                                        int calculo = ultimo + anteultimo;
+                                                        helper.quitarUltimoPasoRepr();
+                                                        helper.quitarUltimoPasoRepr();
+                                                        helper.agregarPasosRepr(String.valueOf(calculo));
+                                                        helper.agregarEntradaTS(new Celda(Parser.CTE_UINT,String.valueOf(calculo),Celda.TIPO_UINT,Celda.USO_CTE,true));
+                                                    }
+                                                    else
+                                                    {
+                                                        double ultimo = Double.parseDouble(ultimoPaso);
+                                                        double anteultimo = Double.parseDouble(anteultimoPaso);
+                                                        double calculo = ultimo + anteultimo;
+                                                        helper.quitarUltimoPasoRepr();
+                                                        helper.quitarUltimoPasoRepr();
+                                                        helper.agregarPasosRepr(String.valueOf(calculo));
+                                                        helper.agregarEntradaTS(new Celda(Parser.CTE_DOUBLE,String.valueOf(calculo),Celda.TIPO_DOUBLE,Celda.USO_CTE,true));
+                                                    }
+                                                  } else { yyerror("Los operandos son de diferentes tipos.");}
+                                              }else {helper.agregarPasosRepr("+");}
+                                              }else {helper.agregarPasosRepr("+");}
+                                             }
                                       }
 break;
 case 63:
-//#line 166 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+//#line 168 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {
 			                        if (!TablaNotificaciones.hayErrores()){
                                                       String[] ultimosPasos = helper.getUltimosPasos();
-                                                      String ultimoPaso = ultimosPasos[0];
-                                                      String anteultimoPaso = ultimosPasos[1];
-                                                      if(helper.entradaCte(ultimoPaso) && helper.entradaCte(anteultimoPaso))
-                                                      {
-                                                         if(helper.getTipoEntrada(ultimoPaso).equals(helper.getTipoEntrada(anteultimoPaso)))
-                                                         {
-                                                            if(helper.getTipoEntrada(ultimoPaso).equals("UINT"))
-                                                            {
-
-                                                                int ultimo = Integer.parseInt(ultimoPaso);
-                                                                int anteultimo = Integer.parseInt(anteultimoPaso);
-                                                                int calculo = anteultimo - ultimo;
-                                                                helper.quitarUltimoPasoRepr();
-                                                                helper.quitarUltimoPasoRepr();
-                                                                helper.agregarPasosRepr(String.valueOf(calculo));
-                                                                helper.agregarEntradaTS(new Celda(Parser.CTE_UINT,String.valueOf(calculo),Celda.TIPO_UINT,Celda.USO_CTE,true));
-                                                            }
-                                                            else
-                                                            {
-                                                                double ultimo = Double.parseDouble(ultimoPaso);
-                                                                double anteultimo = Double.parseDouble(anteultimoPaso);
-                                                                double calculo = anteultimo - ultimo;
-                                                                helper.quitarUltimoPasoRepr();
-                                                                helper.quitarUltimoPasoRepr();
-                                                                helper.agregarPasosRepr(String.valueOf(calculo));
-                                                                helper.agregarEntradaTS(new Celda(Parser.CTE_DOUBLE,String.valueOf(calculo),Celda.TIPO_DOUBLE,Celda.USO_CTE,true));
-                                                            }
-                                                          } else { yyerror("Los operandos son de diferentes tipos.");}
-                                                      } else {  helper.agregarPasosRepr("-");}
+                                                      String ultimoPaso = ultimosPasos[1];
+                                                      String anteultimoPaso = ultimosPasos[0];
+                                                      if(!helper.entradaOperador(ultimoPaso) && !helper.entradaOperador(anteultimoPaso)){
+                                                          if(helper.entradaCte(ultimoPaso) && helper.entradaCte(anteultimoPaso))
+                                                          {
+                                                             if(helper.getTipoEntrada(ultimoPaso).equals(helper.getTipoEntrada(anteultimoPaso)))
+                                                             {
+                                                                if(helper.getTipoEntrada(ultimoPaso).equals("UINT"))
+                                                                {
+                                                                    int ultimo = Integer.parseInt(ultimoPaso);
+                                                                    int anteultimo = Integer.parseInt(anteultimoPaso);
+                                                                    int calculo = anteultimo - ultimo;
+                                                                    helper.quitarUltimoPasoRepr();
+                                                                    helper.quitarUltimoPasoRepr();
+                                                                    helper.agregarPasosRepr(String.valueOf(calculo));
+                                                                    helper.agregarEntradaTS(new Celda(Parser.CTE_UINT,String.valueOf(calculo),Celda.TIPO_UINT,Celda.USO_CTE,true));
+                                                                }
+                                                                else
+                                                                {
+                                                                    double ultimo = Double.parseDouble(ultimoPaso);
+                                                                    double anteultimo = Double.parseDouble(anteultimoPaso);
+                                                                    double calculo = anteultimo - ultimo;
+                                                                    helper.quitarUltimoPasoRepr();
+                                                                    helper.quitarUltimoPasoRepr();
+                                                                    helper.agregarPasosRepr(String.valueOf(calculo));
+                                                                    helper.agregarEntradaTS(new Celda(Parser.CTE_DOUBLE,String.valueOf(calculo),Celda.TIPO_DOUBLE,Celda.USO_CTE,true));
+                                                                }
+                                                              } else { yyerror("Los operandos son de diferentes tipos.");}
+                                                          }else {  helper.agregarPasosRepr("-");}
+                                                      }else {  helper.agregarPasosRepr("-");}
                                                      }
                                     }
 break;
 case 65:
-//#line 203 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+//#line 209 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {
                                 if (!TablaNotificaciones.hayErrores()){
                                                       String[] ultimosPasos = helper.getUltimosPasos();
-                                                      String ultimoPaso = ultimosPasos[0];
-                                                      String anteultimoPaso = ultimosPasos[1];
-                                                      if(helper.entradaCte(ultimoPaso) && helper.entradaCte(anteultimoPaso))
-                                                      {
-                                                         if(helper.getTipoEntrada(ultimoPaso).equals(helper.getTipoEntrada(anteultimoPaso)))
-                                                         {
-                                                            if(helper.getTipoEntrada(ultimoPaso).equals("UINT"))
-                                                            {
+                                                      String ultimoPaso = ultimosPasos[1];
+                                                      String anteultimoPaso = ultimosPasos[0];
+                                                      if(!helper.entradaOperador(ultimoPaso) && !helper.entradaOperador(anteultimoPaso)){
+                                                          if(helper.entradaCte(ultimoPaso) && helper.entradaCte(anteultimoPaso))
+                                                          {
+                                                             if(helper.getTipoEntrada(ultimoPaso).equals(helper.getTipoEntrada(anteultimoPaso)))
+                                                             {
+                                                                if(helper.getTipoEntrada(ultimoPaso).equals("UINT"))
+                                                                {
 
-                                                                int ultimo = Integer.parseInt(ultimoPaso);
-                                                                int anteultimo = Integer.parseInt(anteultimoPaso);
-                                                                int calculo = ultimo * anteultimo;
-                                                                helper.quitarUltimoPasoRepr();
-                                                                helper.quitarUltimoPasoRepr();
-                                                                helper.agregarPasosRepr(String.valueOf(calculo));
-                                                                helper.agregarEntradaTS(new Celda(Parser.CTE_UINT,String.valueOf(calculo),Celda.TIPO_UINT,Celda.USO_CTE,true));
-                                                            }
-                                                            else
-                                                            {
-                                                                double ultimo = Double.parseDouble(ultimoPaso);
-                                                                double anteultimo = Double.parseDouble(anteultimoPaso);
-                                                                double calculo = ultimo * anteultimo;
-                                                                helper.quitarUltimoPasoRepr();
-                                                                helper.quitarUltimoPasoRepr();
-                                                                helper.agregarPasosRepr(String.valueOf(calculo));
-                                                                helper.agregarEntradaTS(new Celda(Parser.CTE_DOUBLE,String.valueOf(calculo),Celda.TIPO_DOUBLE,Celda.USO_CTE,true));
-                                                            }
-                                                          } else { yyerror("Los operandos son de diferentes tipos.");}
+                                                                    int ultimo = Integer.parseInt(ultimoPaso);
+                                                                    int anteultimo = Integer.parseInt(anteultimoPaso);
+                                                                    int calculo = ultimo * anteultimo;
+                                                                    helper.quitarUltimoPasoRepr();
+                                                                    helper.quitarUltimoPasoRepr();
+                                                                    helper.agregarPasosRepr(String.valueOf(calculo));
+                                                                    helper.agregarEntradaTS(new Celda(Parser.CTE_UINT,String.valueOf(calculo),Celda.TIPO_UINT,Celda.USO_CTE,true));
+                                                                }
+                                                                else
+                                                                {
+                                                                    double ultimo = Double.parseDouble(ultimoPaso);
+                                                                    double anteultimo = Double.parseDouble(anteultimoPaso);
+                                                                    double calculo = ultimo * anteultimo;
+                                                                    helper.quitarUltimoPasoRepr();
+                                                                    helper.quitarUltimoPasoRepr();
+                                                                    helper.agregarPasosRepr(String.valueOf(calculo));
+                                                                    helper.agregarEntradaTS(new Celda(Parser.CTE_DOUBLE,String.valueOf(calculo),Celda.TIPO_DOUBLE,Celda.USO_CTE,true));
+                                                                }
+                                                              } else { yyerror("Los operandos son de diferentes tipos.");}
+                                                          }else {  helper.agregarPasosRepr("*");}
                                                       } else {  helper.agregarPasosRepr("*");}
                                                      }
 
 }
 break;
 case 66:
-//#line 238 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+//#line 246 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {
                                 if (!TablaNotificaciones.hayErrores()){
                                                       String[] ultimosPasos = helper.getUltimosPasos();
-                                                      String ultimoPaso = ultimosPasos[0];
-                                                      String anteultimoPaso = ultimosPasos[1];
-                                                      if(helper.entradaCte(ultimoPaso) && helper.entradaCte(anteultimoPaso))
-                                                      {
-                                                         if(helper.getTipoEntrada(ultimoPaso).equals(helper.getTipoEntrada(anteultimoPaso)))
-                                                         {
-                                                            if(helper.getTipoEntrada(ultimoPaso).equals("UINT"))
-                                                            {
+                                                      String ultimoPaso = ultimosPasos[1];
+                                                      String anteultimoPaso = ultimosPasos[0];
+                                                      if(!helper.entradaOperador(ultimoPaso) && !helper.entradaOperador(anteultimoPaso)){
+                                                          if(helper.entradaCte(ultimoPaso) && helper.entradaCte(anteultimoPaso))
+                                                          {
+                                                             if(helper.getTipoEntrada(ultimoPaso).equals(helper.getTipoEntrada(anteultimoPaso)))
+                                                             {
+                                                                if(helper.getTipoEntrada(ultimoPaso).equals("UINT"))
+                                                                {
 
-                                                                int ultimo = Integer.parseInt(ultimoPaso);
-                                                                int anteultimo = Integer.parseInt(anteultimoPaso);
-                                                                if(ultimo > 0)
+                                                                    int ultimo = Integer.parseInt(ultimoPaso);
+                                                                    int anteultimo = Integer.parseInt(anteultimoPaso);
+                                                                    if(ultimo > 0)
+                                                                    {
+                                                                        int calculo = anteultimo / ultimo;
+                                                                        helper.quitarUltimoPasoRepr();
+                                                                        helper.quitarUltimoPasoRepr();
+                                                                        helper.agregarPasosRepr(String.valueOf(calculo));
+                                                                        helper.agregarEntradaTS(new Celda(Parser.CTE_UINT,String.valueOf(calculo),Celda.TIPO_UINT,Celda.USO_CTE,true));
+                                                                    }else yyerror("No se puede dividir por cero");
+                                                                }
+                                                                else
                                                                 {
-                                                                    int calculo = anteultimo / ultimo;
-                                                                    helper.quitarUltimoPasoRepr();
-                                                                    helper.quitarUltimoPasoRepr();
-                                                                    helper.agregarPasosRepr(String.valueOf(calculo));
-                                                                    helper.agregarEntradaTS(new Celda(Parser.CTE_UINT,String.valueOf(calculo),Celda.TIPO_UINT,Celda.USO_CTE,true));
-                                                                }else yyerror("No se puede dividir por cero");
-                                                            }
-                                                            else
-                                                            {
-                                                                double ultimo = Double.parseDouble(ultimoPaso);
-                                                                double anteultimo = Double.parseDouble(anteultimoPaso);
-                                                                if(ultimo > 0)
-                                                                {
-                                                                    double calculo = anteultimo / ultimo;
-                                                                    helper.quitarUltimoPasoRepr();
-                                                                    helper.quitarUltimoPasoRepr();
-                                                                    helper.agregarPasosRepr(String.valueOf(calculo));
-                                                                    helper.agregarEntradaTS(new Celda(Parser.CTE_DOUBLE,String.valueOf(calculo),Celda.TIPO_DOUBLE,Celda.USO_CTE,true));
-                                                                }else yyerror("No se puede dividir por cero");
-                                                            }
-                                                          } else { yyerror("Los operandos son de diferentes tipos.");}
-                                                      } else {  helper.agregarPasosRepr("/");}
+                                                                    double ultimo = Double.parseDouble(ultimoPaso);
+                                                                    double anteultimo = Double.parseDouble(anteultimoPaso);
+                                                                    if(ultimo > 0)
+                                                                    {
+                                                                        double calculo = anteultimo / ultimo;
+                                                                        helper.quitarUltimoPasoRepr();
+                                                                        helper.quitarUltimoPasoRepr();
+                                                                        helper.agregarPasosRepr(String.valueOf(calculo));
+                                                                        helper.agregarEntradaTS(new Celda(Parser.CTE_DOUBLE,String.valueOf(calculo),Celda.TIPO_DOUBLE,Celda.USO_CTE,true));
+                                                                    }else yyerror("No se puede dividir por cero");
+                                                                }
+                                                              } else { yyerror("Los operandos son de diferentes tipos.");}
+                                                          }else {  helper.agregarPasosRepr("/");}
+                                                      }else {  helper.agregarPasosRepr("/");}
                                                      }
 		                        }
 break;
 case 68:
-//#line 281 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+//#line 291 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {helper.lecturaFactor(val_peek(0).sval);}
 break;
 case 69:
-//#line 282 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+//#line 292 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {helper.agregarPasosRepr(val_peek(0).sval);helper.setTipoUltimoFactor("UINT");}
 break;
 case 70:
-//#line 283 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+//#line 293 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {helper.agregarPasosRepr(val_peek(0).sval);helper.setTipoUltimoFactor("DOUBLE");}
 break;
 case 71:
-//#line 284 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+//#line 294 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {helper.cambioSignoFactor(yylval.sval);}
 break;
 case 75:
-//#line 292 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+//#line 302 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {helper.agregarPasosRepr(val_peek(0).sval, "OUT_CAD");}
 break;
 case 76:
-//#line 293 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+//#line 303 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {helper.impresionFactor();}
 break;
 case 78:
-//#line 299 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+//#line 309 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {helper.puntoControlLoop();}
 break;
 case 80:
-//#line 303 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+//#line 313 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {yyerror("Falta el bloque de sentencias ejecutables del LOOP.");}
 break;
 case 83:
-//#line 308 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+//#line 318 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {yyerror("Bloque de sentencias vacio.");}
 break;
 case 84:
-//#line 309 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+//#line 319 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {yyerror("No se permiten sentencias declarativas dentro de un bloque de estructura de control.");}
 break;
 case 87:
-//#line 315 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+//#line 325 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {yyerror("No se permiten sentencias declarativas dentro de un bloque de estructura de control.");}
 break;
 case 88:
-//#line 317 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+//#line 327 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {yyerror("No se permiten sentencias declarativas dentro de un bloque de estructura de control.");}
 break;
 case 89:
-//#line 320 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+//#line 330 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {helper.puntoControlUntil();}
 break;
 case 90:
-//#line 321 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+//#line 331 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {yyerror("Falta la condicion de corte del LOOP.");}
 break;
 case 91:
-//#line 324 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+//#line 334 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {helper.agregarPasosRepr(val_peek(2).sval);}
 break;
 case 92:
-//#line 325 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+//#line 335 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {yyerror("Falta parentesis de cierre de la condicion.");}
 break;
 case 93:
-//#line 326 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+//#line 336 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {yyerror("Falta expresion en el lado izquierdo de la condicion.");}
 break;
 case 94:
-//#line 327 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+//#line 337 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {yyerror("Falta expresion en el lado derecho de la condicion.");}
 break;
 case 95:
-//#line 328 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+//#line 338 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {yyerror("Error en la condicion.");}
 break;
 case 104:
-//#line 343 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+//#line 353 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {helper.puntoControlThen();}
 break;
 case 105:
-//#line 344 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+//#line 354 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {yyerror("Falta la condicion del IF.");}
 break;
 case 106:
-//#line 347 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+//#line 357 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {helper.puntoControlElse();}
 break;
 case 107:
-//#line 348 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+//#line 358 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {yyerror("Falta el bloque de sentencias ejecutables de la rama THEN.");}
 break;
 case 108:
-//#line 351 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+//#line 361 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {helper.puntoControlFinCondicional();}
 break;
 case 109:
-//#line 352 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+//#line 362 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {yyerror("Falta el bloque de sentencias ejecutables de la rama THEN.");}
 break;
 case 110:
-//#line 355 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+//#line 365 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {helper.puntoControlFinCondicional();}
 break;
 case 111:
-//#line 356 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
+//#line 366 "C:\Users\federico.iribarren\Documents\Diseño de Compiladores I\src\main\java\analizador_sintactico\archivos\gramatica.y"
 {yyerror("Falta el bloque de sentencias ejecutables de la rama ELSE.");}
 break;
-//#line 1100 "Parser.java"
+//#line 1110 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

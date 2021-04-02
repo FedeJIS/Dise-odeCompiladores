@@ -19,7 +19,6 @@ public class GeneradorInvoc {
                 GeneradorAssembler.quitaElementoPila(); //Saco los parametros.
                 String paramDecl = tablaS.getParam(proc, i);
                 String paramReal = paramsReales.get(i);
-
                 asm.addAll(GeneradorAsign.genInstrAsign(tablaS, registros, paramDecl, paramReal));
             }
 

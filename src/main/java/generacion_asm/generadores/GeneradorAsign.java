@@ -1,5 +1,6 @@
 package generacion_asm.generadores;
 
+import generacion_asm.GeneradorAssembler;
 import generacion_asm.util.InfoReg;
 import util.tabla_simbolos.TablaSimbolos;
 
@@ -35,6 +36,18 @@ public class GeneradorAsign {
             asm.add("MOV " + getNombreRegistro(idReg) + ", " + getPrefijo(tablaS, src) + src);
             asm.add("MOV _" + dest + ", " + getNombreRegistro(idReg));
         }
+
+        return asm;
+    }
+/**NUEVO GENERACION DE ASIGNACION CON RESTA (CASO ESPECIAL)**/
+    public static List<String> genInstrAsignResta(TablaSimbolos tablaS, List<InfoReg> registros, String dest, String src){
+        List<String> asm = new ArrayList<>();
+
+        tiposOperandosValidos(tablaS, registros, dest, esRegistro(dest), src, esRegistro(src));
+        //Pongo en la pila un valor con el contenido de la resta Dest - Src
+        asm.addAll(GeneradorResta.genInstrAritmResta(tablaS,registros,src,dest));
+        //Quito el ultimo valor de la pila y lo almaceno en Dest
+        asm.addAll(genInstrAsign(tablaS,registros,dest, GeneradorAssembler.getTopePila()));
 
         return asm;
     }

@@ -43,7 +43,7 @@ public class MultiPolaca {
         polacaProc.agregarPasos(pasos);
         polacaProcedimientos.put(proc,polacaProc);
     }
-
+    /**NUEVA ENTREGA: Retorna los 2 ultimos pasos de la polaca **/
     public String[] getUltimosPasos(String proc){
         Polaca polacaProc = polacaProcedimientos.get(proc);
         if (polacaProc == null) throw new IllegalStateException("No existe polaca para el procedimiento '"+proc+"'.");

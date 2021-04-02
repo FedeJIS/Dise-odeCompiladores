@@ -137,51 +137,7 @@ public class ParserHelper {
         }
     }
 
-    /**
-     * Invocado cuando se lee el lado izq de +=.
-     */
-    public void lecturaDestMasIgual(String lexema) {
-        tablaS.quitarReferencia(lexema);
-        String ambito = getAmbitoId(lexema);
-        if (!isIdDecl(lexema, ambito)) { //Variable destino no declarada.
-            TablaNotificaciones.agregarError(aLexico.getLineaActual(),
-                    "La variable '" + lexema + "' no esta declarada.");
-            return;
-        }
 
-        String nLexema = PilaAmbitos.aplicaNameManglin(ambito, lexema);
-
-        //Esta declarado pero es un procedimiento.
-        if (tablaS.isEntradaProc(nLexema)) TablaNotificaciones.agregarError(aLexico.getLineaActual(),
-                "Un procedimiento no puede estar a la izquierda una asignacion.");
-        else { //Asignacion valida.
-            agregarPasosRepr(nLexema, "+", nLexema, "=");
-            tablaS.agregarReferencia(nLexema);
-        }
-    }
-
-    /**
-     * Invocado cuando se lee el lado izq de -=.
-     */
-    public void lecturaDestMenosIgual(String lexema) {
-        tablaS.quitarReferencia(lexema);
-        String ambito = getAmbitoId(lexema);
-        if (!isIdDecl(lexema, ambito)) { //Variable destino no declarada.
-            TablaNotificaciones.agregarError(aLexico.getLineaActual(),
-                    "La variable '" + lexema + "' no esta declarada.");
-            return;
-        }
-
-        String nLexema = PilaAmbitos.aplicaNameManglin(ambito, lexema);
-
-        //Esta declarado pero es un procedimiento.
-        if (tablaS.isEntradaProc(nLexema)) TablaNotificaciones.agregarError(aLexico.getLineaActual(),
-                "Un procedimiento no puede estar a la izquierda una asignacion.");
-        else { //Asignacion valida.
-            agregarPasosRepr(nLexema, "-", nLexema, "=");
-            tablaS.agregarReferencia(nLexema);
-        }
-    }
 
     public void setTipoUltimoFactor(String tipoUltimoFactor) {
         this.tipoUltimoFactor = tipoUltimoFactor;
@@ -222,7 +178,6 @@ public class ParserHelper {
 
             if (factorCte) {
                 tablaS.quitarReferencia(lexemaSignoNoC); //El lexema esta en la TS si o si. refs--.
-
                 String lexemaSignoC = String.valueOf(
                     Double.parseDouble(lexemaSignoNoC) * -1); //Cambio el signo del factor.
                 tablaS.agregarEntrada(Parser.CTE_DOUBLE, lexemaSignoC, Celda.TIPO_DOUBLE);
@@ -484,17 +439,69 @@ public class ParserHelper {
         return polacaProcedimientos;
     }
 
+    /**NUEVA ENTREGA: Retorna los 2 ultimos pasos de la polaca que corresponde **/
     public String[] getUltimosPasos(){
         if (pilaAmbitos.inAmbitoGlobal())
             return polacaProgram.getUltimosPasos();
         else return polacaProcedimientos.getUltimosPasos(pilaAmbitos.getAmbitoActual());
     }
+    /**
+     * NUEVA ENTREGA:Invocado cuando se lee el lado izq de +=.
+     */
+    public void lecturaDestMasIgual(String lexema) {
+        tablaS.quitarReferencia(lexema);
+        String ambito = getAmbitoId(lexema);
+        if (!isIdDecl(lexema, ambito)) { //Variable destino no declarada.
+            TablaNotificaciones.agregarError(aLexico.getLineaActual(),
+                    "La variable '" + lexema + "' no esta declarada.");
+            return;
+        }
 
+        String nLexema = PilaAmbitos.aplicaNameManglin(ambito, lexema);
+
+        //Esta declarado pero es un procedimiento.
+        if (tablaS.isEntradaProc(nLexema)) TablaNotificaciones.agregarError(aLexico.getLineaActual(),
+                "Un procedimiento no puede estar a la izquierda una asignacion.");
+        else { //Asignacion valida.
+            agregarPasosRepr(nLexema, "+", nLexema, "=");
+            tablaS.agregarReferencia(nLexema);
+        }
+    }
+
+    /**
+     * NUEVA ENTREGA: Invocado cuando se lee el lado izq de -=.
+     */
+    public void lecturaDestMenosIgual(String lexema) {
+        tablaS.quitarReferencia(lexema);
+        String ambito = getAmbitoId(lexema);
+        if (!isIdDecl(lexema, ambito)) { //Variable destino no declarada.
+            TablaNotificaciones.agregarError(aLexico.getLineaActual(),
+                    "La variable '" + lexema + "' no esta declarada.");
+            return;
+        }
+
+        String nLexema = PilaAmbitos.aplicaNameManglin(ambito, lexema);
+
+        //Esta declarado pero es un procedimiento.
+        if (tablaS.isEntradaProc(nLexema)) TablaNotificaciones.agregarError(aLexico.getLineaActual(),
+                "Un procedimiento no puede estar a la izquierda una asignacion.");
+        else { //Asignacion valida.
+            agregarPasosRepr(nLexema, "-=");
+            tablaS.agregarReferencia(nLexema);
+        }
+    }
+    /**NUEVA ENTREGA: Verifica si un lexema es una entrada cte. **/
     public boolean entradaCte(String lexema)
     {
         return tablaS.esEntradaCte(lexema);
     }
 
+    /**NUEVA ENTREGA: Verifica si un lexema es un operador. **/
+    public boolean entradaOperador(String op)
+    {
+        if(op.equals("+") || op.equals("-") || op.equals("*") || op.equals("/")) return true;
+        return false;
+    }
 
     public String getTipoEntrada(String lexema)
     {
@@ -505,4 +512,7 @@ public class ParserHelper {
     {
         tablaS.agregarEntrada(celda);
     }
+
+
+
 }

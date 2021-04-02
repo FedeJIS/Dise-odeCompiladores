@@ -52,11 +52,12 @@ public class Polaca {
         return new ArrayList<>(listaPasos);
     }
 
+    /**NUEVA ENTREGA: Retorna los 2 ultimos pasos de la polaca **/
     public String[] getUltimosPasos(){
         if(listaPasos.size() >= 1) {
             String ultimoPaso = listaPasos.get(listaPasos.size()-1);
             String anteultimoPaso = listaPasos.get(listaPasos.size()-2);
-            String[] pasos = {ultimoPaso,anteultimoPaso};
+            String[] pasos = {anteultimoPaso,ultimoPaso};
             return pasos;
         }
         return null;

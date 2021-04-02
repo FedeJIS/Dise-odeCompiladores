@@ -26,22 +26,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="593fd477-49da-4fa6-ac05-b714f65ecf31" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/compilador_maven_g15.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/documentacion/fuentes.txt" beforeDir="false" afterPath="$PROJECT_DIR$/documentacion/fuentes.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/analizador_lexico/maquina_estados/Estado.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/analizador_lexico/maquina_estados/Estado.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/analizador_lexico/maquina_estados/MaquinaEstados.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/analizador_lexico/maquina_estados/MaquinaEstados.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/analizador_sintactico/Parser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/analizador_sintactico/Parser.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/analizador_sintactico/archivos/gramatica.y" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/analizador_sintactico/archivos/gramatica.y" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/analizador_sintactico/util/ParserHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/analizador_sintactico/util/ParserHelper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/compilador/Compilador.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/compilador/Compilador.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/generacion_asm/GeneradorAssembler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/generacion_asm/GeneradorAssembler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/generacion_asm/generadores/GeneradorAsign.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/generacion_asm/generadores/GeneradorAsign.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/generacion_asm/generadores/GeneradorInvoc.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/generacion_asm/generadores/GeneradorInvoc.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/generacion_c_intermedio/MultiPolaca.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/generacion_c_intermedio/MultiPolaca.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/generacion_c_intermedio/Polaca.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/generacion_c_intermedio/Polaca.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/util/ReprTokens.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/util/ReprTokens.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/util/tabla_simbolos/TablaSimbolos.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/util/tabla_simbolos/TablaSimbolos.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/analizador_lexico/maquina_estados/MaquinaEstados.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/analizador_lexico/maquina_estados/MaquinaEstados.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/analizador_sintactico/Parser.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/analizador_sintactico/Parser.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/analizador_sintactico/util/ParserHelper.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/analizador_sintactico/util/ParserHelper.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/generacion_asm/GeneradorAssembler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/generacion_asm/GeneradorAssembler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/generacion_asm/generadores/GeneradorAsign.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/generacion_asm/generadores/GeneradorAsign.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/generacion_c_intermedio/Polaca.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/generacion_c_intermedio/Polaca.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/test-classes/casos_prueba_catedra/Coment_BienDef.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/test-classes/casos_prueba_catedra/Coment_BienDef.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -183,21 +185,21 @@
       <screen x="0" y="0" width="1920" height="1160" />
     </state>
     <state x="740" y="335" key="FileChooserDialogImpl/0.0.1920.1160@0.0.1920.1160" timestamp="1615178874206" />
-    <state width="1877" height="321" key="GridCell.Tab.0.bottom" timestamp="1615578427504">
+    <state width="1877" height="321" key="GridCell.Tab.0.bottom" timestamp="1617323827788">
       <screen x="0" y="0" width="1920" height="1160" />
     </state>
-    <state width="1877" height="321" key="GridCell.Tab.0.bottom/0.0.1920.1160@0.0.1920.1160" timestamp="1615578427504" />
-    <state width="1877" height="321" key="GridCell.Tab.0.center" timestamp="1615578427503">
+    <state width="1877" height="321" key="GridCell.Tab.0.bottom/0.0.1920.1160@0.0.1920.1160" timestamp="1617323827788" />
+    <state width="1877" height="321" key="GridCell.Tab.0.center" timestamp="1617323827788">
       <screen x="0" y="0" width="1920" height="1160" />
     </state>
-    <state width="1877" height="321" key="GridCell.Tab.0.center/0.0.1920.1160@0.0.1920.1160" timestamp="1615578427503" />
-    <state width="1877" height="321" key="GridCell.Tab.0.left" timestamp="1615578427503">
+    <state width="1877" height="321" key="GridCell.Tab.0.center/0.0.1920.1160@0.0.1920.1160" timestamp="1617323827788" />
+    <state width="1877" height="321" key="GridCell.Tab.0.left" timestamp="1617323827788">
       <screen x="0" y="0" width="1920" height="1160" />
     </state>
-    <state width="1877" height="321" key="GridCell.Tab.0.left/0.0.1920.1160@0.0.1920.1160" timestamp="1615578427503" />
-    <state width="1877" height="321" key="GridCell.Tab.0.right" timestamp="1615578427504">
+    <state width="1877" height="321" key="GridCell.Tab.0.left/0.0.1920.1160@0.0.1920.1160" timestamp="1617323827788" />
+    <state width="1877" height="321" key="GridCell.Tab.0.right" timestamp="1617323827788">
       <screen x="0" y="0" width="1920" height="1160" />
     </state>
-    <state width="1877" height="321" key="GridCell.Tab.0.right/0.0.1920.1160@0.0.1920.1160" timestamp="1615578427504" />
+    <state width="1877" height="321" key="GridCell.Tab.0.right/0.0.1920.1160@0.0.1920.1160" timestamp="1617323827788" />
   </component>
 </project>
